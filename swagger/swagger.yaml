@@ -1,0 +1,226 @@
+---
+openapi: 3.0.1
+info:
+  title: API
+servers:
+- url: http://{defaultHost}
+  variables:
+    defaultHost:
+      default: localhost:3000
+paths:
+  "/auth":
+    post:
+      summary: User registration
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Request parameters"
+        required: true
+        schema:
+          $ref: "#/definitions/UserRegistrationParameters"
+      responses:
+        "200":
+          description: "Valid input"
+          content:
+            application/json:
+              example:
+                status: 'success'
+                data:
+                  email: "testuser1@yopmail.com"
+                  uid: "testuser1@yopmail.com"
+                  id: 1
+                  provider: "email"
+                  allow_password_change: false
+                  first_name: "testuser1"
+                  middle_name: ""
+                  last_name: "lname"
+                  address: "test address 1"
+                  created_at: "2021-11-03T11:11:19.236Z"
+                  updated_at: "2021-11-03T11:11:19.401Z"
+        "422":
+          description: "Invalid input"
+          content:
+            application/json:
+              example:
+                status: 'error'
+                data:
+                  id: null
+                  provider: "email"
+                  uid: ""
+                  allow_password_change: false
+                  first_name: "testuser1"
+                  middle_name: ""
+                  last_name: "lname"
+                  address: "test address 1"
+                  email: "testuser1@yopmail.com"
+                  created_at: null
+                  updated_at: null
+                errors:
+                  email: ["has already been taken"]
+                  full_messages: ["Email has already been taken"]
+
+  "/auth/sign_in":
+    post:
+      summary: User signin
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Request parameters"
+        required: true
+        schema:
+          $ref: "#/definitions/UserSigninParameters"
+      responses:
+        "200":
+          description: "Valid input"
+          content:
+            application/json:
+              example:
+                data:
+                  email: "testuser1@yopmail.com"
+                  uid: "testuser1@yopmail.com"
+                  id: 1
+                  provider: "email"
+                  allow_password_change: false
+                  first_name: "testuser1"
+                  middle_name: ""
+                  last_name: "lname"
+                  address: "test address 1"
+        "401":
+          description: "Invalid input"
+          content:
+            application/json:
+              example:
+                success: false
+                errors: ["Invalid login credentials. Please try again."]
+
+  "/auth/password":
+    post:
+      summary: Password reset
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Request parameters"
+        required: true
+        schema:
+          $ref: "#/definitions/PasswordResetParameters"
+      responses:
+        "200":
+          description: "Valid input"
+          content:
+            application/json:
+              example:
+                success: true
+                message: "An email has been sent to 'testuser1@yopmail.com' containing instructions for resetting your password."
+        "404":
+          description: "Invalid input"
+          content:
+            application/json:
+              example:
+                success: false
+                errors: ["Unable to find user with email 'testuser1@yopmail.com1'."]
+    put:
+      summary: Password update
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Request parameters"
+        required: true
+        schema:
+          $ref: "#/definitions/PasswordUpdateParameters"
+      - in: "header"
+        name: "header"
+        description: "Request headers"
+        required: true
+        schema:
+          $ref: "#/definitions/PasswordUpdateHeaders"
+      responses:
+        "200":
+          description: "Valid input"
+          content:
+            application/json:
+              example:
+                success: true
+                data:
+                  email: "testuser1@yopmail.com"
+                  uid: "testuser1@yopmail.com"
+                  id: 1
+                  provider: "email"
+                  allow_password_change: false
+                  first_name: "testuser1"
+                  middle_name: ""
+                  last_name: "lname"
+                  address: "test address 1"
+                  created_at: "2021-11-03T11:11:19.236Z"
+                  updated_at: "2021-11-08T15:08:18.826Z"
+                message: "Your password has been successfully updated."
+        "401":
+          description: "Invalid input"
+          content:
+            application/json:
+              example:
+                success: false
+                errors: ["Unauthorized"]
+          
+definitions:
+  UserRegistrationParameters:
+    type: "object"
+    required:
+      - email
+      - password
+    properties:
+      first_name:
+        type: "string"
+      middle_name:
+        type: "string"
+      last_name:
+        type: "string"
+      email:
+        type: "string"
+      password:
+        type: "string"
+  UserSigninParameters:
+    type: "object"
+    required:
+      - email
+      - password
+    properties:
+      email:
+        type: "string"
+      password:
+        type: "string"
+  PasswordResetParameters:
+    type: "object"
+    required:
+      - email
+      - redirect_url
+    properties:
+      email:
+        type: "string"
+      redirect_url:
+        type: "string"
+        description: 'for redirection, after password change'
+  PasswordUpdateParameters:
+    type: "object"
+    required:
+    - password
+    - password_confirmation
+    properties:
+      password:
+        type: "string"
+      password_confirmation:
+        type: "string"
+        description: 'should be same as password'
+  PasswordUpdateHeaders:
+    type: "object"
+    required:
+    - access-token
+    - client
+    - uid
+    properties:
+      access-token:
+        type: "string"
+      client:
+        type: "string"
+      uid:
+        type: "string"
+  
