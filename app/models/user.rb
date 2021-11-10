@@ -8,6 +8,12 @@ class User < ActiveRecord::Base
          :recoverable, :validatable
   include DeviseTokenAuth::Concerns::User
 
+  # Attribute accessors
+  attr_accessor :role_name
+
+  # Callbaks
+  before_validation :assign_role, on: [:create]
+
   # Associations
   has_one :user_role, dependent: :destroy
   has_one :role, through: :user_role
@@ -15,9 +21,6 @@ class User < ActiveRecord::Base
   # Validation
   validates_associated :role
   validates_presence_of :role
-
-  # Delegates
-  delegate :name, to: :role, prefix: true
 
   # format response
   def as_json(options={})
@@ -30,7 +33,14 @@ class User < ActiveRecord::Base
 
     # access actual role name, which is in database
     def humanize_role_name
-      Role.names[self.role_name]
+      Role.names[self.role&.name]
+    end
+
+    def assign_role
+      role = Role.where(name: self.role_name).first || Role.new(name: self.role_name)
+      self.role = role
+    rescue StandardError => e
+      errors.add(:role_name, e)
     end
 
   # end of private
