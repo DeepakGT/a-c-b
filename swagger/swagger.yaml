@@ -93,6 +93,31 @@ paths:
                 success: false
                 errors: ["Invalid login credentials. Please try again."]
 
+  "/auth/sign_out":
+    delete:
+      summary: User signout
+      parameters:
+      - in: "header"
+        name: "header"
+        description: "Request headers"
+        required: true
+        schema:
+          $ref: "#/definitions/UserSignoutHeaders"
+      responses:
+        "200":
+          description: "Valid input"
+          content:
+            application/json:
+              example:
+                success: true
+        "404":
+          description: "Invalid input"
+          content:
+            application/json:
+              example:
+                success: false
+                errors: ["User was not found or was not logged in."]
+
   "/auth/password":
     post:
       summary: Password reset
@@ -211,6 +236,19 @@ definitions:
         type: "string"
         description: 'should be same as password'
   PasswordUpdateHeaders:
+    type: "object"
+    required:
+    - access-token
+    - client
+    - uid
+    properties:
+      access-token:
+        type: "string"
+      client:
+        type: "string"
+      uid:
+        type: "string"
+  UserSignoutHeaders:
     type: "object"
     required:
     - access-token
