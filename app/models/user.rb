@@ -23,25 +23,25 @@ class User < ActiveRecord::Base
   validates_presence_of :role
 
   # format response
-  def as_json(options={})
+  def as_json(options = {})
     super(options)
-    .select{|key| key.in?(['email', 'uid', 'first_name', 'last_name'])}
-    .merge({role: humanize_role_name})
+      .select { |key| key.in?(['email', 'uid', 'first_name', 'last_name']) }
+      .merge({role: humanize_role_name})
   end
 
   private
 
-    # access actual role name, which is in database
-    def humanize_role_name
-      Role.names[self.role&.name]
-    end
+  # access actual role name, which is in database
+  def humanize_role_name
+    Role.names[self.role&.name]
+  end
 
-    def assign_role
-      role = Role.where(name: self.role_name).first || Role.new(name: self.role_name)
-      self.role = role
-    rescue StandardError => e
-      errors.add(:role_name, e)
-    end
+  def assign_role
+    role = Role.where(name: self.role_name).first || Role.new(name: self.role_name)
+    self.role = role
+  rescue StandardError => e
+    errors.add(:role_name, e)
+  end
 
   # end of private
 

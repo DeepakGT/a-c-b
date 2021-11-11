@@ -2,7 +2,7 @@ puts "Data seed is in progress..."
 password = '123456'
 
 # Will create two user for each role
-Role.names.keys.each do |role|
+Role.names.each_key do |role|
   2.times do |i|
     User.where(email: "#{role}_user#{i+1}@yopmail.com").first_or_create do |u|
       # This block will run only on create new records

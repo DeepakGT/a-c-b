@@ -2,7 +2,6 @@
 require 'rails_helper'
 
 RSpec.describe DeviseTokenAuth::RegistrationsController, type: :controller do
-
   before(:each) do
     @request.env["devise.mapping"] = Devise.mappings[:user]
     @email = "testuser1@yopmail.com"
