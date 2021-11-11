@@ -15,7 +15,8 @@ RSpec.describe DeviseTokenAuth::RegistrationsController, type: :controller do
         post :create, params: { 
           email: @email,
           password: password,
-          confirm_password: password
+          confirm_password: password,
+          role_name: 'aba_admin'
         }
         user = JSON.parse(response.body)
 
