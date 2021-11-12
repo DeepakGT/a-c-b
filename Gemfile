@@ -55,3 +55,6 @@ gem 'devise_token_auth'
 gem 'rswag'
 # Static code analyzer and code formatter
 gem 'rubocop', '~> 1.22', require: false
+# Rack::Cors provides support for Cross-Origin Resource Sharing (CORS) 
+# for Rack compatible web applications.
+gem 'rack-cors'
