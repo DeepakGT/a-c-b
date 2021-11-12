@@ -37,7 +37,7 @@ class User < ActiveRecord::Base
   end
 
   def assign_role
-    role = Role.where(name: self.role_name).first || Role.new(name: self.role_name)
+    role = self.role || Role.where(name: self.role_name).first || Role.new(name: self.role_name)
     self.role = role
   rescue StandardError => e
     errors.add(:role_name, e)
