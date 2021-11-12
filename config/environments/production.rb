@@ -115,7 +115,7 @@ Rails.application.configure do
   config.action_mailer.perform_deliveries = true
   config.action_mailer.default_url_options = { host: 'aba-center-be.herokuapp.com' }
   config.action_mailer.default_options  = {
-    from:  "no-reply <from_test_user@codes.com>"
+    from:  "contact-aba-center@yopmail.com"
   }
 
   config.action_mailer.smtp_settings = {
