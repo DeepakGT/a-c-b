@@ -111,9 +111,18 @@ Rails.application.configure do
   # config.active_record.database_resolver = ActiveRecord::Middleware::DatabaseSelector::Resolver
   # config.active_record.database_resolver_context = ActiveRecord::Middleware::DatabaseSelector::Resolver::Session
 
-  config.action_mailer.perform_deliveries = false
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.perform_deliveries = true
   config.action_mailer.default_url_options = { host: 'aba-center-be.herokuapp.com' }
   config.action_mailer.default_options  = {
     from:  "no-reply <from_test_user@codes.com>"
+  }
+
+  config.action_mailer.smtp_settings = {
+    address:              'smtp.sendgrid.net',
+    port:                 587,
+    authentication:       'plain',
+    user_name:            Rails.application.credentials[:smtp][:username],
+    password:             Rails.application.credentials[:smtp][:password]
   }
 end
