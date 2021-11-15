@@ -5,9 +5,9 @@ class Role < ApplicationRecord
   validates :name, uniqueness: true
   validates :name, presence: true
 
-  enum name: { aba_admin: 'ABA Admin',
-               administrator: 'Administrator',
-               bcba: 'BCBA',
-               rbt: 'RBT',
-               billing: 'Billing' }
+  enum name: { aba_admin: 'aba admin',
+               administrator: 'administrator',
+               bcba: 'bcba',
+               rbt: 'rbt',
+               billing: 'billing' }
 end
