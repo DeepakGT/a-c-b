@@ -30,10 +30,29 @@ class DeviseTokenAuthCreateUsers < ActiveRecord::Migration[6.1]
 
       ## User Info
       t.string :first_name
-      t.string :middle_name
       t.string :last_name
       t.text :address
       t.string :email
+      t.references :supervisor, null: true, index: true, foreign_key: {to_table: :users}
+      t.date :hired_at
+      t.text :web_address
+      t.integer :status
+      t.integer :pay_type
+      t.boolean :service_provider
+      t.integer :timing_type
+      t.integer :hours_per_week
+      t.date :terminated_at
+      t.boolean :ot_exempt
+      t.string :phone_ext
+      t.integer :term_type
+      t.integer :residency
+      t.date :status_date
+      t.string :driving_license
+      t.date :driving_license_expires_at
+      t.date :date_of_birth
+      t.string :ssn
+      t.string :badge_id
+      t.integer :badge_type
 
       ## Tokens
       t.json :tokens
