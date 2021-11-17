@@ -23,6 +23,7 @@ class User < ActiveRecord::Base
   has_one :role, through: :user_role
   has_many :services, through: :user_services
 
+  belongs_to :clinic
   belongs_to :supervisor, class_name: :User, optional: true
 
   # Enums

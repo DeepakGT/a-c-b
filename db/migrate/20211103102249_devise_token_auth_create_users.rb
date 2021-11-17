@@ -29,6 +29,7 @@ class DeviseTokenAuthCreateUsers < ActiveRecord::Migration[6.1]
       # t.datetime :locked_at
 
       ## User Info
+      t.references :clinic, null: false, foreign_key: true
       t.string :first_name
       t.string :last_name
       t.text :address
@@ -56,6 +57,8 @@ class DeviseTokenAuthCreateUsers < ActiveRecord::Migration[6.1]
       t.date :driving_license_expires_at
       t.date :date_of_birth
       t.string :ssn
+
+      # related fields
       t.string :badge_id
       t.integer :badge_type
 

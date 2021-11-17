@@ -5,6 +5,7 @@ class ApplicationController < ActionController::API
   protected
 
   def configure_permitted_parameters
-    devise_parameter_sanitizer.permit(:sign_up, keys: %i[first_name last_name address role_name])
+    whitelisted_user_params = %i[first_name last_name address role_name]
+    devise_parameter_sanitizer.permit(:sign_up, keys: whitelisted_user_params)
   end
 end
