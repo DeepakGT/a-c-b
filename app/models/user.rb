@@ -23,7 +23,7 @@ class User < ActiveRecord::Base
   has_one :role, through: :user_role
   has_many :services, through: :user_services
 
-  belongs_to :supervisor, class_name: :User
+  belongs_to :supervisor, class_name: :User, optional: true
 
   # Enums
   enum status: {active: 0, inactive: 1}
