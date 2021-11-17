@@ -39,6 +39,11 @@ class User < ActiveRecord::Base
   # Validation
   validates_associated :role
   validates_presence_of :role
+  validates :hours_per_week, length: {maximum: 120}, allow_blank: true
+
+  # Custom Validations
+  # terminated_at field would also be validated with this
+  validate :validate_status
 
   # format response
   def as_json(options = {})
@@ -59,6 +64,11 @@ class User < ActiveRecord::Base
     self.role = role
   rescue StandardError => e
     errors.add(:role_name, e)
+  end
+
+  def validate_status
+    errors.add(:status, 'For an active user, terminated date must be blank.') if self.active? && self.terminated_at.present?
+    errors.add(:status, 'For an inactive user, terminated date must be present.') if self.inactive? && self.terminated_at.blank?
   end
 
   # end of private
