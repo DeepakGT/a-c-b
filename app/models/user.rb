@@ -8,23 +8,29 @@ class User < ActiveRecord::Base
          :recoverable, :validatable
   include DeviseTokenAuth::Concerns::User
 
-  # Attribute accessors
-  attr_accessor :role_name
+  # Attrs
+  attr_accessor :role_id
 
   # Callbaks
   before_validation :assign_role, on: [:create]
 
   # Associations
   has_one :user_role, dependent: :destroy
-  has_one :address, as: :addressable
-  has_many :phone_numbers, as: :phoneable
-  has_many :user_services
+  has_one :address, as: :addressable, dependent: :destroy
+  has_one :rbt_supervision, dependent: :destroy
+  has_many :phone_numbers, as: :phoneable, dependent: :destroy
+  has_many :user_services, dependent: :destroy
   
   has_one :role, through: :user_role
   has_many :services, through: :user_services
 
   belongs_to :clinic
   belongs_to :supervisor, class_name: :User, optional: true
+
+  accepts_nested_attributes_for :address, :allow_destroy => true
+  accepts_nested_attributes_for :phone_numbers, :allow_destroy => true
+  accepts_nested_attributes_for :services, :allow_destroy => true
+  accepts_nested_attributes_for :rbt_supervision, :allow_destroy => true
 
   # Enums
   enum status: {active: 0, inactive: 1}
@@ -46,25 +52,25 @@ class User < ActiveRecord::Base
   # terminated_at field would also be validated with this
   validate :validate_status
 
+  # delegates
+  delegate :name, to: :role, prefix: true
+
   # format response
   def as_json(options = {})
     super(options)
       .select { |key| key.in?(['email', 'uid', 'first_name', 'last_name']) }
-      .merge({role: humanize_role_name})
+      .merge({role: Role.names[self.role_name]})
   end
 
   private
 
-  # access actual role name, which is in database
-  def humanize_role_name
-    Role.names[self.role&.name]
-  end
-
   def assign_role
-    role = self.role || Role.where(name: self.role_name).first || Role.new(name: self.role_name)
-    self.role = role
+    # return if we are assigning role via association
+    return if self.role_id.nil?
+
+    self.role = Role.find(self.role_id)
   rescue StandardError => e
-    errors.add(:role_name, e)
+    errors.add(:role, e)
   end
 
   def validate_status

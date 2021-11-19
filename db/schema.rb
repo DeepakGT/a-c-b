@@ -16,9 +16,10 @@ ActiveRecord::Schema.define(version: 2021_11_16_142859) do
   enable_extension "plpgsql"
 
   create_table "addresses", force: :cascade do |t|
-    t.string "line_1"
-    t.string "line_2"
-    t.string "line_3"
+    t.string "line1"
+    t.string "line2"
+    t.string "line3"
+    t.string "zipcode"
     t.string "city"
     t.string "state"
     t.string "country"
@@ -31,10 +32,6 @@ ActiveRecord::Schema.define(version: 2021_11_16_142859) do
 
   create_table "clinics", force: :cascade do |t|
     t.string "name"
-    t.text "address"
-    t.string "city"
-    t.string "state"
-    t.string "zipcode"
     t.bigint "organization_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -43,11 +40,6 @@ ActiveRecord::Schema.define(version: 2021_11_16_142859) do
 
   create_table "organizations", force: :cascade do |t|
     t.string "name"
-    t.text "address"
-    t.string "city"
-    t.string "state"
-    t.string "zipcode"
-    t.string "country"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
@@ -120,6 +112,7 @@ ActiveRecord::Schema.define(version: 2021_11_16_142859) do
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
     t.string "unconfirmed_email"
+    t.bigint "clinic_id", null: false
     t.string "first_name"
     t.string "last_name"
     t.text "address"
@@ -127,13 +120,13 @@ ActiveRecord::Schema.define(version: 2021_11_16_142859) do
     t.bigint "supervisor_id"
     t.date "hired_at"
     t.text "web_address"
-    t.integer "status"
+    t.integer "status", default: 0
+    t.date "terminated_at"
     t.integer "pay_type"
-    t.boolean "service_provider"
+    t.boolean "service_provider", default: false
     t.integer "timing_type"
     t.integer "hours_per_week"
-    t.date "terminated_at"
-    t.boolean "ot_exempt"
+    t.boolean "ot_exempt", default: false
     t.string "phone_ext"
     t.integer "term_type"
     t.integer "residency"
@@ -147,6 +140,7 @@ ActiveRecord::Schema.define(version: 2021_11_16_142859) do
     t.json "tokens"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["clinic_id"], name: "index_users_on_clinic_id"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true

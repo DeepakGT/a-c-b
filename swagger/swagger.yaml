@@ -194,6 +194,37 @@ paths:
                       "name": "cli2"
                   }
                 ]
+
+  /roles:
+    get:
+      summary: List of roles
+      responses:
+        "200":
+          description: "Roles list"
+          content:
+            application/json:
+              example: [
+                          {
+                              "id": 1,
+                              "name": "aba_admin"
+                          },
+                          {
+                              "id": 2,
+                              "name": "administrator"
+                          },
+                          {
+                              "id": 3,
+                              "name": "bcba"
+                          },
+                          {
+                              "id": 4,
+                              "name": "rbt"
+                          },
+                          {
+                              "id": 5,
+                              "name": "billing"
+                          }
+                        ]
           
 definitions:
   UserRegistrationParameters:
@@ -212,9 +243,8 @@ definitions:
         type: "string"
       password:
         type: "string"
-      role_name:
-        type: string
-        enum: ["ABA Admin", "Administrator", "BCBA", "RBT", "Billing"]
+      role_id:
+        type: "string"
   UserSigninParameters:
     type: "object"
     required:

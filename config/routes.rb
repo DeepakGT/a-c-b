@@ -7,4 +7,6 @@ Rails.application.routes.draw do
   resources :organizations, only: nil do
     resources :clinics, only: :index
   end
+
+  resources :roles, only: :index
 end

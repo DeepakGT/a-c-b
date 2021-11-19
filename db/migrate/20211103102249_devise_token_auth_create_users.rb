@@ -29,10 +29,9 @@ class DeviseTokenAuthCreateUsers < ActiveRecord::Migration[6.1]
       # t.datetime :locked_at
 
       ## User Info
-      t.references :clinic, null: false, foreign_key: true
+      t.references :clinic, null: false
       t.string :first_name
       t.string :last_name
-      t.text :address
       t.string :email
       t.references :supervisor, null: true, index: true, foreign_key: {to_table: :users}
       t.date :hired_at
