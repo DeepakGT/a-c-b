@@ -9,4 +9,5 @@ Rails.application.routes.draw do
   end
 
   resources :roles, only: :index
+  resources :staff, only: :index
 end
