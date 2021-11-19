@@ -18,5 +18,6 @@ class ApplicationController < ActionController::API
     #   whitelisted_user_params << {rbt_supervisions: %i[status start_date end_date]}
     # end
     devise_parameter_sanitizer.permit(:sign_up, keys: whitelisted_user_params)
+    devise_parameter_sanitizer.permit(:account_update, keys: whitelisted_user_params)
   end
 end
