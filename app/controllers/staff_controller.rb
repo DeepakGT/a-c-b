@@ -1,8 +1,18 @@
 # Staff is just an aliased for Users i.e. staff are nothing but users
 # so User model itself using as staff
 class StaffController < ApplicationController
+  before_action :set_clinic, only: :index
+
   def index
-    @staff = User.order(:first_name)
+    @staff = @clinic.staff.order(:first_name)
     render json: @staff
   end
+
+  private
+
+  def set_clinic
+    @clinic = Clinic.find(params[:clinic_id])
+  end
+
+  # end of private
 end

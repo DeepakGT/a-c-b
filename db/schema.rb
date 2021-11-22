@@ -40,8 +40,10 @@ ActiveRecord::Schema.define(version: 2021_11_16_142859) do
 
   create_table "organizations", force: :cascade do |t|
     t.string "name"
+    t.bigint "admin_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["admin_id"], name: "index_organizations_on_admin_id"
   end
 
   create_table "phone_numbers", force: :cascade do |t|
@@ -115,7 +117,6 @@ ActiveRecord::Schema.define(version: 2021_11_16_142859) do
     t.bigint "clinic_id", null: false
     t.string "first_name"
     t.string "last_name"
-    t.text "address"
     t.string "email"
     t.bigint "supervisor_id"
     t.date "hired_at"
@@ -149,6 +150,7 @@ ActiveRecord::Schema.define(version: 2021_11_16_142859) do
   end
 
   add_foreign_key "clinics", "organizations"
+  add_foreign_key "organizations", "users", column: "admin_id"
   add_foreign_key "rbt_supervisions", "users"
   add_foreign_key "user_roles", "roles"
   add_foreign_key "user_roles", "users"

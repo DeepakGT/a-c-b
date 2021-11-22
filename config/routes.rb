@@ -8,6 +8,8 @@ Rails.application.routes.draw do
     resources :clinics, only: :index
   end
 
+  resources :clinics, only: nil do
+    resources :staff, only: :index
+  end
   resources :roles, only: :index
-  resources :staff, only: :index
 end
