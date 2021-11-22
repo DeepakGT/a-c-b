@@ -9,7 +9,7 @@ Rails.application.routes.draw do
   end
 
   resources :clinics, only: nil do
-    resources :staff, only: :index
+    resources :staff, only: [:index, :show]
   end
   resources :roles, only: :index
 end

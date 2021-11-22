@@ -297,6 +297,89 @@ paths:
                           }
                         ]
           
+  /clinics/{clinic_id}/staff/{staff_id}:
+    get:
+      summary: Specific clinic's staff
+      parameters:
+      - in: "path"
+        name: "clinic_id"
+        description: "Clinic id"
+        required: true
+      - in: "path"
+        name: "staff_id"
+        description: "Staff id"
+        required: true
+      responses:
+        "200":
+          description: "Staff list"
+          content:
+            application/json:
+              example: {
+                        "id": 8,
+                        "first_name": "Gov.",
+                        "last_name": "Zachary",
+                        "email": "billing_user2@yopmail.com",
+                        "web_address": null,
+                        "status": "active",
+                        "pay_type": null,
+                        "hired_at": null,
+                        "service_provider": false,
+                        "timing_type": null,
+                        "hours_per_week": null,
+                        "terminated_at": null,
+                        "residency": null,
+                        "status_date": null,
+                        "driving_license": null,
+                        "driving_license_expires_at": null,
+                        "title": "billing",
+                        "gender": null,
+                        "department": null,
+                        "date_of_birth": null,
+                        "ssn": null,
+                        "badge_id": null,
+                        "badge_type": null,
+                        "supervisor": {
+                            "uid": "billing_user1@yopmail.com",
+                            "first_name": "Ramon",
+                            "last_name": "Johns",
+                            "email": "billing_user1@yopmail.com",
+                            "role": "billing"
+                        },
+                        "address": {
+                            "id": 1,
+                            "line1": "choomantar gali",
+                            "line2": null,
+                            "line3": null,
+                            "zipcode": "487221",
+                            "city": "indore",
+                            "state": null,
+                            "country": null
+                        },
+                        "rbt_supervision": {
+                            "id": 1,
+                            "status": "requires"
+                        },
+                        "phone_numbers": [
+                            {
+                                "id": 1,
+                                "phone_type": "home",
+                                "number": "+919407320416"
+                            }
+                        ],
+                        "services": [
+                            {
+                                "id": 1,
+                                "name": "s1",
+                                "status": "active",
+                                "default_pay_code": "drive_time",
+                                "category": "aba",
+                                "display_pay_code": null,
+                                "tracking_id": "nan_rbt"
+                            }
+                        ]
+                    }
+          
+
 definitions:
   UserRegistrationParameters:
     type: "object"

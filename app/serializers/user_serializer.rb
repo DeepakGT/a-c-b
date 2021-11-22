@@ -1,6 +1,6 @@
 class UserSerializer < ApplicationSerializer
   attributes :id, :first_name, :last_name, :department, :immediate_supervisor,
-  :phone, :extension, :hired_at, :role_name
+  :phone, :extension, :hired_at, :title
 
   def department
     object.user_role.department
@@ -17,5 +17,9 @@ class UserSerializer < ApplicationSerializer
 
   def extension
     object.phone_ext
+  end
+
+  def title
+    object.role_name
   end
 end

@@ -43,6 +43,7 @@ class User < ActiveRecord::Base
                      agency_aka_database_id: 1,
                      database_id: 2,
                      first_name_last_name_id: 3 }
+  enum gender: {male: 0, female: 1}
 
   # Validation
   validates_associated :role
