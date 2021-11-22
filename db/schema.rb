@@ -114,7 +114,7 @@ ActiveRecord::Schema.define(version: 2021_11_16_142859) do
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
     t.string "unconfirmed_email"
-    t.bigint "clinic_id", null: false
+    t.bigint "clinic_id"
     t.string "first_name"
     t.string "last_name"
     t.string "email"

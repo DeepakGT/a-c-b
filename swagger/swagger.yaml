@@ -107,6 +107,7 @@ paths:
                   first_name: "Cortez"
                   last_name: "Hermiston"
                   role: "ABA Admin"
+                  organization_id: 1
         "401":
           description: "Invalid input"
           content:
@@ -202,7 +203,7 @@ paths:
                 success: false
                 errors: ["Unauthorized"]
 
-  "/organizations/:organization_id/clinics":
+  /organizations/{organization_id}/clinics:
     get:
       summary: List of an organization's clinics
       parameters:
