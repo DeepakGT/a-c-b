@@ -3,13 +3,13 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '3.0.2'
 
-# for json rendering
-gem 'active_model_serializers', '~> 0.10.0'
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.4', require: false
 # Simple, multi-client and secure token-based authentication for Rails.
 gem 'devise_token_auth'
 gem 'faker', git: 'https://github.com/faker-ruby/faker.git', branch: 'master'
+# Create JSON structures via a Builder-style DSL
+gem 'jbuilder', '~> 2.11', '>= 2.11.2'
 # the database for Active Record
 gem 'pg', '~> 1.2.3'
 # Use Puma as the app server
