@@ -7,7 +7,6 @@ consumes:
 produces:
 - application/json
 servers:
-- url: http://aba-center-be.herokuapp.com
 - url: http://localhost:3000
 
 schemes:
@@ -121,11 +120,17 @@ paths:
       summary: User signout
       parameters:
       - in: "header"
-        name: "header"
+        name: "access-token"
         description: "Request headers"
         required: true
-        schema:
-          $ref: "#/definitions/UserSignoutHeaders"
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
       responses:
         "200":
           description: "Valid input"
@@ -176,11 +181,18 @@ paths:
         schema:
           $ref: "#/definitions/PasswordUpdateParameters"
       - in: "header"
-        name: "header"
+        name: "access-token"
         description: "Request headers"
         required: true
-        schema:
-          $ref: "#/definitions/PasswordUpdateHeaders"
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+
       responses:
         "200":
           description: "Valid input"
