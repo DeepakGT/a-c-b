@@ -4,7 +4,7 @@ class StaffController < ApplicationController
   before_action :set_clinic
 
   def index
-    @staff = @clinic.staff.order(:first_name).paginate(page: 1)
+    @staff = @clinic.staff.order(:first_name).paginate(page: params[:page])
   end
 
   def show

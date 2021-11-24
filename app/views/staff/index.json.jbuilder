@@ -16,5 +16,6 @@ json.data do
     json.hired_at staff.hired_at
   end
 end
-json.per_page @staff.per_page
-json.total_pages @staff.total_pages
+json.total_records @staff.total_entries
+json.limit @staff.per_page
+json.page params[:page]

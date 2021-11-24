@@ -31,19 +31,23 @@ json.data do
       json.number phone.number
     end
   end
-  json.address do
-    json.id @staff.address.id
-    json.line1 @staff.address.line1
-    json.line2 @staff.address.line2
-    json.line3 @staff.address.line3
-    json.zipcode @staff.address.zipcode
-    json.city @staff.address.city
-    json.state @staff.address.state
-    json.country @staff.address.country
+  if @staff.address.present?
+    json.address do
+      json.id @staff.address.id
+      json.line1 @staff.address.line1
+      json.line2 @staff.address.line2
+      json.line3 @staff.address.line3
+      json.zipcode @staff.address.zipcode
+      json.city @staff.address.city
+      json.state @staff.address.state
+      json.country @staff.address.country
+    end
   end
-  json.rbt_supervision do
-    json.id @staff.rbt_supervision.id
-    json.status @staff.rbt_supervision.status
+  if @staff.rbt_supervision.present?
+    json.rbt_supervision do
+      json.id @staff.rbt_supervision.id
+      json.status @staff.rbt_supervision.status
+    end
   end
   json.services do
     json.array! @staff.services do |service|

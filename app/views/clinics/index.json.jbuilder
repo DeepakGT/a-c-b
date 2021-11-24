@@ -5,5 +5,6 @@ json.data do
     json.name clinic.name
   end
 end
-json.per_page @clinics.per_page
-json.total_pages @clinics.total_pages
+json.total_records @clinics.total_entries
+json.limit @clinics.per_page
+json.page params[:page]

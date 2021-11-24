@@ -1,7 +1,7 @@
 class ClinicsController < ApplicationController
 
   def index
-    @clinics = Clinic.all.order(:name).paginate(page: 1)
+    @clinics = Clinic.all.order(:name).paginate(page: params[:page])
   end
 
 end
