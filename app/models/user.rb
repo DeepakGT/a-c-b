@@ -56,7 +56,7 @@ class User < ActiveRecord::Base
   validate :validate_presence_of_clinic
 
   # delegates
-  delegate :name, to: :role, prefix: true
+  delegate :name, to: :role, prefix: true, allow_nil: true
 
   # define methods dynamically, to check the user's role
   # like user.aba_admin?

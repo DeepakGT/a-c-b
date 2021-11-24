@@ -16,13 +16,11 @@ paths:
   "/auth":
     post:
       summary: User registration
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "Request parameters"
-        required: true
-        schema:
-          $ref: "#/definitions/UserRegistrationParameters"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/UserRegistrationParameters"
       responses:
         "200":
           description: "Valid input"
@@ -54,12 +52,23 @@ paths:
     put:
       summary: Staff update
       parameters:
-      - in: "body"
-        name: "body"
-        description: "Request parameters"
-        required: true
-        schema:
-          $ref: "#/definitions/StaffUpdateParameters"
+        - in: "header"
+          name: "access-token"
+          description: "Request headers"
+          required: true
+        - in: "header"
+          name: "client"
+          description: "Request headers"
+          required: true
+        - in: "header"
+          name: "uid"
+          description: "Request headers"
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/StaffUpdateParameters"
       responses:
         "200":
           description: "Valid input"
@@ -87,13 +96,11 @@ paths:
   "/auth/sign_in":
     post:
       summary: User signin
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "Request parameters"
-        required: true
-        schema:
-          $ref: "#/definitions/UserSigninParameters"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/UserSigninParameters"
       responses:
         "200":
           description: "Valid input"
@@ -149,13 +156,11 @@ paths:
   "/auth/password":
     post:
       summary: Password reset
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "Request parameters"
-        required: true
-        schema:
-          $ref: "#/definitions/PasswordResetParameters"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/PasswordResetParameters"
       responses:
         "200":
           description: "Valid input"
@@ -174,12 +179,6 @@ paths:
     put:
       summary: Password update
       parameters:
-      - in: "body"
-        name: "body"
-        description: "Request parameters"
-        required: true
-        schema:
-          $ref: "#/definitions/PasswordUpdateParameters"
       - in: "header"
         name: "access-token"
         description: "Request headers"
@@ -192,6 +191,11 @@ paths:
         name: "uid"
         description: "Request headers"
         required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/PasswordUpdateParameters"
 
       responses:
         "200":
@@ -457,46 +461,64 @@ definitions:
       badge_type:
         type: "string"
         enum: [custom, agency_aka_database_id, database_id, first_name_last_name_id]
-      phone_numbers_attributes[0][phone_type]:
-        type: "string"
-        enum: [fax, home, mobile, pager, work, other]
-      phone_numbers_attributes[0][number]:
-        type: "string"
-      address_attributes[line1]:
-        type: "string"
-      address_attributes[line2]:
-        type: "string"
-      address_attributes[line3]:
-        type: "string"
-      address_attributes[zipcode]:
-        type: "string"
-      address_attributes[city]:
-        type: "string"
-      address_attributes[state]:
-        type: "string"
-      address_attributes[country]:
-        type: "string"
-      rbt_supervision_attributes[status]:
-        type: "string"
-        enum: [requires, provides, n_a]
-      rbt_supervision_attributes[start_date]:
-        type: "string"
-      rbt_supervision_attributes[end_date]:
-        type: "string"
-      services_attributes[0][name]:
-        type: "string"
-      services_attributes[0][status]:
-        type: "string"
-        enum: [active, inactive]
-      services_attributes[0][default_pay_code]:
-        type: "string"
-        enum: [drive_time, hourly, paid_time_off]
-      services_attributes[0][category]:
-        type: "string"
-        enum: [aba, activities_arts_sports, adult_services, non_service, ot, psych, pt, respite_supported_living, slp, social_skills, tutoring, virtual, other]
-      services_attributes[0][tracking_id]:
-        type: "string"
-        enum: [nan_rbt]
+      phone_numbers_attributes:
+        type: "object"
+        properties:
+          0:
+            type: "object"
+            properties:
+              phone_type:
+                type: string
+                enum: [fax, home, mobile, pager, work, other]
+              number:
+                type: string
+      address_attributes:
+        type: "object"
+        properties:
+          line1:
+            type: "string"
+          line2:
+            type: "string"
+          line3:
+            type: "string"
+          zipcode:
+            type: "string"
+          city:
+            type: "string"
+          state:
+            type: "string"
+          country:
+            type: "string"
+      rbt_supervision_attributes:
+        type: "object"
+        properties:
+          status:
+            type: "string"
+            enum: [requires, provides, n_a]
+          start_date:
+            type: "string"
+          end_date:
+            type: "string"
+      services_attributes:
+        type: "object"
+        properties:
+          0:
+            type: "object"
+            properties:
+              name:
+                type: string
+              status:
+                type: "string"
+                enum: [active, inactive]
+              default_pay_code:
+                type: "string"
+                enum: [drive_time, hourly, paid_time_off]
+              category:
+                type: "string"
+                enum: [aba, activities_arts_sports, adult_services, non_service, ot, psych, pt, respite_supported_living, slp, social_skills, tutoring, virtual, other]
+              tracking_id:
+                type: "string"
+                enum: [nan_rbt]
 
   StaffUpdateParameters:
     type: "object"
@@ -559,46 +581,64 @@ definitions:
       badge_type:
         type: "string"
         enum: [custom, agency_aka_database_id, database_id, first_name_last_name_id]
-      phone_numbers_attributes[0][phone_type]:
-        type: "string"
-        enum: [fax, home, mobile, pager, work, other]
-      phone_numbers_attributes[0][number]:
-        type: "string"
-      address_attributes[line1]:
-        type: "string"
-      address_attributes[line2]:
-        type: "string"
-      address_attributes[line3]:
-        type: "string"
-      address_attributes[zipcode]:
-        type: "string"
-      address_attributes[city]:
-        type: "string"
-      address_attributes[state]:
-        type: "string"
-      address_attributes[country]:
-        type: "string"
-      rbt_supervision_attributes[status]:
-        type: "string"
-        enum: [requires, provides, n_a]
-      rbt_supervision_attributes[start_date]:
-        type: "string"
-      rbt_supervision_attributes[end_date]:
-        type: "string"
-      services_attributes[0][name]:
-        type: "string"
-      services_attributes[0][status]:
-        type: "string"
-        enum: [active, inactive]
-      services_attributes[0][default_pay_code]:
-        type: "string"
-        enum: [drive_time, hourly, paid_time_off]
-      services_attributes[0][category]:
-        type: "string"
-        enum: [aba, activities_arts_sports, adult_services, non_service, ot, psych, pt, respite_supported_living, slp, social_skills, tutoring, virtual, other]
-      services_attributes[0][tracking_id]:
-        type: "string"
-        enum: [nan_rbt]
+      phone_numbers_attributes:
+        type: "object"
+        properties:
+          0:
+            type: "object"
+            properties:
+              phone_type:
+                type: string
+                enum: [fax, home, mobile, pager, work, other]
+              number:
+                type: string
+      address_attributes:
+        type: "object"
+        properties:
+          line1:
+            type: "string"
+          line2:
+            type: "string"
+          line3:
+            type: "string"
+          zipcode:
+            type: "string"
+          city:
+            type: "string"
+          state:
+            type: "string"
+          country:
+            type: "string"
+      rbt_supervision_attributes:
+        type: "object"
+        properties:
+          status:
+            type: "string"
+            enum: [requires, provides, n_a]
+          start_date:
+            type: "string"
+          end_date:
+            type: "string"
+      services_attributes:
+        type: "object"
+        properties:
+          0:
+            type: "object"
+            properties:
+              name:
+                type: string
+              status:
+                type: "string"
+                enum: [active, inactive]
+              default_pay_code:
+                type: "string"
+                enum: [drive_time, hourly, paid_time_off]
+              category:
+                type: "string"
+                enum: [aba, activities_arts_sports, adult_services, non_service, ot, psych, pt, respite_supported_living, slp, social_skills, tutoring, virtual, other]
+              tracking_id:
+                type: "string"
+                enum: [nan_rbt]
 
   UserSigninParameters:
     type: "object"
@@ -626,12 +666,15 @@ definitions:
     required:
     - password
     - password_confirmation
+    - current_password
     properties:
       password:
         type: "string"
       password_confirmation:
         type: "string"
         description: 'should be same as password'
+      current_password:
+        type: "string"
   PasswordUpdateHeaders:
     type: "object"
     required:

@@ -118,6 +118,7 @@ ActiveRecord::Schema.define(version: 2021_11_16_142859) do
     t.string "first_name"
     t.string "last_name"
     t.string "email"
+    t.integer "gender", default: 0
     t.bigint "supervisor_id"
     t.date "hired_at"
     t.text "web_address"
