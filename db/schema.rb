@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_16_142859) do
+ActiveRecord::Schema.define(version: 2021_11_25_104451) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -38,6 +38,21 @@ ActiveRecord::Schema.define(version: 2021_11_16_142859) do
     t.index ["organization_id"], name: "index_clinics_on_organization_id"
   end
 
+  create_table "credentials", force: :cascade do |t|
+    t.integer "type"
+    t.string "name"
+    t.text "description"
+    t.boolean "lifetime"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "funding_sources", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "organizations", force: :cascade do |t|
     t.string "name"
     t.bigint "admin_id"
@@ -54,6 +69,43 @@ ActiveRecord::Schema.define(version: 2021_11_16_142859) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["phoneable_type", "phoneable_id"], name: "index_phone_numbers_on_phoneable"
+  end
+
+  create_table "qualifications", force: :cascade do |t|
+    t.bigint "staff_id", null: false
+    t.date "tb_cleared_at"
+    t.date "doj_cleared_at"
+    t.date "fbi_cleared_at"
+    t.date "tb_expires_at"
+    t.date "doj_expires_at"
+    t.date "fbi_expires_at"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["staff_id"], name: "index_qualifications_on_staff_id"
+  end
+
+  create_table "qualifications_credentials", force: :cascade do |t|
+    t.bigint "qualification_id", null: false
+    t.bigint "credential_id", null: false
+    t.date "issued_at"
+    t.date "expires_at"
+    t.string "cert_lic_number"
+    t.text "documentation_notes"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["credential_id"], name: "index_qualifications_credentials_on_credential_id"
+    t.index ["qualification_id"], name: "index_qualifications_credentials_on_qualification_id"
+  end
+
+  create_table "qualifications_funding_sources", force: :cascade do |t|
+    t.bigint "qualification_id", null: false
+    t.bigint "funding_source_id", null: false
+    t.integer "type"
+    t.string "data_filed"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["funding_source_id"], name: "index_qualifications_funding_sources_on_funding_source_id"
+    t.index ["qualification_id"], name: "index_qualifications_funding_sources_on_qualification_id"
   end
 
   create_table "rbt_supervisions", force: :cascade do |t|
@@ -152,6 +204,11 @@ ActiveRecord::Schema.define(version: 2021_11_16_142859) do
 
   add_foreign_key "clinics", "organizations"
   add_foreign_key "organizations", "users", column: "admin_id"
+  add_foreign_key "qualifications", "users", column: "staff_id"
+  add_foreign_key "qualifications_credentials", "credentials"
+  add_foreign_key "qualifications_credentials", "qualifications"
+  add_foreign_key "qualifications_funding_sources", "funding_sources"
+  add_foreign_key "qualifications_funding_sources", "qualifications"
   add_foreign_key "rbt_supervisions", "users"
   add_foreign_key "user_roles", "roles"
   add_foreign_key "user_roles", "users"
