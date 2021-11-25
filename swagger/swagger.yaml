@@ -7,6 +7,7 @@ consumes:
 produces:
 - application/json
 servers:
+- url: http://aba-center-be.herokuapp.com
 - url: http://localhost:3000
 
 schemes:
@@ -223,6 +224,18 @@ paths:
     get:
       summary: List of an organization's clinics
       parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
       - in: "path"
         name: "organization_id"
         description: "Organization id"
@@ -247,6 +260,19 @@ paths:
   /roles:
     get:
       summary: List of roles
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
       responses:
         "200":
           description: "Roles list"
@@ -279,6 +305,18 @@ paths:
     get:
       summary: List of clinic's staff
       parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
       - in: "path"
         name: "clinic_id"
         description: "Clinic id"
@@ -317,6 +355,18 @@ paths:
     get:
       summary: Specific clinic's staff
       parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
       - in: "path"
         name: "clinic_id"
         description: "Clinic id"

@@ -1,6 +1,7 @@
 # Staff is just an aliased for Users i.e. staff are nothing but users
 # so User model itself using as staff
 class StaffController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_clinic
 
   def index
