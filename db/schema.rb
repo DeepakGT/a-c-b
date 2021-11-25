@@ -39,7 +39,7 @@ ActiveRecord::Schema.define(version: 2021_11_25_104451) do
   end
 
   create_table "credentials", force: :cascade do |t|
-    t.integer "type"
+    t.integer "credential_type"
     t.string "name"
     t.text "description"
     t.boolean "lifetime"
@@ -100,7 +100,7 @@ ActiveRecord::Schema.define(version: 2021_11_25_104451) do
   create_table "qualifications_funding_sources", force: :cascade do |t|
     t.bigint "qualification_id", null: false
     t.bigint "funding_source_id", null: false
-    t.integer "type"
+    t.integer "funding_source_type"
     t.string "data_filed"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
