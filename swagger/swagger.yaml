@@ -444,7 +444,157 @@ paths:
                             }
                         ]
                     }
-          
+
+  /credentials:
+    get:
+      summary: List of credentials
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      responses:
+        "200":
+          description: "Credentials list"
+          content:
+            application/json:
+              example: {
+                          "status": "success",
+                          "data": [
+                              {
+                                  "id": 1,
+                                  "type": "education",
+                                  "name": "Bachelor's Degree",
+                                  "description": "The holder has completed a four year college program.",
+                                  "lifetime": false
+                              },
+                              {
+                                  "id": 2,
+                                  "type": "education",
+                                  "name": "Master's Degree",
+                                  "description": "The holder has completed a four year college program.",
+                                  "lifetime": true
+                              }
+                          ]
+                        }
+    post:
+      summary: Credential create
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/CredentialCreateParameters"
+      responses:
+        "200":
+          description: "Credentials list"
+          content:
+            application/json:
+              example: {
+                          "status": "success",
+                          "data": {
+                              "id": 1,
+                              "type": "education",
+                              "name": "name",
+                              "description": "description",
+                              "lifetime": false
+                          }
+                        }
+
+  /credentials/{id}:
+    put:
+      summary: credential update
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "Credential id"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/CredentialUpdateParameters"
+      responses:
+        "200":
+          description: "Updated Credential"
+          content:
+            application/json:
+              example: {
+                          "status": "success",
+                          "data": {
+                              "id": 1,
+                              "type": "education",
+                              "name": "name",
+                              "description": "description",
+                              "lifetime": false
+                          }
+                        }
+    get:
+      summary: credential show
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "Credential id"
+        required: true
+      responses:
+        "200":
+          description: "Credential detail"
+          content:
+            application/json:
+              example: {
+                          "status": "success",
+                          "data": {
+                              "id": 1,
+                              "type": "education",
+                              "name": "name",
+                              "description": "some description",
+                              "lifetime": false
+                          }
+                        }
 
 definitions:
   UserRegistrationParameters:
@@ -751,4 +901,27 @@ definitions:
         type: "string"
       uid:
         type: "string"
+  CredentialCreateParameters:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      description:
+        type: "string"
+      lifetime:
+        type: "boolean"
+      credential_type:
+        type: integer
+  CredentialUpdateParameters:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      description:
+        type: "string"
+      lifetime:
+        type: "boolean"
+      credential_type:
+        type: integer
+
   

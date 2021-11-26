@@ -21,7 +21,7 @@ class CredentialsController < ApplicationController
   private
 
   def credential_params
-    params.permit(:name, :description, :lifetime)
+    params.permit(:credential_type, :name, :description, :lifetime)
   end
 
   # end of private
