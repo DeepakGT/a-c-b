@@ -9,13 +9,13 @@ Rails.application.routes.draw do
   end
 
   resources :clinics, only: nil do
-    resources :staff, only: [:index, :show] do
-      resources :qualification, only: [:create, :update] do 
-        collection do
-          get :show
-        end
-      end
-    end
+    resources :staff, only: [:index, :show]
   end
   resources :roles, only: :index
+  resources :credentials, only: :index
+
+  resources :staff, only: nil do
+    resources :qualifications, only: [:create, :update]
+  end
+  get  '/staff/:staff_id/qualification', to: 'qualifications#show'
 end

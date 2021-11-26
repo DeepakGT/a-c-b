@@ -1,6 +1,6 @@
 class QualificationsCredential < ApplicationRecord
-  belongs_to :qualification
-  belongs_to :credential
+  belongs_to :qualification, inverse_of: :qualifications_credentials
+  belongs_to :credential, inverse_of: :qualifications_credentials
 
   before_create :assign_issued_at
 

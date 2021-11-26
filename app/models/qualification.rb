@@ -1,9 +1,9 @@
 class Qualification < ApplicationRecord
-  belongs_to :staff
+  belongs_to :staff, class_name: :User
 
   has_many :qualifications_credentials, dependent: :destroy
   has_many :credentials, through: :qualifications_credentials
 
-  has_many :qualifications_funding_sources, dependent: :destroy
-  has_many :funding_sources, through: :qualifications_funding_sources
+  accepts_nested_attributes_for :qualifications_credentials, :allow_destroy => true
+
 end

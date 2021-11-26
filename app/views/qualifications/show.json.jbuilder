@@ -18,12 +18,12 @@ if @qualification.present?
         json.documentation_notes qualifications_credential.documentation_notes
       end
     end
-    json.funding_sources do
-      json.array! @qualification.qualifications_funding_sources do |qualifications_funding_source|
-        json.id qualifications_funding_source.funding_source.name
-        json.name qualifications_funding_source.funding_source_type
-      end
-    end
+    # json.funding_sources do
+    #   json.array! @qualification.qualifications_funding_sources do |qualifications_funding_source|
+    #     json.id qualifications_funding_source.funding_source.name
+    #     json.name qualifications_funding_source.funding_source_type
+    #   end
+    # end
   end
 else
   json.status 'failure'

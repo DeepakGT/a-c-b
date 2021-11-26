@@ -1,11 +1,9 @@
-# Staff is just an aliased for Users i.e. staff are nothing but users
-# so User model itself using as staff
 class QualificationsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_clinic_staff
+  before_action :set_staff
 
   def create
-    @qualification = @staff.qualification.new(qualification_params)
+    @qualification = Qualification.create_with(staff_id: @staff.id).new(qualification_params)
     @qualification.save
   end
 
@@ -23,12 +21,12 @@ class QualificationsController < ApplicationController
   private
 
   def qualification_params
-    params.permit!(:tb_cleared_at, :doj_cleared_at, :fbi_cleared_at, :tb_expires_at, :doj_expires_at, :fbi_expires_at, :credential_id, :funding_source_id)
+    params.permit(:tb_cleared_at, :doj_cleared_at, :fbi_cleared_at, :tb_expires_at, :doj_expires_at,
+    :fbi_expires_at, qualifications_credentials_attributes: [:credential_id, :expires_at, :cert_lic_number, :documentation_notes])
   end
 
-  def set_clinic_staff
-    clinic = Clinic.find(params[:clinic_id])
-    @staff = clinic.staff.find(params[:staff_id])
+  def set_staff
+    @staff = User.find(params[:staff_id])
   end
 
   # end of private
