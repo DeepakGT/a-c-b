@@ -4,7 +4,7 @@ class CreateCredentials < ActiveRecord::Migration[6.1]
       t.integer :credential_type
       t.string :name
       t.text :description
-      t.boolean :lifetime
+      t.boolean :lifetime, default: false
 
       t.timestamps
     end
