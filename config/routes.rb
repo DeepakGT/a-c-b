@@ -12,7 +12,7 @@ Rails.application.routes.draw do
     resources :staff, only: [:index, :show]
   end
   resources :roles, only: :index
-  resources :credentials, only: :index
+  resources :credentials, only: [:index, :show, :create, :update]
 
   resources :staff, only: nil do
     resources :qualifications, only: [:create, :update]
