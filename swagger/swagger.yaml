@@ -444,7 +444,46 @@ paths:
                             }
                         ]
                     }
-
+    put:
+      summary: Staff update by admin
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "clinic_id"
+        description: "Clinic id"
+        required: true
+      - in: "path"
+        name: "staff_id"
+        description: "Staff id"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/StaffUpdateByAdminParameters"
+      responses:
+        "200":
+          description: "Staff Updated"
+          content:
+            application/json:
+              example: {
+                          "status": "success",
+                          "data": {
+                              "id": 3
+                          },
+                          "errors": []
+                        }
   /credentials:
     get:
       summary: List of credentials
@@ -923,5 +962,50 @@ definitions:
         type: "boolean"
       credential_type:
         type: integer
-
-  
+  StaffUpdateByAdminParameters:
+    type: "object"
+    properties:
+      first_name:
+        type: "string"
+      last_name:
+        type: "string"
+      email:
+        type: "string"
+      supervisor_id:
+        type: "integer"
+      hired_at:
+        type: "string"
+      status:
+        type: "string"
+        enum: [active, inactive]
+      terminated_at:
+        type: "string"
+      phone_numbers_attributes:
+        type: "object"
+        properties:
+          0:
+            type: "object"
+            properties:
+              phone_type:
+                type: string
+                enum: [fax, home, mobile, pager, work, other]
+              number:
+                type: string
+      address_attributes:
+        type: "object"
+        properties:
+          line1:
+            type: "string"
+          line2:
+            type: "string"
+          line3:
+            type: "string"
+          zipcode:
+            type: "string"
+          city:
+            type: "string"
+          state:
+            type: "string"
+          country:
+            type: "string"
+      
