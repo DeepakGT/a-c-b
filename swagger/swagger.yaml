@@ -8,6 +8,7 @@ produces:
 - application/json
 servers:
 - url: https://aba-center-be.herokuapp.com
+- url: http://aba-center-be.herokuapp.com
 - url: http://localhost:3000
 
 schemes:
