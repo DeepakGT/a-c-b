@@ -74,6 +74,8 @@ class User < ActiveRecord::Base
       .merge({role: Role.names[self.role_name]})
 
     response.merge!({organization_id: self.organization&.id}) if self.aba_admin?
+    response.merge!({address: self.address})
+    response.merge!(phone_numbers: self.phone_numbers)
     response
   end
 
