@@ -4,25 +4,11 @@ json.data do
   json.first_name @staff.first_name
   json.last_name @staff.last_name
   json.email @staff.email
-  json.web_address @staff.web_address
   json.status @staff.status
-  json.pay_type @staff.pay_type
-  json.hired_at @staff.hired_at
   json.service_provider @staff.service_provider
-  json.timing_type json.timing_type
-  json.hours_per_week @staff.hours_per_week
   json.terminated_at @staff.terminated_at
-  json.residency @staff.residency
-  json.status_date @staff.status_date
-  json.driving_license @staff.driving_license
-  json.driving_license_expires_at @staff.driving_license_expires_at
   json.title @staff.role_name
   json.gender @staff.gender
-  json.department @staff.user_role.department
-  json.date_of_birth @staff.date_of_birth
-  json.ssn @staff.ssn
-  json.badge_id @staff.badge_id
-  json.badge_type @staff.badge_type
   json.supervisor_id @staff.supervisor_id
   json.phone_numbers do
     json.array! @staff.phone_numbers do |phone|

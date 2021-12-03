@@ -35,8 +35,6 @@ class DeviseTokenAuthCreateUsers < ActiveRecord::Migration[6.1]
       t.string :email
       t.integer :gender, default: 0
       t.references :supervisor, null: true, index: true, foreign_key: {to_table: :users}
-      t.date :hired_at
-      t.text :web_address
 
       # dependent fields
       # For an active user, terminated date must be blank.
@@ -44,23 +42,7 @@ class DeviseTokenAuthCreateUsers < ActiveRecord::Migration[6.1]
       t.integer :status, default: 0
       t.date :terminated_at, default: nil
 
-      t.integer :pay_type
       t.boolean :service_provider, default: false
-      t.integer :timing_type
-      t.integer :hours_per_week
-      t.boolean :ot_exempt, default: false
-      t.string :phone_ext
-      t.integer :term_type
-      t.integer :residency
-      t.date :status_date
-      t.string :driving_license
-      t.date :driving_license_expires_at
-      t.date :date_of_birth
-      t.string :ssn
-
-      # related fields
-      t.string :badge_id
-      t.integer :badge_type
 
       ## Tokens
       t.json :tokens

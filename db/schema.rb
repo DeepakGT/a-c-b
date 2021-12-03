@@ -42,7 +42,7 @@ ActiveRecord::Schema.define(version: 2021_11_25_104451) do
     t.integer "credential_type"
     t.string "name"
     t.text "description"
-    t.boolean "lifetime"
+    t.boolean "lifetime", default: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
@@ -138,7 +138,6 @@ ActiveRecord::Schema.define(version: 2021_11_25_104451) do
   create_table "user_roles", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "role_id", null: false
-    t.integer "department"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["role_id"], name: "index_user_roles_on_role_id"
@@ -172,25 +171,9 @@ ActiveRecord::Schema.define(version: 2021_11_25_104451) do
     t.string "email"
     t.integer "gender", default: 0
     t.bigint "supervisor_id"
-    t.date "hired_at"
-    t.text "web_address"
     t.integer "status", default: 0
     t.date "terminated_at"
-    t.integer "pay_type"
     t.boolean "service_provider", default: false
-    t.integer "timing_type"
-    t.integer "hours_per_week"
-    t.boolean "ot_exempt", default: false
-    t.string "phone_ext"
-    t.integer "term_type"
-    t.integer "residency"
-    t.date "status_date"
-    t.string "driving_license"
-    t.date "driving_license_expires_at"
-    t.date "date_of_birth"
-    t.string "ssn"
-    t.string "badge_id"
-    t.integer "badge_type"
     t.json "tokens"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
