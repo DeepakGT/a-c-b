@@ -12,10 +12,19 @@ class StaffController < ApplicationController
     @staff = @clinic.staff.find(params[:id])
   end
 
+  def update
+    @staff = @clinic.staff.find(params[:id])
+    @staff.update(staff_params)
+  end
+
   private
 
   def set_clinic
     @clinic = Clinic.find(params[:clinic_id])
+  end
+
+  def staff_params
+    params.permit(:first_name, :last_name, :hired_at, :status, :terminated_at, :email,  :password, :password_confirmation, :supervisor_id,:clinic_id, address_attributes: [:line1, :line2, :line3, :zipcode, :city, :state, :country, :addressable_type, :addressable_id], phone_numbers_attributes: [:phone_type, :number])
   end
 
   # end of private
