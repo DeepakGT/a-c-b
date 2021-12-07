@@ -126,7 +126,7 @@ ActiveRecord::Schema.define(version: 2021_11_25_104451) do
 
   create_table "services", force: :cascade do |t|
     t.string "name"
-    t.integer "status"
+    t.integer "status", default: 0
     t.integer "default_pay_code"
     t.integer "category"
     t.integer "display_code"
