@@ -9,13 +9,15 @@ Rails.application.routes.draw do
   end
 
   resources :clinics, only: nil do
-    resources :staff, only: [:index, :show, :update]
+    resources :staff, only: %i[index show update]
   end
   resources :roles, only: :index
-  resources :credentials, only: [:index, :show, :create, :update]
+  resources :credentials, only: %i[index show create update]
 
   resources :staff, only: nil do
-    resources :qualifications, only: [:create, :update]
+    resources :qualifications, only: %i[create update]
   end
-  get  '/staff/:staff_id/qualification', to: 'qualifications#show'
+  get '/staff/:staff_id/qualification', to: 'qualifications#show'
+
+  resources :services, only: %i[index]
 end

@@ -5,7 +5,7 @@ class CreateServices < ActiveRecord::Migration[6.1]
       t.integer :status
       t.integer :default_pay_code
       t.integer :category
-      t.string :display_pay_code
+      t.integer :display_code
       t.integer :tracking_id
 
       t.timestamps

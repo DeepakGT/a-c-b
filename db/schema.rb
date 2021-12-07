@@ -129,7 +129,7 @@ ActiveRecord::Schema.define(version: 2021_11_25_104451) do
     t.integer "status"
     t.integer "default_pay_code"
     t.integer "category"
-    t.string "display_pay_code"
+    t.integer "display_code"
     t.integer "tracking_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false

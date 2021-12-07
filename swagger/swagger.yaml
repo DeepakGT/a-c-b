@@ -636,6 +636,47 @@ paths:
                           }
                         }
 
+  /services:
+    get:
+      summary: services list
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      responses:
+        "200":
+          description: "services list"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": [
+                    {
+                        "id": 2,
+                        "name": "additional 30 minutes spent performing activities",
+                        "display_code": null,
+                        "category": null,
+                        "default_pay_code": null
+                    },
+                    {
+                        "id": 3,
+                        "name": "caregiver training",
+                        "display_code": null,
+                        "category": null,
+                        "default_pay_code": null
+                    }
+                  ]
+                }
+
 definitions:
   UserRegistrationParameters:
     type: "object"
