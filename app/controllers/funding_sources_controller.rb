@@ -10,6 +10,11 @@ class FundingSourcesController < ApplicationController
     @funding_source = @clinic.funding_sources.create(funding_source_params)
   end
 
+  def update
+    @funding_source = @clinic.funding_sources.find(params[:id])
+    @funding_source.update(funding_source_params)
+  end
+
   private
 
   def funding_source_params
