@@ -49,8 +49,13 @@ ActiveRecord::Schema.define(version: 2021_11_25_104451) do
 
   create_table "funding_sources", force: :cascade do |t|
     t.string "name"
+    t.string "aka"
+    t.string "title"
+    t.bigint "clinic_id", null: false
+    t.integer "status", default: 0
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["clinic_id"], name: "index_funding_sources_on_clinic_id"
   end
 
   create_table "organizations", force: :cascade do |t|
@@ -186,6 +191,7 @@ ActiveRecord::Schema.define(version: 2021_11_25_104451) do
   end
 
   add_foreign_key "clinics", "organizations"
+  add_foreign_key "funding_sources", "clinics"
   add_foreign_key "organizations", "users", column: "admin_id"
   add_foreign_key "qualifications", "users", column: "staff_id"
   add_foreign_key "qualifications_credentials", "credentials"

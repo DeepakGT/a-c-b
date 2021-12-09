@@ -757,6 +757,49 @@ paths:
                 }
               }
 
+  /clinics/{clinic_id}/funding_sources:
+    post:
+      summary: Funding source create
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "clinic_id"
+        description: "Clinic id to associate"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/FundingSourceCreateParameters"
+      responses:
+        "200":
+          description: "Created funding source"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                    "id": 1,
+                    "name": "test-fs1",
+                    "aka": null,
+                    "title": null,
+                    "status": "active",
+                    "clinic_id": 1
+                },
+                "errors": []
+              }
+
 definitions:
   UserRegistrationParameters:
     type: "object"
@@ -1065,4 +1108,16 @@ definitions:
         type: "integer"
       tracking_id:
         type: "integer"
+  FundingSourceCreateParameters:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      aka:
+        type: "string"
+      title:
+        type: "string"
+      status:
+        type: "integer"
+    
       

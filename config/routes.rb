@@ -10,6 +10,7 @@ Rails.application.routes.draw do
 
   resources :clinics, only: nil do
     resources :staff, only: %i[index show update]
+    resources :funding_sources, only: %i[create]
   end
   resources :roles, only: :index
   resources :credentials, only: %i[index show create update]
