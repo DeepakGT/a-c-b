@@ -9,4 +9,4 @@ json.data do
 end
 json.total_records @services.total_entries
 json.limit @services.per_page
-json.page params[:page]
+json.page params[:page] || 1
