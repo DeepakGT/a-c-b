@@ -664,15 +664,13 @@ paths:
                         "id": 2,
                         "name": "additional 30 minutes spent performing activities",
                         "display_code": null,
-                        "category": null,
-                        "default_pay_code": null
+                        "category": null
                     },
                     {
                         "id": 3,
                         "name": "caregiver training",
                         "display_code": null,
-                        "category": null,
-                        "default_pay_code": null
+                        "category": null
                     }
                   ]
                 }
@@ -707,10 +705,7 @@ paths:
                           "id": 9,
                           "name": "test-service-name",
                           "status": "active",
-                          "default_pay_code": null,
-                          "category": null,
-                          "display_code": null,
-                          "tracking_id": null
+                          "display_code": null
                         }
                       }
 
@@ -750,10 +745,41 @@ paths:
                     "id": 1,
                     "name": "test-service-name-updated",
                     "status": "active",
-                    "default_pay_code": null,
-                    "category": null,
-                    "display_code": null,
-                    "tracking_id": null
+                    "display_code": null
+                }
+              }
+  /services/{id}:
+    get:
+      summary: Service detail
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "Service id"
+        required: true
+      responses:
+        "200":
+          description: "Service detail"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                    "id": 27,
+                    "name": "test-service-name-up-2",
+                    "status": "active",
+                    "display_code": 21
                 }
               }
 
@@ -1146,13 +1172,7 @@ definitions:
         type: "string"
       status:
         type: "integer"
-      default_pay_code:
-        type: "integer"
-      category:
-        type: "integer"
       display_code:
-        type: "integer"
-      tracking_id:
         type: "integer"
   FundingSourceCreateUpdateParameters:
     type: "object"

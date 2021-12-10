@@ -1,14 +1,16 @@
 class ServicesController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_service, only: :update
+  before_action :set_service, only: %i[update show]
 
   def index
-    @services = Service.order(:name)
+    @services = Service.order(:name).paginate(page: params[:page])
   end
 
   def create
     @service = Service.create(service_params)
   end
+
+  def show; end
 
   def update
     @service.update(service_params)
@@ -17,7 +19,7 @@ class ServicesController < ApplicationController
   private
 
   def service_params
-    params.permit(:name, :status, :default_pay_code, :category, :display_code, :tracking_id)
+    params.permit(:name, :status, :display_code)
   end
 
   def set_service

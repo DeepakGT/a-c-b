@@ -64,4 +64,22 @@ RSpec.describe ServicesController, type: :controller do
       end
     end
   end
+
+  describe "GET #show" do
+    let!(:user) { create(:user, :with_role, role_name: 'aba_admin') }
+    let!(:auth_headers) { user.create_new_auth_token }
+    let!(:service_name) {'service-1'}
+    let!(:service) {create(:service, name: service_name)}
+    context "when sign in" do
+      it "should fetch service detail successfully" do
+        set_auth_headers(auth_headers)
+        get :show, params: {id: service.id}
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data']['name']).to eq(service_name)
+      end
+    end
+  end
 end

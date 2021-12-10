@@ -96,14 +96,14 @@ ActiveRecord::Base.transaction do
   end
 
   Service.destroy_all
-  services_data = [{name: 'state service name	display code	category default pay code'},
-                   {name: 'additional 30 minutes spent performing activities'},
-                   {name: 'caregiver training'},
-                   {name: 'developmental test administration by physician or'},
-                   {name: 'direct service'},
-                   {name: 'initial assessment'},
-                   {name: 're-assessment'},
-                   {name: 'supervision'}]
+  services_data = [{name: 'state service name	display code	category default pay code', display_code: rand(11..100)},
+                   {name: 'additional 30 minutes spent performing activities', display_code: rand(11..100)},
+                   {name: 'caregiver training', display_code: rand(11..100)},
+                   {name: 'developmental test administration by physician or', display_code: rand(11..100)},
+                   {name: 'direct service', display_code: rand(11..100)},
+                   {name: 'initial assessment', display_code: rand(11..100)},
+                   {name: 're-assessment', display_code: rand(11..100)},
+                   {name: 'supervision', display_code: rand(11..100)}]
 
   services_data.each do |data|
     Service.create(data)
