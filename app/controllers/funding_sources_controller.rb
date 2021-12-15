@@ -3,7 +3,7 @@ class FundingSourcesController < ApplicationController
   before_action :set_clinic
 
   def index
-    @funding_sources = FundingSource.all
+    @funding_sources = @clinic.funding_sources.paginate(page: params[:page])
   end
 
   def create

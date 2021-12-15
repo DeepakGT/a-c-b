@@ -9,6 +9,26 @@ RSpec.describe FundingSourcesController, type: :controller do
     @request.env["devise.mapping"] = Devise.mappings[:user]
   end
   
+  describe "GET #index" do
+    let!(:user) { create(:user, :with_role, role_name: 'aba_admin') }
+    let!(:auth_headers) { user.create_new_auth_token }
+    let!(:organization) {create(:organization, name: 'org1', admin_id: user.id)}
+    let!(:clinic) {create(:clinic, name: 'clinic1', organization_id: organization.id)}
+    let!(:funding_sources) {create_list(:funding_source, 10, clinic_id: clinic.id)}
+    context "when sign in" do
+      it "should create funding source successfully" do
+        set_auth_headers(auth_headers)
+        
+        get :index, params: {clinic_id: clinic.id}
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data'].count).to eq(10)
+      end
+    end
+  end
+
   describe "POST #create" do
     let!(:user) { create(:user, :with_role, role_name: 'aba_admin') }
     let!(:auth_headers) { user.create_new_auth_token }
@@ -31,7 +51,6 @@ RSpec.describe FundingSourcesController, type: :controller do
   describe "PUT #update" do
     let!(:user) { create(:user, :with_role, role_name: 'aba_admin') }
     let!(:auth_headers) { user.create_new_auth_token }
-    # let!(:organization) {create(:organization, name: 'org1', admin_id: user.id)}
     let!(:clinic) {create(:clinic, name: 'clinic1')}
     let!(:funding_source) {create(:funding_source, clinic_id: clinic.id)}
     let!(:upated_funding_source_name) {'update-name'}

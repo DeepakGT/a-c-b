@@ -1,20 +1,20 @@
 class CredentialsController < ApplicationController
   before_action :authenticate_user!
+  before_action :set_credential, only: %i[show update]
 
   def index
+    # if page parameter would be pass then return paginated records otherwise return all records
     @credentials = Credential.all
+    @credentials = @credentials.paginate(page: params[:page]) if params[:page].present?
   end
 
   def create
     @credential = Credential.create(credential_params)
   end
 
-  def show
-    @credential = Credential.find(params[:id])
-  end
+  def show; end
 
   def update
-    @credential = Credential.find(params[:id])
     @credential.update(credential_params)
   end
 
@@ -22,6 +22,10 @@ class CredentialsController < ApplicationController
 
   def credential_params
     params.permit(:credential_type, :name, :description, :lifetime)
+  end
+
+  def set_credential
+    @credential = Credential.find(params[:id])
   end
 
   # end of private

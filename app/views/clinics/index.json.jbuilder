@@ -7,4 +7,4 @@ json.data do
 end
 json.total_records @clinics.total_entries
 json.limit @clinics.per_page
-json.page params[:page]
+json.page params[:page] || 1
