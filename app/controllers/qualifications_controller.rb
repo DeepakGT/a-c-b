@@ -21,8 +21,8 @@ class QualificationsController < ApplicationController
   private
 
   def qualification_params
-    params.permit(:tb_cleared_at, :doj_cleared_at, :fbi_cleared_at, :tb_expires_at, :doj_expires_at,
-    :fbi_expires_at, qualifications_credentials_attributes: [:credential_id, :expires_at, :cert_lic_number, :documentation_notes])
+    params.permit(:tb_cleared_at, :doj_cleared_at, :fbi_cleared_at, :tb_expires_at, :doj_expires_at, 
+                  :fbi_expires_at, qualifications_credentials_attributes: %i[credential_id issued_at expires_at cert_lic_number documentation_notes])
   end
 
   def set_staff

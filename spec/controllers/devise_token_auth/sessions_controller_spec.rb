@@ -40,9 +40,7 @@ RSpec.describe DeviseTokenAuth::SessionsController, type: :controller do
 
     context "when sign out" do
       it "should logout successfully" do
-        request.headers['Uid'] = auth_headers['uid']
-        request.headers['Access-Token'] = auth_headers['access-token']
-        request.headers['Client'] = auth_headers['client']
+        set_auth_headers(auth_headers)
         delete :destroy
         response_body = JSON.parse(response.body)
 

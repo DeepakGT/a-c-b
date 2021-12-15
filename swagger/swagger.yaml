@@ -636,6 +636,285 @@ paths:
                           }
                         }
 
+  /services:
+    get:
+      summary: services list
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      responses:
+        "200":
+          description: "services list"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": [
+                    {
+                        "id": 2,
+                        "name": "additional 30 minutes spent performing activities",
+                        "display_code": null,
+                        "category": null
+                    },
+                    {
+                        "id": 3,
+                        "name": "caregiver training",
+                        "display_code": null,
+                        "category": null
+                    }
+                  ]
+                }
+    post:
+      summary: Service create
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/ServiceCreateUpdateParameters"
+      responses:
+        "200":
+          description: "Created service"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                          "id": 9,
+                          "name": "test-service-name",
+                          "status": "active",
+                          "display_code": null
+                        }
+                      }
+
+  /services/{id}:
+    put:
+      summary: Service update
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "Service id to update"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/ServiceCreateUpdateParameters"
+      responses:
+        "200":
+          description: "Updated service"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                    "id": 1,
+                    "name": "test-service-name-updated",
+                    "status": "active",
+                    "display_code": null
+                }
+              }
+  /services/{id}:
+    get:
+      summary: Service detail
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "Service id"
+        required: true
+      responses:
+        "200":
+          description: "Service detail"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                    "id": 27,
+                    "name": "test-service-name-up-2",
+                    "status": "active",
+                    "display_code": 21
+                }
+              }
+
+  /clinics/{clinic_id}/funding_sources:
+    get:
+      summary: Funding sources list
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "clinic_id"
+        description: "Clinic id"
+        required: true
+      responses:
+        "200":
+          description: "Funding sources list"
+          content:
+            application/json:
+              example: {
+                          "status": "success",
+                          "data": [
+                              {
+                                  "id": 1,
+                                  "name": "fs-name-1",
+                                  "aka": null,
+                                  "title": null,
+                                  "status": "active"
+                              },
+                              {
+                                  "id": 2,
+                                  "name": "fs-name-2",
+                                  "aka": null,
+                                  "title": null,
+                                  "status": "active"
+                              }
+                            ]
+                        }
+    post:
+      summary: Funding source create
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "clinic_id"
+        description: "Clinic id to associate"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/FundingSourceCreateUpdateParameters"
+      responses:
+        "200":
+          description: "Created funding source"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                    "id": 1,
+                    "name": "test-fs1",
+                    "aka": null,
+                    "title": null,
+                    "status": "active",
+                    "clinic_id": 1
+                },
+                "errors": []
+              }
+
+  /clinics/{clinic_id}/funding_sources/{id}:
+    put:
+      summary: Funding source update
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "clinic_id"
+        description: "Associated Clinic id"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "Funding source id to update"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/FundingSourceCreateUpdateParameters"
+      responses:
+        "200":
+          description: "Created funding source"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                    "id": 1,
+                    "name": "test-fs1",
+                    "aka": null,
+                    "title": null,
+                    "status": "active",
+                    "clinic_id": 1
+                },
+                "errors": []
+              }
 definitions:
   UserRegistrationParameters:
     type: "object"
@@ -929,4 +1208,25 @@ definitions:
             type: "string"
           country:
             type: "string"
+  ServiceCreateUpdateParameters:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      status:
+        type: "integer"
+      display_code:
+        type: "integer"
+  FundingSourceCreateUpdateParameters:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      aka:
+        type: "string"
+      title:
+        type: "string"
+      status:
+        type: "integer"
+    
       

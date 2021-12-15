@@ -1,6 +1,7 @@
 class ApplicationController < ActionController::API
   include DeviseTokenAuth::Concerns::SetUserByToken
   before_action :configure_permitted_parameters, if: :devise_controller?
+  rescue_from ActiveRecord::RecordNotFound, with: :send_record_not_found_response
 
   protected
 
@@ -17,4 +18,10 @@ class ApplicationController < ActionController::API
     devise_parameter_sanitizer.permit(:sign_up, keys: whitelisted_user_params)
     devise_parameter_sanitizer.permit(:account_update, keys: whitelisted_user_params)
   end
+
+  private
+  def send_record_not_found_response
+    render json: {status: :failure, errors: ['record not found']}, status: 404
+  end
+  # end of private
 end

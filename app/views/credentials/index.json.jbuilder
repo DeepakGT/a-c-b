@@ -8,3 +8,8 @@ json.data do
     json.lifetime credential.lifetime
   end
 end
+if params[:page].present?
+  json.total_records @credentials.total_entries
+  json.limit @credentials.per_page
+  json.page params[:page]
+end

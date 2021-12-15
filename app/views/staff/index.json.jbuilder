@@ -15,4 +15,4 @@ json.data do
 end
 json.total_records @staff.total_entries
 json.limit @staff.per_page
-json.page params[:page]
+json.page params[:page] || 1

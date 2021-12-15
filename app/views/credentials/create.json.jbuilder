@@ -1,5 +1,5 @@
 if @credential.errors.any?
-  json.status 'false'
+  json.status 'failure'
   json.errors @credential.errors.full_messages
 else
   json.status 'success'

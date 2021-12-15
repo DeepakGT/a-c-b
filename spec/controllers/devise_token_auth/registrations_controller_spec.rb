@@ -10,13 +10,16 @@ RSpec.describe DeviseTokenAuth::RegistrationsController, type: :controller do
   describe "POST #create" do
     context "when input valid values" do
       let(:password) { 'password' }
+      let(:role) { create(:role, name: 'aba_admin') }
+      let(:clinic) { create(:clinic, name: 'clinic1') }
 
       it "should create a user" do
         post :create, params: { 
           email: @email,
           password: password,
           confirm_password: password,
-          role_name: 'aba_admin'
+          role_id: role.id,
+          clinic_id: clinic.id
         }
         user = JSON.parse(response.body)
 
