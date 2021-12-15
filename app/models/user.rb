@@ -18,7 +18,7 @@ class User < ActiveRecord::Base
   has_one :user_role, dependent: :destroy
   has_one :address, as: :addressable, dependent: :destroy
   has_one :rbt_supervision, dependent: :destroy
-  has_one :qualification, foreign_key: :staff_id, dependent: :destroy
+  # has_one :qualification, foreign_key: :staff_id, dependent: :destroy
 
   has_many :phone_numbers, as: :phoneable, dependent: :destroy
   has_many :user_services, dependent: :destroy
