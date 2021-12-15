@@ -79,31 +79,15 @@ ActiveRecord::Base.transaction do
     Credential.create(data)
   end
 
-  # funding sources
-  FundingSource.destroy_all
-  funding_sources_data = [{name: 'aetna'},
-                          {name: 'ambetter nnhf'},
-                          {name: 'amerihealth caritas nh'},
-                          {name: 'beacon health strtegies'},
-                          {name: 'cigna'},
-                          {name: 'harvard pilgrim'},
-                          {name: 'new hampshire bcbs'},
-                          {name: 'optimhealth behavioral solutions'},
-                          {name: 'umr'},
-                          {name: 'united behavioral health'}]
-  funding_sources_data.each do |data|
-    FundingSource.create(data)
-  end
-
   Service.destroy_all
-  services_data = [{name: 'state service name	display code	category default pay code'},
-                   {name: 'additional 30 minutes spent performing activities'},
-                   {name: 'caregiver training'},
-                   {name: 'developmental test administration by physician or'},
-                   {name: 'direct service'},
-                   {name: 'initial assessment'},
-                   {name: 're-assessment'},
-                   {name: 'supervision'}]
+  services_data = [{name: 'state service name	display code	category default pay code', display_code: rand(11..100)},
+                   {name: 'additional 30 minutes spent performing activities', display_code: rand(11..100)},
+                   {name: 'caregiver training', display_code: rand(11..100)},
+                   {name: 'developmental test administration by physician or', display_code: rand(11..100)},
+                   {name: 'direct service', display_code: rand(11..100)},
+                   {name: 'initial assessment', display_code: rand(11..100)},
+                   {name: 're-assessment', display_code: rand(11..100)},
+                   {name: 'supervision', display_code: rand(11..100)}]
 
   services_data.each do |data|
     Service.create(data)
@@ -115,6 +99,22 @@ ActiveRecord::Base.transaction do
 
   # Clinic
   clinic = Clinic.find_or_create_by!(name: 'clinic1', organization_id: org.id)
+
+    # funding sources
+    FundingSource.destroy_all
+    funding_sources_data = [{name: 'aetna'},
+                            {name: 'ambetter nnhf'},
+                            {name: 'amerihealth caritas nh'},
+                            {name: 'beacon health strtegies'},
+                            {name: 'cigna'},
+                            {name: 'harvard pilgrim'},
+                            {name: 'new hampshire bcbs'},
+                            {name: 'optimhealth behavioral solutions'},
+                            {name: 'umr'},
+                            {name: 'united behavioral health'}]
+    funding_sources_data.each do |data|
+      clinic.funding_sources.create(data)
+    end
 
   # Will create two user for each each role, ['bcba', 'rbt', 'billing']
   Role.where(name: ['bcba', 'rbt', 'billing']).each do |role|

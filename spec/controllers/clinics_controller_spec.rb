@@ -20,9 +20,7 @@ RSpec.describe ClinicsController, type: :controller do
     end
     context "when sign in" do
       it "should fetch client list successfully" do
-        request.headers['Uid'] = auth_headers['uid']
-        request.headers['Access-Token'] = auth_headers['access-token']
-        request.headers['Client'] = auth_headers['client']
+        set_auth_headers(auth_headers)
         
         get :index, params: {organization_id: 1, page: 1}, :format => :json
         response_body = JSON.parse(response.body)

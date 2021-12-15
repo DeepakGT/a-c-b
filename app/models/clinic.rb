@@ -1,6 +1,7 @@
 class Clinic < ApplicationRecord
   has_one :address, as: :addressable
   has_many :staff, class_name: :User
+  has_many :funding_sources
 
   belongs_to :organization
 
