@@ -16,7 +16,7 @@ Rails.application.routes.draw do
   resources :credentials, only: %i[index show create update]
 
   resources :staff, only: nil do
-    resources :qualifications, only: %i[create update]
+    resources :staff_credentials, only: %i[index create]
   end
   get '/staff/:staff_id/qualification', to: 'qualifications#show'
 

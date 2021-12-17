@@ -915,6 +915,93 @@ paths:
                 },
                 "errors": []
               }
+
+  /staff/{staff_id}/staff_credentials:
+    get:
+      summary: staff credential listing
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "staff_id"
+        description: "Associated staff id"
+        required: true
+      responses:
+        "200":
+          description: "Staff Credendentials list"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": [
+                  {
+                    "id": 1,
+                    "name": "Bachelor's Degree",
+                    "issued_at": null,
+                    "expires_at": null,
+                    "cert_lic_number": null,
+                    "documentation_notes": null
+                  },
+                  {
+                    "id": 3,
+                    "name": "Master's Degree",
+                    "issued_at": "2020-12-12",
+                    "expires_at": null,
+                    "cert_lic_number": "d4fd5fd4f5d",
+                    "documentation_notes": "some doc notes"
+                  }
+                ]
+              }
+    post:
+      summary: staff credential create
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "staff_id"
+        description: "Associated staff id"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/StaffCredentialCreateParameters"
+      responses:
+        "200":
+          description: "Created staff credential"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 4,
+                  "name": "High School Diploma",
+                  "issued_at": null,
+                  "expires_at": null,
+                  "cert_lic_number": null,
+                  "documentation_notes": "doc temp"
+                }
+              }
 definitions:
   UserRegistrationParameters:
     type: "object"
@@ -1228,5 +1315,18 @@ definitions:
         type: "string"
       status:
         type: "integer"
+  StaffCredentialCreateParameters:
+    type: "object"
+    properties:
+      credential_id:
+        type: "string"
+      issued_at:
+        type: "string"
+      expires_at:
+        type: "string"
+      cert_lic_number:
+        type: "string"
+      documentation_notes:
+        type: 'string'
     
       

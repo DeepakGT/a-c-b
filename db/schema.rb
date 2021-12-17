@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_25_103929) do
+ActiveRecord::Schema.define(version: 2021_12_15_114532) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -36,6 +36,15 @@ ActiveRecord::Schema.define(version: 2021_11_25_103929) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["organization_id"], name: "index_clinics_on_organization_id"
+  end
+
+  create_table "credentials", force: :cascade do |t|
+    t.integer "credential_type"
+    t.string "name"
+    t.text "description"
+    t.boolean "lifetime", default: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "funding_sources", force: :cascade do |t|
@@ -104,6 +113,19 @@ ActiveRecord::Schema.define(version: 2021_11_25_103929) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "staff_credentials", force: :cascade do |t|
+    t.bigint "staff_id", null: false
+    t.bigint "credential_id", null: false
+    t.date "issued_at"
+    t.date "expires_at"
+    t.string "cert_lic_number"
+    t.text "documentation_notes"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["credential_id"], name: "index_staff_credentials_on_credential_id"
+    t.index ["staff_id"], name: "index_staff_credentials_on_staff_id"
+  end
+
   create_table "user_roles", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "role_id", null: false
@@ -159,6 +181,8 @@ ActiveRecord::Schema.define(version: 2021_11_25_103929) do
   add_foreign_key "organizations", "users", column: "admin_id"
   add_foreign_key "qualifications", "users", column: "staff_id"
   add_foreign_key "rbt_supervisions", "users"
+  add_foreign_key "staff_credentials", "credentials"
+  add_foreign_key "staff_credentials", "users", column: "staff_id"
   add_foreign_key "user_roles", "roles"
   add_foreign_key "user_roles", "users"
   add_foreign_key "user_services", "services"
