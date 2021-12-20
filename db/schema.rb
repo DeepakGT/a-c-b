@@ -49,7 +49,6 @@ ActiveRecord::Schema.define(version: 2021_12_15_114532) do
 
   create_table "funding_sources", force: :cascade do |t|
     t.string "name"
-    t.string "aka"
     t.string "title"
     t.bigint "clinic_id", null: false
     t.integer "status", default: 0

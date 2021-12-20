@@ -18,7 +18,7 @@ class FundingSourcesController < ApplicationController
   private
 
   def funding_source_params
-    params.permit(:name, :aka, :title, :status)
+    params.permit(:name, :title, :status)
   end
 
   def set_clinic
