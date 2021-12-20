@@ -636,6 +636,110 @@ paths:
                           }
                         }
 
+  /credentials/types:
+    get:
+      summary: credential types
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      responses:
+        "200":
+          description: "Credential types"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "education": 0,
+                  "certification": 1,
+                  "other": 2
+                }
+              }
+
+  /phone_types:
+    get:
+      summary: phone number types
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      responses:
+        "200":
+          description: "Phone number types"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "fax": 0,
+                  "home": 1,
+                  "mobile": 2,
+                  "pager": 3,
+                  "work": 4,
+                  "other": 5
+                }
+              }
+
+  /clinics/{clinic_id}/staff/supervisor_list:
+    get:
+      summary: supervisors list
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "clinic_id"
+        description: "Clinic id"
+        required: true
+      responses:
+        "200":
+          description: "Supervisors list"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": [
+                    {
+                        "id": 7,
+                        "first_name": "Barrett",
+                        "last_name": "Hauck"
+                    },
+                    {
+                        "id": 8,
+                        "first_name": "Blondell",
+                        "last_name": "Greenfelder"
+                    }
+                  ]
+                }
+
   /services:
     get:
       summary: services list

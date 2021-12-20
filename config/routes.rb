@@ -9,11 +9,16 @@ Rails.application.routes.draw do
   end
 
   resources :clinics, only: nil do
-    resources :staff, only: %i[index show update]
+    resources :staff, only: %i[index show update] do
+      get :supervisor_list, on: :collection
+    end
     resources :funding_sources, only: %i[index create update]
   end
+  get :phone_types, to: 'staff#phone_types'
   resources :roles, only: :index
-  resources :credentials, only: %i[index show create update]
+  resources :credentials, only: %i[index show create update] do
+    get :types, on: :collection
+  end
 
   resources :staff, only: nil do
     resources :staff_credentials, only: %i[index create]
