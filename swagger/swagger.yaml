@@ -1067,7 +1067,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/definitions/StaffCredentialCreateParameters"
+              $ref: "#/definitions/StaffCredentialCreateUpdateParameters"
       responses:
         "200":
           description: "Created staff credential"
@@ -1082,6 +1082,129 @@ paths:
                   "expires_at": null,
                   "cert_lic_number": null,
                   "documentation_notes": "doc temp"
+                }
+              }
+  /staff/{staff_id}/staff_credentials/{id}:
+    get:
+      summary: staff credential show
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "staff_id"
+        description: "Associated staff id"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "staff_credential id"
+        required: true
+      responses:
+        "200":
+          description: "Staff credential detail"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 1,
+                  "name": "Master's Degree",
+                  "issued_at": "2020-12-12",
+                  "expires_at": null,
+                  "cert_lic_number": "up 89 ",
+                  "documentation_notes": "some doc notes"
+                }
+              }
+    put:
+      summary: staff credential update
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "staff_id"
+        description: "Associated staff id"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "Staff credential id"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/StaffCredentialCreateUpdateParameters"
+      responses:
+        "200":
+          description: "Updated staff credential"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 4,
+                  "name": "High School Diploma",
+                  "issued_at": null,
+                  "expires_at": null,
+                  "cert_lic_number": null,
+                  "documentation_notes": "doc temp"
+                }
+              }
+    delete:
+      summary: staff credential delete
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "staff_id"
+        description: "Associated staff id"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "staff_credential id"
+        required: true
+      responses:
+        "200":
+          description: "Deleted Staff credential detail"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 1,
+                  "name": "Master's Degree",
+                  "issued_at": "2020-12-12",
+                  "expires_at": null,
+                  "cert_lic_number": "up 89 ",
+                  "documentation_notes": "some doc notes"
                 }
               }
 definitions:
@@ -1356,7 +1479,7 @@ definitions:
         type: "string"
       status:
         type: "integer"
-  StaffCredentialCreateParameters:
+  StaffCredentialCreateUpdateParameters:
     type: "object"
     properties:
       credential_id:

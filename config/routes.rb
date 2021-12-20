@@ -21,7 +21,7 @@ Rails.application.routes.draw do
   end
 
   resources :staff, only: nil do
-    resources :staff_credentials, only: %i[index create]
+    resources :staff_credentials
   end
   get '/staff/:staff_id/qualification', to: 'qualifications#show'
 
