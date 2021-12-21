@@ -46,4 +46,60 @@ RSpec.describe StaffCredentialsController, type: :controller do
       end
     end
   end
+
+  describe "GET #show" do
+    let!(:clinic) { create(:clinic, name: 'clinic1') }
+    let!(:user) { create(:user, :with_role, role_name: 'rbt', clinic_id: clinic.id) }
+    let!(:auth_headers) { user.create_new_auth_token }
+    let!(:staff_credential) { create(:staff_credential, staff_id: user.id) }
+    context "when sign in" do
+      it "should fetch staff-credential detail successfully" do
+        set_auth_headers(auth_headers)
+        get :show, params: {staff_id: user.id, id: staff_credential.id}
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data']['id']).to eq(staff_credential.id)
+      end
+    end
+  end
+
+  describe "PUT #update" do
+    let!(:clinic) { create(:clinic, name: 'clinic1') }
+    let!(:user) { create(:user, :with_role, role_name: 'rbt', clinic_id: clinic.id) }
+    let!(:auth_headers) { user.create_new_auth_token }
+    let!(:staff_credential) { create(:staff_credential, staff_id: user.id) }
+    let!(:updated_cert_lic_number) { 'updated_cert_lic_number' }
+    context "when sign in" do
+      it "should update staff-credential successfully" do
+        set_auth_headers(auth_headers)
+        put :update, params: {staff_id: user.id, id: staff_credential.id, cert_lic_number: updated_cert_lic_number} 
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data']['cert_lic_number']).to eq(updated_cert_lic_number)
+      end
+    end
+  end
+
+  describe "DELETE #destroy" do
+    let!(:clinic) { create(:clinic, name: 'clinic1') }
+    let!(:user) { create(:user, :with_role, role_name: 'rbt', clinic_id: clinic.id) }
+    let!(:auth_headers) { user.create_new_auth_token }
+    let!(:staff_credential) { create(:staff_credential, staff_id: user.id) }
+    context "when sign in" do
+      it "should delete staff-credential successfully" do
+        set_auth_headers(auth_headers)
+        delete :destroy, params: {staff_id: user.id, id: staff_credential.id} 
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data']['id']).to eq(staff_credential.id)
+        expect(StaffCredential.find_by_id(staff_credential.id)).to eq(nil)
+      end
+    end
+  end
 end
