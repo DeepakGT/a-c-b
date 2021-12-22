@@ -12,19 +12,20 @@ class User < ActiveRecord::Base
   attr_accessor :role_id
 
   # Callbaks
-  before_validation :assign_role, on: [:create]
+  before_validation :assign_role, on: :create
 
   # Associations
   has_one :user_role, dependent: :destroy
   has_one :address, as: :addressable, dependent: :destroy
   has_one :rbt_supervision, dependent: :destroy
-  has_one :qualification, foreign_key: :staff_id, dependent: :destroy
 
   has_many :phone_numbers, as: :phoneable, dependent: :destroy
   has_many :user_services, dependent: :destroy
+  has_many :staff_credentials, dependent: :destroy, foreign_key: :staff_id
   
   has_one :role, through: :user_role
   has_many :services, through: :user_services
+  has_many :credentials, through: :staff_credentials
 
   belongs_to :clinic, optional: true
   belongs_to :supervisor, class_name: :User, optional: true
@@ -61,8 +62,8 @@ class User < ActiveRecord::Base
   # format response
   def as_json(options = {})
     response = super(options)
-      .select { |key| key.in?(['email', 'uid', 'first_name', 'last_name']) }
-      .merge({role: Role.names[self.role_name]})
+               .select { |key| key.in?(['email', 'uid', 'first_name', 'last_name']) }
+               .merge({role: Role.names[self.role_name]})
 
     response.merge!({organization_id: self.organization&.id}) if self.aba_admin?
     response.merge!({address: self.address})
@@ -96,9 +97,7 @@ class User < ActiveRecord::Base
   def validate_presence_of_clinic
     return if self.aba_admin? || self.administrator?
 
-    if self.clinic.blank?
-      errors.add(:clinic, 'must be associate with this user.')
-    end
+    errors.add(:clinic, 'must be associate with this user.') if self.clinic.blank?
   end
 
   # end of private

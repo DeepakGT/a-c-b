@@ -332,22 +332,18 @@ paths:
                             "id": 9,
                             "first_name": "Chaya",
                             "last_name": "Schultz",
-                            "department": null,
                             "immediate_supervisor": "",
                             "phone": null,
                             "extension": null,
-                            "hired_at": null,
                             "role_name": "billing"
                           },
                           {
                             "id": 3,
                             "first_name": "Jaimie",
                             "last_name": "Bartell",
-                            "department": null,
                             "immediate_supervisor": "",
                             "phone": null,
                             "extension": null,
-                            "hired_at": null,
                             "role_name": "administrator"
                           }
                         ]
@@ -386,63 +382,49 @@ paths:
                         "first_name": "Gov.",
                         "last_name": "Zachary",
                         "email": "billing_user2@yopmail.com",
-                        "web_address": null,
                         "status": "active",
-                        "pay_type": null,
-                        "hired_at": null,
                         "service_provider": false,
-                        "timing_type": null,
-                        "hours_per_week": null,
                         "terminated_at": null,
-                        "residency": null,
-                        "status_date": null,
-                        "driving_license": null,
-                        "driving_license_expires_at": null,
                         "title": "billing",
                         "gender": null,
-                        "department": null,
-                        "date_of_birth": null,
-                        "ssn": null,
-                        "badge_id": null,
-                        "badge_type": null,
                         "supervisor": {
-                            "uid": "billing_user1@yopmail.com",
-                            "first_name": "Ramon",
-                            "last_name": "Johns",
-                            "email": "billing_user1@yopmail.com",
-                            "role": "billing"
+                          "uid": "billing_user1@yopmail.com",
+                          "first_name": "Ramon",
+                          "last_name": "Johns",
+                          "email": "billing_user1@yopmail.com",
+                          "role": "billing"
                         },
                         "address": {
-                            "id": 1,
-                            "line1": "choomantar gali",
-                            "line2": null,
-                            "line3": null,
-                            "zipcode": "487221",
-                            "city": "indore",
-                            "state": null,
-                            "country": null
+                          "id": 1,
+                          "line1": "choomantar gali",
+                          "line2": null,
+                          "line3": null,
+                          "zipcode": "487221",
+                          "city": "indore",
+                          "state": null,
+                          "country": null
                         },
                         "rbt_supervision": {
-                            "id": 1,
-                            "status": "requires"
+                          "id": 1,
+                          "status": "requires"
                         },
                         "phone_numbers": [
-                            {
-                                "id": 1,
-                                "phone_type": "home",
-                                "number": "+919407320416"
-                            }
+                          {
+                            "id": 1,
+                            "phone_type": "home",
+                            "number": "+919407320416"
+                          }
                         ],
                         "services": [
-                            {
-                                "id": 1,
-                                "name": "s1",
-                                "status": "active",
-                                "default_pay_code": "drive_time",
-                                "category": "aba",
-                                "display_pay_code": null,
-                                "tracking_id": "nan_rbt"
-                            }
+                          {
+                            "id": 1,
+                            "name": "s1",
+                            "status": "active",
+                            "default_pay_code": "drive_time",
+                            "category": "aba",
+                            "display_pay_code": null,
+                            "tracking_id": "nan_rbt"
+                          }
                         ]
                     }
     put:
@@ -636,6 +618,110 @@ paths:
                           }
                         }
 
+  /credentials/types:
+    get:
+      summary: credential types
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      responses:
+        "200":
+          description: "Credential types"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "education": 0,
+                  "certification": 1,
+                  "other": 2
+                }
+              }
+
+  /phone_types:
+    get:
+      summary: phone number types
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      responses:
+        "200":
+          description: "Phone number types"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "fax": 0,
+                  "home": 1,
+                  "mobile": 2,
+                  "pager": 3,
+                  "work": 4,
+                  "other": 5
+                }
+              }
+
+  /clinics/{clinic_id}/staff/supervisor_list:
+    get:
+      summary: supervisors list
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "clinic_id"
+        description: "Clinic id"
+        required: true
+      responses:
+        "200":
+          description: "Supervisors list"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": [
+                    {
+                        "id": 7,
+                        "first_name": "Barrett",
+                        "last_name": "Hauck"
+                    },
+                    {
+                        "id": 8,
+                        "first_name": "Blondell",
+                        "last_name": "Greenfelder"
+                    }
+                  ]
+                }
+
   /services:
     get:
       summary: services list
@@ -814,14 +900,12 @@ paths:
                               {
                                   "id": 1,
                                   "name": "fs-name-1",
-                                  "aka": null,
                                   "title": null,
                                   "status": "active"
                               },
                               {
                                   "id": 2,
                                   "name": "fs-name-2",
-                                  "aka": null,
                                   "title": null,
                                   "status": "active"
                               }
@@ -861,7 +945,6 @@ paths:
                 "data": {
                     "id": 1,
                     "name": "test-fs1",
-                    "aka": null,
                     "title": null,
                     "status": "active",
                     "clinic_id": 1
@@ -908,12 +991,221 @@ paths:
                 "data": {
                     "id": 1,
                     "name": "test-fs1",
-                    "aka": null,
                     "title": null,
                     "status": "active",
                     "clinic_id": 1
                 },
                 "errors": []
+              }
+
+  /staff/{staff_id}/staff_credentials:
+    get:
+      summary: staff credential listing
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "staff_id"
+        description: "Associated staff id"
+        required: true
+      responses:
+        "200":
+          description: "Staff Credendentials list"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": [
+                  {
+                    "id": 1,
+                    "name": "Bachelor's Degree",
+                    "issued_at": null,
+                    "expires_at": null,
+                    "cert_lic_number": null,
+                    "documentation_notes": null
+                  },
+                  {
+                    "id": 3,
+                    "name": "Master's Degree",
+                    "issued_at": "2020-12-12",
+                    "expires_at": null,
+                    "cert_lic_number": "d4fd5fd4f5d",
+                    "documentation_notes": "some doc notes"
+                  }
+                ]
+              }
+    post:
+      summary: staff credential create
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "staff_id"
+        description: "Associated staff id"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/StaffCredentialCreateUpdateParameters"
+      responses:
+        "200":
+          description: "Created staff credential"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 4,
+                  "name": "High School Diploma",
+                  "issued_at": null,
+                  "expires_at": null,
+                  "cert_lic_number": null,
+                  "documentation_notes": "doc temp"
+                }
+              }
+  /staff/{staff_id}/staff_credentials/{id}:
+    get:
+      summary: staff credential show
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "staff_id"
+        description: "Associated staff id"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "staff_credential id"
+        required: true
+      responses:
+        "200":
+          description: "Staff credential detail"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 1,
+                  "name": "Master's Degree",
+                  "issued_at": "2020-12-12",
+                  "expires_at": null,
+                  "cert_lic_number": "up 89 ",
+                  "documentation_notes": "some doc notes"
+                }
+              }
+    put:
+      summary: staff credential update
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "staff_id"
+        description: "Associated staff id"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "Staff credential id"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/StaffCredentialCreateUpdateParameters"
+      responses:
+        "200":
+          description: "Updated staff credential"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 4,
+                  "name": "High School Diploma",
+                  "issued_at": null,
+                  "expires_at": null,
+                  "cert_lic_number": null,
+                  "documentation_notes": "doc temp"
+                }
+              }
+    delete:
+      summary: staff credential delete
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "staff_id"
+        description: "Associated staff id"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "staff_credential id"
+        required: true
+      responses:
+        "200":
+          description: "Deleted Staff credential detail"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 1,
+                  "name": "Master's Degree",
+                  "issued_at": "2020-12-12",
+                  "expires_at": null,
+                  "cert_lic_number": "up 89 ",
+                  "documentation_notes": "some doc notes"
+                }
               }
 definitions:
   UserRegistrationParameters:
@@ -936,50 +1228,13 @@ definitions:
         type: "integer"
       supervisor_id:
         type: "integer"
-      hired_at:
-        type: "string"
-      web_address:
-        type: "string"
       status:
         type: "string"
         enum: [active, inactive]
       terminated_at:
         type: "string"
-      pay_type:
-        type: "string"
-        enum: [hourly, independent_contract, salaried, other]
       service_provider:
         type: "boolean"
-      timing_type:
-        type: "string"
-        enum: [full_time, part_time]
-      hours_per_week:
-        type: "integer"
-      ot_exempt:
-        type: "string"
-      phone_ext:
-        type: "string"
-      term_type:
-        type: "string"
-        enum: [involuntary, voluntary]
-      residency:
-        type: "string"
-        enum: [green_card, us_citizen, work_visa]
-      status_date:
-        type: "string"
-      driving_license:
-        type: "string"
-      driving_license_expires_at:
-        type: "string"
-      date_of_birth:
-        type: "string"
-      ssn:
-        type: "string"
-      badge_id:
-        type: "string"
-      badge_type:
-        type: "string"
-        enum: [custom, agency_aka_database_id, database_id, first_name_last_name_id]
       phone_numbers_attributes:
         type: "object"
         properties:
@@ -1173,8 +1428,6 @@ definitions:
         type: "string"
       supervisor_id:
         type: "integer"
-      hired_at:
-        type: "string"
       status:
         type: "string"
         enum: [active, inactive]
@@ -1222,11 +1475,22 @@ definitions:
     properties:
       name:
         type: "string"
-      aka:
-        type: "string"
       title:
         type: "string"
       status:
         type: "integer"
+  StaffCredentialCreateUpdateParameters:
+    type: "object"
+    properties:
+      credential_id:
+        type: "string"
+      issued_at:
+        type: "string"
+      expires_at:
+        type: "string"
+      cert_lic_number:
+        type: "string"
+      documentation_notes:
+        type: 'string'
     
       

@@ -18,6 +18,10 @@ class CredentialsController < ApplicationController
     @credential.update(credential_params)
   end
 
+  def types
+    @types = Credential.credential_types
+  end
+
   private
 
   def credential_params
