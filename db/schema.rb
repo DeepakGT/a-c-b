@@ -49,6 +49,7 @@ ActiveRecord::Schema.define(version: 2021_12_15_114532) do
 
   create_table "funding_sources", force: :cascade do |t|
     t.string "name"
+    t.string "aka"
     t.string "title"
     t.bigint "clinic_id", null: false
     t.integer "status", default: 0
@@ -86,6 +87,30 @@ ActiveRecord::Schema.define(version: 2021_12_15_114532) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["staff_id"], name: "index_qualifications_on_staff_id"
+  end
+
+  create_table "qualifications_credentials", force: :cascade do |t|
+    t.bigint "qualification_id", null: false
+    t.bigint "credential_id", null: false
+    t.date "issued_at"
+    t.date "expires_at"
+    t.string "cert_lic_number"
+    t.text "documentation_notes"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["credential_id"], name: "index_qualifications_credentials_on_credential_id"
+    t.index ["qualification_id"], name: "index_qualifications_credentials_on_qualification_id"
+  end
+
+  create_table "qualifications_credentials_funding_sources", force: :cascade do |t|
+    t.bigint "qualifications_credential_id", null: false
+    t.bigint "funding_source_id", null: false
+    t.integer "funding_source_type"
+    t.string "data_filed"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["funding_source_id"], name: "funding_source_index_on_qual_cred_fund_sources_table"
+    t.index ["qualifications_credential_id"], name: "qualifications_credential_index_on_qual_cred_fund_sources_table"
   end
 
   create_table "rbt_supervisions", force: :cascade do |t|
@@ -179,6 +204,10 @@ ActiveRecord::Schema.define(version: 2021_12_15_114532) do
   add_foreign_key "funding_sources", "clinics"
   add_foreign_key "organizations", "users", column: "admin_id"
   add_foreign_key "qualifications", "users", column: "staff_id"
+  add_foreign_key "qualifications_credentials", "credentials"
+  add_foreign_key "qualifications_credentials", "qualifications"
+  add_foreign_key "qualifications_credentials_funding_sources", "funding_sources"
+  add_foreign_key "qualifications_credentials_funding_sources", "qualifications_credentials"
   add_foreign_key "rbt_supervisions", "users"
   add_foreign_key "staff_credentials", "credentials"
   add_foreign_key "staff_credentials", "users", column: "staff_id"

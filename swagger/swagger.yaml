@@ -641,11 +641,20 @@ paths:
             application/json:
               example: {
                 "status": "success",
-                "data": {
-                  "education": 0,
-                  "certification": 1,
-                  "other": 2
-                }
+                "data": [
+                  {
+                    "id": 0,
+                    "type": "education"
+                  },
+                  {
+                    "id": 1,
+                    "type": "certification"
+                  },
+                  {
+                    "id": 2,
+                    "type": "other"
+                  }
+                ]
               }
 
   /phone_types:
@@ -671,14 +680,32 @@ paths:
             application/json:
               example: {
                 "status": "success",
-                "data": {
-                  "fax": 0,
-                  "home": 1,
-                  "mobile": 2,
-                  "pager": 3,
-                  "work": 4,
-                  "other": 5
-                }
+                "data": [
+                  {
+                    "id": 0,
+                    "type": "fax"
+                  },
+                  {
+                    "id": 1,
+                    "type": "home"
+                  },
+                  {
+                    "id": 2,
+                    "type": "mobile"
+                  },
+                  {
+                    "id": 3,
+                    "type": "pager"
+                  },
+                  {
+                    "id": 4,
+                    "type": "work"
+                  },
+                  {
+                    "id": 5,
+                    "type": "other"
+                  }
+                ]
               }
 
   /clinics/{clinic_id}/staff/supervisor_list:
@@ -1245,6 +1272,47 @@ paths:
                   "id": 4,
                   "name": "org1"
                 }
+              }
+  /organizations/{id}:
+    put:
+      summary: Organization update
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "Organization id"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: "object"
+              properties:
+                name:
+                  type: "string"
+      responses:
+        "200":
+          description: "Updated Organization"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 2,
+                  "name": "Test"
+                },
+                "errors": []
               }
 definitions:
   UserRegistrationParameters:
