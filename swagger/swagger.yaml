@@ -1207,6 +1207,45 @@ paths:
                   "documentation_notes": "some doc notes"
                 }
               }
+
+  /organizations:  
+    post:
+      summary: organization create
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: "object"
+              required:
+                - name
+              properties:
+                name:
+                  type: "string"
+      responses:
+        "200":
+          description: "Organization create"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 4,
+                  "name": "org1"
+                }
+              }
 definitions:
   UserRegistrationParameters:
     type: "object"
