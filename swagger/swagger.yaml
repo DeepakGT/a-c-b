@@ -1055,19 +1055,12 @@ paths:
                 "data": [
                   {
                     "id": 1,
-                    "name": "Bachelor's Degree",
+                    "name": "Ph.D.",
+                    "credential_id": 17,
                     "issued_at": null,
                     "expires_at": null,
                     "cert_lic_number": null,
                     "documentation_notes": null
-                  },
-                  {
-                    "id": 3,
-                    "name": "Master's Degree",
-                    "issued_at": "2020-12-12",
-                    "expires_at": null,
-                    "cert_lic_number": "d4fd5fd4f5d",
-                    "documentation_notes": "some doc notes"
                   }
                 ]
               }
@@ -1144,11 +1137,12 @@ paths:
                 "status": "success",
                 "data": {
                   "id": 1,
-                  "name": "Master's Degree",
-                  "issued_at": "2020-12-12",
+                  "name": "Ph.D.",
+                  "credential_id": 17,
+                  "issued_at": null,
                   "expires_at": null,
-                  "cert_lic_number": "up 89 ",
-                  "documentation_notes": "some doc notes"
+                  "cert_lic_number": null,
+                  "documentation_notes": null
                 }
               }
     put:
