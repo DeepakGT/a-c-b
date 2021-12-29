@@ -9,6 +9,42 @@ RSpec.describe OrganizationsController, type: :controller do
     @request.env["devise.mapping"] = Devise.mappings[:user]
   end
 
+  describe "GET #index" do 
+    let!(:user) { create(:user, :with_role, role_name: 'aba_admin') }
+    let!(:auth_headers) { user.create_new_auth_token }
+
+    context "when sign in" do
+      it "should list all organizations" do
+        set_auth_headers(auth_headers)
+
+        get :index
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+      end
+    end
+  end
+
+  describe "GET #show" do 
+    let!(:user) { create(:user, :with_role, role_name: 'aba_admin') }
+    let!(:auth_headers) { user.create_new_auth_token }
+
+    context "when sign in" do
+      let(:organization) { create(:organization, name: 'test-organization')}
+      it "should show organization" do
+        set_auth_headers(auth_headers)
+
+        get :show, params: {id: organization.id}
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data']['id']).to eq(organization.id)
+      end
+    end
+  end
+  
   describe "POST #create" do 
     let!(:user) { create(:user, :with_role, role_name: 'aba_admin') }
     let!(:auth_headers) { user.create_new_auth_token }

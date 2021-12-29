@@ -1,6 +1,12 @@
 class OrganizationsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_organization, only: :update
+  before_action :set_organization, only: %i[update show]
+
+  def index
+    @organizations = Organization.all
+  end
+
+  def show; end
 
   def create
     @organization = Organization.new(name: params[:name], admin_id: current_user.id)

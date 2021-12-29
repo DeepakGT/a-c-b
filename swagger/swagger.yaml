@@ -1230,6 +1230,39 @@ paths:
               }
 
   /organizations:  
+    get:
+      summary: organization list
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      responses:
+        "200":
+          description: "Organizations List"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": [
+                  {
+                    "id": 1,
+                    "name": "org1"
+                  },
+                  {
+                    "id": 2,
+                    "name": "org2"
+                  }
+                ]
+              }
     post:
       summary: organization create
       parameters:
@@ -1268,6 +1301,33 @@ paths:
                 }
               }
   /organizations/{id}:
+    get:
+      summary: organization detail
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      responses:
+        "200":
+          description: "Organization detail"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 1,
+                  "name": "org1"
+                }
+              }
     put:
       summary: Organization update
       parameters:
