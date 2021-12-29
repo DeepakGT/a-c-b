@@ -861,7 +861,6 @@ paths:
                     "display_code": null
                 }
               }
-  /services/{id}:
     get:
       summary: Service detail
       parameters:
@@ -1255,13 +1254,47 @@ paths:
                 "data": [
                   {
                     "id": 1,
-                    "name": "org1"
+                    "name": "org1",
+                    "aka": null,
+                    "web": null,
+                    "email": null,
+                    "status": "active",
+                    "phone_numbers": []
                   },
                   {
                     "id": 2,
-                    "name": "org2"
+                    "name": "Organization 2",
+                    "aka": "test organization",
+                    "web": "www.org2.com",
+                    "email": "admin@org2.com",
+                    "status": "active",
+                    "phone_numbers": [
+                      {
+                        "id": 1,
+                        "phone_type": "work",
+                        "number": "9876543210"
+                      },
+                      {
+                        "id": 2,
+                        "phone_type": "mobile",
+                        "number": null
+                      }
+                    ],
+                    "address": {
+                      "id": 2,
+                      "line1": "123",
+                      "line2": null,
+                      "line3": null,
+                      "zipcode": null,
+                      "city": "Indore",
+                      "state": "Madhya Pradesh",
+                      "country": null
+                    }
                   }
-                ]
+                ],
+                "total_records": 2,
+                "limit": 30,
+                "page": 1
               }
     post:
       summary: organization create
@@ -1282,12 +1315,8 @@ paths:
         content:
           application/json:
             schema:
-              type: "object"
-              required:
-                - name
-              properties:
-                name:
-                  type: "string"
+              $ref: "#/definitions/OrganizationCreateUpdateParameters"
+                
       responses:
         "200":
           description: "Organization create"
@@ -1296,8 +1325,29 @@ paths:
               example: {
                 "status": "success",
                 "data": {
-                  "id": 4,
-                  "name": "org1"
+                  "id": 3,
+                  "name": "org3",
+                  "aka": "test organization",
+                  "web": "www.org2.com",
+                  "email": "admin@org2.com",
+                  "status": "active",
+                  "phone_numbers": [
+                    {
+                      "id": 1,
+                      "phone_type": "work",
+                      "number": "9876543210"
+                    }
+                  ],
+                  "address": {
+                    "id": 2,
+                    "line1": null,
+                    "line2": null,
+                    "line3": null,
+                    "zipcode": null,
+                    "city": "Indore",
+                    "state": "Madhya Pradesh",
+                    "country": null
+                  }
                 }
               }
   /organizations/{id}:
@@ -1316,6 +1366,10 @@ paths:
         name: "uid"
         description: "Request headers"
         required: true
+      - in: "path"
+        name: "id"
+        description: "organization id"
+        required: true
       responses:
         "200":
           description: "Organization detail"
@@ -1324,8 +1378,34 @@ paths:
               example: {
                 "status": "success",
                 "data": {
-                  "id": 1,
-                  "name": "org1"
+                  "id": 3,
+                  "name": "Organization 2",
+                  "aka": "test organization",
+                  "web": "www.org2.com",
+                  "email": "admin@org2.com",
+                  "status": "active",
+                  "phone_numbers": [
+                    {
+                      "id": 1,
+                      "phone_type": "work",
+                      "number": "9876543210"
+                    },
+                    {
+                      "id": 2,
+                      "phone_type": "mobile",
+                      "number": null
+                    }
+                  ],
+                  "address": {
+                    "id": 2,
+                    "line1": "123",
+                    "line2": null,
+                    "line3": null,
+                    "zipcode": null,
+                    "city": "Indore",
+                    "state": "Madhya Pradesh",
+                    "country": null
+                  }
                 }
               }
     put:
@@ -1351,10 +1431,7 @@ paths:
         content:
           application/json:
             schema:
-              type: "object"
-              properties:
-                name:
-                  type: "string"
+              $ref: "#/definitions/OrganizationCreateUpdateParameters"
       responses:
         "200":
           description: "Updated Organization"
@@ -1363,8 +1440,34 @@ paths:
               example: {
                 "status": "success",
                 "data": {
-                  "id": 2,
-                  "name": "Test"
+                  "id": 3,
+                  "name": "Organization 2",
+                  "aka": "test organization",
+                  "web": "www.org2.com",
+                  "email": "admin@org2.com",
+                  "status": "active",
+                  "phone_numbers": [
+                    {
+                      "id": 1,
+                      "phone_type": "work",
+                      "number": "9876543210"
+                    },
+                    {
+                      "id": 2,
+                      "phone_type": "mobile",
+                      "number": null
+                    }
+                  ],
+                  "address": {
+                    "id": 2,
+                    "line1": "123",
+                    "line2": null,
+                    "line3": null,
+                    "zipcode": null,
+                    "city": "Indore",
+                    "state": "Madhya Pradesh",
+                    "country": null
+                  }
                 },
                 "errors": []
               }
@@ -1653,5 +1756,48 @@ definitions:
         type: "string"
       documentation_notes:
         type: 'string'
+
+  OrganizationCreateUpdateParameters:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      aka:
+        type: "string"
+      web:
+        type: "string"
+      email:
+        type: "string"
+      status:
+        type: "string"
+        enum: [active, inactive]
+      phone_numbers_attributes:
+        type: "object"
+        properties:
+          0:
+            type: "object"
+            properties:
+              phone_type:
+                type: string
+                enum: [fax, home, mobile, pager, work, other]
+              number:
+                type: string
+      address_attributes:
+        type: "object"
+        properties:
+          line1:
+            type: "string"
+          line2:
+            type: "string"
+          line3:
+            type: "string"
+          zipcode:
+            type: "string"
+          city:
+            type: "string"
+          state:
+            type: "string"
+          country:
+            type: "string"
     
       

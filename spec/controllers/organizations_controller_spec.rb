@@ -80,6 +80,20 @@ RSpec.describe OrganizationsController, type: :controller do
         expect(response_body['status']).to eq('success')
         expect(response_body['data']['name']).to eq(updated_organization_name)
       end
+
+      let!(:organization) {create(:organization, name: 'organization1', address_attributes: {city: 'Bombay'})}
+      let!(:updated_address_city) {'Indore'}
+      context "and update associated data" do
+        it "should update address successfully" do
+          set_auth_headers(auth_headers)
+          put :update, params: {id: organization.id, address_attributes: {city: updated_address_city} }
+          response_body = JSON.parse(response.body)
+
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data']['address']['city']).to eq(updated_address_city)
+        end
+      end
     end
   end
 end
