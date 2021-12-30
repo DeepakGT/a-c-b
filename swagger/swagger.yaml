@@ -221,9 +221,9 @@ paths:
                 success: false
                 errors: ["Unauthorized"]
 
-  /organizations/{organization_id}/clinics:
+  /clinics:
     get:
-      summary: List of an organization's clinics
+      summary: List of clinics
       parameters:
       - in: "header"
         name: "access-token"
@@ -237,26 +237,44 @@ paths:
         name: "uid"
         description: "Request headers"
         required: true
-      - in: "path"
-        name: "organization_id"
-        description: "Organization id"
-        required: true
       responses:
         "200":
           description: "Clinics list"
           content:
             application/json:
-              example:
-                [
+              example: {
+                "status": "success",
+                "data": [
                   {
+                    "id": 1,
+                    "name": "clinic1",
+                    "organization_id": 4,
+                    "organization_name": "org4",
+                    "aka": "test clinic",
+                    "web": "www.clinic1.com",
+                    "email": "admin@clinic1.com",
+                    "status": "active",
+                    "phone_number": {
                       "id": 1,
-                      "name": "cli1"
-                  },
-                  {
-                      "id": 2,
-                      "name": "cli2"
+                      "phone_type": "mobile",
+                      "number": "9876543212"
+                    },
+                    "address": {
+                      "id": 1,
+                      "line1": "C21 Mall",
+                      "line2": null,
+                      "line3": null,
+                      "zipcode": null,
+                      "city": "Indore",
+                      "state": "Madhya Pradesh",
+                      "country": null
+                    }
                   }
-                ]
+                ],
+                "total_records": 1,
+                "limit": 30,
+                "page": 1
+              }
 
   /roles:
     get:
@@ -1254,35 +1272,27 @@ paths:
                 "data": [
                   {
                     "id": 1,
-                    "name": "org1",
-                    "aka": null,
-                    "web": null,
-                    "email": null,
-                    "status": "active",
-                    "phone_numbers": []
-                  },
-                  {
-                    "id": 2,
                     "name": "Organization 2",
                     "aka": "test organization",
                     "web": "www.org2.com",
                     "email": "admin@org2.com",
+                    "status": "active"
+                  },
+                  {
+                    "id": 2,
+                    "name": "Organization 4",
+                    "aka": "test organization",
+                    "web": "www.org4.com",
+                    "email": "admin@org4.com",
                     "status": "active",
-                    "phone_numbers": [
-                      {
-                        "id": 1,
-                        "phone_type": "work",
-                        "number": "9876543210"
-                      },
-                      {
-                        "id": 2,
-                        "phone_type": "mobile",
-                        "number": null
-                      }
-                    ],
+                    "phone_number": {
+                      "id": 1,
+                      "phone_type": "mobile",
+                      "number": "9876543212"
+                    },
                     "address": {
-                      "id": 2,
-                      "line1": "123",
+                      "id": 1,
+                      "line1": "C21 Mall",
                       "line2": null,
                       "line3": null,
                       "zipcode": null,
@@ -1325,21 +1335,19 @@ paths:
               example: {
                 "status": "success",
                 "data": {
-                  "id": 3,
-                  "name": "org3",
+                  "id": 4,
+                  "name": "org4",
                   "aka": "test organization",
-                  "web": "www.org2.com",
-                  "email": "admin@org2.com",
+                  "web": "www.org4.com",
+                  "email": "admin@org4.com",
                   "status": "active",
-                  "phone_numbers": [
-                    {
-                      "id": 1,
-                      "phone_type": "work",
-                      "number": "9876543210"
-                    }
-                  ],
+                  "phone_number": {
+                    "id": 1,
+                    "phone_type": "work",
+                    "number": "9876543211"
+                  },
                   "address": {
-                    "id": 2,
+                    "id": 1,
                     "line1": null,
                     "line2": null,
                     "line3": null,
@@ -1378,27 +1386,20 @@ paths:
               example: {
                 "status": "success",
                 "data": {
-                  "id": 3,
-                  "name": "Organization 2",
+                  "id": 4,
+                  "name": "Organization 4",
                   "aka": "test organization",
-                  "web": "www.org2.com",
-                  "email": "admin@org2.com",
+                  "web": "www.org4.com",
+                  "email": "admin@org4.com",
                   "status": "active",
-                  "phone_numbers": [
-                    {
-                      "id": 1,
-                      "phone_type": "work",
-                      "number": "9876543210"
-                    },
-                    {
-                      "id": 2,
-                      "phone_type": "mobile",
-                      "number": null
-                    }
-                  ],
+                  "phone_number": {
+                    "id": 1,
+                    "phone_type": "mobile",
+                    "number": "9876543212"
+                  },
                   "address": {
-                    "id": 2,
-                    "line1": "123",
+                    "id": 1,
+                    "line1": "C21 Mall",
                     "line2": null,
                     "line3": null,
                     "zipcode": null,
@@ -1440,27 +1441,20 @@ paths:
               example: {
                 "status": "success",
                 "data": {
-                  "id": 3,
-                  "name": "Organization 2",
+                  "id": 4,
+                  "name": "Organization 4",
                   "aka": "test organization",
-                  "web": "www.org2.com",
-                  "email": "admin@org2.com",
+                  "web": "www.org4.com",
+                  "email": "admin@org4.com",
                   "status": "active",
-                  "phone_numbers": [
-                    {
-                      "id": 1,
-                      "phone_type": "work",
-                      "number": "9876543210"
-                    },
-                    {
-                      "id": 2,
-                      "phone_type": "mobile",
-                      "number": null
-                    }
-                  ],
+                  "phone_number": {
+                    "id": 1,
+                    "phone_type": "mobile",
+                    "number": "9876543212"
+                  },
                   "address": {
-                    "id": 2,
-                    "line1": "123",
+                    "id": 1,
+                    "line1": "C21 Mall",
                     "line2": null,
                     "line3": null,
                     "zipcode": null,
@@ -1774,14 +1768,11 @@ definitions:
       phone_numbers_attributes:
         type: "object"
         properties:
-          0:
-            type: "object"
-            properties:
-              phone_type:
-                type: string
-                enum: [fax, home, mobile, pager, work, other]
-              number:
-                type: string
+          phone_type:
+            type: string
+            enum: [fax, home, mobile, pager, work, other]
+          number:
+            type: string
       address_attributes:
         type: "object"
         properties:

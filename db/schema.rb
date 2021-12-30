@@ -32,6 +32,10 @@ ActiveRecord::Schema.define(version: 2021_12_15_114532) do
 
   create_table "clinics", force: :cascade do |t|
     t.string "name"
+    t.string "aka"
+    t.string "web"
+    t.string "email"
+    t.integer "status", default: 0
     t.bigint "organization_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false

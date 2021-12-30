@@ -7,11 +7,11 @@ json.data do
     json.web organization.web
     json.email organization.email
     json.status organization.status
-    json.phone_numbers do
-      json.array! organization.phone_numbers do |phone|
-        json.id phone.id
-        json.phone_type phone.phone_type
-        json.number phone.number
+    if organization.phone_number.present?
+      json.phone_number do
+        json.id organization.phone_number.id
+        json.phone_type organization.phone_number.phone_type
+        json.number organization.phone_number.number
       end
     end
     if organization.address.present?
