@@ -275,6 +275,61 @@ paths:
                 "limit": 30,
                 "page": 1
               }
+    post:
+      summary: clinic create
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/ClinicsCreateParameters"
+      responses:
+        "200":
+          description: "Created clinic"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 3,
+                  "name": "clinic3",
+                  "aka": "Test Clinic ",
+                  "web": "www.clinic3.com",
+                  "email": "admin@clinic3.com",
+                  "status": "inactive",
+                  "organization_id": 4,
+                  "organization_name": "Organization 4",
+                  "phone_number": {
+                    "id": 3,
+                    "phone_type": "work",
+                    "number": "7890123457"
+                  },
+                  "address": {
+                    "id": 3,
+                    "line1": "Princess Business Skypark",
+                    "line2": null,
+                    "line3": null,
+                    "zipcode": null,
+                    "city": "Indore",
+                    "state": null,
+                    "country": null
+                  }
+                },
+                "errors": []
+              }
+
 
   /roles:
     get:
@@ -1653,6 +1708,49 @@ definitions:
         type: "string"
       uid:
         type: "string"
+      
+  ClinicsCreateParameters:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      aka:
+        type: "string"
+      web:
+        type: "string"
+      email:
+        type: "string"
+      status:
+        type: "string"
+        enum: [active, inactive]
+      organization_id:
+        type: "integer"
+      phone_number_attributes:
+        type: "object"
+        properties:
+          phone_type:
+            type: string
+            enum: [fax, home, mobile, pager, work, other]
+          number:
+            type: string
+      address_attributes:
+        type: "object"
+        properties:
+          line1:
+            type: "string"
+          line2:
+            type: "string"
+          line3:
+            type: "string"
+          zipcode:
+            type: "string"
+          city:
+            type: "string"
+          state:
+            type: "string"
+          country:
+            type: "string"
+
   CredentialCreateParameters:
     type: "object"
     properties:
@@ -1765,7 +1863,7 @@ definitions:
       status:
         type: "string"
         enum: [active, inactive]
-      phone_numbers_attributes:
+      phone_number_attributes:
         type: "object"
         properties:
           phone_type:
