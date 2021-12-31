@@ -16,6 +16,10 @@ class StaffController < ApplicationController
     @staff = @clinic.staff.find(params[:id])
     @staff.update(staff_params)
   end
+  
+  def create
+    @staff = @clinic.staff.create(create_params).reload
+  end
 
   def phone_types
     @phone_types = PhoneNumber.phone_types
@@ -38,5 +42,10 @@ class StaffController < ApplicationController
                   phone_numbers_attributes: %i[phone_type number])
   end
 
+  def create_params
+    params.permit(:first_name, :last_name, :hired_at, :status, :terminated_at, :email, :password, :service_provider, :password_confirmation, :supervisor_id, :clinic_id, user_role_attributes: %i[role_id], address_attributes: 
+      %i[line1 line2 line3 zipcode city state country addressable_type addressable_id],
+      phone_numbers_attributes: %i[phone_type number], rbt_supervision_attributes: %i[status start_date end_date], services_attributes: %i[name status display_code])
+  end
   # end of private
 end

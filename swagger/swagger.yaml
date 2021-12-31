@@ -52,7 +52,7 @@ paths:
                   email: ["has already been taken"]
                   full_messages: ["Email has already been taken"]
     put:
-      summary: Staff update
+      summary: User update
       parameters:
         - in: "header"
           name: "access-token"
@@ -70,7 +70,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/definitions/StaffUpdateParameters"
+              $ref: "#/definitions/UserUpdateParameters"
       responses:
         "200":
           description: "Valid input"
@@ -330,7 +330,65 @@ paths:
                 "errors": []
               }
 
-
+  /clinics/{id}:
+    put:
+      summary: clinic update
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "Clinic id"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/ClinicsCreateUpdateParameters"
+      responses:
+        "200":
+          description: "Updated clinic"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 4,
+                  "name": "clinic eg",
+                  "aka": "test-clinic-4",
+                  "web": "www.clinic4.com",
+                  "email": "admin@clinic4.com",
+                  "status": "active",
+                  "organization_id": 1,
+                  "organization_name": "org1",
+                  "phone_number": {
+                    "id": 4,
+                    "phone_type": "mobile",
+                    "number": "9876543210"
+                  },
+                  "address": {
+                    "id": 4,
+                    "line1": "abc",
+                    "line2": "Opp. Orbit Mall",
+                    "line3": "string",
+                    "zipcode": "string",
+                    "city": "string",
+                    "state": "string",
+                    "country": "string"
+                  }
+                },
+                "errors": []
+              }
   /roles:
     get:
       summary: List of roles
@@ -1607,7 +1665,7 @@ definitions:
                 type: "string"
                 enum: [nan_rbt]
 
-  StaffUpdateParameters:
+  UserUpdateParameters:
     type: "object"
     required:
       - email

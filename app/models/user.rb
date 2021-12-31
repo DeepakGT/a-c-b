@@ -34,6 +34,7 @@ class User < ActiveRecord::Base
   accepts_nested_attributes_for :phone_numbers, :allow_destroy => true
   accepts_nested_attributes_for :services, :allow_destroy => true
   accepts_nested_attributes_for :rbt_supervision, :allow_destroy => true
+  accepts_nested_attributes_for :user_role
 
   # Enums
   enum status: {active: 0, inactive: 1}
@@ -41,7 +42,7 @@ class User < ActiveRecord::Base
 
   # Validation
   validates_associated :role
-  validates_presence_of :role
+  #validates_presence_of :role
 
   # Custom Validations
   # terminated_at field would also be validated with this
