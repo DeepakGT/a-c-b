@@ -1,5 +1,6 @@
 class ClinicsController < ApplicationController
   before_action :authenticate_user!
+  before_action :set_clinic, only: %i[show update]
 
   def index
     @clinics = Clinic.order(:name).paginate(page: params[:page])
@@ -9,7 +10,17 @@ class ClinicsController < ApplicationController
     @clinic = Clinic.create(clinic_params)
   end
 
+  def show; end
+
+  def update
+    @clinic.update(clinic_params)
+  end
+
   private
+
+  def set_clinic
+    @clinic = Clinic.find(params[:id])
+  end
 
   def clinic_params
     params.permit(:name, :organization_id, :aka, :web, :email, :status, address_attributes: 
