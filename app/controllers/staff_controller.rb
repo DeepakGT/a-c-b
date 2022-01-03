@@ -13,7 +13,7 @@ class StaffController < ApplicationController
   end
 
   def update
-    @staff = @clinic.staff.find(params[:id])
+    @staff = User.find(params[:id])
     @staff.update(staff_params)
   end
   
