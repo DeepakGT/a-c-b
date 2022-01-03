@@ -9,7 +9,14 @@ json.data do
   json.terminated_at @staff.terminated_at
   json.title @staff.role_name
   json.gender @staff.gender
-  json.supervisor_id @staff.supervisor_id
+  json.organization_id @staff.clinic.organization_id
+  json.organization_name @staff.clinic.organization_name
+  json.clinic_id @staff.clinic_id
+  json.clinic_name @staff.clinic.name
+  if @staff.supervisor.present?
+    json.supervisor_id @staff.supervisor_id
+    json.immediate_supervisor "#{@staff.supervisor.first_name} #{@staff.supervisor.last_name}"
+  end
   json.phone_numbers do
     json.array! @staff.phone_numbers do |phone|
       json.id phone.id
@@ -40,10 +47,11 @@ json.data do
       json.id service.id
       json.name service.name
       json.status service.status
-      json.default_pay_code service.default_pay_code
-      json.category service.category
-      json.display_pay_code service.display_pay_code
-      json.tracking_id service.tracking_id
+      #json.default_pay_code service.default_pay_code
+      #json.category service.category
+      #json.display_pay_code service.display_pay_code
+      #json.tracking_id service.tracking_id
+      json.display_code service.display_code
     end
   end
 end

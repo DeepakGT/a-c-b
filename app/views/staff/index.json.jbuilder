@@ -5,9 +5,12 @@ json.data do
     json.first_name staff.first_name
     json.last_name staff.last_name
     json.title staff.role_name
-    if staff.supervisor.blank?
-      json.immediate_supervisor ''
-    else
+    json.organization_id staff.clinic.organization_id
+    json.organization_name staff.clinic.organization_name
+    json.clinic_id staff.clinic_id
+    json.clinic_name staff.clinic.name
+    if staff.supervisor.present?
+      json.supervisor_id staff.supervisor_id
       json.immediate_supervisor "#{staff.supervisor.first_name} #{staff.supervisor.last_name}"
     end
     json.phone staff.phone_numbers.first&.number
