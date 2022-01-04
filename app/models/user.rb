@@ -30,11 +30,10 @@ class User < ActiveRecord::Base
   belongs_to :clinic, optional: true
   belongs_to :supervisor, class_name: :User, optional: true
 
-  accepts_nested_attributes_for :address, :allow_destroy => true
-  accepts_nested_attributes_for :phone_numbers, :allow_destroy => true
-  accepts_nested_attributes_for :services, :allow_destroy => true
-  accepts_nested_attributes_for :rbt_supervision, :allow_destroy => true
-  accepts_nested_attributes_for :user_role
+  accepts_nested_attributes_for :address, :update_only => true
+  accepts_nested_attributes_for :phone_numbers, :update_only => true
+  accepts_nested_attributes_for :services, :update_only => true
+  accepts_nested_attributes_for :rbt_supervision, :update_only => true
 
   # Enums
   enum status: {active: 0, inactive: 1}
@@ -48,6 +47,9 @@ class User < ActiveRecord::Base
   # terminated_at field would also be validated with this
   validate :validate_status
   validate :validate_presence_of_clinic
+
+  # scopes
+  scope :by_staff_roles, ->{ where('role.name': ['bcba','rbt','billing']) }
 
   # delegates
   delegate :name, to: :role, prefix: true, allow_nil: true

@@ -9,11 +9,19 @@ json.data do
     json.organization_name staff.clinic.organization_name
     json.clinic_id staff.clinic_id
     json.clinic_name staff.clinic.name
+    json.status staff.status
     if staff.supervisor.present?
       json.supervisor_id staff.supervisor_id
       json.immediate_supervisor "#{staff.supervisor.first_name} #{staff.supervisor.last_name}"
     end
     json.phone staff.phone_numbers.first&.number
+    json.phone_numbers do
+      json.array! staff.phone_numbers do |phone|
+        json.id phone.id
+        json.phone_type phone.phone_type
+        json.number phone.number
+      end
+    end
   end
 end
 json.total_records @staff.total_entries

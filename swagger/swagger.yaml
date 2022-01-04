@@ -1964,11 +1964,6 @@ definitions:
         type: "string"
       service_provider:
         type: "boolean"
-      user_role_attributes:
-        type: "object"
-        properties:
-          role_id:
-            type: "integer"
       phone_numbers_attributes:
         type: "object"
         properties:
