@@ -519,7 +519,9 @@ paths:
                     "organization_name": "org1",
                     "clinic_id": 1,
                     "clinic_name": "clinic1",
-                    "phone": null
+                    "status": "active",
+                    "phone": null,
+                    "phone_numbers": []
                   },
                   {
                     "id": 15,
@@ -530,9 +532,22 @@ paths:
                     "organization_name": "org1",
                     "clinic_id": 1,
                     "clinic_name": "clinic1",
+                    "status": "active",
                     "supervisor_id": 3,
                     "immediate_supervisor": "Harland O'Connell",
-                    "phone": "9876543212"
+                    "phone": "9876543212",
+                    "phone_numbers": [
+                      {
+                        "id": 19,
+                        "phone_type": null,
+                        "number": "9876543212"
+                      },
+                      {
+                        "id": 20,
+                        "phone_type": null,
+                        "number": "9876543213"
+                      }
+                    ]
                   },
                 ],
                 "total_records": 2,

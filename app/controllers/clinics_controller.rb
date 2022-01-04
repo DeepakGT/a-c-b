@@ -3,7 +3,9 @@ class ClinicsController < ApplicationController
   before_action :set_clinic, only: %i[show update]
 
   def index
-    @clinics = Clinic.order(:name).paginate(page: params[:page])
+    @clinics = Clinic.all
+    @clinics = @clinics.by_org_id(params[:organization_id]) if params[:organization_id].present?
+    @clinics = @clinics.order(:name).paginate(page: params[:page])
   end
 
   def create
