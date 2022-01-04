@@ -50,6 +50,20 @@ class User < ActiveRecord::Base
 
   # scopes
   scope :by_staff_roles, ->{ where('role.name': ['bcba','rbt','billing']) }
+  scope :by_name, ->(fname,lname){ where('first_name LIKE ? AND last_name LIKE ?',"%#{fname}%","%#{lname}%") }
+  scope :by_organization, ->(org_name){ where('organization.name': org_name)}
+  scope :by_role, ->(role_name){ where('role.name': role_name)}
+  scope :by_supervisor_name, ->(fname,lname){ where(supervisor_id: User.by_name(fname,lname)) }
+  scope :by_location, ->(location) do 
+    staff = User.joins(:address)
+    location.each do |loc|
+      break if staff.none?
+      staff = staff.where('addresses.line1 LIKE ? OR addresses.line2 LIKE ? OR 
+        addresses.line3 LIKE ? OR addresses.zipcode LIKE ? OR addresses.city LIKE ? OR 
+        addresses.state LIKE ? OR addresses.country LIKE ?',loc,loc,loc,loc,loc,loc,loc)
+    end
+    staff
+  end
 
   # delegates
   delegate :name, to: :role, prefix: true, allow_nil: true

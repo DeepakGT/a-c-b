@@ -6,6 +6,20 @@ class StaffController < ApplicationController
 
   def index
     @staff = User.joins(:role).by_staff_roles
+    if params[:name].present? 
+      fname, lname = params[:name].split(' ')
+      @staff = @staff.by_name(fname,lname)
+    end
+    @staff = @staff.joins(clinic: :organization).by_organization(params[:organization]) if params[:organization].present?
+    @staff = @staff.joins(:role).by_role(params[:title]) if params[:title].present?
+    if params[:immediate_supervisor].present?
+      fname, lname = params[:immediate_supervisor].split
+      @staff = @staff.by_supervisor_name(fname, lname)
+    end
+    if params[:location].present?
+      location = params[:location].split.map{|x| "%#{x}%"}
+      @staff = @staff.by_location(location)
+    end
     @staff = @staff.order(:first_name).paginate(page: params[:page])
   end
 
@@ -40,9 +54,9 @@ class StaffController < ApplicationController
 
   def staff_params
     params.permit(:first_name, :last_name, :status, :terminated_at, :email, :supervisor_id, 
-                  :clinic_id,address_attributes: %i[line1 line2 line3 zipcode city state country 
-                  addressable_type addressable_id], phone_numbers_attributes: 
-                  %i[phone_type number])
+                  :clinic_id,address_attributes: 
+                  %i[line1 line2 line3 zipcode city state country addressable_type addressable_id], 
+                  phone_numbers_attributes: %i[phone_type number])
   end
 
   def create_params
