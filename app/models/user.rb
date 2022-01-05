@@ -49,18 +49,22 @@ class User < ActiveRecord::Base
   validate :validate_presence_of_clinic
 
   # scopes
-  scope :by_staff_roles, ->{ where('role.name': ['bcba','rbt','billing']) }
-  scope :by_name, ->(fname,lname){ where('first_name LIKE ? AND last_name LIKE ?',"%#{fname}%","%#{lname}%") }
-  scope :by_organization, ->(org_name){ where('organization.name': org_name)}
-  scope :by_role, ->(role_name){ where('role.name': role_name)}
-  scope :by_supervisor_name, ->(fname,lname){ where(supervisor_id: User.by_name(fname,lname)) }
+  scope :by_staff_roles, ->{ where('role.name.downcase': ['bcba','rbt','billing']) }
+  scope :by_name, ->(fname,lname){ where('lower(first_name) LIKE ? AND lower(last_name) LIKE ?',"%#{fname.downcase}%", "%#{lname&.downcase}%") }
+  scope :by_organization, ->(org_name){ where('organization.name.downcase': org_name&.downcase)}
+  scope :by_role, ->(role_name){ where('role.name.downcase': role_name&.downcase)}
+  scope :by_supervisor_name, ->(fname,lname){ where(supervisor_id: User.by_name(fname&.downcase, lname&.downcase)) }
   scope :by_location, ->(location) do 
     staff = User.joins(:address)
     location.each do |loc|
       break if staff.none?
-      staff = staff.where('addresses.line1 LIKE ? OR addresses.line2 LIKE ? OR 
-        addresses.line3 LIKE ? OR addresses.zipcode LIKE ? OR addresses.city LIKE ? OR 
-        addresses.state LIKE ? OR addresses.country LIKE ?',loc,loc,loc,loc,loc,loc,loc)
+      staff = staff.where('lower(addresses.line1) LIKE :loc OR
+        lower(addresses.line2) LIKE :loc OR
+        lower(addresses.line3) LIKE :loc OR
+        lower(addresses.zipcode) LIKE :loc OR
+        lower(addresses.city) LIKE :loc OR
+        lower(addresses.state) LIKE :loc OR
+        lower(addresses.country) LIKE :loc', loc: loc&.downcase)
     end
     staff
   end
