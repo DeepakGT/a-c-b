@@ -30,12 +30,13 @@ class StaffController < ApplicationController
 
   def update
     @staff = User.find(params[:id])
+    set_role if params[:role_name].present?
     @staff.update(staff_params)
   end
   
   def create
     @staff = @clinic.staff.new(create_params)
-    @staff.role = Role.bcba.first
+    set_role
     @staff.save
   end
 
@@ -55,9 +56,9 @@ class StaffController < ApplicationController
 
   def staff_params
     params.permit(:first_name, :last_name, :status, :terminated_at, :email, :supervisor_id, 
-                  :clinic_id,address_attributes: 
+                  :clinic_id, address_attributes: 
                   %i[line1 line2 line3 zipcode city state country addressable_type addressable_id], 
-                  phone_numbers_attributes: %i[phone_type number])
+                  phone_numbers_attributes: %i[phone_type number], user_role_attributes: [role_attributes: %i[name]])
   end
 
   def create_params
@@ -66,6 +67,10 @@ class StaffController < ApplicationController
                   %i[line1 line2 line3 zipcode city state country addressable_type addressable_id], 
                   phone_numbers_attributes: %i[phone_type number], rbt_supervision_attributes: 
                   %i[status start_date end_date], services_attributes: %i[name status display_code])
+  end
+
+  def set_role
+    @staff.role = Role.send(params[:role_name]).first
   end
   # end of private
 end
