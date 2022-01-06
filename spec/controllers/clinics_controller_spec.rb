@@ -19,12 +19,50 @@ RSpec.describe ClinicsController, type: :controller do
       it "should fetch client list successfully" do
         set_auth_headers(auth_headers)
         
-        get :index, params: {page: 1}, :format => :json
+        get :index
         response_body = JSON.parse(response.body)
 
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
-        expect(response_body['data'].count).to eq(clinics.count)
+        expect(response_body['total_records']).to eq(clinics.count)
+        #expect(response_body['data'].first).to eq(clinics.sort.first)
+        #expect(response_body['data']).to be_sorted(by: :name)
+        #expect(response_body['page']).to eq(1)
+      end
+
+      it "should fetch the first page record by default" do
+        set_auth_headers(auth_headers)
+        
+        get :index
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['page']).to eq(1)
+      end
+
+      it "should fetch the given page record" do
+        set_auth_headers(auth_headers)
+        
+        get :index, params: { page: 2}
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['page']).to eq("2")
+      end
+
+      let(:organization){ create(:organization, name: 'org2')}
+      let(:clinic) { create(:clinic, organization_id: organization.id)}
+      it "should fetch client list for a specific organization successfully" do
+        set_auth_headers(auth_headers)
+
+        get :index, params: {organization_id: organization.id}, :format => :json
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data'].count).to eq(organization.clinics.count)
       end
     end
   end
@@ -83,6 +121,22 @@ RSpec.describe ClinicsController, type: :controller do
           expect(response_body['status']).to eq('success')
           expect(response_body['data']['phone_number']['number']).to eq(updated_phone_number)
         end
+      end
+    end
+  end
+
+  describe "GET #show" do
+    context "when sign in" do
+      let(:clinic) {create(:clinic, name: 'Test-Clinic-1', address_attributes: {line1: 'test line'})}
+      it "should show clinic detail successfully" do
+        set_auth_headers(auth_headers)
+
+        get :show, params: {id: clinic.id}
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data']['id']).to eq(clinic.id)
       end
     end
   end

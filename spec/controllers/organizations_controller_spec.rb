@@ -14,14 +14,17 @@ RSpec.describe OrganizationsController, type: :controller do
     let!(:auth_headers) { user.create_new_auth_token }
 
     context "when sign in" do
+      let!(:organization) { create(:organization, name: 'testorg1')}
       it "should list all organizations" do
         set_auth_headers(auth_headers)
-
+        
         get :index
         response_body = JSON.parse(response.body)
-
+        
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
+        expect(response_body['total_records']).to eq(1)
+        expect(response_body['page']).to eq(1)
       end
     end
   end
@@ -51,15 +54,25 @@ RSpec.describe OrganizationsController, type: :controller do
 
     context "when sign in" do
       let!(:organization_name){'test-organization-1'}
+      let(:address_city) {'Indore'}
+      let(:phone_number_type) {'mobile'}
+      let(:phone_number) {'8787878787'}
       it "should create an organization successfully" do
         set_auth_headers(auth_headers)
 
-        post :create, params: {name: organization_name}
+        post :create, params: {
+          name: organization_name, 
+          address_attributes: {city: address_city}, 
+          phone_number_attributes: {phone_type: phone_number_type, number: phone_number}
+        }
         response_body = JSON.parse(response.body)
 
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
         expect(response_body['data']['name']).to eq(organization_name)
+        expect(response_body['data']['address']['city']).to eq(address_city)
+        expect(response_body['data']['phone_number']['phone_type']).to eq(phone_number_type) 
+        expect(response_body['data']['phone_number']['number']).to eq(phone_number)
       end
     end
   end
@@ -93,6 +106,18 @@ RSpec.describe OrganizationsController, type: :controller do
           expect(response_body['status']).to eq('success')
           expect(response_body['data']['address']['city']).to eq(updated_address_city)
         end
+
+        let!(:updated_phone_number) {'8989898989'}
+        it "should update phone number successfully" do
+          set_auth_headers(auth_headers)
+          put :update, params: {id: organization.id, phone_number_attributes: {number: updated_phone_number} }
+          response_body = JSON.parse(response.body)
+
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data']['phone_number']['number']).to eq(updated_phone_number)
+        end
+
       end
     end
   end

@@ -50,7 +50,8 @@ class User < ActiveRecord::Base
 
   # scopes
   scope :by_staff_roles, ->{ where('role.name.downcase': ['bcba','rbt','billing']) }
-  scope :by_name, ->(fname,lname){ where('lower(first_name) LIKE ? AND lower(last_name) LIKE ?',"%#{fname.downcase}%", "%#{lname&.downcase}%") }
+  scope :by_first_name, ->(fname){ where('lower(first_name) LIKE ?',"%#{fname.downcase}%") }
+  scope :by_last_name, ->(lname){ where('lower(last_name) LIKE ?', "%#{lname.downcase}%") }
   scope :by_organization, ->(org_name){ where('organization.name.downcase': org_name&.downcase)}
   scope :by_role, ->(role_name){ where('role.name.downcase': role_name&.downcase)}
   scope :by_supervisor_name, ->(fname,lname){ where(supervisor_id: User.by_name(fname&.downcase, lname&.downcase)) }
@@ -77,6 +78,14 @@ class User < ActiveRecord::Base
   Role.names.each_key do |key|
     define_method "#{key}?" do
       self.role_name == key
+    end
+  end
+
+  class << self
+    Role.names.each_key do |key|
+      define_method(key) do
+        User.joins(:role).by_role(key)
+      end
     end
   end
 

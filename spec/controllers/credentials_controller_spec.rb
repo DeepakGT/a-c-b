@@ -25,6 +25,17 @@ RSpec.describe CredentialsController, type: :controller do
         expect(response_body['status']).to eq('success')
         expect(response_body['data'].count).to eq(10)
       end
+
+      it "should list all credentials on a specific page" do
+        set_auth_headers(auth_headers)
+
+        get :index, params: { page: 2 }
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['page']).to eq("2") 
+      end
     end
   end
  
@@ -60,6 +71,7 @@ RSpec.describe CredentialsController, type: :controller do
 
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
+        expect(response_body['data']['id']).to eq(credential.id)
         expect(response_body['data']['type']).to eq('education')
       end
     end

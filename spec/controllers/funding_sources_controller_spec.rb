@@ -16,7 +16,7 @@ RSpec.describe FundingSourcesController, type: :controller do
     let!(:clinic) {create(:clinic, name: 'clinic1', organization_id: organization.id)}
     let!(:funding_sources) {create_list(:funding_source, 10, clinic_id: clinic.id)}
     context "when sign in" do
-      it "should create funding source successfully" do
+      it "should list funding sources successfully" do
         set_auth_headers(auth_headers)
         
         get :index, params: {clinic_id: clinic.id}
@@ -24,7 +24,8 @@ RSpec.describe FundingSourcesController, type: :controller do
 
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
-        expect(response_body['data'].count).to eq(10)
+        expect(response_body['total_records']).to eq(funding_sources.count)
+        expect(response_body['page']).to eq(1)  
       end
     end
   end
@@ -53,17 +54,17 @@ RSpec.describe FundingSourcesController, type: :controller do
     let!(:auth_headers) { user.create_new_auth_token }
     let!(:clinic) {create(:clinic, name: 'clinic1')}
     let!(:funding_source) {create(:funding_source, clinic_id: clinic.id)}
-    let!(:upated_funding_source_name) {'update-name'}
+    let!(:updated_funding_source_name) {'update-name'}
     context "when sign in" do
       it "should update funding source successfully" do
         set_auth_headers(auth_headers)
         
-        put :update, params: {clinic_id: clinic.id, id: funding_source.id, name: upated_funding_source_name}
+        put :update, params: {clinic_id: clinic.id, id: funding_source.id, name: updated_funding_source_name}
         response_body = JSON.parse(response.body)
 
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
-        expect(response_body['data']['name']).to eq(upated_funding_source_name)
+        expect(response_body['data']['name']).to eq(updated_funding_source_name)
       end
     end
   end

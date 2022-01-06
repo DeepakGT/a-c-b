@@ -8,7 +8,8 @@ class StaffController < ApplicationController
     @staff = User.joins(:role).by_staff_roles
     if params[:name].present? 
       fname, lname = params[:name].split(' ')
-      @staff = @staff.by_name(fname,lname)
+      @staff = @staff.by_first_name(fname) if fname.present?
+      @staff = @staff.by_last_name(lname) if lname.present?
     end
     @staff = @staff.joins(clinic: :organization).by_organization(params[:organization]) if params[:organization].present?
     @staff = @staff.joins(:role).by_role(params[:title]) if params[:title].present?

@@ -24,7 +24,8 @@ RSpec.describe ServicesController, type: :controller do
 
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
-        expect(response_body['data'].count).to eq(2)
+        expect(response_body['total_records']).to eq(2)
+        expect(response_body['page']).to eq(1)
       end
     end
   end
@@ -78,6 +79,7 @@ RSpec.describe ServicesController, type: :controller do
 
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
+        expect(response_body['data']['id']).to eq(service.id)
         expect(response_body['data']['name']).to eq(service_name)
       end
     end
