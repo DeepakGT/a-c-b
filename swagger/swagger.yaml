@@ -1198,22 +1198,59 @@ paths:
           content:
             application/json:
               example: {
-                          "status": "success",
-                          "data": [
-                              {
-                                  "id": 1,
-                                  "name": "fs-name-1",
-                                  "title": null,
-                                  "status": "active"
-                              },
-                              {
-                                  "id": 2,
-                                  "name": "fs-name-2",
-                                  "title": null,
-                                  "status": "active"
-                              }
-                            ]
-                        }
+                "status": "success",
+                "data": [
+                  {
+                    "id": 1,
+                    "name": "united behavioral health",
+                    "payer_type": "commercial",
+                    "network_status": "in_network",
+                    "email": "contact@ubh.com"
+                  },
+                  {
+                    "id": 2,
+                    "name": "fs1",
+                    "payer_type": "commercial",
+                    "network_status": "in_network",
+                    "email": "contact@fs1.com",
+                    "address": {
+                      "id": 1,
+                      "line1": "Princess Business Skypark",
+                      "line2": null,
+                      "line3": null,
+                      "zipcode": null,
+                      "city": "Indore",
+                      "state": null,
+                      "country": null
+                    }
+                  },
+                  {
+                    "id": 3,
+                    "name": "fs2",
+                    "payer_type": "commercial",
+                    "network_status": "in_network",
+                    "email": "contact@fs2.com",
+                    "address": {
+                      "id": 2,
+                      "line1": "Princess Business Skypark",
+                      "line2": null,
+                      "line3": null,
+                      "zipcode": null,
+                      "city": "Indore",
+                      "state": null,
+                      "country": null
+                    },
+                    "phone_number": {
+                      "id": 1,
+                      "phone_type": "home",
+                      "number": "9988776655"
+                    }
+                  }
+                ],
+                "total_records": 3,
+                "limit": 30,
+                "page": 1
+              }
     post:
       summary: Funding source create
       parameters:
@@ -1246,11 +1283,29 @@ paths:
               example: {
                 "status": "success",
                 "data": {
+                  "id": 12,
+                  "name": "fs2",
+                  "plan_name": "abc",
+                  "payer_type": "commercial",
+                  "network_status": "in_network",
+                  "email": "contact@fs2.com",
+                  "notes": "good",
+                  "clinic_id": 1,
+                  "address": {
+                    "id": 2,
+                    "line1": "Princess Business Skypark",
+                    "line2": null,
+                    "line3": null,
+                    "zipcode": null,
+                    "city": "Indore",
+                    "state": null,
+                    "country": null
+                  },
+                  "phone_number": {
                     "id": 1,
-                    "name": "test-fs1",
-                    "title": null,
-                    "status": "active",
-                    "clinic_id": 1
+                    "phone_type": "home",
+                    "number": "9988776655"
+                  }
                 },
                 "errors": []
               }
@@ -1286,17 +1341,35 @@ paths:
               $ref: "#/definitions/FundingSourceCreateUpdateParameters"
       responses:
         "200":
-          description: "Created funding source"
+          description: "Updated funding source"
           content:
             application/json:
               example: {
                 "status": "success",
                 "data": {
-                    "id": 1,
-                    "name": "test-fs1",
-                    "title": null,
-                    "status": "active",
-                    "clinic_id": 1
+                    "id": 11,
+                    "name": "fs1",
+                    "plan_name": "abc",
+                    "payer_type": "commercial",
+                    "network_status": "in_network",
+                    "email": "contact@fs1.com",
+                    "notes": "good",
+                    "clinic_id": 1,
+                    "address": {
+                      "id": 1,
+                      "line1": "Princess Business Skypark",
+                      "line2": null,
+                      "line3": null,
+                      "zipcode": null,
+                      "city": "Indore",
+                      "state": null,
+                      "country": null
+                    },
+                    "phone_number": {
+                      "id": 2,
+                      "phone_type": "work",
+                      "number": "8989898988"
+                    }
                 },
                 "errors": []
               }
@@ -1724,6 +1797,7 @@ paths:
                 },
                 "errors": []
               }
+
 definitions:
   UserRegistrationParameters:
     type: "object"
@@ -1861,6 +1935,7 @@ definitions:
         type: "string"
       password:
         type: "string"
+
   PasswordResetParameters:
     type: "object"
     required:
@@ -1872,6 +1947,7 @@ definitions:
       redirect_url:
         type: "string"
         description: 'for redirection, after password change'
+
   PasswordUpdateParameters:
     type: "object"
     required:
@@ -1886,6 +1962,7 @@ definitions:
         description: 'should be same as password'
       current_password:
         type: "string"
+
   PasswordUpdateHeaders:
     type: "object"
     required:
@@ -1899,6 +1976,7 @@ definitions:
         type: "string"
       uid:
         type: "string"
+
   UserSignoutHeaders:
     type: "object"
     required:
@@ -2044,6 +2122,7 @@ definitions:
         type: "boolean"
       credential_type:
         type: integer
+
   CredentialUpdateParameters:
     type: "object"
     properties:
@@ -2055,6 +2134,7 @@ definitions:
         type: "boolean"
       credential_type:
         type: integer
+
   StaffUpdateByAdminParameters:
     type: "object"
     properties:
@@ -2103,6 +2183,7 @@ definitions:
             type: "string"
           country:
             type: "string"
+
   ServiceCreateUpdateParameters:
     type: "object"
     properties:
@@ -2112,15 +2193,50 @@ definitions:
         type: "integer"
       display_code:
         type: "integer"
+
   FundingSourceCreateUpdateParameters:
     type: "object"
     properties:
       name:
         type: "string"
-      title:
+      plan_name:
         type: "string"
-      status:
-        type: "integer"
+      payer_type:
+        type: "string"
+        enum: [commercial, medicaid, medicare]
+      email:
+        type: "string"
+      notes:
+        type: "string"
+      network_status:
+        type: "string"
+        enum: [in_network, out_of_network]
+      phone_number_attributes:
+        type: "object"
+        properties:
+          phone_type:
+            type: string
+            enum: [fax, home, mobile, pager, work, other]
+          number:
+            type: string
+      address_attributes:
+        type: "object"
+        properties:
+          line1:
+            type: "string"
+          line2:
+            type: "string"
+          line3:
+            type: "string"
+          zipcode:
+            type: "string"
+          city:
+            type: "string"
+          state:
+            type: "string"
+          country:
+            type: "string"
+
   StaffCredentialCreateUpdateParameters:
     type: "object"
     properties:
