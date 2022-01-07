@@ -1,7 +1,9 @@
 class ApplicationController < ActionController::API
   include DeviseTokenAuth::Concerns::SetUserByToken
+  include Pundit
   before_action :configure_permitted_parameters, if: :devise_controller?
   rescue_from ActiveRecord::RecordNotFound, with: :send_record_not_found_response
+  rescue_from Pundit::NotAuthorizedError, with: :not_authorized
 
   protected
 
@@ -22,6 +24,10 @@ class ApplicationController < ActionController::API
   private
   def send_record_not_found_response
     render json: {status: :failure, errors: ['record not found']}, status: 404
+  end
+
+  def not_authorized
+    render json: {status: :failure, errors: ['you are not authorized to perform this action.']}, status: 401
   end
   # end of private
 end
