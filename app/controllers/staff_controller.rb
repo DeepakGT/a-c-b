@@ -6,20 +6,24 @@ class StaffController < ApplicationController
 
   def index
     @staff = User.joins(:role).by_staff_roles
-    if params[:name].present? 
-      fname, lname = params[:name].split(' ')
-      @staff = @staff.by_first_name(fname) if fname.present?
-      @staff = @staff.by_last_name(lname) if lname.present?
-    end
-    @staff = @staff.joins(clinic: :organization).by_organization(params[:organization]) if params[:organization].present?
-    @staff = @staff.joins(:role).by_role(params[:title]) if params[:title].present?
-    if params[:immediate_supervisor].present?
-      fname, lname = params[:immediate_supervisor].split
-      @staff = @staff.by_supervisor_name(fname, lname)
-    end
-    if params[:location].present?
-      location = params[:location].split.map{|x| "%#{x}%"}
-      @staff = @staff.by_location(location)
+    if params[:search_by].present?
+      if params[:search_by]=="name"
+        fname, lname = params[:search_value].split(' ')
+        @staff = @staff.by_first_name(fname) if fname.present?
+        @staff = @staff.by_last_name(lname) if lname.present?
+      elsif params[:search_by]=="organization"
+        @staff = @staff.joins(clinic: :organization).by_organization(params[:search_value])
+      elsif params[:search_by]=="title"
+        @staff = @staff.joins(:role).by_role(params[:search_value])
+      elsif params[:search_by]=="immediate_supervisor"
+        fname, lname = params[:search_value].split
+        @staff = @staff.by_supervisor_name(fname, lname)
+      elsif params[:search_by]=="location"
+        location = params[:search_value].split.map{|x| "%#{x}%"}
+        @staff = @staff.joins(:address).by_location(location)
+      end
+    elsif params[:search_value].present?
+      @staff = search_by_all_fields(params[:search_value])
     end
     @staff = @staff.order(:first_name).paginate(page: params[:page])
   end
@@ -71,6 +75,14 @@ class StaffController < ApplicationController
 
   def set_role
     @staff.role = Role.send(params[:role_name]).first
+  end
+
+  def search_by_all_fields(value)
+    @staff = User.includes(:role, :address, clinic: :organization).by_staff_roles
+    val = value.split.map{|x| "%#{x}%"}
+    fname, lname = value.split
+    @staff = @staff.by_first_name(fname).by_last_name(lname).or(@staff.by_organization(value)).or(@staff.by_role(value)).or(@staff.by_supervisor_name(fname,lname)).or(@staff.by_location(val))
+    return @staff
   end
   # end of private
 end
