@@ -32,6 +32,10 @@ ActiveRecord::Schema.define(version: 2021_12_15_114532) do
 
   create_table "clinics", force: :cascade do |t|
     t.string "name"
+    t.string "aka"
+    t.string "web"
+    t.string "email"
+    t.integer "status", default: 0
     t.bigint "organization_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -59,6 +63,10 @@ ActiveRecord::Schema.define(version: 2021_12_15_114532) do
 
   create_table "organizations", force: :cascade do |t|
     t.string "name"
+    t.string "aka"
+    t.string "web"
+    t.string "email"
+    t.integer "status", default: 0
     t.bigint "admin_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -73,19 +81,6 @@ ActiveRecord::Schema.define(version: 2021_12_15_114532) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["phoneable_type", "phoneable_id"], name: "index_phone_numbers_on_phoneable"
-  end
-
-  create_table "qualifications", force: :cascade do |t|
-    t.bigint "staff_id", null: false
-    t.date "tb_cleared_at"
-    t.date "doj_cleared_at"
-    t.date "fbi_cleared_at"
-    t.date "tb_expires_at"
-    t.date "doj_expires_at"
-    t.date "fbi_expires_at"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["staff_id"], name: "index_qualifications_on_staff_id"
   end
 
   create_table "rbt_supervisions", force: :cascade do |t|
@@ -178,7 +173,6 @@ ActiveRecord::Schema.define(version: 2021_12_15_114532) do
   add_foreign_key "clinics", "organizations"
   add_foreign_key "funding_sources", "clinics"
   add_foreign_key "organizations", "users", column: "admin_id"
-  add_foreign_key "qualifications", "users", column: "staff_id"
   add_foreign_key "rbt_supervisions", "users"
   add_foreign_key "staff_credentials", "credentials"
   add_foreign_key "staff_credentials", "users", column: "staff_id"

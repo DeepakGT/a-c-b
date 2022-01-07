@@ -4,16 +4,17 @@ Rails.application.routes.draw do
 
   mount_devise_token_auth_for 'User', at: 'auth'
 
-  resources :organizations, only: nil do
-    resources :clinics, only: :index
-  end
-
-  resources :clinics, only: nil do
-    resources :staff, only: %i[index show update] do
+  resources :organizations, only: %i[create update show index] 
+  
+  resources :clinics, only: %i[index create show update] do
+    resources :staff, only: %i[] do
       get :supervisor_list, on: :collection
     end
     resources :funding_sources, only: %i[index create update]
   end
+
+  resources :staff, only: %i[index show update create]
+  
   get :phone_types, to: 'staff#phone_types'
   resources :roles, only: :index
   resources :credentials, only: %i[index show create update] do

@@ -52,7 +52,7 @@ paths:
                   email: ["has already been taken"]
                   full_messages: ["Email has already been taken"]
     put:
-      summary: Staff update
+      summary: User update
       parameters:
         - in: "header"
           name: "access-token"
@@ -70,7 +70,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/definitions/StaffUpdateParameters"
+              $ref: "#/definitions/UserUpdateParameters"
       responses:
         "200":
           description: "Valid input"
@@ -221,9 +221,118 @@ paths:
                 success: false
                 errors: ["Unauthorized"]
 
-  /organizations/{organization_id}/clinics:
+  /clinics:
     get:
-      summary: List of an organization's clinics
+      summary: List of clinics
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      responses:
+        "200":
+          description: "Clinics list"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": [
+                  {
+                    "id": 1,
+                    "name": "clinic1",
+                    "organization_id": 4,
+                    "organization_name": "org4",
+                    "aka": "test clinic",
+                    "web": "www.clinic1.com",
+                    "email": "admin@clinic1.com",
+                    "status": "active",
+                    "phone_number": {
+                      "id": 1,
+                      "phone_type": "mobile",
+                      "number": "9876543212"
+                    },
+                    "address": {
+                      "id": 1,
+                      "line1": "C21 Mall",
+                      "line2": null,
+                      "line3": null,
+                      "zipcode": null,
+                      "city": "Indore",
+                      "state": "Madhya Pradesh",
+                      "country": null
+                    }
+                  }
+                ],
+                "total_records": 1,
+                "limit": 30,
+                "page": 1
+              }
+    post:
+      summary: clinic create
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/ClinicsCreateUpdateParameters"
+      responses:
+        "200":
+          description: "Created clinic"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 3,
+                  "name": "clinic3",
+                  "aka": "Test Clinic ",
+                  "web": "www.clinic3.com",
+                  "email": "admin@clinic3.com",
+                  "status": "inactive",
+                  "organization_id": 4,
+                  "organization_name": "Organization 4",
+                  "phone_number": {
+                    "id": 3,
+                    "phone_type": "work",
+                    "number": "7890123457"
+                  },
+                  "address": {
+                    "id": 3,
+                    "line1": "Princess Business Skypark",
+                    "line2": null,
+                    "line3": null,
+                    "zipcode": null,
+                    "city": "Indore",
+                    "state": null,
+                    "country": null
+                  }
+                },
+                "errors": []
+              }
+
+  /clinics/{id}:
+    get:
+      summary: clinic detail
       parameters:
       - in: "header"
         name: "access-token"
@@ -238,26 +347,101 @@ paths:
         description: "Request headers"
         required: true
       - in: "path"
-        name: "organization_id"
-        description: "Organization id"
+        name: "id"
+        description: "clinic id"
         required: true
       responses:
         "200":
-          description: "Clinics list"
+          description: "Clinic detail"
           content:
             application/json:
-              example:
-                [
-                  {
-                      "id": 1,
-                      "name": "cli1"
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 3,
+                  "name": "clinic3",
+                  "aka": "Test Clinic ",
+                  "web": "www.clinic3.com",
+                  "email": "admin@clinic3.com",
+                  "status": "inactive",
+                  "organization_id": 4,
+                  "organization_name": "Organization 4",
+                  "phone_number": {
+                    "id": 3,
+                    "phone_type": "work",
+                    "number": "7890123457"
                   },
-                  {
-                      "id": 2,
-                      "name": "cli2"
+                  "address": {
+                    "id": 3,
+                    "line1": "Princess Business Skypark",
+                    "line2": null,
+                    "line3": null,
+                    "zipcode": null,
+                    "city": "Indore",
+                    "state": null,
+                    "country": null
                   }
-                ]
-
+                },
+                "errors": []
+              }
+    put:
+      summary: clinic update
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "Clinic id"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/ClinicsCreateUpdateParameters"
+      responses:
+        "200":
+          description: "Updated clinic"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 4,
+                  "name": "clinic eg",
+                  "aka": "test-clinic-4",
+                  "web": "www.clinic4.com",
+                  "email": "admin@clinic4.com",
+                  "status": "active",
+                  "organization_id": 1,
+                  "organization_name": "org1",
+                  "phone_number": {
+                    "id": 4,
+                    "phone_type": "mobile",
+                    "number": "9876543210"
+                  },
+                  "address": {
+                    "id": 4,
+                    "line1": "abc",
+                    "line2": "Opp. Orbit Mall",
+                    "line3": "string",
+                    "zipcode": "string",
+                    "city": "string",
+                    "state": "string",
+                    "country": "string"
+                  }
+                },
+                "errors": []
+              }
   /roles:
     get:
       summary: List of roles
@@ -302,9 +486,9 @@ paths:
                           }
                         ]
 
-  /clinics/{clinic_id}/staff:
+  /staff:
     get:
-      summary: List of clinic's staff
+      summary: List of staff
       parameters:
       - in: "header"
         name: "access-token"
@@ -317,60 +501,6 @@ paths:
       - in: "header"
         name: "uid"
         description: "Request headers"
-        required: true
-      - in: "path"
-        name: "clinic_id"
-        description: "Clinic id"
-        required: true
-      responses:
-        "200":
-          description: "Staff list"
-          content:
-            application/json:
-              example: [
-                          {
-                            "id": 9,
-                            "first_name": "Chaya",
-                            "last_name": "Schultz",
-                            "immediate_supervisor": "",
-                            "phone": null,
-                            "extension": null,
-                            "role_name": "billing"
-                          },
-                          {
-                            "id": 3,
-                            "first_name": "Jaimie",
-                            "last_name": "Bartell",
-                            "immediate_supervisor": "",
-                            "phone": null,
-                            "extension": null,
-                            "role_name": "administrator"
-                          }
-                        ]
-          
-  /clinics/{clinic_id}/staff/{staff_id}:
-    get:
-      summary: Specific clinic's staff
-      parameters:
-      - in: "header"
-        name: "access-token"
-        description: "Request headers"
-        required: true
-      - in: "header"
-        name: "client"
-        description: "Request headers"
-        required: true
-      - in: "header"
-        name: "uid"
-        description: "Request headers"
-        required: true
-      - in: "path"
-        name: "clinic_id"
-        description: "Clinic id"
-        required: true
-      - in: "path"
-        name: "staff_id"
-        description: "Staff id"
         required: true
       responses:
         "200":
@@ -378,55 +508,206 @@ paths:
           content:
             application/json:
               example: {
-                        "id": 8,
-                        "first_name": "Gov.",
-                        "last_name": "Zachary",
-                        "email": "billing_user2@yopmail.com",
-                        "status": "active",
-                        "service_provider": false,
-                        "terminated_at": null,
-                        "title": "billing",
-                        "gender": null,
-                        "supervisor": {
-                          "uid": "billing_user1@yopmail.com",
-                          "first_name": "Ramon",
-                          "last_name": "Johns",
-                          "email": "billing_user1@yopmail.com",
-                          "role": "billing"
-                        },
-                        "address": {
-                          "id": 1,
-                          "line1": "choomantar gali",
-                          "line2": null,
-                          "line3": null,
-                          "zipcode": "487221",
-                          "city": "indore",
-                          "state": null,
-                          "country": null
-                        },
-                        "rbt_supervision": {
-                          "id": 1,
-                          "status": "requires"
-                        },
-                        "phone_numbers": [
-                          {
-                            "id": 1,
-                            "phone_type": "home",
-                            "number": "+919407320416"
-                          }
-                        ],
-                        "services": [
-                          {
-                            "id": 1,
-                            "name": "s1",
-                            "status": "active",
-                            "default_pay_code": "drive_time",
-                            "category": "aba",
-                            "display_pay_code": null,
-                            "tracking_id": "nan_rbt"
-                          }
-                        ]
+                "status": "success",
+                "data": [
+                  {
+                    "id": 3,
+                    "first_name": "Harland",
+                    "last_name": "O'Connell",
+                    "title": "bcba",
+                    "organization_id": 1,
+                    "organization_name": "org1",
+                    "clinic_id": 1,
+                    "clinic_name": "clinic1",
+                    "status": "active",
+                    "phone": null,
+                    "phone_numbers": []
+                  },
+                  {
+                    "id": 15,
+                    "first_name": "test",
+                    "last_name": "staff",
+                    "title": "bcba",
+                    "organization_id": 1,
+                    "organization_name": "org1",
+                    "clinic_id": 1,
+                    "clinic_name": "clinic1",
+                    "status": "active",
+                    "supervisor_id": 3,
+                    "immediate_supervisor": "Harland O'Connell",
+                    "phone": "9876543212",
+                    "phone_numbers": [
+                      {
+                        "id": 19,
+                        "phone_type": null,
+                        "number": "9876543212"
+                      },
+                      {
+                        "id": 20,
+                        "phone_type": null,
+                        "number": "9876543213"
+                      }
+                    ]
+                  },
+                ],
+                "total_records": 2,
+                "limit": 30,
+                "page": 1
+              }
+    post:
+      summary: Staff create by admin
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/StaffCreateByAdminParameters"
+      responses:
+        "200":
+          description: "Staff created"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 18,
+                  "first_name": "test",
+                  "last_name": "staff",
+                  "email": "bcba_teststaff2@yopmail.com",
+                  "role": "bcba",
+                  "status": "active",
+                  "service_provider": true,
+                  "terminated_at": null,
+                  "gender": "male",
+                  "supervisor_id": 1,
+                  "phone_numbers": [
+                    {
+                      "id": 13,
+                      "phone_type": "work",
+                      "number": "9876543212"
+                    },
+                    {
+                      "id": 14,
+                      "phone_type": "mobile",
+                      "number": "9876543213"
                     }
+                  ],
+                  "address": {
+                    "id": 10,
+                    "line1": "Princess Business Skypark",
+                    "line2": null,
+                    "line3": null,
+                    "zipcode": null,
+                    "city": "Indore",
+                    "state": null,
+                    "country": null
+                  },
+                  "rbt_supervision": {
+                    "id": 3,
+                    "status": "n_a"
+                  },
+                  "services": [
+                    {
+                      "id": 11,
+                      "name": "city service",
+                      "status": "active",
+                      "display_code": null
+                    }
+                  ]
+                }
+              }
+          
+  /staff/{staff_id}:
+    get:
+      summary: Staff detail
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "staff_id"
+        description: "Staff id"
+        required: true
+      responses:
+        "200":
+          description: "Staff detail"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 15,
+                  "first_name": "test",
+                  "last_name": "staff",
+                  "email": "bcba_test_staff@yopmail.com",
+                  "status": "active",
+                  "service_provider": true,
+                  "terminated_at": null,
+                  "title": "bcba",
+                  "gender": "male",
+                  "organization_id": 1,
+                  "organization_name": "org1",
+                  "clinic_id": 1,
+                  "clinic_name": "clinic1",
+                  "supervisor_id": 3,
+                  "immediate_supervisor": "Harland O'Connell",
+                  "phone_numbers": [
+                    {
+                      "id": 7,
+                      "phone_type": null,
+                      "number": "9876543212"
+                    },
+                    {
+                      "id": 8,
+                      "phone_type": null,
+                      "number": "9876543213"
+                    }
+                  ],
+                  "address": {
+                    "id": 7,
+                    "line1": "Princess Business Skypark",
+                    "line2": null,
+                    "line3": null,
+                    "zipcode": null,
+                    "city": "Indore",
+                    "state": null,
+                    "country": null
+                  },
+                  "rbt_supervision": {
+                    "id": 1,
+                    "status": "n_a"
+                  },
+                  "services": [
+                    {
+                      "id": 9,
+                      "name": "city service",
+                      "status": "active",
+                      "display_code": null
+                    }
+                  ]
+                }
+              }
     put:
       summary: Staff update by admin
       parameters:
@@ -441,10 +722,6 @@ paths:
       - in: "header"
         name: "uid"
         description: "Request headers"
-        required: true
-      - in: "path"
-        name: "clinic_id"
-        description: "Clinic id"
         required: true
       - in: "path"
         name: "staff_id"
@@ -641,11 +918,20 @@ paths:
             application/json:
               example: {
                 "status": "success",
-                "data": {
-                  "education": 0,
-                  "certification": 1,
-                  "other": 2
-                }
+                "data": [
+                  {
+                    "id": 0,
+                    "type": "education"
+                  },
+                  {
+                    "id": 1,
+                    "type": "certification"
+                  },
+                  {
+                    "id": 2,
+                    "type": "other"
+                  }
+                ]
               }
 
   /phone_types:
@@ -671,14 +957,32 @@ paths:
             application/json:
               example: {
                 "status": "success",
-                "data": {
-                  "fax": 0,
-                  "home": 1,
-                  "mobile": 2,
-                  "pager": 3,
-                  "work": 4,
-                  "other": 5
-                }
+                "data": [
+                  {
+                    "id": 0,
+                    "type": "fax"
+                  },
+                  {
+                    "id": 1,
+                    "type": "home"
+                  },
+                  {
+                    "id": 2,
+                    "type": "mobile"
+                  },
+                  {
+                    "id": 3,
+                    "type": "pager"
+                  },
+                  {
+                    "id": 4,
+                    "type": "work"
+                  },
+                  {
+                    "id": 5,
+                    "type": "other"
+                  }
+                ]
               }
 
   /clinics/{clinic_id}/staff/supervisor_list:
@@ -834,7 +1138,6 @@ paths:
                     "display_code": null
                 }
               }
-  /services/{id}:
     get:
       summary: Service detail
       parameters:
@@ -1028,19 +1331,12 @@ paths:
                 "data": [
                   {
                     "id": 1,
-                    "name": "Bachelor's Degree",
+                    "name": "Ph.D.",
+                    "credential_id": 17,
                     "issued_at": null,
                     "expires_at": null,
                     "cert_lic_number": null,
                     "documentation_notes": null
-                  },
-                  {
-                    "id": 3,
-                    "name": "Master's Degree",
-                    "issued_at": "2020-12-12",
-                    "expires_at": null,
-                    "cert_lic_number": "d4fd5fd4f5d",
-                    "documentation_notes": "some doc notes"
                   }
                 ]
               }
@@ -1117,11 +1413,12 @@ paths:
                 "status": "success",
                 "data": {
                   "id": 1,
-                  "name": "Master's Degree",
-                  "issued_at": "2020-12-12",
+                  "name": "Ph.D.",
+                  "credential_id": 17,
+                  "issued_at": null,
                   "expires_at": null,
-                  "cert_lic_number": "up 89 ",
-                  "documentation_notes": "some doc notes"
+                  "cert_lic_number": null,
+                  "documentation_notes": null
                 }
               }
     put:
@@ -1206,6 +1503,226 @@ paths:
                   "cert_lic_number": "up 89 ",
                   "documentation_notes": "some doc notes"
                 }
+              }
+
+  /organizations:  
+    get:
+      summary: organization list
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      responses:
+        "200":
+          description: "Organizations List"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": [
+                  {
+                    "id": 1,
+                    "name": "Organization 2",
+                    "aka": "test organization",
+                    "web": "www.org2.com",
+                    "email": "admin@org2.com",
+                    "status": "active"
+                  },
+                  {
+                    "id": 2,
+                    "name": "Organization 4",
+                    "aka": "test organization",
+                    "web": "www.org4.com",
+                    "email": "admin@org4.com",
+                    "status": "active",
+                    "phone_number": {
+                      "id": 1,
+                      "phone_type": "mobile",
+                      "number": "9876543212"
+                    },
+                    "address": {
+                      "id": 1,
+                      "line1": "C21 Mall",
+                      "line2": null,
+                      "line3": null,
+                      "zipcode": null,
+                      "city": "Indore",
+                      "state": "Madhya Pradesh",
+                      "country": null
+                    }
+                  }
+                ],
+                "total_records": 2,
+                "limit": 30,
+                "page": 1
+              }
+    post:
+      summary: organization create
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/OrganizationCreateUpdateParameters"
+                
+      responses:
+        "200":
+          description: "Organization create"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 4,
+                  "name": "org4",
+                  "aka": "test organization",
+                  "web": "www.org4.com",
+                  "email": "admin@org4.com",
+                  "status": "active",
+                  "phone_number": {
+                    "id": 1,
+                    "phone_type": "work",
+                    "number": "9876543211"
+                  },
+                  "address": {
+                    "id": 1,
+                    "line1": null,
+                    "line2": null,
+                    "line3": null,
+                    "zipcode": null,
+                    "city": "Indore",
+                    "state": "Madhya Pradesh",
+                    "country": null
+                  }
+                }
+              }
+  /organizations/{id}:
+    get:
+      summary: organization detail
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "organization id"
+        required: true
+      responses:
+        "200":
+          description: "Organization detail"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 4,
+                  "name": "Organization 4",
+                  "aka": "test organization",
+                  "web": "www.org4.com",
+                  "email": "admin@org4.com",
+                  "status": "active",
+                  "phone_number": {
+                    "id": 1,
+                    "phone_type": "mobile",
+                    "number": "9876543212"
+                  },
+                  "address": {
+                    "id": 1,
+                    "line1": "C21 Mall",
+                    "line2": null,
+                    "line3": null,
+                    "zipcode": null,
+                    "city": "Indore",
+                    "state": "Madhya Pradesh",
+                    "country": null
+                  }
+                }
+              }
+    put:
+      summary: Organization update
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "Organization id"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/OrganizationCreateUpdateParameters"
+      responses:
+        "200":
+          description: "Updated Organization"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 4,
+                  "name": "Organization 4",
+                  "aka": "test organization",
+                  "web": "www.org4.com",
+                  "email": "admin@org4.com",
+                  "status": "active",
+                  "phone_number": {
+                    "id": 1,
+                    "phone_type": "mobile",
+                    "number": "9876543212"
+                  },
+                  "address": {
+                    "id": 1,
+                    "line1": "C21 Mall",
+                    "line2": null,
+                    "line3": null,
+                    "zipcode": null,
+                    "city": "Indore",
+                    "state": "Madhya Pradesh",
+                    "country": null
+                  }
+                },
+                "errors": []
               }
 definitions:
   UserRegistrationParameters:
@@ -1294,7 +1811,7 @@ definitions:
                 type: "string"
                 enum: [nan_rbt]
 
-  StaffUpdateParameters:
+  UserUpdateParameters:
     type: "object"
     required:
       - email
@@ -1395,6 +1912,125 @@ definitions:
         type: "string"
       uid:
         type: "string"
+      
+  ClinicsCreateUpdateParameters:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      aka:
+        type: "string"
+      web:
+        type: "string"
+      email:
+        type: "string"
+      status:
+        type: "string"
+        enum: [active, inactive]
+      organization_id:
+        type: "integer"
+      phone_number_attributes:
+        type: "object"
+        properties:
+          phone_type:
+            type: string
+            enum: [fax, home, mobile, pager, work, other]
+          number:
+            type: string
+      address_attributes:
+        type: "object"
+        properties:
+          line1:
+            type: "string"
+          line2:
+            type: "string"
+          line3:
+            type: "string"
+          zipcode:
+            type: "string"
+          city:
+            type: "string"
+          state:
+            type: "string"
+          country:
+            type: "string"
+
+  StaffCreateByAdminParameters:
+    type: "object"
+    properties:
+      first_name:
+        type: "string"
+      last_name:
+        type: "string"
+      clinic_id:
+        type: "integer"
+      email:
+        type: "string"
+      password:
+        type: "string"
+      password_confirmation:
+        type: "string"
+      supervisor_id:
+        type: "integer"
+      status:
+        type: "string"
+        enum: [active, inactive]
+      terminated_at:
+        type: "string"
+      service_provider:
+        type: "boolean"
+      phone_numbers_attributes:
+        type: "object"
+        properties:
+          0:
+            type: "object"
+            properties:
+              phone_type:
+                type: "string"
+                enum: [fax, home, mobile, pager, work, other]
+              number:
+                type: string
+      address_attributes:
+        type: "object"
+        properties:
+          line1:
+            type: "string"
+          line2:
+            type: "string"
+          line3:
+            type: "string"
+          zipcode:
+            type: "string"
+          city:
+            type: "string"
+          state:
+            type: "string"
+          country:
+            type: "string"
+      rbt_supervision_attributes:
+        type: "object"
+        properties:
+          status:
+            type: "string"
+            enum: [requires, provides, n_a]
+          start_date:
+            type: "string"
+          end_date:
+            type: "string" 
+      services_attributes:
+        type: "object"
+        properties:
+          0:
+            type: "object"
+            properties:
+              name:
+                type: "string"
+              status:
+                type: "string"
+                enum: [active, inactive]
+              display_code:
+                type: "integer"
+
   CredentialCreateParameters:
     type: "object"
     properties:
@@ -1426,6 +2062,8 @@ definitions:
         type: "string"
       email:
         type: "string"
+      clinic_id:
+        type : "integer"
       supervisor_id:
         type: "integer"
       status:
@@ -1492,5 +2130,45 @@ definitions:
         type: "string"
       documentation_notes:
         type: 'string'
+
+  OrganizationCreateUpdateParameters:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      aka:
+        type: "string"
+      web:
+        type: "string"
+      email:
+        type: "string"
+      status:
+        type: "string"
+        enum: [active, inactive]
+      phone_number_attributes:
+        type: "object"
+        properties:
+          phone_type:
+            type: string
+            enum: [fax, home, mobile, pager, work, other]
+          number:
+            type: string
+      address_attributes:
+        type: "object"
+        properties:
+          line1:
+            type: "string"
+          line2:
+            type: "string"
+          line3:
+            type: "string"
+          zipcode:
+            type: "string"
+          city:
+            type: "string"
+          state:
+            type: "string"
+          country:
+            type: "string"
     
       

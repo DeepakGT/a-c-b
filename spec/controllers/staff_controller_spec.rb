@@ -12,20 +12,88 @@ RSpec.describe StaffController, type: :controller do
   let!(:user) { create(:user, :with_role, role_name: 'aba_admin') }
   let!(:auth_headers) { user.create_new_auth_token }
   let!(:organization) { create(:organization, name: 'org1', admin_id: user.id) } 
+  let!(:role) { create(:role, name: 'bcba')}
   let!(:clinic) { create(:clinic, name: 'clinic1', organization_id: organization.id) }  
 
   describe "GET #index" do 
-    let!(:staff) { create(:user, :with_role, role_name: 'billing', first_name: 'Jasmie',clinic_id: clinic.id) }   
     context "when sign in" do
-      it "should list clinic staff" do
+      before do
+        ["Test1","Test2"].map { |first_name| create(:user, :with_role, role_name: 'billing', clinic_id: clinic.id, first_name: first_name, address_attributes: {city: 'Indore'}, supervisor_id: user.id) }
+      end
+
+      it "should list staff successfully" do
         set_auth_headers(auth_headers)
 
-        get :index, params: {clinic_id: clinic.id}
+        get :index
         response_body = JSON.parse(response.body)
 
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
-        expect(response_body['data'].first['first_name']).to eq('Jasmie')
+        expect(response_body['data'].count).to eq(User.billing.count)
+        expect(response_body['page']).to eq(1)
+      end
+
+      it "should staff filter by name successfully" do
+        set_auth_headers(auth_headers)
+        
+        get :index, params: { name: "test1"}
+        response_body = JSON.parse(response.body)
+        
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data'].count).to eq(1)
+        expect(response_body['data'].first['first_name'].downcase).to eq('test1')  
+        expect(response_body['page']).to eq(1)
+      end
+
+      it "should list staff filtered by role successfully" do
+        set_auth_headers(auth_headers)
+
+        get :index, params: { title: "billing"}
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data'].count).to eq(2)
+        expect(response_body['data'].first['title']).to eq('billing')  
+        expect(response_body['page']).to eq(1)
+      end
+
+      it "should list staff filtered by organization successfully" do
+        set_auth_headers(auth_headers)
+
+        get :index, params: { organization: organization.name}
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data'].count).to eq(User.joins(clinic: :organization).by_organization(organization.name).count)
+        expect(response_body['page']).to eq(1)
+      end
+
+      it "should list staff filtered by location successfully" do
+        set_auth_headers(auth_headers)
+        
+        get :index, params: { location: 'Indore'}
+        response_body = JSON.parse(response.body)
+        
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data'].count).to eq(2)
+        expect(response_body['page']).to eq(1)
+      end
+
+      it "should list staff filtered by supervisor successfully" do
+        set_auth_headers(auth_headers)
+
+        get :index, params: { immediate_supervisor: user.first_name}
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data'].count).to eq(2)
+        expect(response_body['data'].first['supervisor_id']).to eq(user.id)
+        expect(response_body['page']).to eq(1)
       end
     end
   end
@@ -41,15 +109,48 @@ RSpec.describe StaffController, type: :controller do
 
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
+        expect(response_body['data']['id']).to eq(staff.id)  
         expect(response_body['data']['last_name']).to eq('Zachary')
       end
     end
   end
 
-  describe "PATCH #update" do 
+  describe "POST #create" do
+    context "when sign in" do
+      it "should create staff successfully" do
+        set_auth_headers(auth_headers)
+
+        post :create, params: {
+          first_name: 'test',
+          last_name: 'staff',
+          email: 'bcba_test@yopmail.com',
+          password: '123456',
+          supervisor_id: user.id,
+          clinic_id: clinic.id,
+          service_provider: false,
+          address_attributes: { country: 'India'},
+          phone_numbers_attributes: [{ number: '9898767655'}, {number: '8787876565'}],
+          rbt_supervision_attributes: { status: 'requires'}
+        }
+        
+        response_body = JSON.parse(response.body)
+        
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data']['supervisor_id']).to eq(user.id)
+        expect(response_body['data']['email']).to eq('bcba_test@yopmail.com')
+        expect(response_body['data']['role']).to eq('bcba')
+        expect(response_body['data']['address']['country']).to eq('India')
+        expect(response_body['data']['phone_numbers'].count).to eq(2)
+        expect(response_body['data']['rbt_supervision']['status']).to eq('requires')
+      end
+    end
+  end
+
+  describe "PUT #update" do 
     let!(:staff) { create(:user, :with_role, role_name: 'administrator', first_name: 'Zachary',clinic_id: clinic.id) }   
     context "when sign in" do
-      it "should update clinic staff" do
+      it "should update staff successfully" do
         set_auth_headers(auth_headers)
 
         put :update, params: {clinic_id: clinic.id, id: staff.id, first_name: 'testing'}
@@ -57,9 +158,105 @@ RSpec.describe StaffController, type: :controller do
 
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
+        expect(response_body['data']['id']).to eq(staff.id)
         expect(response_body['data']['first_name']).to eq(nil)
+      end
+
+      context "and update associated data" do
+        let(:clinic) { create(:clinic, name: 'clinic2', organization_id: organization.id) }
+        it "should update clinic successfully" do
+          set_auth_headers(auth_headers)
+
+          put :update, params: {clinic_id: clinic.id, id:staff.id}
+          response_body = JSON.parse(response.body)
+
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data']['id']).to eq(staff.id)
+        end
+
+        it "should update address successfully" do
+          set_auth_headers(auth_headers)
+
+          put :update, params: {id:staff.id, address_attributes: {city: 'Indore'}}
+          response_body = JSON.parse(response.body)
+
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data']['id']).to eq(staff.id)
+        end
+
+        it "should update phone number successfully" do
+          set_auth_headers(auth_headers)
+
+          put :update, params: {id:staff.id, phone_numbers_attributes: [{number: '9876678900'}]}
+          response_body = JSON.parse(response.body)
+
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data']['id']).to eq(staff.id)
+        end
+
+        it "should update rbt supervision successfully" do
+          set_auth_headers(auth_headers)
+
+          put :update, params: {id:staff.id, rbt_supervision_attributes: {status: 'provides'}}
+          response_body = JSON.parse(response.body)
+
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data']['id']).to eq(staff.id)
+        end
+
+        it "should update service successfully" do
+          set_auth_headers(auth_headers)
+
+          put :update, params: {
+            id:staff.id,
+            service_provider: true,
+            services_attributes: [{name: 'service-1'}]
+          }
+          response_body = JSON.parse(response.body)
+
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data']['id']).to eq(staff.id)
+        end
       end
     end
   end
 
+  describe "GET #phone_types" do 
+    #let!(:staff) { create(:user, :with_role, role_name: 'billing', last_name: 'Zachary',clinic_id: clinic.id) }   
+    context "when sign in" do
+      it "should fetch all phone types" do
+        set_auth_headers(auth_headers)
+
+        get :phone_types
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data'].map{|hash| hash['type']}).to match_array PhoneNumber.phone_types.keys
+        expect(response_body['data'].map{|hash| hash['id'] }).to match_array PhoneNumber.phone_types.values
+        expect(response_body['data']).to be_a_kind_of(Array)
+      end
+    end
+  end
+
+  describe "GET #supervisor_list" do
+    let!(:staff_list) { create_list(:user, 5, :with_role, role_name: 'billing', clinic_id: clinic.id)}
+    context "when sign in" do
+      it "should list supervisors successfuly" do
+        set_auth_headers(auth_headers)
+
+        get :supervisor_list, params: {clinic_id: clinic.id}
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data'].count).to eq(staff_list.count)
+      end
+    end
+  end
 end

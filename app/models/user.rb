@@ -30,10 +30,10 @@ class User < ActiveRecord::Base
   belongs_to :clinic, optional: true
   belongs_to :supervisor, class_name: :User, optional: true
 
-  accepts_nested_attributes_for :address, :allow_destroy => true
-  accepts_nested_attributes_for :phone_numbers, :allow_destroy => true
-  accepts_nested_attributes_for :services, :allow_destroy => true
-  accepts_nested_attributes_for :rbt_supervision, :allow_destroy => true
+  accepts_nested_attributes_for :address, :update_only => true
+  accepts_nested_attributes_for :phone_numbers, :update_only => true
+  accepts_nested_attributes_for :services, :update_only => true
+  accepts_nested_attributes_for :rbt_supervision, :update_only => true
 
   # Enums
   enum status: {active: 0, inactive: 1}
@@ -41,12 +41,34 @@ class User < ActiveRecord::Base
 
   # Validation
   validates_associated :role
-  validates_presence_of :role
+  #validates_presence_of :role
 
   # Custom Validations
   # terminated_at field would also be validated with this
   validate :validate_status
   validate :validate_presence_of_clinic
+
+  # scopes
+  scope :by_staff_roles, ->{ where('role.name.downcase': ['bcba','rbt','billing']) }
+  scope :by_first_name, ->(fname){ where('lower(first_name) LIKE ?',"%#{fname.downcase}%") }
+  scope :by_last_name, ->(lname){ where('lower(last_name) LIKE ?', "%#{lname.downcase}%") }
+  scope :by_organization, ->(org_name){ where('organization.name.downcase': org_name&.downcase)}
+  scope :by_role, ->(role_name){ where('role.name.downcase': role_name&.downcase)}
+  scope :by_supervisor_name, ->(fname,lname){ where(supervisor_id: User.by_name(fname&.downcase, lname&.downcase)) }
+  scope :by_location, ->(location) do 
+    staff = User.joins(:address)
+    location.each do |loc|
+      break if staff.none?
+      staff = staff.where('lower(addresses.line1) LIKE :loc OR
+        lower(addresses.line2) LIKE :loc OR
+        lower(addresses.line3) LIKE :loc OR
+        lower(addresses.zipcode) LIKE :loc OR
+        lower(addresses.city) LIKE :loc OR
+        lower(addresses.state) LIKE :loc OR
+        lower(addresses.country) LIKE :loc', loc: loc&.downcase)
+    end
+    staff
+  end
 
   # delegates
   delegate :name, to: :role, prefix: true, allow_nil: true
@@ -56,6 +78,14 @@ class User < ActiveRecord::Base
   Role.names.each_key do |key|
     define_method "#{key}?" do
       self.role_name == key
+    end
+  end
+
+  class << self
+    Role.names.each_key do |key|
+      define_method(key) do
+        User.joins(:role).by_role(key)
+      end
     end
   end
 
