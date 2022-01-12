@@ -1204,14 +1204,18 @@ paths:
                     "id": 1,
                     "name": "united behavioral health",
                     "payer_type": "commercial",
+                    "plan_name": "abc",
                     "network_status": "in_network",
+                    "status": "active",
                     "email": "contact@ubh.com"
                   },
                   {
                     "id": 2,
                     "name": "fs1",
                     "payer_type": "commercial",
+                    "plan_name": "abc",
                     "network_status": "in_network",
+                    "status": "active",
                     "email": "contact@fs1.com",
                     "address": {
                       "id": 1,
@@ -1228,7 +1232,9 @@ paths:
                     "id": 3,
                     "name": "fs2",
                     "payer_type": "commercial",
+                    "plan_name": "abc",
                     "network_status": "in_network",
+                    "status": "active",
                     "email": "contact@fs2.com",
                     "address": {
                       "id": 2,
@@ -1288,6 +1294,7 @@ paths:
                   "plan_name": "abc",
                   "payer_type": "commercial",
                   "network_status": "in_network",
+                  "status": "active",
                   "email": "contact@fs2.com",
                   "notes": "good",
                   "clinic_id": 1,
@@ -1347,6 +1354,7 @@ paths:
                   "plan_name": "abc",
                   "payer_type": "commercial",
                   "network_status": "in_network",
+                  "status": "active",
                   "email": "contact@fs2.com",
                   "notes": "good",
                   "clinic_id": 1,
@@ -1409,6 +1417,7 @@ paths:
                     "plan_name": "abc",
                     "payer_type": "commercial",
                     "network_status": "in_network",
+                    "status": "active",
                     "email": "contact@fs1.com",
                     "notes": "good",
                     "clinic_id": 1,
@@ -2268,6 +2277,9 @@ definitions:
       network_status:
         type: "string"
         enum: [in_network, out_of_network]
+      status:
+        type: "string"
+        enum: [active, inactive]
       phone_number_attributes:
         type: "object"
         properties:

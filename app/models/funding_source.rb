@@ -7,6 +7,7 @@ class FundingSource < ApplicationRecord
   has_one :address, as: :addressable, dependent: :destroy
   belongs_to :clinic
 
+  enum status: {active: 0, inactive: 1}
   enum network_status: {in_network: 0, out_of_network: 1}
   enum payer_type: { commercial: 0, medicaid: 1, medicare: 2}
 

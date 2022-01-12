@@ -23,7 +23,7 @@ class FundingSourcesController < ApplicationController
   private
 
   def funding_source_params
-    params.permit(:name, :plan_name, :payer_type, :email, :notes, :network_status, address_attributes: 
+    params.permit(:name, :plan_name, :payer_type, :email, :notes, :network_status, :status, address_attributes: 
                   %i[line1 line2 line3 zipcode city state country addressable_type addressable_id],
                   phone_number_attributes: %i[phone_type number])
   end

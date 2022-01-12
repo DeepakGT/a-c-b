@@ -54,11 +54,12 @@ ActiveRecord::Schema.define(version: 2021_12_15_114532) do
   create_table "funding_sources", force: :cascade do |t|
     t.string "name"
     t.string "plan_name"
-    t.integer "payer_type"
+    t.integer "payer_type", default: 0
     t.string "email"
     t.string "notes"
     t.bigint "clinic_id", null: false
     t.integer "network_status", default: 0
+    t.integer "status", default: 0
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["clinic_id"], name: "index_funding_sources_on_clinic_id"
