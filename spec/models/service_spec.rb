@@ -1,5 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Service, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  it { should have_many(:user_services).dependent(:destroy)}
+  it { should have_many(:users).through(:user_services)}
+
+  it { should define_enum_for(:status)}
 end

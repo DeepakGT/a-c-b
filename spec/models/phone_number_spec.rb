@@ -1,5 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe PhoneNumber, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  it { should belong_to(:phoneable).inverse_of(:phoneable) }
+
+  it { should define_enum_for(:phone_type)}
 end

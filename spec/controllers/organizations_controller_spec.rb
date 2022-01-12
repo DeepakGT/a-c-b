@@ -14,7 +14,12 @@ RSpec.describe OrganizationsController, type: :controller do
     let!(:auth_headers) { user.create_new_auth_token }
 
     context "when sign in" do
-      let!(:organization) { create(:organization, name: 'testorg1')}
+      let!(:organizations) { 
+        build_list(:organization, 5) do |organization, i|
+          organization.name = "testorg#{i}"
+          organization.save!
+        end
+      } 
       it "should list all organizations" do
         set_auth_headers(auth_headers)
         
@@ -23,8 +28,29 @@ RSpec.describe OrganizationsController, type: :controller do
         
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
-        expect(response_body['total_records']).to eq(1)
+        expect(response_body['total_records']).to eq(organizations.count)
+      end
+
+      it "should fetch the first page record by default" do
+        set_auth_headers(auth_headers)
+        
+        get :index
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
         expect(response_body['page']).to eq(1)
+      end
+
+      it "should fetch the given page record" do
+        set_auth_headers(auth_headers)
+        
+        get :index, params: { page: 2}
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['page']).to eq("2")
       end
     end
   end
@@ -117,7 +143,6 @@ RSpec.describe OrganizationsController, type: :controller do
           expect(response_body['status']).to eq('success')
           expect(response_body['data']['phone_number']['number']).to eq(updated_phone_number)
         end
-
       end
     end
   end

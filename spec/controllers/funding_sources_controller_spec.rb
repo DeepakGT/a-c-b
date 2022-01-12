@@ -106,6 +106,30 @@ RSpec.describe FundingSourcesController, type: :controller do
         expect(response_body['status']).to eq('success')
         expect(response_body['data']['name']).to eq(updated_funding_source_name)
       end
+
+      let!(:updated_address_city) {'Indore'}
+      context "and update associated data" do
+        it "should update address successfully" do
+          set_auth_headers(auth_headers)
+          put :update, params: {clinic_id: clinic.id, id: funding_source.id, address_attributes: {city: updated_address_city} }
+          response_body = JSON.parse(response.body)
+
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data']['address']['city']).to eq(updated_address_city)
+        end
+
+        let!(:updated_phone_number) {'8989898989'}
+        it "should update phone number successfully" do
+          set_auth_headers(auth_headers)
+          put :update, params: {clinic_id: clinic.id, id: funding_source.id, phone_number_attributes: {number: updated_phone_number} }
+          response_body = JSON.parse(response.body)
+
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data']['phone_number']['number']).to eq(updated_phone_number)
+        end
+      end
     end
   end
 end

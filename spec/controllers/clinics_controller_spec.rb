@@ -25,9 +25,6 @@ RSpec.describe ClinicsController, type: :controller do
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
         expect(response_body['total_records']).to eq(clinics.count)
-        #expect(response_body['data'].first).to eq(clinics.sort.first)
-        #expect(response_body['data']).to be_sorted(by: :name)
-        #expect(response_body['page']).to eq(1)
       end
 
       it "should fetch the first page record by default" do
@@ -73,13 +70,15 @@ RSpec.describe ClinicsController, type: :controller do
       it "should create a clinic" do
         set_auth_headers(auth_headers)
 
-        post :create, params: {organization_id: organization.id, name: clinic_name}
+        post :create, params: {organization_id: organization.id, name: clinic_name, address_attributes: {city: 'Bombay'}, phone_number_attributes: {number: '8989898989'}}
         response_body = JSON.parse(response.body)
 
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
         expect(response_body['data']['name']).to eq(clinic_name)
         expect(response_body['data']['organization_id']).to eq(organization.id)
+        expect(response_body['data']['phone_number']['number']).to eq('8989898989')
+        expect(response_body['data']['address']['city']).to eq('Bombay')
       end
     end
   end
@@ -127,7 +126,7 @@ RSpec.describe ClinicsController, type: :controller do
 
   describe "GET #show" do
     context "when sign in" do
-      let(:clinic) {create(:clinic, name: 'Test-Clinic-1', address_attributes: {line1: 'test line'})}
+      let(:clinic) {create(:clinic, name: 'Test-Clinic-1', address_attributes: {line1: 'test line'}, phone_number_attributes: {number: '8989898989'})}
       it "should show clinic detail successfully" do
         set_auth_headers(auth_headers)
 

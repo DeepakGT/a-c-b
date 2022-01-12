@@ -1,5 +1,14 @@
 require 'rails_helper'
 
 RSpec.describe FundingSource, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  it { should have_one(:phone_number).dependent(:destroy)}
+  it { should have_one(:address).dependent(:destroy)}
+  it { should belong_to(:clinic) }
+
+  it { should define_enum_for(:status)}
+  it { should define_enum_for(:network_status)}
+  it { should define_enum_for(:payer_type)}
+
+  it { should accept_nested_attributes_for(:phone_number).update_only(true)}
+  it { should accept_nested_attributes_for(:address).update_only(true)}
 end

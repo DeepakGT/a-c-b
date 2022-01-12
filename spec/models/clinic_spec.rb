@@ -1,5 +1,17 @@
 require 'rails_helper'
 
 RSpec.describe Clinic, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  it { should have_one(:address) }
+  it { should have_one(:phone_number)}
+  it { should have_many(:staff).class_name('User') }
+  it { should have_many(:funding_sources)}
+
+  it { should belong_to(:organization) }
+
+  it { should accept_nested_attributes_for(:address).update_only(true)}
+  it { should accept_nested_attributes_for(:phone_number).update_only(true)}
+
+  it { should define_enum_for(:status)}
+
+  it { should delegate_method(:name).to(:organization).with_prefix(true)}
 end
