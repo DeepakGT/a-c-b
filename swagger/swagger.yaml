@@ -1311,6 +1311,63 @@ paths:
               }
 
   /clinics/{clinic_id}/funding_sources/{id}:
+    get:
+      summary: funding source show
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "clinic_id"
+        description: "Associated clinic id"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "funding_source id"
+        required: true
+      responses:
+        "200":
+          description: "Funding Source detail"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 12,
+                  "name": "fs2",
+                  "plan_name": "abc",
+                  "payer_type": "commercial",
+                  "network_status": "in_network",
+                  "email": "contact@fs2.com",
+                  "notes": "good",
+                  "clinic_id": 1,
+                  "address": {
+                    "id": 2,
+                    "line1": "Princess Business Skypark",
+                    "line2": null,
+                    "line3": null,
+                    "zipcode": null,
+                    "city": "Indore",
+                    "state": null,
+                    "country": null
+                  },
+                  "phone_number": {
+                    "id": 1,
+                    "phone_type": "home",
+                    "number": "9988776655"
+                  }
+                },
+                "errors": []
+              }
     put:
       summary: Funding source update
       parameters:

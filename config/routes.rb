@@ -10,7 +10,7 @@ Rails.application.routes.draw do
     resources :staff, only: %i[] do
       get :supervisor_list, on: :collection
     end
-    resources :funding_sources, only: %i[index create update]
+    resources :funding_sources, only: %i[index create update show]
   end
 
   resources :staff, only: %i[index show update create]

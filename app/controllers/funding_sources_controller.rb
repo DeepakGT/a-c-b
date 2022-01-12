@@ -1,10 +1,13 @@
 class FundingSourcesController < ApplicationController
   before_action :authenticate_user!
   before_action :set_clinic
+  before_action :set_funding_source, only: %i[show update]
 
   def index
     @funding_sources = @clinic.funding_sources.paginate(page: params[:page])
   end
+
+  def show; end
 
   def create
     @funding_source = @clinic.funding_sources.new(funding_source_params)
@@ -13,7 +16,6 @@ class FundingSourcesController < ApplicationController
   end
 
   def update
-    @funding_source = @clinic.funding_sources.find(params[:id])
     authorize @funding_source
     @funding_source.update(funding_source_params)
   end
@@ -28,6 +30,10 @@ class FundingSourcesController < ApplicationController
 
   def set_clinic
     @clinic = Clinic.find(params[:clinic_id])
+  end
+
+  def set_funding_source
+    @funding_source = @clinic.funding_sources.find(params[:id])
   end
 
 end
