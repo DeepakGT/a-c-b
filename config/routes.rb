@@ -14,6 +14,8 @@ Rails.application.routes.draw do
   end
 
   resources :staff, only: %i[index show update create]
+
+  get 'addresses/country_list', to: 'addresses#country_list'
   
   get :phone_types, to: 'staff#phone_types'
   resources :roles, only: :index

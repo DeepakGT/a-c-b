@@ -5,6 +5,8 @@ ruby '3.0.2'
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.4', require: false
+# access countries
+gem 'countries'
 # Simple, multi-client and secure token-based authentication for Rails.
 gem 'devise_token_auth'
 gem 'faker', git: 'https://github.com/faker-ruby/faker.git', branch: 'master'

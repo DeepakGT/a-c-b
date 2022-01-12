@@ -1026,6 +1026,73 @@ paths:
                   ]
                 }
 
+  /addresses/country_list:
+    get:
+      summary: country list
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      responses:
+        "200":
+          description: "country list"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": [
+                  {
+                    "id": 1,
+                    "name": "Andorra"
+                  },
+                  {
+                    "id": 2,
+                    "name": "United Arab Emirates"
+                  },
+                  {
+                    "id": 3,
+                    "name": "Afghanistan"
+                  },
+                  {
+                    "id": 4,
+                    "name": "Antigua and Barbuda"
+                  },
+                  {
+                    "id": 5,
+                    "name": "Anguilla"
+                  },
+                  {
+                    "id": 6,
+                    "name": "Albania"
+                  },
+                  {
+                    "id": 7,
+                    "name": "Armenia"
+                  },
+                  {
+                    "id": 8,
+                    "name": "Angola"
+                  },
+                  {
+                    "id": 9,
+                    "name": "Antarctica"
+                  },
+                  {
+                    "id": 10,
+                    "name": "Argentina"
+                  }
+                ]
+              }
+
   /services:
     get:
       summary: services list
