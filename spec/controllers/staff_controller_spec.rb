@@ -18,7 +18,10 @@ RSpec.describe StaffController, type: :controller do
   describe "GET #index" do 
     context "when sign in" do
       before do
-        ["Test1","Test2"].map { |first_name| create(:user, :with_role, role_name: 'billing', clinic_id: clinic.id, first_name: first_name, address_attributes: {city: 'Indore'}, supervisor_id: user.id) }
+        ["Test1","Test2"].map do |first_name| 
+          create(:user, :with_role, role_name: 'billing', clinic_id: clinic.id, first_name: first_name, 
+                  address_attributes: {city: 'Indore'}, supervisor_id: user.id) 
+        end
       end
 
       it "should list staff successfully" do

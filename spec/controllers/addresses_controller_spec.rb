@@ -26,5 +26,4 @@ RSpec.describe AddressesController, type: :controller do
       end
     end
   end
-  
 end

@@ -59,6 +59,7 @@ class User < ActiveRecord::Base
     staff = self
     location.each do |loc|
       break if staff.none?
+      
       staff = staff.where('lower(addresses.line1) LIKE :loc OR
         lower(addresses.line2) LIKE :loc OR
         lower(addresses.line3) LIKE :loc OR

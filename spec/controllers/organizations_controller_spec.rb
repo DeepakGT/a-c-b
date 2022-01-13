@@ -14,12 +14,12 @@ RSpec.describe OrganizationsController, type: :controller do
     let!(:auth_headers) { user.create_new_auth_token }
 
     context "when sign in" do
-      let!(:organizations) { 
+      let!(:organizations) do
         build_list(:organization, 5) do |organization, i|
           organization.name = "testorg#{i}"
           organization.save!
         end
-      } 
+      end
       it "should list all organizations" do
         set_auth_headers(auth_headers)
         
