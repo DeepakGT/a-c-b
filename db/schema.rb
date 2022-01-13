@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_12_094759) do
+ActiveRecord::Schema.define(version: 2022_01_13_124649) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -30,6 +30,15 @@ ActiveRecord::Schema.define(version: 2022_01_12_094759) do
     t.index ["addressable_type", "addressable_id"], name: "index_addresses_on_addressable"
   end
 
+  create_table "client_contacts", force: :cascade do |t|
+    t.bigint "contact_id", null: false
+    t.bigint "client_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["client_id"], name: "index_client_contacts_on_client_id"
+    t.index ["contact_id"], name: "index_client_contacts_on_contact_id"
+  end
+
   create_table "clinics", force: :cascade do |t|
     t.string "name"
     t.string "aka"
@@ -40,6 +49,13 @@ ActiveRecord::Schema.define(version: 2022_01_12_094759) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["organization_id"], name: "index_clinics_on_organization_id"
+  end
+
+  create_table "contacts", force: :cascade do |t|
+    t.string "first_name"
+    t.string "last_name"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "countries", force: :cascade do |t|
@@ -165,6 +181,8 @@ ActiveRecord::Schema.define(version: 2022_01_12_094759) do
     t.string "last_name"
     t.string "email"
     t.integer "gender", default: 0
+    t.date "dob"
+    t.string "type"
     t.bigint "supervisor_id"
     t.integer "status", default: 0
     t.date "terminated_at"
@@ -180,6 +198,8 @@ ActiveRecord::Schema.define(version: 2022_01_12_094759) do
     t.index ["uid", "provider"], name: "index_users_on_uid_and_provider", unique: true
   end
 
+  add_foreign_key "client_contacts", "contacts"
+  add_foreign_key "client_contacts", "users", column: "client_id"
   add_foreign_key "clinics", "organizations"
   add_foreign_key "funding_sources", "clinics"
   add_foreign_key "organizations", "users", column: "admin_id"

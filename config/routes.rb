@@ -13,6 +13,8 @@ Rails.application.routes.draw do
     resources :funding_sources, only: %i[index create update show]
   end
 
+  resources :clients, only: %i[index]
+
   resources :staff, only: %i[index show update create]
 
   get 'addresses/country_list', to: 'addresses#country_list'

@@ -126,7 +126,7 @@ class User < ActiveRecord::Base
   end
 
   def validate_presence_of_clinic
-    return if self.aba_admin? || self.administrator?
+    return if self.aba_admin? || self.administrator? || self.client?
 
     errors.add(:clinic, 'must be associate with this user.') if self.clinic.blank?
   end
