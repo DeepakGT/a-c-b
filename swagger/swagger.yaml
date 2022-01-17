@@ -829,6 +829,42 @@ paths:
               }
   
   /clients/{id}:
+    get:
+      summary: client show
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "Client id"
+        required: true
+      responses:
+        "200":
+          description: "Client detail"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 19,
+                  "first_name": "test",
+                  "last_name": "client4",
+                  "email": "testc4@yopmail.com",
+                  "dob": "2011-11-11",
+                  "gender": "female",
+                  "status": "active"
+                }
+              }
     put:
       summary: Client update by Admin
       parameters:

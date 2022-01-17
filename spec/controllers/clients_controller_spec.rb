@@ -19,13 +19,29 @@ RSpec.describe ClientsController, type: :controller do
       let!(:clients) { create_list(:client, 4, :with_role, clinic_id: clinic.id)}
       it "should list client successfully" do
         set_auth_headers(auth_headers)
+        
+        get :index, :format => :json
+        response_body = JSON.parse(response.body)
+        
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data'].count).to eq(clients.count)
+      end
+    end
+  end
 
-        get :index, params: {clinic_id: clinic.id}
+  describe "GET #show" do
+    context "when sign in" do
+      let(:client) { create(:client, :with_role, clinic_id: clinic.id)}
+      it "should show client detail successfully" do
+        set_auth_headers(auth_headers)
+
+        get :show, params: {id: client.id}
         response_body = JSON.parse(response.body)
 
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
-        expect(response_body['data'].count).to eq(clients.count)
+        expect(response_body['data']['id']).to eq(client.id)
       end
     end
   end
@@ -41,7 +57,7 @@ RSpec.describe ClientsController, type: :controller do
           last_name: 'client',
           email: 'testcontact@gamil.com',
           password: '123456',
-          password_confirmation: '123456',
+          password_confirmation: '123456'
         }
         response_body = JSON.parse(response.body)
         
