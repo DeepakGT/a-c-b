@@ -14,7 +14,7 @@ Rails.application.routes.draw do
   end
 
   resources :staff, only: %i[index show update create]
-  resources :clients, only: %i[index create]
+  resources :clients, only: %i[index create update]
 
   get 'addresses/country_list', to: 'addresses#country_list'
   

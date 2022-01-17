@@ -42,21 +42,30 @@ RSpec.describe ClientsController, type: :controller do
           email: 'testcontact@gamil.com',
           password: '123456',
           password_confirmation: '123456',
-          contacts_attributes: [{
-            first_name: 'test', 
-            last_name: 'contact', 
-            address_attributes: { city: 'Indore'},
-            phone_number_attributes: { number: '9988776655'}
-          }]
         }
         response_body = JSON.parse(response.body)
         
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
         expect(response_body['data']['first_name']).to eq('test')
-        expect(response_body['data']['contacts'][0]['last_name']).to eq('contact')
-        expect(response_body['data']['contacts'][0]['address']['city']).to eq('Indore')
-        expect(response_body['data']['contacts'][0]['phone_number']['number']).to eq('9988776655')
+      end
+    end
+  end
+
+  describe "PUT #update" do
+    context "when sign in" do
+      let(:client) { create(:client, :with_role, clinic_id: clinic.id, first_name: 'test')}
+      let(:updated_first_name) {'test-client-1'}
+      it "should update a client successfully" do
+        set_auth_headers(auth_headers)
+
+        put :update, params: { id: client.id, first_name: updated_first_name }
+        response_body = JSON.parse(response.body)
+        
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data']['id']).to eq(client.id)
+        expect(response_body['data']['first_name']).to eq(updated_first_name)
       end
     end
   end

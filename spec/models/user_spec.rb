@@ -57,7 +57,7 @@ RSpec.describe User, type: :model do
   end
 
   describe "#validate_presence_of_clinic" do
-    context "when user role is bcba,rbt or billing" do
+    context "when user role is bcba,rbt,billing or client" do
       let(:user) { build :user, :with_role, role_name: 'bcba'}
       it "clinic must be present" do
         user.validate

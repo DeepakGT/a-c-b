@@ -776,29 +776,7 @@ paths:
                     "email": "abc56@gmail.com",
                     "dob": "2012-12-12",
                     "gender": "male",
-                    "status": "active",
-                    "contacts": [
-                      {
-                        "id": 8,
-                        "first_name": "Dr. a.k. ",
-                        "last_name": "verma",
-                        "address": {
-                          "id": 4,
-                          "line1": null,
-                          "line2": null,
-                          "line3": null,
-                          "zipcode": null,
-                          "city": "Indore",
-                          "state": null,
-                          "country": null
-                        },
-                        "phone_number": {
-                          "id": 3,
-                          "phone_type": null,
-                          "number": "9988776655"
-                        }
-                      }
-                    ]
+                    "status": "active"
                   },
                   {
                     "id": 17,
@@ -807,29 +785,7 @@ paths:
                     "email": "testc2@gmail.com",
                     "dob": "2012-12-12",
                     "gender": "male",
-                    "status": "active",
-                    "contacts": [
-                      {
-                        "id": 9,
-                        "first_name": "Test",
-                        "last_name": "Contact2",
-                        "address": {
-                          "id": 5,
-                          "line1": "Princess Business Skypark",
-                          "line2": null,
-                          "line3": null,
-                          "zipcode": null,
-                          "city": "Delhi",
-                          "state": null,
-                          "country": null
-                        },
-                        "phone_number": {
-                          "id": 4,
-                          "phone_type": "work",
-                          "number": "9988776654"
-                        }
-                      }
-                    ]
+                    "status": "active"
                   }
                 ]
               }
@@ -852,7 +808,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/definitions/ClientCreateUpdateParameters"
+              $ref: "#/definitions/ClientCreateParameters"
       responses:
         "200":
           description: "Created client"
@@ -867,29 +823,51 @@ paths:
                   "email": "testc3@gmail.com",
                   "dob": "2012-12-12",
                   "gender": "male",
-                  "status": "active",
-                  "contacts": [
-                    {
-                      "id": 10,
-                      "first_name": "Test",
-                      "last_name": "Contact2",
-                      "address": {
-                        "id": 6,
-                        "line1": "Princess Business Skypark",
-                        "line2": null,
-                        "line3": null,
-                        "zipcode": null,
-                        "city": "Delhi",
-                        "state": null,
-                        "country": null
-                      },
-                      "phone_number": {
-                        "id": 5,
-                        "phone_type": "work",
-                        "number": "9988776654"
-                      }
-                    }
-                  ]
+                  "status": "active"
+                },
+                "errors": []
+              }
+  
+  /clients/{id}:
+    put:
+      summary: Client update by Admin
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "Client id"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/ClientUpdateParameters"
+      responses:
+        "200":
+          description: "Updated client"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 18,
+                  "first_name": "Test",
+                  "last_name": "Client3",
+                  "email": "testc3@gmail.com",
+                  "dob": "2012-12-12",
+                  "gender": "male",
+                  "status": "active"
                 },
                 "errors": []
               }
@@ -2394,7 +2372,7 @@ definitions:
               display_code:
                 type: "integer"
 
-  ClientCreateUpdateParameters:
+  ClientCreateParameters:
     type: "object"
     properties:
       first_name:
@@ -2417,41 +2395,26 @@ definitions:
         type: "string"
       dob:
         type: "string"
-      contacts_attributes:
-        type: "object"
-        properties:
-          0:
-            type: "object"
-            properties:
-              first_name:
-                type: "string"
-              last_name:
-                type: "string"
-              phone_number_attributes:
-                type: "object"
-                properties:
-                  phone_type:
-                    type: string
-                    enum: [fax, home, mobile, pager, work, other]
-                  number:
-                    type: string
-              address_attributes:
-                type: "object"
-                properties:
-                  line1:
-                    type: "string"
-                  line2:
-                    type: "string"
-                  line3:
-                    type: "string"
-                  zipcode:
-                    type: "string"
-                  city:
-                    type: "string"
-                  state:
-                    type: "string"
-                  country:
-                    type: "string"
+
+  ClientUpdateParameters:
+    type: "object"
+    properties:
+      first_name:
+        type: "string"
+      last_name:
+        type: "string"
+      status:
+        type: "string"
+        enum: [active, inactive]
+      gender:
+        type: "string"
+        enum: [male, female]
+      clinic_id:
+        type: "integer"
+      email:
+        type: "string"
+      dob:
+        type: "string"
 
   CredentialCreateParameters:
     type: "object"

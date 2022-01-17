@@ -11,13 +11,17 @@ class ClientsController < ApplicationController
     @client.save
   end
 
+  def update
+    @client = Client.find(params[:id])
+    @client.update(client_params)
+  end
+
   private
 
   def client_params
-    params.permit(:first_name, :last_name, :status, :gender, :email, :dob, :password, :password_confirmation,
-                  :clinic_id, contacts_attributes: [:first_name, :last_name, address_attributes:
-                  %i[line1 line2 line3 zipcode city state country addressable_type addressable_id], 
-                  phone_number_attributes: %i[phone_type number]])
-  end
+    arr = [:first_name, :last_name, :status, :gender, :email, :dob, :clinic_id]
+    arr.concat([:password, :password_confirmation]) if params['action']=='create'
 
+    params.permit(arr)
+  end
 end
