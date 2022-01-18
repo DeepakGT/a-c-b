@@ -3,7 +3,7 @@ class ClientsController < ApplicationController
   before_action :set_client, only: %i[show update]
 
   def index
-    @clients = Client.order(:first_name)
+    @clients = Client.order(:first_name).paginate(page: params[:page])
   end
 
   def show; end
@@ -21,8 +21,13 @@ class ClientsController < ApplicationController
   private
 
   def client_params
-    arr = %i[first_name last_name status gender email dob clinic_id]
+    arr = %i[first_name last_name payer_status status gender email dob clinic_id]
+
     arr.concat(%i[password password_confirmation]) if params['action']=='create'
+
+    arr.concat([addresses_attributes: 
+                %i[id line1 line2 line3 zipcode city state country address_type addressable_type addressable_id],
+                phone_number_attributes: %i[phone_type number]])
 
     params.permit(arr)
   end

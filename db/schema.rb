@@ -23,6 +23,7 @@ ActiveRecord::Schema.define(version: 2022_01_13_122917) do
     t.string "city"
     t.string "state"
     t.string "country"
+    t.integer "address_type", default: 0
     t.string "addressable_type", null: false
     t.bigint "addressable_id", null: false
     t.datetime "created_at", precision: 6, null: false
@@ -174,6 +175,7 @@ ActiveRecord::Schema.define(version: 2022_01_13_122917) do
     t.string "last_name"
     t.string "email"
     t.integer "gender", default: 0
+    t.integer "payer_status", default: 0
     t.date "dob"
     t.string "type"
     t.bigint "supervisor_id"

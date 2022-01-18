@@ -34,6 +34,7 @@ class DeviseTokenAuthCreateUsers < ActiveRecord::Migration[6.1]
       t.string :last_name
       t.string :email
       t.integer :gender, default: 0
+      t.integer :payer_status, default: 0
       t.date :dob
       t.string :type, null: true
       t.references :supervisor, null: true, index: true, foreign_key: {to_table: :users}
