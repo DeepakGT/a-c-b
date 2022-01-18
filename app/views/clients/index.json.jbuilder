@@ -8,6 +8,7 @@ json.data do
     json.dob client.dob
     json.gender client.gender
     json.payer_status client.payer_status
+    json.status client.status
     if client.addresses.present?
       json.addresses do
         json.array! client.addresses do |address|
