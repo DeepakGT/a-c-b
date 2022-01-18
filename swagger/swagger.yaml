@@ -745,288 +745,6 @@ paths:
                           "errors": []
                         }
 
-  /clients:
-    get:
-      summary: Client list
-      parameters:
-      - in: "header"
-        name: "access-token"
-        description: "Request headers"
-        required: true
-      - in: "header"
-        name: "client"
-        description: "Request headers"
-        required: true
-      - in: "header"
-        name: "uid"
-        description: "Request headers"
-        required: true
-      responses:
-        "200":
-          description: "Client list"
-          content:
-            application/json:
-              example: {
-                "status": "success",
-                "data": [
-                  {
-                    "id": 9,
-                    "first_name": "Test",
-                    "last_name": "Client7",
-                    "email": "testc7@gmail.com",
-                    "dob": "2012-12-12",
-                    "gender": "male",
-                    "payer_status": "active"
-                  },
-                  {
-                    "id": 10,
-                    "first_name": "Test",
-                    "last_name": "Client1",
-                    "email": "testc1@gmail.com",
-                    "dob": "2012-12-12",
-                    "gender": "male",
-                    "payer_status": "active",
-                    "addresses": [
-                      {
-                        "id": 3,
-                        "type": "insurance_address",
-                        "line1": "Orbit Mall",
-                        "line2": null,
-                        "line3": null,
-                        "zipcode": null,
-                        "city": "Delhi",
-                        "state": null,
-                        "country": null
-                      },
-                      {
-                        "id": 4,
-                        "type": "service_address",
-                        "line1": "C21 Mall",
-                        "line2": null,
-                        "line3": null,
-                        "zipcode": null,
-                        "city": "Delhi",
-                        "state": null,
-                        "country": null
-                      }
-                    ],
-                    "phone_number": {
-                      "id": 3,
-                      "phone_type": "home",
-                      "number": "9988998899"
-                    }
-                  }
-                ],
-                "total_records": 2,
-                "limit": 30,
-                "page": 1
-              }
-    post:
-      summary: Client create by Admin
-      parameters:
-      - in: "header"
-        name: "access-token"
-        description: "Request headers"
-        required: true
-      - in: "header"
-        name: "client"
-        description: "Request headers"
-        required: true
-      - in: "header"
-        name: "uid"
-        description: "Request headers"
-        required: true
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/definitions/ClientCreateParameters"
-      responses:
-        "200":
-          description: "Created client"
-          content:
-            application/json:
-              example: {
-                "status": "success",
-                "data": {
-                  "id": 10,
-                  "first_name": "Test",
-                  "last_name": "Client1",
-                  "email": "testc1@gmail.com",
-                  "dob": "2012-12-12",
-                  "gender": "male",
-                  "payer_status": "active",
-                  "addresses": [
-                    {
-                      "id": 3,
-                      "type": "insurance_address",
-                      "line1": "Orbit Mall",
-                      "line2": null,
-                      "line3": null,
-                      "zipcode": null,
-                      "city": "Delhi",
-                      "state": null,
-                      "country": null
-                    },
-                    {
-                      "id": 4,
-                      "type": "service_address",
-                      "line1": "C21 Mall",
-                      "line2": null,
-                      "line3": null,
-                      "zipcode": null,
-                      "city": "Delhi",
-                      "state": null,
-                      "country": null
-                    }
-                  ],
-                  "phone_number": {
-                    "id": 3,
-                    "phone_type": "home",
-                    "number": "9988998899"
-                  }
-                },
-                "errors": []
-              }
-  
-  /clients/{id}:
-    get:
-      summary: client show
-      parameters:
-      - in: "header"
-        name: "access-token"
-        description: "Request headers"
-        required: true
-      - in: "header"
-        name: "client"
-        description: "Request headers"
-        required: true
-      - in: "header"
-        name: "uid"
-        description: "Request headers"
-        required: true
-      - in: "path"
-        name: "id"
-        description: "Client id"
-        required: true
-      responses:
-        "200":
-          description: "Client detail"
-          content:
-            application/json:
-              example: {
-                "status": "success",
-                "data": {
-                  "id": 10,
-                  "first_name": "Test",
-                  "last_name": "Client1",
-                  "email": "testc1@gmail.com",
-                  "dob": "2012-12-12",
-                  "gender": "male",
-                  "payer_status": "active",
-                  "addresses": [
-                    {
-                      "id": 3,
-                      "type": "insurance_address",
-                      "line1": "Orbit Mall",
-                      "line2": null,
-                      "line3": null,
-                      "zipcode": null,
-                      "city": "Delhi",
-                      "state": null,
-                      "country": null
-                    },
-                    {
-                      "id": 4,
-                      "type": "service_address",
-                      "line1": "C21 Mall",
-                      "line2": null,
-                      "line3": null,
-                      "zipcode": null,
-                      "city": "Delhi",
-                      "state": null,
-                      "country": null
-                    }
-                  ],
-                  "phone_number": {
-                    "id": 3,
-                    "phone_type": "home",
-                    "number": "9988998899"
-                  }
-                }
-              }
-    put:
-      summary: Client update by Admin
-      parameters:
-      - in: "header"
-        name: "access-token"
-        description: "Request headers"
-        required: true
-      - in: "header"
-        name: "client"
-        description: "Request headers"
-        required: true
-      - in: "header"
-        name: "uid"
-        description: "Request headers"
-        required: true
-      - in: "path"
-        name: "id"
-        description: "Client id"
-        required: true
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/definitions/ClientUpdateParameters"
-      responses:
-        "200":
-          description: "Updated client"
-          content:
-            application/json:
-              example: {
-                "status": "success",
-                "data": {
-                  "id": 10,
-                  "first_name": "Test",
-                  "last_name": "Client1",
-                  "email": "testc1@gmail.com",
-                  "dob": "2012-12-12",
-                  "gender": "male",
-                  "payer_status": "active",
-                  "addresses": [
-                    {
-                      "id": 3,
-                      "type": "insurance_address",
-                      "line1": "Princess Business Skypark",
-                      "line2": "Opp.Orbit Mall",
-                      "line3": null,
-                      "zipcode": null,
-                      "city": "Delhi",
-                      "state": null,
-                      "country": null
-                    },
-                    {
-                      "id": 4,
-                      "type": "service_address",
-                      "line1": "C21 Mall",
-                      "line2": null,
-                      "line3": null,
-                      "zipcode": null,
-                      "city": "Delhi",
-                      "state": null,
-                      "country": null
-                    }
-                  ],
-                  "phone_number": {
-                    "id": 3,
-                    "phone_type": "home",
-                    "number": "9988998899"
-                  }
-                },
-                "errors": []
-              }
-
   /credentials:
     get:
       summary: List of credentials
@@ -1308,73 +1026,6 @@ paths:
                     }
                   ]
                 }
-
-  /addresses/country_list:
-    get:
-      summary: country list
-      parameters:
-      - in: "header"
-        name: "access-token"
-        description: "Request headers"
-        required: true
-      - in: "header"
-        name: "client"
-        description: "Request headers"
-        required: true
-      - in: "header"
-        name: "uid"
-        description: "Request headers"
-        required: true
-      responses:
-        "200":
-          description: "country list"
-          content:
-            application/json:
-              example: {
-                "status": "success",
-                "data": [
-                  {
-                    "id": 233,
-                    "name": "United States of America"
-                  },
-                  {
-                    "id": 3,
-                    "name": "Afghanistan"
-                  },
-                  {
-                    "id": 15,
-                    "name": "Åland Islands"
-                  },
-                  {
-                    "id": 6,
-                    "name": "Albania"
-                  },
-                  {
-                    "id": 62,
-                    "name": "Algeria"
-                  },
-                  {
-                    "id": 11,
-                    "name": "American Samoa"
-                  },
-                  {
-                    "id": 1,
-                    "name": "Andorra"
-                  },
-                  {
-                    "id": 8,
-                    "name": "Angola"
-                  },
-                  {
-                    "id": 5,
-                    "name": "Anguilla"
-                  },
-                  {
-                    "id": 9,
-                    "name": "Antarctica"
-                  }
-                ]
-              }
 
   /services:
     get:
@@ -2214,6 +1865,355 @@ paths:
                 "errors": []
               }
 
+  /addresses/country_list:
+    get:
+      summary: country list
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      responses:
+        "200":
+          description: "country list"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": [
+                  {
+                    "id": 233,
+                    "name": "United States of America"
+                  },
+                  {
+                    "id": 3,
+                    "name": "Afghanistan"
+                  },
+                  {
+                    "id": 15,
+                    "name": "Åland Islands"
+                  },
+                  {
+                    "id": 6,
+                    "name": "Albania"
+                  },
+                  {
+                    "id": 62,
+                    "name": "Algeria"
+                  },
+                  {
+                    "id": 11,
+                    "name": "American Samoa"
+                  },
+                  {
+                    "id": 1,
+                    "name": "Andorra"
+                  },
+                  {
+                    "id": 8,
+                    "name": "Angola"
+                  },
+                  {
+                    "id": 5,
+                    "name": "Anguilla"
+                  },
+                  {
+                    "id": 9,
+                    "name": "Antarctica"
+                  }
+                ]
+              }
+
+  /clients:
+    get:
+      summary: Client list
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      responses:
+        "200":
+          description: "Client list"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": [
+                  {
+                    "id": 9,
+                    "first_name": "Test",
+                    "last_name": "Client7",
+                    "email": "testc7@gmail.com",
+                    "dob": "2012-12-12",
+                    "gender": "male",
+                    "payer_status": "active"
+                  },
+                  {
+                    "id": 10,
+                    "first_name": "Test",
+                    "last_name": "Client1",
+                    "email": "testc1@gmail.com",
+                    "dob": "2012-12-12",
+                    "gender": "male",
+                    "payer_status": "active",
+                    "addresses": [
+                      {
+                        "id": 3,
+                        "type": "insurance_address",
+                        "line1": "Orbit Mall",
+                        "line2": null,
+                        "line3": null,
+                        "zipcode": null,
+                        "city": "Delhi",
+                        "state": null,
+                        "country": null
+                      },
+                      {
+                        "id": 4,
+                        "type": "service_address",
+                        "line1": "C21 Mall",
+                        "line2": null,
+                        "line3": null,
+                        "zipcode": null,
+                        "city": "Delhi",
+                        "state": null,
+                        "country": null
+                      }
+                    ],
+                    "phone_number": {
+                      "id": 3,
+                      "phone_type": "home",
+                      "number": "9988998899"
+                    }
+                  }
+                ],
+                "total_records": 2,
+                "limit": 30,
+                "page": 1
+              }
+    post:
+      summary: Client create by Admin
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/ClientCreateParameters"
+      responses:
+        "200":
+          description: "Created client"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 10,
+                  "first_name": "Test",
+                  "last_name": "Client1",
+                  "email": "testc1@gmail.com",
+                  "dob": "2012-12-12",
+                  "gender": "male",
+                  "payer_status": "active",
+                  "addresses": [
+                    {
+                      "id": 3,
+                      "type": "insurance_address",
+                      "line1": "Orbit Mall",
+                      "line2": null,
+                      "line3": null,
+                      "zipcode": null,
+                      "city": "Delhi",
+                      "state": null,
+                      "country": null
+                    },
+                    {
+                      "id": 4,
+                      "type": "service_address",
+                      "line1": "C21 Mall",
+                      "line2": null,
+                      "line3": null,
+                      "zipcode": null,
+                      "city": "Delhi",
+                      "state": null,
+                      "country": null
+                    }
+                  ],
+                  "phone_number": {
+                    "id": 3,
+                    "phone_type": "home",
+                    "number": "9988998899"
+                  }
+                },
+                "errors": []
+              }
+  
+  /clients/{id}:
+    get:
+      summary: client show
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "Client id"
+        required: true
+      responses:
+        "200":
+          description: "Client detail"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 10,
+                  "first_name": "Test",
+                  "last_name": "Client1",
+                  "email": "testc1@gmail.com",
+                  "dob": "2012-12-12",
+                  "gender": "male",
+                  "payer_status": "active",
+                  "addresses": [
+                    {
+                      "id": 3,
+                      "type": "insurance_address",
+                      "line1": "Orbit Mall",
+                      "line2": null,
+                      "line3": null,
+                      "zipcode": null,
+                      "city": "Delhi",
+                      "state": null,
+                      "country": null
+                    },
+                    {
+                      "id": 4,
+                      "type": "service_address",
+                      "line1": "C21 Mall",
+                      "line2": null,
+                      "line3": null,
+                      "zipcode": null,
+                      "city": "Delhi",
+                      "state": null,
+                      "country": null
+                    }
+                  ],
+                  "phone_number": {
+                    "id": 3,
+                    "phone_type": "home",
+                    "number": "9988998899"
+                  }
+                }
+              }
+    put:
+      summary: Client update by Admin
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "Client id"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/ClientUpdateParameters"
+      responses:
+        "200":
+          description: "Updated client"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 10,
+                  "first_name": "Test",
+                  "last_name": "Client1",
+                  "email": "testc1@gmail.com",
+                  "dob": "2012-12-12",
+                  "gender": "male",
+                  "payer_status": "active",
+                  "addresses": [
+                    {
+                      "id": 3,
+                      "type": "insurance_address",
+                      "line1": "Princess Business Skypark",
+                      "line2": "Opp.Orbit Mall",
+                      "line3": null,
+                      "zipcode": null,
+                      "city": "Delhi",
+                      "state": null,
+                      "country": null
+                    },
+                    {
+                      "id": 4,
+                      "type": "service_address",
+                      "line1": "C21 Mall",
+                      "line2": null,
+                      "line3": null,
+                      "zipcode": null,
+                      "city": "Delhi",
+                      "state": null,
+                      "country": null
+                    }
+                  ],
+                  "phone_number": {
+                    "id": 3,
+                    "phone_type": "home",
+                    "number": "9988998899"
+                  }
+                },
+                "errors": []
+              }
+
 definitions:
   UserRegistrationParameters:
     type: "object"
@@ -2536,7 +2536,6 @@ definitions:
         type: "string"
       payer_status:
         type: "string"
-        enum: [active, on_hold, pending_authorization, waitlist]
       gender:
         type: "string"
         enum: [male, female]
@@ -2591,7 +2590,6 @@ definitions:
         type: "string"
       payer_status:
         type: "string"
-        enum: [active, on_hold, pending_authorization, waitlist]
       gender:
         type: "string"
         enum: [male, female]
