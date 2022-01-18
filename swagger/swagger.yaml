@@ -2214,6 +2214,52 @@ paths:
                 "errors": []
               }
 
+  /clients/{client_id}/client_enrollments:
+    post:
+      summary: Client enrollment create
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "Associated client id"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/ClientEnrollmentCreateParameters"
+      responses:
+        "200":
+          description: "Created client enrollment"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 2,
+                  "client_id": 9,
+                  "funding_source_id": 3,
+                  "enrollment_date": "2022-01-17",
+                  "terminated_at": null,
+                  "insureds_name": "abcd",
+                  "notes": null,
+                  "top_invoice_note": null,
+                  "bottom_invoice_note": null
+                },
+                "errors": []
+              }
+
 definitions:
   UserRegistrationParameters:
     type: "object"
@@ -2818,4 +2864,21 @@ definitions:
           country:
             type: "string"
     
-      
+  ClientEnrollmentCreateParameters:
+    type: "object"
+    properties:
+      funding_source_id:
+        type: "integer"
+      enrollment_date:
+        type: "string"
+      terminated_at:
+        type: "string"
+      insureds_name:
+        type: "string"
+      notes:
+        type: "string"
+      top_invoice_note:
+        type: "string"
+      bottom_invoice_note:
+        type: "string"
+        

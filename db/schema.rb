@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_13_122917) do
+ActiveRecord::Schema.define(version: 2022_01_18_094601) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -29,6 +29,21 @@ ActiveRecord::Schema.define(version: 2022_01_13_122917) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["addressable_type", "addressable_id"], name: "index_addresses_on_addressable"
+  end
+
+  create_table "client_enrollments", force: :cascade do |t|
+    t.date "enrollment_date"
+    t.date "terminated_at"
+    t.string "insureds_name"
+    t.text "notes"
+    t.text "top_invoice_note"
+    t.text "bottom_invoice_note"
+    t.bigint "client_id", null: false
+    t.bigint "funding_source_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["client_id"], name: "index_client_enrollments_on_client_id"
+    t.index ["funding_source_id"], name: "index_client_enrollments_on_funding_source_id"
   end
 
   create_table "clinics", force: :cascade do |t|
@@ -193,6 +208,8 @@ ActiveRecord::Schema.define(version: 2022_01_13_122917) do
     t.index ["uid", "provider"], name: "index_users_on_uid_and_provider", unique: true
   end
 
+  add_foreign_key "client_enrollments", "funding_sources"
+  add_foreign_key "client_enrollments", "users", column: "client_id"
   add_foreign_key "clinics", "organizations"
   add_foreign_key "funding_sources", "clinics"
   add_foreign_key "organizations", "users", column: "admin_id"
