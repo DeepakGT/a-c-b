@@ -32,8 +32,25 @@ RSpec.describe ClientEnrollmentsController, type: :controller do
         expect(response_body['status']).to eq('success')
         expect(response_body['data']['client_id']).to eq(client.id) 
         expect(response_body['data']['funding_source_id']).to eq(funding_source.id)
-        #expect(response_body['data']['enrollment_date']).to eq(Date.today)
+        expect(response_body['data']['enrollment_date']).to eq(Date.today.to_s)
         expect(response_body['data']['insureds_name']).to eq('client2')  
+      end
+    end
+  end
+
+  describe "GET #show" do
+    context "when sign in" do
+      let(:client_enrollment) { create(:client_enrollment, client_id: client.id)}
+      it "should show client enrollment detail successfully" do
+        set_auth_headers(auth_headers)
+
+        get :show, params: {client_id: client.id, id: client_enrollment.id}
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data']['client_id']).to eq(client.id) 
+        expect(response_body['data']['id']).to eq(client_enrollment.id) 
       end
     end
   end

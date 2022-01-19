@@ -2260,6 +2260,50 @@ paths:
                 "errors": []
               }
 
+  /clients/{client_id}/client_enrollments/{id}:
+    get:
+      summary: client enrollment show
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "Associated Client id"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "Client enrollment id"
+        required: true
+      responses:
+        "200":
+          description: "Client enrollment detail"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 1,
+                  "client_id": 10,
+                  "funding_source_id": 3,
+                  "enrollment_date": "2022-01-17",
+                  "terminated_at": null,
+                  "insureds_name": "abcd",
+                  "notes": null,
+                  "top_invoice_note": null,
+                  "bottom_invoice_note": null
+                }
+              }
+
 definitions:
   UserRegistrationParameters:
     type: "object"

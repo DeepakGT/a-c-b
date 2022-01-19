@@ -184,12 +184,13 @@ RSpec.describe StaffController, type: :controller do
       end
 
       context "and update associated data" do
+        let(:role) { create(:role, name: 'billing')}
         it "should update role successfully" do
           set_auth_headers(auth_headers)
 
           put :update, params: {role_name: 'billing', id:staff.id}
           response_body = JSON.parse(response.body)
-
+          
           expect(response.status).to eq(200)
           expect(response_body['status']).to eq('success')
           expect(response_body['data']['id']).to eq(staff.id)
