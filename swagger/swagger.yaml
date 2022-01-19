@@ -2215,6 +2215,62 @@ paths:
               }
 
   /clients/{client_id}/client_enrollments:
+    get:
+      summary: Client Enrollment list
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "Associated Client id"
+        required: true
+      responses:
+        "200":
+          description: "Client list"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": [
+                  {
+                    "id": 1,
+                    "client_id": 10,
+                    "funding_source_id": 3,
+                    "funding_source": "amerihealth caritas nh",
+                    "enrollment_date": "2022-01-17",
+                    "terminated_at": null,
+                    "insureds_name": "abcd",
+                    "notes": null,
+                    "top_invoice_note": null,
+                    "bottom_invoice_note": null
+                  },
+                  {
+                    "id": 2,
+                    "client_id": 10,
+                    "funding_source_id": 5,
+                    "funding_source": "cigna",
+                    "enrollment_date": "2022-01-17",
+                    "terminated_at": null,
+                    "insureds_name": "abcd",
+                    "notes": null,
+                    "top_invoice_note": null,
+                    "bottom_invoice_note": null
+                  }
+                ],
+                "total_records": 2,
+                "limit": 30,
+                "page": 1
+              }
     post:
       summary: Client enrollment create
       parameters:
@@ -2250,6 +2306,7 @@ paths:
                   "id": 2,
                   "client_id": 9,
                   "funding_source_id": 3,
+                  "funding_source": "amerihealth caritas nh",
                   "enrollment_date": "2022-01-17",
                   "terminated_at": null,
                   "insureds_name": "abcd",
@@ -2295,6 +2352,7 @@ paths:
                   "id": 1,
                   "client_id": 10,
                   "funding_source_id": 3,
+                  "funding_source": "amerihealth caritas nh",
                   "enrollment_date": "2022-01-17",
                   "terminated_at": null,
                   "insureds_name": "abcd",

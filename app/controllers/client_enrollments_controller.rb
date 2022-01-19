@@ -3,6 +3,10 @@ class ClientEnrollmentsController < ApplicationController
   before_action :set_client
   before_action :set_client_enrollment, only: :show
 
+  def index
+    @client_enrollments = @client.client_enrollments.order(:enrollment_date).paginate(page: params[:page])
+  end
+
   def create
     @client_enrollment = @client.client_enrollments.create(enrollment_params)
   end
