@@ -16,22 +16,14 @@ class User < ActiveRecord::Base
 
   # Associations
   has_one :user_role, dependent: :destroy
-  has_one :address, as: :addressable, dependent: :destroy
   has_one :rbt_supervision, dependent: :destroy
-
-  has_many :phone_numbers, as: :phoneable, dependent: :destroy
   has_many :user_services, dependent: :destroy
-  has_many :staff_credentials, dependent: :destroy, foreign_key: :staff_id
   
   has_one :role, through: :user_role
   has_many :services, through: :user_services
-  has_many :credentials, through: :staff_credentials
 
   belongs_to :clinic, optional: true
-  belongs_to :supervisor, class_name: :User, optional: true
 
-  accepts_nested_attributes_for :address, :update_only => true
-  accepts_nested_attributes_for :phone_numbers, :update_only => true
   accepts_nested_attributes_for :services, :update_only => true
   accepts_nested_attributes_for :rbt_supervision, :update_only => true
 
@@ -49,27 +41,9 @@ class User < ActiveRecord::Base
   validate :validate_presence_of_clinic
 
   # scopes
-  scope :by_staff_roles, ->{ where('role.name.downcase': ['bcba','rbt','billing']) }
   scope :by_first_name, ->(fname){ where('lower(first_name) LIKE ?',"%#{fname.downcase}%") }
   scope :by_last_name, ->(lname){ where('lower(last_name) LIKE ?', "%#{lname&.downcase}%") }
-  scope :by_organization, ->(org_name){ where('organization.name.downcase': org_name&.downcase)}
   scope :by_role, ->(role_name){ where('role.name.downcase': role_name&.downcase)}
-  scope :by_supervisor_name, ->(fname,lname){ where(supervisor_id: User.by_first_name(fname&.downcase).by_last_name(lname&.downcase)) }
-  scope :by_location, ->(location) do 
-    staff = self
-    location.each do |loc|
-      break if staff.none?
-      
-      staff = staff.where('lower(addresses.line1) LIKE :loc OR
-        lower(addresses.line2) LIKE :loc OR
-        lower(addresses.line3) LIKE :loc OR
-        lower(addresses.zipcode) LIKE :loc OR
-        lower(addresses.city) LIKE :loc OR
-        lower(addresses.state) LIKE :loc OR
-        lower(addresses.country) LIKE :loc', loc: loc&.downcase)
-    end
-    staff
-  end
 
   # delegates
   delegate :name, to: :role, prefix: true, allow_nil: true
@@ -97,8 +71,6 @@ class User < ActiveRecord::Base
                .merge({role: Role.names[self.role_name]})
 
     response.merge!({organization_id: self.organization&.id}) if self.aba_admin?
-    response.merge!({address: self.address})
-    response.merge!(phone_numbers: self.phone_numbers)
     response
   end
 

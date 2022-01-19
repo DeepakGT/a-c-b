@@ -29,7 +29,7 @@ class StaffCredentialsController < ApplicationController
   end
 
   def set_staff
-    @staff = User.find(params[:staff_id])
+    @staff = Staff.find(params[:staff_id])
   end
 
   def set_staff_credential

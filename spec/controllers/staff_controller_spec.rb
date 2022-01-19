@@ -19,7 +19,7 @@ RSpec.describe StaffController, type: :controller do
     context "when sign in" do
       before do
         ["Test1","Test2"].map do |first_name| 
-          create(:user, :with_role, role_name: 'billing', clinic_id: clinic.id, first_name: first_name, 
+          create(:staff, :with_role, role_name: 'billing', clinic_id: clinic.id, first_name: first_name, 
                   address_attributes: {city: 'Indore'}, supervisor_id: user.id) 
         end
       end
@@ -32,7 +32,7 @@ RSpec.describe StaffController, type: :controller do
 
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
-        expect(response_body['data'].count).to eq(User.billing.count)
+        expect(response_body['data'].count).to eq(Staff.billing.count)
       end
 
       it "should fetch the first page record by default" do
@@ -89,7 +89,7 @@ RSpec.describe StaffController, type: :controller do
 
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
-        expect(response_body['data'].count).to eq(User.joins(clinic: :organization).by_organization(organization.name).count)
+        expect(response_body['data'].count).to eq(Staff.joins(clinic: :organization).by_organization(organization.name).count)
       end
 
       it "should list staff filtered by location successfully" do
@@ -119,7 +119,7 @@ RSpec.describe StaffController, type: :controller do
   end
 
   describe "GET #show" do 
-    let!(:staff) { create(:user, :with_role, role_name: 'billing', last_name: 'Zachary',clinic_id: clinic.id) }   
+    let!(:staff) { create(:staff, :with_role, role_name: 'billing', last_name: 'Zachary',clinic_id: clinic.id) }   
     context "when sign in" do
       it "should fetch clinic staff" do
         set_auth_headers(auth_headers)
@@ -169,7 +169,7 @@ RSpec.describe StaffController, type: :controller do
   end
 
   describe "PUT #update" do 
-    let!(:staff) { create(:user, :with_role, role_name: 'administrator', first_name: 'Zachary',clinic_id: clinic.id) }   
+    let!(:staff) { create(:staff, :with_role, role_name: 'bcba', first_name: 'Zachary',clinic_id: clinic.id) }   
     context "when sign in" do
       it "should update staff successfully" do
         set_auth_headers(auth_headers)
@@ -277,7 +277,7 @@ RSpec.describe StaffController, type: :controller do
   end
 
   describe "GET #supervisor_list" do
-    let!(:staff_list) { create_list(:user, 5, :with_role, role_name: 'billing', clinic_id: clinic.id)}
+    let!(:staff_list) { create_list(:staff, 5, :with_role, role_name: 'billing', clinic_id: clinic.id)}
     context "when sign in" do
       it "should list supervisors successfuly" do
         set_auth_headers(auth_headers)

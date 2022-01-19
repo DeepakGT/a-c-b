@@ -1,4 +1,4 @@
-json.status 'success'
+json.status @staff.errors.any? ? 'failure' : 'success'
 json.data do
   json.id @staff.id
   json.first_name @staff.first_name
@@ -44,3 +44,4 @@ json.data do
     end
   end
 end
+json.errors @staff.errors.full_messages
