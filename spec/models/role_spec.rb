@@ -14,7 +14,8 @@ RSpec.describe Role, type: :model do
         administrator: 'administrator',
         bcba: 'bcba',
         rbt: 'rbt',
-        billing: 'billing'
+        billing: 'billing',
+        client: 'client'
       )
       .backed_by_column_of_type(:string)
   end

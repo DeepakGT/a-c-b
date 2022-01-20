@@ -9,5 +9,6 @@ class Role < ApplicationRecord
                administrator: 'administrator',
                bcba: 'bcba',
                rbt: 'rbt',
-               billing: 'billing' }
+               billing: 'billing',
+               client: 'client' }
 end
