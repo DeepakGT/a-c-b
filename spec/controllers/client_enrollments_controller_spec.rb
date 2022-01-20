@@ -92,4 +92,52 @@ RSpec.describe ClientEnrollmentsController, type: :controller do
       end
     end
   end
+
+  describe "PUT #update" do
+    context "when sign in" do
+      let(:client_enrollment) { create(:client_enrollment, client_id: client.id)}
+      let(:updated_insureds_name) {'Test-insured-1'}
+      it "should update client enrollment successfully" do
+        set_auth_headers(auth_headers)
+
+        put :update, params: {id: client_enrollment.id, client_id: client.id, insureds_name: updated_insureds_name}
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data']['id']).to eq(client_enrollment.id)
+        expect(response_body['data']['insureds_name']).to eq(updated_insureds_name)       
+      end
+
+      context "and update associated data" do
+        it "should update associated funding source successfully" do
+          set_auth_headers(auth_headers)
+          
+          put :update, params: {id: client_enrollment.id, client_id: client.id, funding_source_id: funding_source.id}
+          response_body = JSON.parse(response.body)
+          
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data']['id']).to eq(client_enrollment.id)
+          expect(response_body['data']['funding_source_id']).to eq(funding_source.id)       
+        end
+      end
+    end
+  end
+
+  describe "DELETE #destroy" do
+    context "when sign in" do
+      let(:client_enrollment) { create(:client_enrollment, client_id: client.id)}
+      it "should delete client enrollment successfully" do
+        set_auth_headers(auth_headers)
+        delete :destroy, params: {client_id: client.id, id: client_enrollment.id} 
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data']['id']).to eq(client_enrollment.id)
+        expect(ClientEnrollment.find_by_id(client_enrollment.id)).to eq(nil)
+      end
+    end
+  end
 end

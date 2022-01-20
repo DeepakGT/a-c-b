@@ -1,7 +1,7 @@
 class ClientEnrollmentsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_client
-  before_action :set_client_enrollment, only: :show
+  before_action :set_client_enrollment, only: %i[show update destroy]
 
   def index
     @client_enrollments = @client.client_enrollments.order(:enrollment_date).paginate(page: params[:page])
@@ -12,6 +12,14 @@ class ClientEnrollmentsController < ApplicationController
   end
 
   def show; end
+
+  def update
+    @client_enrollment.update(enrollment_params)
+  end
+
+  def destroy
+    @client_enrollment.destroy
+  end
 
   private
 
