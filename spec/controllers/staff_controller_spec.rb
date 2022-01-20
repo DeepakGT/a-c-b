@@ -9,7 +9,7 @@ RSpec.describe StaffController, type: :controller do
     @request.env["devise.mapping"] = Devise.mappings[:user]
   end
 
-  let!(:user) { create(:user, :with_role, role_name: 'aba_admin') }
+  let!(:user) { create(:user, :with_role, role_name: 'aba_admin', first_name: 'admin', last_name: 'user') }
   let!(:auth_headers) { user.create_new_auth_token }
   let!(:organization) { create(:organization, name: 'org1', admin_id: user.id) } 
   let!(:role) { create(:role, name: 'bcba')}
@@ -18,7 +18,10 @@ RSpec.describe StaffController, type: :controller do
   describe "GET #index" do 
     context "when sign in" do
       before do
-        ["Test1","Test2"].map { |first_name| create(:user, :with_role, role_name: 'billing', clinic_id: clinic.id, first_name: first_name, address_attributes: {city: 'Indore'}, supervisor_id: user.id) }
+        ["Test1","Test2"].map do |first_name| 
+          create(:user, :with_role, role_name: 'billing', clinic_id: clinic.id, first_name: first_name, 
+                  address_attributes: {city: 'Indore'}, supervisor_id: user.id) 
+        end
       end
 
       it "should list staff successfully" do
@@ -30,51 +33,69 @@ RSpec.describe StaffController, type: :controller do
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
         expect(response_body['data'].count).to eq(User.billing.count)
+      end
+
+      it "should fetch the first page record by default" do
+        set_auth_headers(auth_headers)
+        
+        get :index
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
         expect(response_body['page']).to eq(1)
+      end
+
+      it "should fetch the given page record" do
+        set_auth_headers(auth_headers)
+        
+        get :index, params: { page: 2}
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['page']).to eq("2")
       end
 
       it "should staff filter by name successfully" do
         set_auth_headers(auth_headers)
         
-        get :index, params: { name: "test1"}
+        get :index, params: { search_by:"name", search_value: "test1"}
         response_body = JSON.parse(response.body)
         
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
         expect(response_body['data'].count).to eq(1)
         expect(response_body['data'].first['first_name'].downcase).to eq('test1')  
-        expect(response_body['page']).to eq(1)
       end
 
       it "should list staff filtered by role successfully" do
         set_auth_headers(auth_headers)
 
-        get :index, params: { title: "billing"}
+        get :index, params: { search_by:"title", search_value: "billing"}
         response_body = JSON.parse(response.body)
 
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
         expect(response_body['data'].count).to eq(2)
         expect(response_body['data'].first['title']).to eq('billing')  
-        expect(response_body['page']).to eq(1)
       end
 
       it "should list staff filtered by organization successfully" do
         set_auth_headers(auth_headers)
 
-        get :index, params: { organization: organization.name}
+        get :index, params: { search_by:"organization", search_value: organization.name}
         response_body = JSON.parse(response.body)
 
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
         expect(response_body['data'].count).to eq(User.joins(clinic: :organization).by_organization(organization.name).count)
-        expect(response_body['page']).to eq(1)
       end
 
       it "should list staff filtered by location successfully" do
         set_auth_headers(auth_headers)
         
-        get :index, params: { location: 'Indore'}
+        get :index, params: { search_by:"location", search_value: 'Indore'}
         response_body = JSON.parse(response.body)
         
         expect(response.status).to eq(200)
@@ -85,15 +106,14 @@ RSpec.describe StaffController, type: :controller do
 
       it "should list staff filtered by supervisor successfully" do
         set_auth_headers(auth_headers)
-
-        get :index, params: { immediate_supervisor: user.first_name}
+        
+        get :index, params: { search_by:"immediate_supervisor", search_value: 'admin user'}
         response_body = JSON.parse(response.body)
-
+        
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
         expect(response_body['data'].count).to eq(2)
         expect(response_body['data'].first['supervisor_id']).to eq(user.id)
-        expect(response_body['page']).to eq(1)
       end
     end
   end
@@ -130,7 +150,8 @@ RSpec.describe StaffController, type: :controller do
           service_provider: false,
           address_attributes: { country: 'India'},
           phone_numbers_attributes: [{ number: '9898767655'}, {number: '8787876565'}],
-          rbt_supervision_attributes: { status: 'requires'}
+          rbt_supervision_attributes: { status: 'requires'},
+          role_name: 'bcba'
         }
         
         response_body = JSON.parse(response.body)
@@ -163,6 +184,17 @@ RSpec.describe StaffController, type: :controller do
       end
 
       context "and update associated data" do
+        it "should update role successfully" do
+          set_auth_headers(auth_headers)
+
+          put :update, params: {role_name: 'billing', id:staff.id}
+          response_body = JSON.parse(response.body)
+
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data']['id']).to eq(staff.id)
+        end
+
         let(:clinic) { create(:clinic, name: 'clinic2', organization_id: organization.id) }
         it "should update clinic successfully" do
           set_auth_headers(auth_headers)

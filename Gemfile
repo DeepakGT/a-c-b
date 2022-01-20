@@ -5,6 +5,8 @@ ruby '3.0.2'
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.4', require: false
+# access countries
+gem 'countries'
 # Simple, multi-client and secure token-based authentication for Rails.
 gem 'devise_token_auth'
 gem 'faker', git: 'https://github.com/faker-ruby/faker.git', branch: 'master'
@@ -12,6 +14,8 @@ gem 'faker', git: 'https://github.com/faker-ruby/faker.git', branch: 'master'
 gem 'jbuilder', '~> 2.11', '>= 2.11.2'
 # the database for Active Record
 gem 'pg', '~> 1.2.3'
+# authorization
+gem "pundit"
 # Use Puma as the app server
 gem 'puma', '~> 5.0'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails', branch: 'main'

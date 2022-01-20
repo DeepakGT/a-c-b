@@ -48,7 +48,6 @@ RSpec.describe DeviseTokenAuth::RegistrationsController, type: :controller do
         expect(response.status).to eq(422)
         expect(response_body["errors"]["password"]).to include("can't be blank")
       end
-
     end
   end
 end

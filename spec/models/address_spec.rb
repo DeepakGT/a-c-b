@@ -1,5 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Address, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  it { should belong_to(:addressable).inverse_of(:addressable) }
+  it { should define_enum_for(:address_type)}
 end

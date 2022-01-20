@@ -51,14 +51,15 @@ class User < ActiveRecord::Base
   # scopes
   scope :by_staff_roles, ->{ where('role.name.downcase': ['bcba','rbt','billing']) }
   scope :by_first_name, ->(fname){ where('lower(first_name) LIKE ?',"%#{fname.downcase}%") }
-  scope :by_last_name, ->(lname){ where('lower(last_name) LIKE ?', "%#{lname.downcase}%") }
+  scope :by_last_name, ->(lname){ where('lower(last_name) LIKE ?', "%#{lname&.downcase}%") }
   scope :by_organization, ->(org_name){ where('organization.name.downcase': org_name&.downcase)}
   scope :by_role, ->(role_name){ where('role.name.downcase': role_name&.downcase)}
-  scope :by_supervisor_name, ->(fname,lname){ where(supervisor_id: User.by_name(fname&.downcase, lname&.downcase)) }
+  scope :by_supervisor_name, ->(fname,lname){ where(supervisor_id: User.by_first_name(fname&.downcase).by_last_name(lname&.downcase)) }
   scope :by_location, ->(location) do 
-    staff = User.joins(:address)
+    staff = self
     location.each do |loc|
       break if staff.none?
+      
       staff = staff.where('lower(addresses.line1) LIKE :loc OR
         lower(addresses.line2) LIKE :loc OR
         lower(addresses.line3) LIKE :loc OR

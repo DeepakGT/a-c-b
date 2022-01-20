@@ -15,7 +15,7 @@ RSpec.describe CredentialsController, type: :controller do
   
   describe "GET #index" do  
     context "when sign in" do 
-      let!(:credential) { create_list(:credential, 10) }
+      let!(:credentials) { create_list(:credential, 10) }
       it "should list all credential" do
         set_auth_headers(auth_headers)
         get :index
@@ -23,7 +23,7 @@ RSpec.describe CredentialsController, type: :controller do
 
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
-        expect(response_body['data'].count).to eq(10)
+        expect(response_body['data'].count).to eq(credentials.count)
       end
 
       it "should list all credentials on a specific page" do

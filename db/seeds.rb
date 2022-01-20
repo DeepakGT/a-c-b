@@ -132,6 +132,10 @@ ActiveRecord::Base.transaction do
     # end of times block
   end
   # end of roll block
+
+  # Country List
+  Country.delete_all
+  ISO3166::Country.all.map(&:name).each {|country| Country.create(name: country)}
 end
 # end of transaction block
 

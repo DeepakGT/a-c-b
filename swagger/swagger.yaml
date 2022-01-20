@@ -744,6 +744,7 @@ paths:
                           },
                           "errors": []
                         }
+
   /credentials:
     get:
       summary: List of credentials
@@ -1198,22 +1199,65 @@ paths:
           content:
             application/json:
               example: {
-                          "status": "success",
-                          "data": [
-                              {
-                                  "id": 1,
-                                  "name": "fs-name-1",
-                                  "title": null,
-                                  "status": "active"
-                              },
-                              {
-                                  "id": 2,
-                                  "name": "fs-name-2",
-                                  "title": null,
-                                  "status": "active"
-                              }
-                            ]
-                        }
+                "status": "success",
+                "data": [
+                  {
+                    "id": 1,
+                    "name": "united behavioral health",
+                    "payer_type": "commercial",
+                    "plan_name": "abc",
+                    "network_status": "in_network",
+                    "status": "active",
+                    "email": "contact@ubh.com"
+                  },
+                  {
+                    "id": 2,
+                    "name": "fs1",
+                    "payer_type": "commercial",
+                    "plan_name": "abc",
+                    "network_status": "in_network",
+                    "status": "active",
+                    "email": "contact@fs1.com",
+                    "address": {
+                      "id": 1,
+                      "line1": "Princess Business Skypark",
+                      "line2": null,
+                      "line3": null,
+                      "zipcode": null,
+                      "city": "Indore",
+                      "state": null,
+                      "country": null
+                    }
+                  },
+                  {
+                    "id": 3,
+                    "name": "fs2",
+                    "payer_type": "commercial",
+                    "plan_name": "abc",
+                    "network_status": "in_network",
+                    "status": "active",
+                    "email": "contact@fs2.com",
+                    "address": {
+                      "id": 2,
+                      "line1": "Princess Business Skypark",
+                      "line2": null,
+                      "line3": null,
+                      "zipcode": null,
+                      "city": "Indore",
+                      "state": null,
+                      "country": null
+                    },
+                    "phone_number": {
+                      "id": 1,
+                      "phone_type": "home",
+                      "number": "9988776655"
+                    }
+                  }
+                ],
+                "total_records": 3,
+                "limit": 30,
+                "page": 1
+              }
     post:
       summary: Funding source create
       parameters:
@@ -1246,16 +1290,93 @@ paths:
               example: {
                 "status": "success",
                 "data": {
+                  "id": 12,
+                  "name": "fs2",
+                  "plan_name": "abc",
+                  "payer_type": "commercial",
+                  "network_status": "in_network",
+                  "status": "active",
+                  "email": "contact@fs2.com",
+                  "notes": "good",
+                  "clinic_id": 1,
+                  "address": {
+                    "id": 2,
+                    "line1": "Princess Business Skypark",
+                    "line2": null,
+                    "line3": null,
+                    "zipcode": null,
+                    "city": "Indore",
+                    "state": null,
+                    "country": null
+                  },
+                  "phone_number": {
                     "id": 1,
-                    "name": "test-fs1",
-                    "title": null,
-                    "status": "active",
-                    "clinic_id": 1
+                    "phone_type": "home",
+                    "number": "9988776655"
+                  }
                 },
                 "errors": []
               }
 
   /clinics/{clinic_id}/funding_sources/{id}:
+    get:
+      summary: funding source show
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "clinic_id"
+        description: "Associated clinic id"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "funding_source id"
+        required: true
+      responses:
+        "200":
+          description: "Funding Source detail"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 12,
+                  "name": "fs2",
+                  "plan_name": "abc",
+                  "payer_type": "commercial",
+                  "network_status": "in_network",
+                  "status": "active",
+                  "email": "contact@fs2.com",
+                  "notes": "good",
+                  "clinic_id": 1,
+                  "address": {
+                    "id": 2,
+                    "line1": "Princess Business Skypark",
+                    "line2": null,
+                    "line3": null,
+                    "zipcode": null,
+                    "city": "Indore",
+                    "state": null,
+                    "country": null
+                  },
+                  "phone_number": {
+                    "id": 1,
+                    "phone_type": "home",
+                    "number": "9988776655"
+                  }
+                },
+                "errors": []
+              }
     put:
       summary: Funding source update
       parameters:
@@ -1286,17 +1407,36 @@ paths:
               $ref: "#/definitions/FundingSourceCreateUpdateParameters"
       responses:
         "200":
-          description: "Created funding source"
+          description: "Updated funding source"
           content:
             application/json:
               example: {
                 "status": "success",
                 "data": {
-                    "id": 1,
-                    "name": "test-fs1",
-                    "title": null,
+                    "id": 11,
+                    "name": "fs1",
+                    "plan_name": "abc",
+                    "payer_type": "commercial",
+                    "network_status": "in_network",
                     "status": "active",
-                    "clinic_id": 1
+                    "email": "contact@fs1.com",
+                    "notes": "good",
+                    "clinic_id": 1,
+                    "address": {
+                      "id": 1,
+                      "line1": "Princess Business Skypark",
+                      "line2": null,
+                      "line3": null,
+                      "zipcode": null,
+                      "city": "Indore",
+                      "state": null,
+                      "country": null
+                    },
+                    "phone_number": {
+                      "id": 2,
+                      "phone_type": "work",
+                      "number": "8989898988"
+                    }
                 },
                 "errors": []
               }
@@ -1724,6 +1864,402 @@ paths:
                 },
                 "errors": []
               }
+
+  /addresses/country_list:
+    get:
+      summary: country list
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      responses:
+        "200":
+          description: "country list"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": [
+                  {
+                    "id": 233,
+                    "name": "United States of America"
+                  },
+                  {
+                    "id": 3,
+                    "name": "Afghanistan"
+                  },
+                  {
+                    "id": 15,
+                    "name": "Åland Islands"
+                  },
+                  {
+                    "id": 6,
+                    "name": "Albania"
+                  },
+                  {
+                    "id": 62,
+                    "name": "Algeria"
+                  },
+                  {
+                    "id": 11,
+                    "name": "American Samoa"
+                  },
+                  {
+                    "id": 1,
+                    "name": "Andorra"
+                  },
+                  {
+                    "id": 8,
+                    "name": "Angola"
+                  },
+                  {
+                    "id": 5,
+                    "name": "Anguilla"
+                  },
+                  {
+                    "id": 9,
+                    "name": "Antarctica"
+                  }
+                ]
+              }
+
+  /clients:
+    get:
+      summary: Client list
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      responses:
+        "200":
+          description: "Client list"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": [
+                  {
+                    "id": 9,
+                    "first_name": "Test",
+                    "last_name": "Client7",
+                    "email": "testc7@gmail.com",
+                    "dob": "2012-12-12",
+                    "gender": "male",
+                    "payer_status": "active"
+                  },
+                  {
+                    "id": 10,
+                    "first_name": "Test",
+                    "last_name": "Client1",
+                    "email": "testc1@gmail.com",
+                    "dob": "2012-12-12",
+                    "gender": "male",
+                    "payer_status": "active",
+                    "addresses": [
+                      {
+                        "id": 3,
+                        "type": "insurance_address",
+                        "line1": "Orbit Mall",
+                        "line2": null,
+                        "line3": null,
+                        "zipcode": null,
+                        "city": "Delhi",
+                        "state": null,
+                        "country": null
+                      },
+                      {
+                        "id": 4,
+                        "type": "service_address",
+                        "line1": "C21 Mall",
+                        "line2": null,
+                        "line3": null,
+                        "zipcode": null,
+                        "city": "Delhi",
+                        "state": null,
+                        "country": null
+                      }
+                    ],
+                    "phone_number": {
+                      "id": 3,
+                      "phone_type": "home",
+                      "number": "9988998899"
+                    }
+                  }
+                ],
+                "total_records": 2,
+                "limit": 30,
+                "page": 1
+              }
+    post:
+      summary: Client create by Admin
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/ClientCreateParameters"
+      responses:
+        "200":
+          description: "Created client"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 10,
+                  "first_name": "Test",
+                  "last_name": "Client1",
+                  "email": "testc1@gmail.com",
+                  "dob": "2012-12-12",
+                  "gender": "male",
+                  "payer_status": "active",
+                  "addresses": [
+                    {
+                      "id": 3,
+                      "type": "insurance_address",
+                      "line1": "Orbit Mall",
+                      "line2": null,
+                      "line3": null,
+                      "zipcode": null,
+                      "city": "Delhi",
+                      "state": null,
+                      "country": null
+                    },
+                    {
+                      "id": 4,
+                      "type": "service_address",
+                      "line1": "C21 Mall",
+                      "line2": null,
+                      "line3": null,
+                      "zipcode": null,
+                      "city": "Delhi",
+                      "state": null,
+                      "country": null
+                    }
+                  ],
+                  "phone_number": {
+                    "id": 3,
+                    "phone_type": "home",
+                    "number": "9988998899"
+                  }
+                },
+                "errors": []
+              }
+  
+  /clients/{id}:
+    get:
+      summary: client show
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "Client id"
+        required: true
+      responses:
+        "200":
+          description: "Client detail"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 10,
+                  "first_name": "Test",
+                  "last_name": "Client1",
+                  "email": "testc1@gmail.com",
+                  "dob": "2012-12-12",
+                  "gender": "male",
+                  "payer_status": "active",
+                  "addresses": [
+                    {
+                      "id": 3,
+                      "type": "insurance_address",
+                      "line1": "Orbit Mall",
+                      "line2": null,
+                      "line3": null,
+                      "zipcode": null,
+                      "city": "Delhi",
+                      "state": null,
+                      "country": null
+                    },
+                    {
+                      "id": 4,
+                      "type": "service_address",
+                      "line1": "C21 Mall",
+                      "line2": null,
+                      "line3": null,
+                      "zipcode": null,
+                      "city": "Delhi",
+                      "state": null,
+                      "country": null
+                    }
+                  ],
+                  "phone_number": {
+                    "id": 3,
+                    "phone_type": "home",
+                    "number": "9988998899"
+                  }
+                }
+              }
+    put:
+      summary: Client update by Admin
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "Client id"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/ClientUpdateParameters"
+      responses:
+        "200":
+          description: "Updated client"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 10,
+                  "first_name": "Test",
+                  "last_name": "Client1",
+                  "email": "testc1@gmail.com",
+                  "dob": "2012-12-12",
+                  "gender": "male",
+                  "payer_status": "active",
+                  "addresses": [
+                    {
+                      "id": 3,
+                      "type": "insurance_address",
+                      "line1": "Princess Business Skypark",
+                      "line2": "Opp.Orbit Mall",
+                      "line3": null,
+                      "zipcode": null,
+                      "city": "Delhi",
+                      "state": null,
+                      "country": null
+                    },
+                    {
+                      "id": 4,
+                      "type": "service_address",
+                      "line1": "C21 Mall",
+                      "line2": null,
+                      "line3": null,
+                      "zipcode": null,
+                      "city": "Delhi",
+                      "state": null,
+                      "country": null
+                    }
+                  ],
+                  "phone_number": {
+                    "id": 3,
+                    "phone_type": "home",
+                    "number": "9988998899"
+                  }
+                },
+                "errors": []
+              }
+
+  /clients/{client_id}/client_enrollments:
+    post:
+      summary: Client enrollment create
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "Associated client id"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/ClientEnrollmentCreateParameters"
+      responses:
+        "200":
+          description: "Created client enrollment"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 2,
+                  "client_id": 9,
+                  "funding_source_id": 3,
+                  "enrollment_date": "2022-01-17",
+                  "terminated_at": null,
+                  "insureds_name": "abcd",
+                  "notes": null,
+                  "top_invoice_note": null,
+                  "bottom_invoice_note": null
+                },
+                "errors": []
+              }
+
 definitions:
   UserRegistrationParameters:
     type: "object"
@@ -1861,6 +2397,7 @@ definitions:
         type: "string"
       password:
         type: "string"
+
   PasswordResetParameters:
     type: "object"
     required:
@@ -1872,6 +2409,7 @@ definitions:
       redirect_url:
         type: "string"
         description: 'for redirection, after password change'
+
   PasswordUpdateParameters:
     type: "object"
     required:
@@ -1886,6 +2424,7 @@ definitions:
         description: 'should be same as password'
       current_password:
         type: "string"
+
   PasswordUpdateHeaders:
     type: "object"
     required:
@@ -1899,6 +2438,7 @@ definitions:
         type: "string"
       uid:
         type: "string"
+
   UserSignoutHeaders:
     type: "object"
     required:
@@ -1977,6 +2517,8 @@ definitions:
         enum: [active, inactive]
       terminated_at:
         type: "string"
+      role_name:
+        type: "string"
       service_provider:
         type: "boolean"
       phone_numbers_attributes:
@@ -2031,6 +2573,118 @@ definitions:
               display_code:
                 type: "integer"
 
+  ClientCreateParameters:
+    type: "object"
+    properties:
+      first_name:
+        type: "string"
+      last_name:
+        type: "string"
+      payer_status:
+        type: "string"
+      status:
+        type: "string"
+        enum: [active, inactive]
+      gender:
+        type: "string"
+        enum: [male, female]
+      clinic_id:
+        type: "integer"
+      email:
+        type: "string"
+      password:
+        type: "string"
+      password_confirmation:
+        type: "string"
+      dob:
+        type: "string"
+      phone_number_attributes:
+        type: "object"
+        properties:
+          phone_type:
+            type: "string"
+            enum: [fax, home, mobile, pager, work, other]
+          number:
+            type: "string"
+      addresses_attributes:
+        type: "object"
+        properties:
+          0:
+            type: "object"
+            properties:
+              line1:
+                type: "string"
+              line2:
+                type: "string"
+              line3:
+                type: "string"
+              zipcode:
+                type: "string"
+              city:
+                type: "string"
+              state:
+                type: "string"
+              country:
+                type: "string"
+              address_type:
+                type: "string"
+                enum: [office, insurance_address, service_address]
+
+  ClientUpdateParameters:
+    type: "object"
+    properties:
+      first_name:
+        type: "string"
+      last_name:
+        type: "string"
+      payer_status:
+        type: "string"
+      status:
+        type: "string"
+        enum: [active, inactive]
+      gender:
+        type: "string"
+        enum: [male, female]
+      clinic_id:
+        type: "integer"
+      email:
+        type: "string"
+      dob:
+        type: "string"
+      phone_number_attributes:
+        type: "object"
+        properties:
+          phone_type:
+            type: "string"
+            enum: [fax, home, mobile, pager, work, other]
+          number:
+            type: "string"
+      addresses_attributes:
+        type: "object"
+        properties:
+          0:
+            type: "object"
+            properties:
+              id:
+                type: "integer"
+              line1:
+                type: "string"
+              line2:
+                type: "string"
+              line3:
+                type: "string"
+              zipcode:
+                type: "string"
+              city:
+                type: "string"
+              state:
+                type: "string"
+              country:
+                type: "string"
+              address_type:
+                type: "string"
+                enum: [office, insurance_address, service_address]
+
   CredentialCreateParameters:
     type: "object"
     properties:
@@ -2042,6 +2696,7 @@ definitions:
         type: "boolean"
       credential_type:
         type: integer
+
   CredentialUpdateParameters:
     type: "object"
     properties:
@@ -2053,6 +2708,7 @@ definitions:
         type: "boolean"
       credential_type:
         type: integer
+
   StaffUpdateByAdminParameters:
     type: "object"
     properties:
@@ -2066,6 +2722,8 @@ definitions:
         type : "integer"
       supervisor_id:
         type: "integer"
+      role_name:
+        type: "string"
       status:
         type: "string"
         enum: [active, inactive]
@@ -2077,11 +2735,13 @@ definitions:
           0:
             type: "object"
             properties:
+              id:
+                type: "integer"
               phone_type:
-                type: string
+                type: "string"
                 enum: [fax, home, mobile, pager, work, other]
               number:
-                type: string
+                type: "string"
       address_attributes:
         type: "object"
         properties:
@@ -2099,6 +2759,7 @@ definitions:
             type: "string"
           country:
             type: "string"
+
   ServiceCreateUpdateParameters:
     type: "object"
     properties:
@@ -2108,15 +2769,53 @@ definitions:
         type: "integer"
       display_code:
         type: "integer"
+
   FundingSourceCreateUpdateParameters:
     type: "object"
     properties:
       name:
         type: "string"
-      title:
+      plan_name:
         type: "string"
+      payer_type:
+        type: "string"
+        enum: [commercial, medicaid, medicare]
+      email:
+        type: "string"
+      notes:
+        type: "string"
+      network_status:
+        type: "string"
+        enum: [in_network, out_of_network]
       status:
-        type: "integer"
+        type: "string"
+        enum: [active, inactive]
+      phone_number_attributes:
+        type: "object"
+        properties:
+          phone_type:
+            type: string
+            enum: [fax, home, mobile, pager, work, other]
+          number:
+            type: string
+      address_attributes:
+        type: "object"
+        properties:
+          line1:
+            type: "string"
+          line2:
+            type: "string"
+          line3:
+            type: "string"
+          zipcode:
+            type: "string"
+          city:
+            type: "string"
+          state:
+            type: "string"
+          country:
+            type: "string"
+
   StaffCredentialCreateUpdateParameters:
     type: "object"
     properties:
@@ -2171,4 +2870,21 @@ definitions:
           country:
             type: "string"
     
-      
+  ClientEnrollmentCreateParameters:
+    type: "object"
+    properties:
+      funding_source_id:
+        type: "integer"
+      enrollment_date:
+        type: "string"
+      terminated_at:
+        type: "string"
+      insureds_name:
+        type: "string"
+      notes:
+        type: "string"
+      top_invoice_note:
+        type: "string"
+      bottom_invoice_note:
+        type: "string"
+        

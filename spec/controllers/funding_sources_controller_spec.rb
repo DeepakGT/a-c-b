@@ -25,7 +25,28 @@ RSpec.describe FundingSourcesController, type: :controller do
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
         expect(response_body['total_records']).to eq(funding_sources.count)
-        expect(response_body['page']).to eq(1)  
+      end
+
+      it "should fetch the first page record by default" do
+        set_auth_headers(auth_headers)
+        
+        get :index, params: {clinic_id: clinic.id}
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['page']).to eq(1)
+      end
+
+      it "should fetch the given page record" do
+        set_auth_headers(auth_headers)
+        
+        get :index, params: { page: 2, clinic_id: clinic.id}
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['page']).to eq("2")
       end
     end
   end
@@ -49,6 +70,25 @@ RSpec.describe FundingSourcesController, type: :controller do
     end
   end
 
+  describe "GET #show" do
+    let!(:user) { create(:user, :with_role, role_name: 'aba_admin') }
+    let!(:auth_headers) { user.create_new_auth_token }
+    let!(:clinic) {create(:clinic, name: 'clinic1')}
+    let!(:funding_source) {create(:funding_source, clinic_id: clinic.id)}
+    context "when sign in" do
+      it "should show funding source detail successfully" do
+        set_auth_headers(auth_headers)
+        
+        get :show, params: {clinic_id: clinic.id, id: funding_source.id}
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data']['id']).to eq(funding_source.id)
+      end
+    end
+  end
+
   describe "PUT #update" do
     let!(:user) { create(:user, :with_role, role_name: 'aba_admin') }
     let!(:auth_headers) { user.create_new_auth_token }
@@ -65,6 +105,30 @@ RSpec.describe FundingSourcesController, type: :controller do
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
         expect(response_body['data']['name']).to eq(updated_funding_source_name)
+      end
+
+      let!(:updated_address_city) {'Indore'}
+      context "and update associated data" do
+        it "should update address successfully" do
+          set_auth_headers(auth_headers)
+          put :update, params: {clinic_id: clinic.id, id: funding_source.id, address_attributes: {city: updated_address_city} }
+          response_body = JSON.parse(response.body)
+
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data']['address']['city']).to eq(updated_address_city)
+        end
+
+        let!(:updated_phone_number) {'8989898989'}
+        it "should update phone number successfully" do
+          set_auth_headers(auth_headers)
+          put :update, params: {clinic_id: clinic.id, id: funding_source.id, phone_number_attributes: {number: updated_phone_number} }
+          response_body = JSON.parse(response.body)
+
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data']['phone_number']['number']).to eq(updated_phone_number)
+        end
       end
     end
   end
