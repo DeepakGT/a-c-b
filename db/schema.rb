@@ -61,7 +61,14 @@ ActiveRecord::Schema.define(version: 2022_01_18_094601) do
   create_table "contacts", force: :cascade do |t|
     t.string "first_name"
     t.string "last_name"
-    t.bigint "client_id"
+    t.string "email"
+    t.integer "relation_type"
+    t.integer "relation"
+    t.boolean "legal_guardian", default: false
+    t.boolean "resides_with_client", default: false
+    t.boolean "guarantor", default: false
+    t.boolean "parent_portal_access", default: false
+    t.bigint "client_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["client_id"], name: "index_contacts_on_client_id"
@@ -190,7 +197,10 @@ ActiveRecord::Schema.define(version: 2022_01_18_094601) do
     t.string "last_name"
     t.string "email"
     t.integer "gender", default: 0
-    t.string "payer_status"
+    t.integer "payer_status", default: 0
+    t.boolean "disqualified", default: false
+    t.integer "dq_reason"
+    t.integer "preferred_language", default: 0
     t.date "dob"
     t.string "type"
     t.bigint "supervisor_id"
@@ -211,6 +221,7 @@ ActiveRecord::Schema.define(version: 2022_01_18_094601) do
   add_foreign_key "client_enrollments", "funding_sources"
   add_foreign_key "client_enrollments", "users", column: "client_id"
   add_foreign_key "clinics", "organizations"
+  add_foreign_key "contacts", "users", column: "client_id"
   add_foreign_key "funding_sources", "clinics"
   add_foreign_key "organizations", "users", column: "admin_id"
   add_foreign_key "rbt_supervisions", "users"

@@ -81,6 +81,10 @@ class User < ActiveRecord::Base
     self.clinic.organization
   end
 
+  def active_for_authentication?
+    super if !self.client?
+  end
+
   private
 
   def assign_role

@@ -1963,7 +1963,11 @@ paths:
                     "email": "testc7@gmail.com",
                     "dob": "2012-12-12",
                     "gender": "male",
-                    "payer_status": "active"
+                    "payer_status": "in_network",
+                    "status": "active",
+                    "preferred_language": "english",
+                    "disqualified": true,
+                    "disqualified_reason": "lost_contact"
                   },
                   {
                     "id": 10,
@@ -1972,7 +1976,10 @@ paths:
                     "email": "testc1@gmail.com",
                     "dob": "2012-12-12",
                     "gender": "male",
-                    "payer_status": "active",
+                    "payer_status": "in_network",
+                    "status": "active",
+                    "preferred_language": "english",
+                    "disqualified": false,
                     "addresses": [
                       {
                         "id": 3,
@@ -2042,7 +2049,9 @@ paths:
                   "email": "testc1@gmail.com",
                   "dob": "2012-12-12",
                   "gender": "male",
-                  "payer_status": "active",
+                  "payer_status": "in_network",
+                  "status": "active",
+                  "disqualified": false,
                   "addresses": [
                     {
                       "id": 3,
@@ -2110,7 +2119,9 @@ paths:
                   "email": "testc1@gmail.com",
                   "dob": "2012-12-12",
                   "gender": "male",
-                  "payer_status": "active",
+                  "payer_status": "in_network",
+                  "status": "active",
+                  "disqualified": false,
                   "addresses": [
                     {
                       "id": 3,
@@ -2180,7 +2191,9 @@ paths:
                   "email": "testc1@gmail.com",
                   "dob": "2012-12-12",
                   "gender": "male",
-                  "payer_status": "active",
+                  "payer_status": "in_network",
+                  "status": "active",
+                  "disqualified": false,
                   "addresses": [
                     {
                       "id": 3,
@@ -2212,6 +2225,147 @@ paths:
                   }
                 },
                 "errors": []
+              }
+
+  /payer_statuses:
+    get:
+      summary: Payer status list
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      responses:
+        "200":
+          description: "Payer status list"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": [
+                  {
+                    "id": 0,
+                    "type": "in_network"
+                  },
+                  {
+                    "id": 1,
+                    "type": "medicaid"
+                  },
+                  {
+                    "id": 2,
+                    "type": "out_of_network"
+                  },
+                  {
+                    "id": 3,
+                    "type": "scholarship"
+                  },
+                  {
+                    "id": 4,
+                    "type": "self_pay"
+                  },
+                  {
+                    "id": 5,
+                    "type": "single_case_agreement"
+                  }
+                ]
+              }
+
+  /preferred_languages:
+    get:
+      summary: Preferred Languages list
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      responses:
+        "200":
+          description: "Preferred Languages list"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": [
+                  {
+                    "id": 0,
+                    "type": "english"
+                  },
+                  {
+                    "id": 1,
+                    "type": "spanish"
+                  }
+                ]
+              }
+
+  /dq_reasons:
+    get:
+      summary: Disqualified reasons list
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      responses:
+        "200":
+          description: "Disqualified reasons list"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": [
+                  {
+                    "id": 0,
+                    "type": "lost_contact"
+                  },
+                  {
+                    "id": 1,
+                    "type": "not_clinically_appropriate"
+                  },
+                  {
+                    "id": 2,
+                    "type": "insurance_denial"
+                  },
+                  {
+                    "id": 3,
+                    "type": "no_longer_interested"
+                  },
+                  {
+                    "id": 4,
+                    "type": "competitor"
+                  },
+                  {
+                    "id": 5,
+                    "type": "not_ready_to_move_forward"
+                  },
+                  {
+                    "id": 6,
+                    "type": "other"
+                  }
+                ]
               }
 
   /clients/{client_id}/client_enrollments:
@@ -2453,7 +2607,6 @@ paths:
                   "bottom_invoice_note": null
                 }
               }
-
 
 definitions:
   UserRegistrationParameters:
@@ -2777,6 +2930,15 @@ definitions:
         type: "string"
       payer_status:
         type: "string"
+        enum: [in_network, medicaid, out_of_network, scholarship, self_pay, single_case_agreement]
+      disqualified:
+        type: "boolean"
+      dq_reason:
+        type: "string"
+        enum: [lost_contact, not_clinically_appropriate, insurance_denial, no_longer_interested, competitor, not_ready_to_move_forward, other]
+      preferred_language:
+        type: "string"
+        enum: [english, spanish]
       status:
         type: "string"
         enum: [active, inactive]
@@ -2834,6 +2996,15 @@ definitions:
         type: "string"
       payer_status:
         type: "string"
+        enum: [in_network, medicaid, out_of_network, scholarship, self_pay, single_case_agreement]
+      disqualified:
+        type: "boolean"
+      dq_reason:
+        type: "string"
+        enum: [lost_contact, not_clinically_appropriate, insurance_denial, no_longer_interested, competitor, not_ready_to_move_forward, other]
+      preferred_language:
+        type: "string"
+        enum: [english, spanish]
       status:
         type: "string"
         enum: [active, inactive]
@@ -3082,4 +3253,3 @@ definitions:
         type: "string"
       bottom_invoice_note:
         type: "string"
-        

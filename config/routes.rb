@@ -17,6 +17,9 @@ Rails.application.routes.draw do
   resources :clients, only: %i[index create update show] do
     resources :client_enrollments, only: %i[create show index update destroy]
   end
+  get :payer_statuses, to: 'clients#payer_statuses'
+  get :preferred_languages, to: 'clients#preferred_languages'
+  get :dq_reasons, to: 'clients#dq_reasons'
 
   get 'addresses/country_list', to: 'addresses#country_list'
   
