@@ -2227,147 +2227,6 @@ paths:
                 "errors": []
               }
 
-  /payer_statuses:
-    get:
-      summary: Payer status list
-      parameters:
-      - in: "header"
-        name: "access-token"
-        description: "Request headers"
-        required: true
-      - in: "header"
-        name: "client"
-        description: "Request headers"
-        required: true
-      - in: "header"
-        name: "uid"
-        description: "Request headers"
-        required: true
-      responses:
-        "200":
-          description: "Payer status list"
-          content:
-            application/json:
-              example: {
-                "status": "success",
-                "data": [
-                  {
-                    "id": 0,
-                    "type": "in_network"
-                  },
-                  {
-                    "id": 1,
-                    "type": "medicaid"
-                  },
-                  {
-                    "id": 2,
-                    "type": "out_of_network"
-                  },
-                  {
-                    "id": 3,
-                    "type": "scholarship"
-                  },
-                  {
-                    "id": 4,
-                    "type": "self_pay"
-                  },
-                  {
-                    "id": 5,
-                    "type": "single_case_agreement"
-                  }
-                ]
-              }
-
-  /preferred_languages:
-    get:
-      summary: Preferred Languages list
-      parameters:
-      - in: "header"
-        name: "access-token"
-        description: "Request headers"
-        required: true
-      - in: "header"
-        name: "client"
-        description: "Request headers"
-        required: true
-      - in: "header"
-        name: "uid"
-        description: "Request headers"
-        required: true
-      responses:
-        "200":
-          description: "Preferred Languages list"
-          content:
-            application/json:
-              example: {
-                "status": "success",
-                "data": [
-                  {
-                    "id": 0,
-                    "type": "english"
-                  },
-                  {
-                    "id": 1,
-                    "type": "spanish"
-                  }
-                ]
-              }
-
-  /dq_reasons:
-    get:
-      summary: Disqualified reasons list
-      parameters:
-      - in: "header"
-        name: "access-token"
-        description: "Request headers"
-        required: true
-      - in: "header"
-        name: "client"
-        description: "Request headers"
-        required: true
-      - in: "header"
-        name: "uid"
-        description: "Request headers"
-        required: true
-      responses:
-        "200":
-          description: "Disqualified reasons list"
-          content:
-            application/json:
-              example: {
-                "status": "success",
-                "data": [
-                  {
-                    "id": 0,
-                    "type": "lost_contact"
-                  },
-                  {
-                    "id": 1,
-                    "type": "not_clinically_appropriate"
-                  },
-                  {
-                    "id": 2,
-                    "type": "insurance_denial"
-                  },
-                  {
-                    "id": 3,
-                    "type": "no_longer_interested"
-                  },
-                  {
-                    "id": 4,
-                    "type": "competitor"
-                  },
-                  {
-                    "id": 5,
-                    "type": "not_ready_to_move_forward"
-                  },
-                  {
-                    "id": 6,
-                    "type": "other"
-                  }
-                ]
-              }
-
   /clients/{client_id}/client_enrollments:
     get:
       summary: Client Enrollment list
@@ -2390,7 +2249,7 @@ paths:
         required: true
       responses:
         "200":
-          description: "Client list"
+          description: "Client enrollments list"
           content:
             application/json:
               example: {
@@ -2606,6 +2465,585 @@ paths:
                   "top_invoice_note": null,
                   "bottom_invoice_note": null
                 }
+              }
+
+  /payer_statuses:
+    get:
+      summary: Payer status list
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      responses:
+        "200":
+          description: "Payer status list"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": [
+                  {
+                    "id": 0,
+                    "type": "in_network"
+                  },
+                  {
+                    "id": 1,
+                    "type": "medicaid"
+                  },
+                  {
+                    "id": 2,
+                    "type": "out_of_network"
+                  },
+                  {
+                    "id": 3,
+                    "type": "scholarship"
+                  },
+                  {
+                    "id": 4,
+                    "type": "self_pay"
+                  },
+                  {
+                    "id": 5,
+                    "type": "single_case_agreement"
+                  }
+                ]
+              }
+
+  /preferred_languages:
+    get:
+      summary: Preferred Languages list
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      responses:
+        "200":
+          description: "Preferred Languages list"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": [
+                  {
+                    "id": 0,
+                    "type": "english"
+                  },
+                  {
+                    "id": 1,
+                    "type": "spanish"
+                  }
+                ]
+              }
+
+  /dq_reasons:
+    get:
+      summary: Disqualified reasons list
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      responses:
+        "200":
+          description: "Disqualified reasons list"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": [
+                  {
+                    "id": 0,
+                    "type": "lost_contact"
+                  },
+                  {
+                    "id": 1,
+                    "type": "not_clinically_appropriate"
+                  },
+                  {
+                    "id": 2,
+                    "type": "insurance_denial"
+                  },
+                  {
+                    "id": 3,
+                    "type": "no_longer_interested"
+                  },
+                  {
+                    "id": 4,
+                    "type": "competitor"
+                  },
+                  {
+                    "id": 5,
+                    "type": "not_ready_to_move_forward"
+                  },
+                  {
+                    "id": 6,
+                    "type": "other"
+                  }
+                ]
+              }
+
+  /clients/{client_id}/contacts:
+    get:
+      summary: Client Contacts list
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "Associated Client id"
+        required: true
+      responses:
+        "200":
+          description: "Client contact list"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": [
+                  {
+                    "id": 1,
+                    "first_name": "test",
+                    "last_name": "contact1",
+                    "email": "testct1@yopmail.com",
+                    "client_id": 9,
+                    "type": "parent_or_guardian",
+                    "relation": "mother",
+                    "legal_guardian": true,
+                    "guarantor": false,
+                    "parent_portal_access": false,
+                    "resides_with_client": false,
+                    "phone_numbers": [
+                      {
+                        "id": 2,
+                        "phone_type": "mobile",
+                        "number": "8877665544"
+                      },
+                      {
+                        "id": 9,
+                        "phone_type": "work",
+                        "number": "9988771123"
+                      }
+                    ]
+                  },
+                  {
+                    "id": 2,
+                    "first_name": "test",
+                    "last_name": "contact3",
+                    "email": "testct3@yopmail.com",
+                    "client_id": 9,
+                    "type": "self",
+                    "relation": "self",
+                    "legal_guardian": true,
+                    "guarantor": false,
+                    "parent_portal_access": null,
+                    "resides_with_client": false,
+                    "address": {
+                      "id": 34,
+                      "line1": null,
+                      "line2": null,
+                      "line3": null,
+                      "zipcode": null,
+                      "city": "Delhi",
+                      "state": null,
+                      "country": null
+                    },
+                    "phone_numbers": [
+                      {
+                        "id": 15,
+                        "phone_type": "work",
+                        "number": "9988771123"
+                      }
+                    ]
+                  }
+                ],
+                "total_records": 2,
+                "limit": 30,
+                "page": 1
+              }
+    post:
+      summary: Client contact create
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "Associated client id"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/ClientContactCreateParameters"
+      responses:
+        "200":
+          description: "Created client contact"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 2,
+                  "first_name": "test",
+                  "last_name": "contact1",
+                  "email": "testct1@yopmail.com",
+                  "client_id": 10,
+                  "type": "parent_or_guardian",
+                  "relation": "uncle",
+                  "legal_guardian": true,
+                  "guarantor": false,
+                  "parent_portal_access": false,
+                  "resides_with_client": false,
+                  "address": {
+                    "id": 7,
+                    "line1": null,
+                    "line2": null,
+                    "line3": null,
+                    "zipcode": null,
+                    "city": "Indore",
+                    "state": null,
+                    "country": null
+                  },
+                  "phone_numbers": [
+                    {
+                      "id": 9,
+                      "phone_type": "work",
+                      "number": "9988771122"
+                    }
+                  ]
+                },
+                "errors": []
+              }
+
+  /clients/{client_id}/contacts/{id}:
+    get:
+      summary: client contact show
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "Associated Client id"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "Client contact id"
+        required: true
+      responses:
+        "200":
+          description: "Client contact detail"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 1,
+                  "first_name": "test",
+                  "last_name": "contact1",
+                  "email": "testct1@yopmail.com",
+                  "client_id": 9,
+                  "type": "parent_or_guardian",
+                  "relation": "mother",
+                  "legal_guardian": true,
+                  "guarantor": false,
+                  "parent_portal_access": false,
+                  "resides_with_client": false,
+                  "address": {
+                    "id": 4,
+                    "line1": null,
+                    "line2": null,
+                    "line3": null,
+                    "zipcode": null,
+                    "city": "Indore",
+                    "state": null,
+                    "country": null
+                  },
+                  "phone_numbers": [
+                    {
+                      "id": 4,
+                      "phone_type": "work",
+                      "number": "9988771122"
+                    }
+                  ]
+                }
+              }
+    put:
+      summary: Client contact update
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "Associated Client id"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "Client contact id"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/ClientContactUpdateParameters"
+      responses:
+        "200":
+          description: "Updated client contact"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 4,
+                  "first_name": "test",
+                  "last_name": "contact2",
+                  "email": "testct2@yopmail.com",
+                  "client_id": 9,
+                  "type": "parent_or_guardian",
+                  "relation": "mother",
+                  "legal_guardian": true,
+                  "guarantor": false,
+                  "parent_portal_access": true,
+                  "resides_with_client": false,
+                  "address": {
+                    "id": 30,
+                    "line1": null,
+                    "line2": null,
+                    "line3": null,
+                    "zipcode": null,
+                    "city": "Delhi",
+                    "state": null,
+                    "country": null
+                  },
+                  "phone_numbers": [
+                    {
+                      "id": 7,
+                      "phone_type": "work",
+                      "number": "9988771123"
+                    },
+                    {
+                      "id": 11,
+                      "phone_type": "work",
+                      "number": "9988771123"
+                    }
+                  ]
+                },
+                "errors": []
+              }
+    delete:
+      summary: client contact delete
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "Associated client id"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "contact id"
+        required: true
+      responses:
+        "200":
+          description: "Deleted client contact detail"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 7,
+                  "first_name": "test",
+                  "last_name": "contact3",
+                  "email": "testct3@yopmail.com",
+                  "client_id": 9,
+                  "type": "self",
+                  "relation": "self",
+                  "legal_guardian": true,
+                  "guarantor": false,
+                  "resides_with_client": false,
+                  "address": {
+                    "id": 33,
+                    "line1": null,
+                    "line2": null,
+                    "line3": null,
+                    "zipcode": null,
+                    "city": "Delhi",
+                    "state": null,
+                    "country": null
+                  }
+                }
+              }
+
+  /contact_relation_types:
+    get:
+      summary: Relation types list
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      responses:
+        "200":
+          description: "Relation types list"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": [
+                  {
+                    "id": 0,
+                    "type": "self"
+                  },
+                  {
+                    "id": 1,
+                    "type": "parent_or_guardian"
+                  },
+                  {
+                    "id": 2,
+                    "type": "spouse_or_partner"
+                  },
+                  {
+                    "id": 3,
+                    "type": "lci_or_foster_home"
+                  },
+                  {
+                    "id": 4,
+                    "type": "external_contact"
+                  },
+                  {
+                    "id": 5,
+                    "type": "internal_contact"
+                  }
+                ]
+              }
+
+  /contact_relations:
+    get:
+      summary: Relations list
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      responses:
+        "200":
+          description: "Relations list"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": [
+                  {
+                    "id": 0,
+                    "type": "self"
+                  },
+                  {
+                    "id": 1,
+                    "type": "mother"
+                  },
+                  {
+                    "id": 2,
+                    "type": "father"
+                  },
+                  {
+                    "id": 3,
+                    "type": "partner"
+                  },
+                  {
+                    "id": 4,
+                    "type": "child"
+                  }
+                ]
               }
 
 definitions:
@@ -3253,3 +3691,109 @@ definitions:
         type: "string"
       bottom_invoice_note:
         type: "string"
+
+  ClientContactCreateParameters:
+    type: "object"
+    properties:
+      first_name:
+        type: "string"
+      last_name:
+        type: "string"
+      email:
+        type: "string"
+      relation_type:
+        type: "string"
+        enum: [self, parent_or_guardian, lci_or_foster_home, external_contact, internal_contact, spouse_or_partner]
+      relation:
+        type: "string"
+        enum: [self, mother, father, partner, child, friend, sibling, referent, sponsor, therapist, case_manager, probation_officer, other_relative, bd, child_care, emergency_contact, service_coordinator]
+      legal_guardian:
+        type: "boolean"
+      guarantor:
+        type: "boolean"
+      parent_portal_access:
+        type: "boolean"
+      resides_with_client:
+        type: "boolean"
+      phone_numbers_attributes:
+        type: "object"
+        properties:
+          0:
+            type: "object"
+            properties:
+              phone_type:
+                type: "string"
+                enum: [fax, home, mobile, pager, work, other]
+              number:
+                type: "string"
+      address_attributes:
+        type: "object"
+        properties:
+          line1:
+            type: "string"
+          line2:
+            type: "string"
+          line3:
+            type: "string"
+          zipcode:
+            type: "string"
+          city:
+            type: "string"
+          state:
+            type: "string"
+          country:
+            type: "string"
+
+  ClientContactUpdateParameters:
+    type: "object"
+    properties:
+      first_name:
+        type: "string"
+      last_name:
+        type: "string"
+      email:
+        type: "string"
+      relation_type:
+        type: "string"
+        enum: [self, parent_or_guardian, lci_or_foster_home, external_contact, internal_contact, spouse_or_partner]
+      relation:
+        type: "string"
+        enum: [self, mother, father, partner, child, friend, sibling, referent, sponsor, therapist, case_manager, probation_officer, other_relative, bd, child_care, emergency_contact, service_coordinator]
+      legal_guardian:
+        type: "boolean"
+      guarantor:
+        type: "boolean"
+      parent_portal_access:
+        type: "boolean"
+      resides_with_client:
+        type: "boolean"
+      phone_numbers_attributes:
+        type: "object"
+        properties:
+          0:
+            type: "object"
+            properties:
+              id:
+                type: "integer"
+              phone_type:
+                type: "string"
+                enum: [fax, home, mobile, pager, work, other]
+              number:
+                type: "string"
+      address_attributes:
+        type: "object"
+        properties:
+          line1:
+            type: "string"
+          line2:
+            type: "string"
+          line3:
+            type: "string"
+          zipcode:
+            type: "string"
+          city:
+            type: "string"
+          state:
+            type: "string"
+          country:
+            type: "string"

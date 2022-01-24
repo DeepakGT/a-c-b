@@ -13,12 +13,26 @@ class Client < User
   enum dq_reason: { lost_contact: 0, not_clinically_appropriate: 1, insurance_denial: 2, no_longer_interested: 3, 
                     competitor: 4, not_ready_to_move_forward: 5, other: 6}
 
-  validate :validate_presence_of_dq_reason
+  validates :dq_reason, presence: true, if: ->{ self.disqualified? }
+  validates :dq_reason, absence: true, if: ->{ !self.disqualified? }
 
-  private
+  def save_with_exception_handler
+    begin
+      self.save
+    rescue Exception => e
+      if e.is_a? ActiveRecord::RecordNotUnique
+        errors.add(:address_type, "already present.")
+      end
+    end
+  end
 
-  def validate_presence_of_dq_reason
-    errors.add(:disqualified, 'For a disqualified client, reason must be specified.') if self.disqualified == true && self.dq_reason.blank?
-    errors.add(:qualified, 'For a qualified client, disqualification reason must be blank.') if self.disqualified == false && self.dq_reason.present?
+  def update_with_exception_handler(client_params)
+    begin
+      self.update(client_params)
+    rescue Exception => e
+      if e.is_a? ActiveRecord::RecordNotUnique
+        errors.add(:address_type, "already present.")
+      end
+    end
   end
 end

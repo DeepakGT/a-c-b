@@ -28,6 +28,7 @@ ActiveRecord::Schema.define(version: 2022_01_18_094601) do
     t.bigint "addressable_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["addressable_id", "addressable_type", "address_type"], name: "index_on_address", unique: true
     t.index ["addressable_type", "addressable_id"], name: "index_addresses_on_addressable"
   end
 
@@ -62,12 +63,12 @@ ActiveRecord::Schema.define(version: 2022_01_18_094601) do
     t.string "first_name"
     t.string "last_name"
     t.string "email"
-    t.integer "relation_type"
-    t.integer "relation"
+    t.integer "relation_type", default: 0
+    t.integer "relation", default: 0
     t.boolean "legal_guardian", default: false
     t.boolean "resides_with_client", default: false
     t.boolean "guarantor", default: false
-    t.boolean "parent_portal_access", default: false
+    t.boolean "parent_portal_access"
     t.bigint "client_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false

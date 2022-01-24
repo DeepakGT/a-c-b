@@ -78,8 +78,6 @@ RSpec.describe ClientsController, type: :controller do
           first_name: 'test',
           last_name: 'client',
           email: 'testcontact@gamil.com',
-          password: '123456',
-          password_confirmation: '123456',
           addresses_attributes: [{address_type: 'insurance_address', city: 'Indore'}, 
                                  {address_type: 'service_address', city: 'Delhi'}],
           phone_number_attributes: {phone_type: 'home', number: '99999 99999'}
@@ -98,9 +96,11 @@ RSpec.describe ClientsController, type: :controller do
 
   describe "PUT #update" do
     context "when sign in" do
-      let(:client) { create(:client, :with_role, clinic_id: clinic.id, first_name: 'test', 
-                            phone_number_attributes: {phone_type: 'home'}, 
-                            addresses_attributes: [{address_type: 'insurance_address', city: 'Indore'}])}
+      let(:client) { 
+        create(:client, :with_role, clinic_id: clinic.id, first_name: 'test', 
+               phone_number_attributes: {phone_type: 'home'}, 
+               addresses_attributes: [{address_type: 'insurance_address', city: 'Indore'}])
+      }
       let(:updated_first_name) {'test-client-1'}
       it "should update a client successfully" do
         set_auth_headers(auth_headers)
@@ -152,6 +152,57 @@ RSpec.describe ClientsController, type: :controller do
           expect(response_body['data']['id']).to eq(client.id)
           expect(response_body['data']['addresses'].first['type']).to eq(updated_address_type)
         end
+      end
+    end
+  end
+
+  describe "GET #payer_statuses" do 
+    context "when sign in" do
+      it "should fetch all payer statuses" do
+        set_auth_headers(auth_headers)
+
+        get :payer_statuses
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data'].map{|hash| hash['type']}).to match_array Client.payer_statuses.keys
+        expect(response_body['data'].map{|hash| hash['id'] }).to match_array Client.payer_statuses.values
+        expect(response_body['data']).to be_a_kind_of(Array)
+      end
+    end
+  end
+
+  describe "GET #preferred_languages" do 
+    context "when sign in" do
+      it "should fetch all preferred languages" do
+        set_auth_headers(auth_headers)
+
+        get :preferred_languages
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data'].map{|hash| hash['type']}).to match_array Client.preferred_languages.keys
+        expect(response_body['data'].map{|hash| hash['id'] }).to match_array Client.preferred_languages.values
+        expect(response_body['data']).to be_a_kind_of(Array)
+      end
+    end
+  end
+
+  describe "GET #dq_reasons" do 
+    context "when sign in" do
+      it "should fetch all disqualification reasons" do
+        set_auth_headers(auth_headers)
+
+        get :dq_reasons
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data'].map{|hash| hash['type']}).to match_array Client.dq_reasons.keys
+        expect(response_body['data'].map{|hash| hash['id'] }).to match_array Client.dq_reasons.values
+        expect(response_body['data']).to be_a_kind_of(Array)
       end
     end
   end

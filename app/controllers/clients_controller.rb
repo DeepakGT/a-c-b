@@ -12,11 +12,11 @@ class ClientsController < ApplicationController
     @client = Client.new(client_params)
     @client.role = Role.client.first
     @client.password = '123456' if !params[:password].present?
-    @client.save
+    @client.save_with_exception_handler
   end
 
   def update
-    @client.update(client_params)
+    @client.update_with_exception_handler(client_params)
   end
 
   def payer_statuses
