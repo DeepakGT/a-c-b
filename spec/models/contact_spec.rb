@@ -18,18 +18,18 @@ RSpec.describe Contact, type: :model do
     it { should define_enum_for(:relation).with_prefix(true) }
   end
 
-  describe "validations" do
-    context "email" do
-      subject { build(:contact) }
-      it { should validate_uniqueness_of(:email) }
-    end
-    context "if relation_type is parent/guardian" do
-      before { allow(subject).to receive(:parent_or_guardian?).and_return(true) }
-      it { should validate_inclusion_of(:parent_portal_access).in_array([true, false]).with_message('must be present.')}
-    end
-    context "if relation_type is not parent/guardian" do
-      before { allow(subject).to receive(:parent_or_guardian?).and_return(false) }
-      it { should validate_exclusion_of(:parent_portal_access).in_array([true, false]).with_message('must not be present.')}
+  describe "email" do
+    subject { build(:contact) }
+    it { should validate_uniqueness_of(:email) }
+  end
+  
+  describe "#validate_parent_portal_access" do
+    context "when relation_type is not parent_or_ guardian, parent_portal_access" do
+      let(:contact) { build :contact, relation_type: 'self', parent_portal_access: true }
+      it "should be false " do
+        contact.validate
+        expect(contact.errors[:parent_portal_access]).to include('must be false.')
+      end
     end
   end
 end

@@ -5,6 +5,34 @@ json.data do
   json.last_name @client.last_name
   json.clinic_id @client.clinic_id
   json.clinic_name @client.clinic.name
+  if @client.client_enrollments.present?
+    json.funding_source_name @client.client_enrollments.first.funding_source.name
+    json.expiration_date @client.client_enrollments.first.terminated_at
+  end
+  if @client.contacts.present? 
+    json.contact do
+      json.id @client.contacts.first.id
+      json.first_name @client.contacts.first.first_name
+      json.last_name @client.contacts.first.last_name
+      json.email @client.contacts.first.email
+      json.client_id @client.contacts.first.client_id
+      json.type @client.contacts.first.relation_type
+      json.relation @client.contacts.first.relation
+      json.legal_guardian @client.contacts.first.legal_guardian
+      json.guarantor @client.contacts.first.guarantor
+      json.parent_portal_access @client.contacts.first.parent_portal_access
+      json.resides_with_client @client.contacts.first.resides_with_client
+      if @client.contacts.first.phone_numbers.present?
+        json.phone_numbers do
+          json.array! @client.contacts.first.phone_numbers do |phone_number|
+            json.id phone_number.id
+            json.phone_type phone_number.phone_type
+            json.number phone_number.number
+          end
+        end
+      end
+    end
+  end
   json.email @client.email
   json.dob @client.dob
   json.gender @client.gender
