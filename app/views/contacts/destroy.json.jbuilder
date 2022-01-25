@@ -27,7 +27,6 @@ else
         json.country @contact.address.country
       end
     end
-    debugger
     if @contact.phone_numbers.present?
       json.phone_numbers do
         json.array! @contact.phone_numbers do |phone_number|

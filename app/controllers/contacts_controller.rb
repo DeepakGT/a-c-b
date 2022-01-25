@@ -18,7 +18,6 @@ class ContactsController < ApplicationController
   end
 
   def destroy
-    debugger
     @contact.destroy
   end
 

@@ -3,6 +3,8 @@ json.data do
   json.id @client.id
   json.first_name @client.first_name
   json.last_name @client.last_name
+  json.clinic_id @client.clinic_id
+  json.clinic_name @client.clinic.name
   json.email @client.email
   json.dob @client.dob
   json.gender @client.gender
