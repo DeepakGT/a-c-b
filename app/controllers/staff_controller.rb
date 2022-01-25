@@ -1,6 +1,7 @@
 class StaffController < ApplicationController
   before_action :authenticate_user!
   before_action :set_clinic, only: %i[create supervisor_list]
+  before_action :set_staff, only: %i[show update]
 
   def index
     staff = Staff.all
@@ -8,12 +9,9 @@ class StaffController < ApplicationController
     @staff = staff.order(:first_name).paginate(page: params[:page])
   end
 
-  def show
-    @staff = Staff.find(params[:id])
-  end
+  def show; end
 
   def update
-    @staff = Staff.find(params[:id])
     set_role if params[:role_name].present?
     @staff.update(staff_params)
   end
@@ -22,10 +20,6 @@ class StaffController < ApplicationController
     @staff = @clinic.staff.new(staff_params)
     set_role
     @staff.save
-  end
-
-  def phone_types
-    @phone_types = PhoneNumber.phone_types
   end
 
   def supervisor_list
@@ -39,9 +33,9 @@ class StaffController < ApplicationController
   end
 
   def staff_params
-    arr = [:first_name, :last_name, :status, :terminated_at, :email, :supervisor_id, :clinic_id]
+    arr = %i[first_name last_name status terminated_at email supervisor_id clinic_id]
     
-    arr.concat([:password, :service_provider, :password_confirmation]) if params[:action] == 'create'
+    arr.concat(%i[password service_provider password_confirmation]) if params[:action] == 'create'
     
     arr.concat([address_attributes: 
     %i[line1 line2 line3 zipcode city state country addressable_type addressable_id], 
@@ -53,6 +47,10 @@ class StaffController < ApplicationController
 
   def set_role
     @staff.role = Role.send(params[:role_name]).first
+  end
+
+  def set_staff
+    @staff = Staff.find(params[:id])
   end
 
   def do_filter(staff)

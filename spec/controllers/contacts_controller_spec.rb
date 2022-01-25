@@ -159,38 +159,4 @@ RSpec.describe ContactsController, type: :controller do
       end
     end
   end
-  
-  describe "GET #relations" do 
-    context "when sign in" do
-      it "should fetch all relations" do
-        set_auth_headers(auth_headers)
-
-        get :relations
-        response_body = JSON.parse(response.body)
-
-        expect(response.status).to eq(200)
-        expect(response_body['status']).to eq('success')
-        expect(response_body['data'].map{|hash| hash['type']}).to match_array Contact.relations.keys
-        expect(response_body['data'].map{|hash| hash['id'] }).to match_array Contact.relations.values
-        expect(response_body['data']).to be_a_kind_of(Array)
-      end
-    end
-  end
-
-  describe "GET #relation_types" do 
-    context "when sign in" do
-      it "should fetch all relation types" do
-        set_auth_headers(auth_headers)
-
-        get :relation_types
-        response_body = JSON.parse(response.body)
-
-        expect(response.status).to eq(200)
-        expect(response_body['status']).to eq('success')
-        expect(response_body['data'].map{|hash| hash['type']}).to match_array Contact.relation_types.keys
-        expect(response_body['data'].map{|hash| hash['id'] }).to match_array Contact.relation_types.values
-        expect(response_body['data']).to be_a_kind_of(Array)
-      end
-    end
-  end
 end

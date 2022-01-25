@@ -18,25 +18,14 @@ Rails.application.routes.draw do
     resources :client_enrollments, only: %i[create show index update destroy]
     resources :contacts, only: %i[index create show update destroy]
   end
-  get :payer_statuses, to: 'clients#payer_statuses'
-  get :preferred_languages, to: 'clients#preferred_languages'
-  get :dq_reasons, to: 'clients#dq_reasons'
-
-  get '/contact_relation_types', to: 'contacts#relation_types'
-  get '/contact_relations', to: 'contacts#relations'
-
-  get 'addresses/country_list', to: 'addresses#country_list'
   
-  get :phone_types, to: 'staff#phone_types'
-  resources :roles, only: :index
-  resources :credentials, only: %i[index show create update] do
-    get :types, on: :collection
-  end
+  resources :credentials, only: %i[index show create update] 
 
   resources :staff, only: nil do
     resources :staff_credentials
   end
-  get '/staff/:staff_id/qualification', to: 'qualifications#show'
 
   resources :services, only: %i[index create update show]
+
+  get 'meta_data/selectable_options'
 end

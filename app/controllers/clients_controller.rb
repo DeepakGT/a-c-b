@@ -19,18 +19,6 @@ class ClientsController < ApplicationController
     @client.update_with_exception_handler(client_params)
   end
 
-  def payer_statuses
-    @payer_statuses = Client.payer_statuses
-  end
-
-  def preferred_languages
-    @preferred_languages = Client.preferred_languages
-  end
-
-  def dq_reasons
-    @dq_reasons = Client.dq_reasons
-  end
-
   private
 
   def client_params

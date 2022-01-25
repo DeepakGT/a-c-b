@@ -1,6 +1,6 @@
 class ContactsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_client, except: %i[relations relation_types]
+  before_action :set_client
   before_action :set_contact, only: %i[show update destroy]
 
   def index
@@ -19,14 +19,6 @@ class ContactsController < ApplicationController
 
   def destroy
     @contact.destroy
-  end
-
-  def relation_types
-    @relation_types = Contact.relation_types
-  end
-
-  def relations
-    @relations = Contact.relations
   end
 
   private
