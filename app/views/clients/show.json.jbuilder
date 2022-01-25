@@ -6,8 +6,12 @@ json.data do
   json.clinic_id @client.clinic_id
   json.clinic_name @client.clinic.name
   if @client.client_enrollments.present?
-    json.funding_source_name @client.client_enrollments.first.funding_source.name
-    json.expiration_date @client.client_enrollments.first.terminated_at
+    json.funding_sources do
+      json.array! @client.client_enrollments do |client_enrollment|
+        json.funding_source_name client_enrollment.funding_source.name
+        json.expiration_date client_enrollment.terminated_at
+      end
+    end
   end
   if @client.contacts.present? 
     json.contact do

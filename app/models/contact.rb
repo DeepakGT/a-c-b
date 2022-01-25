@@ -16,7 +16,6 @@ class Contact < ApplicationRecord
                    other_relative: 12, bd: 13, child_care: 14, emergency_contact: 15, service_coordinator: 16}, _prefix: true
 
   # validations
-  validates_uniqueness_of :email
   validate :validate_parent_portal_access
 
   private
