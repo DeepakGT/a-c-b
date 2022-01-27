@@ -22,6 +22,10 @@ class StaffController < ApplicationController
     @staff.save
   end
 
+  def phone_types
+    @phone_types = PhoneNumber.phone_types
+  end
+
   def supervisor_list
     @supervisors = @clinic.staff.order(:first_name)
   end
@@ -33,7 +37,7 @@ class StaffController < ApplicationController
   end
 
   def staff_params
-    arr = %i[first_name last_name status terminated_at email supervisor_id clinic_id]
+    arr = %i[first_name last_name status terminated_on email supervisor_id clinic_id]
     
     arr.concat(%i[password service_provider password_confirmation]) if params[:action] == 'create'
     

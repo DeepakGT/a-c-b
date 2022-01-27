@@ -7,7 +7,7 @@ RSpec.describe DeviseTokenAuth::PasswordsController, type: :controller do
 
   describe "POST #create" do
     let(:valid_email) { 'valid_user@yopmail.com' }
-    let(:valid_password) { '123456' }
+    let(:valid_password) { 'Abcd@123' }
     let!(:user) { create(:user, :with_role, email: valid_email, password: valid_password, role_name: 'aba_admin') }
     context "when input invalid email" do
       it "should raise error" do

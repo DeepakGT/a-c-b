@@ -34,7 +34,7 @@ ActiveRecord::Schema.define(version: 2022_01_18_094601) do
 
   create_table "client_enrollments", force: :cascade do |t|
     t.date "enrollment_date"
-    t.date "terminated_at"
+    t.date "terminated_on"
     t.string "insureds_name"
     t.text "notes"
     t.text "top_invoice_note"
@@ -206,7 +206,7 @@ ActiveRecord::Schema.define(version: 2022_01_18_094601) do
     t.string "type"
     t.bigint "supervisor_id"
     t.integer "status", default: 0
-    t.date "terminated_at"
+    t.date "terminated_on"
     t.boolean "service_provider", default: false
     t.json "tokens"
     t.datetime "created_at", precision: 6, null: false

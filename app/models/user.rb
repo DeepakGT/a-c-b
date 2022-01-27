@@ -36,7 +36,11 @@ class User < ActiveRecord::Base
   #validates_presence_of :role
 
   # Custom Validations
-  # terminated_at field would also be validated with this
+  # terminated_on field would also be validated with this
+  PASSWORD_FORMAT = /\A(?=.{8,})(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[[:^alnum:]]) /x
+  validates :password, presence: true, length: { in: Devise.password_length, wrong_length: "Password must be 8 to 128 characters long." },
+                       format: { with: PASSWORD_FORMAT, message: "must contain one uppercase, one lowercase, one digit and one special character." },
+                       confirmation: true, on: :create
   validate :validate_status
   validate :validate_presence_of_clinic
 
@@ -97,8 +101,8 @@ class User < ActiveRecord::Base
   end
 
   def validate_status
-    errors.add(:status, 'For an active user, terminated date must be blank.') if self.active? && self.terminated_at.present?
-    errors.add(:status, 'For an inactive user, terminated date must be present.') if self.inactive? && self.terminated_at.blank?
+    errors.add(:status, 'For an active user, terminated date must be blank.') if self.active? && self.terminated_on.present?
+    errors.add(:status, 'For an inactive user, terminated date must be present.') if self.inactive? && self.terminated_on.blank?
   end
 
   def validate_presence_of_clinic

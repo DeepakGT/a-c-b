@@ -546,7 +546,7 @@ paths:
                   "role": "bcba",
                   "status": "active",
                   "service_provider": true,
-                  "terminated_at": null,
+                  "terminated_on": null,
                   "gender": "male",
                   "supervisor_id": 1,
                   "phone_numbers": [
@@ -620,7 +620,7 @@ paths:
                   "email": "bcba_test_staff@yopmail.com",
                   "status": "active",
                   "service_provider": true,
-                  "terminated_at": null,
+                  "terminated_on": null,
                   "title": "bcba",
                   "gender": "male",
                   "organization_id": 1,
@@ -2098,7 +2098,7 @@ paths:
                     "funding_source_id": 3,
                     "funding_source": "amerihealth caritas nh",
                     "enrollment_date": "2022-01-17",
-                    "terminated_at": null,
+                    "terminated_on": null,
                     "insureds_name": "abcd",
                     "notes": null,
                     "top_invoice_note": null,
@@ -2110,7 +2110,7 @@ paths:
                     "funding_source_id": 5,
                     "funding_source": "cigna",
                     "enrollment_date": "2022-01-17",
-                    "terminated_at": null,
+                    "terminated_on": null,
                     "insureds_name": "abcd",
                     "notes": null,
                     "top_invoice_note": null,
@@ -2158,7 +2158,7 @@ paths:
                   "funding_source_id": 3,
                   "funding_source": "amerihealth caritas nh",
                   "enrollment_date": "2022-01-17",
-                  "terminated_at": null,
+                  "terminated_on": null,
                   "insureds_name": "abcd",
                   "notes": null,
                   "top_invoice_note": null,
@@ -2204,7 +2204,7 @@ paths:
                   "funding_source_id": 3,
                   "funding_source": "amerihealth caritas nh",
                   "enrollment_date": "2022-01-17",
-                  "terminated_at": null,
+                  "terminated_on": null,
                   "insureds_name": "abcd",
                   "notes": null,
                   "top_invoice_note": null,
@@ -2252,7 +2252,7 @@ paths:
                   "funding_source_id": 1,
                   "funding_source": "aetna",
                   "enrollment_date": "2022-01-17",
-                  "terminated_at": null,
+                  "terminated_on": null,
                   "insureds_name": "A. B. verma",
                   "notes": null,
                   "top_invoice_note": null,
@@ -2296,7 +2296,7 @@ paths:
                   "funding_source_id": 8,
                   "funding_source": "optimhealth behavioral solutions",
                   "enrollment_date": "2022-01-17",
-                  "terminated_at": null,
+                  "terminated_on": null,
                   "insureds_name": "abcd",
                   "notes": null,
                   "top_invoice_note": null,
@@ -2707,6 +2707,207 @@ paths:
                 }
               }
 
+  /roles:
+    get:
+      summary: List of roles
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      responses:
+        "200":
+          description: "Roles list"
+          content:
+            application/json:
+              example: [
+                {
+                    "id": 1,
+                    "name": "aba_admin"
+                },
+                {
+                    "id": 2,
+                    "name": "administrator"
+                },
+                {
+                    "id": 3,
+                    "name": "bcba"
+                },
+                {
+                    "id": 4,
+                    "name": "rbt"
+                },
+                {
+                    "id": 5,
+                    "name": "billing"
+                }
+              ]
+
+  /credentials/types:
+    get:
+      summary: credential types
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      responses:
+        "200":
+          description: "Credential types"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": [
+                  {
+                    "id": 0,
+                    "type": "education"
+                  },
+                  {
+                    "id": 1,
+                    "type": "certification"
+                  },
+                  {
+                    "id": 2,
+                    "type": "other"
+                  }
+                ]
+              }
+
+  /phone_types:
+    get:
+      summary: phone number types
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      responses:
+        "200":
+          description: "Phone number types"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": [
+                  {
+                    "id": 0,
+                    "type": "fax"
+                  },
+                  {
+                    "id": 1,
+                    "type": "home"
+                  },
+                  {
+                    "id": 2,
+                    "type": "mobile"
+                  },
+                  {
+                    "id": 3,
+                    "type": "pager"
+                  },
+                  {
+                    "id": 4,
+                    "type": "work"
+                  },
+                  {
+                    "id": 5,
+                    "type": "other"
+                  }
+                ]
+              }
+
+  /addresses/country_list:
+    get:
+      summary: country list
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      responses:
+        "200":
+          description: "country list"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": [
+                  {
+                    "id": 233,
+                    "name": "United States of America"
+                  },
+                  {
+                    "id": 3,
+                    "name": "Afghanistan"
+                  },
+                  {
+                    "id": 15,
+                    "name": "Åland Islands"
+                  },
+                  {
+                    "id": 6,
+                    "name": "Albania"
+                  },
+                  {
+                    "id": 62,
+                    "name": "Algeria"
+                  },
+                  {
+                    "id": 11,
+                    "name": "American Samoa"
+                  },
+                  {
+                    "id": 1,
+                    "name": "Andorra"
+                  },
+                  {
+                    "id": 8,
+                    "name": "Angola"
+                  },
+                  {
+                    "id": 5,
+                    "name": "Anguilla"
+                  },
+                  {
+                    "id": 9,
+                    "name": "Antarctica"
+                  }
+                ]
+              }
+
 definitions:
   UserRegistrationParameters:
     type: "object"
@@ -2731,7 +2932,7 @@ definitions:
       status:
         type: "string"
         enum: [active, inactive]
-      terminated_at:
+      terminated_on:
         type: "string"
       service_provider:
         type: "boolean"
@@ -2962,7 +3163,7 @@ definitions:
       status:
         type: "string"
         enum: [active, inactive]
-      terminated_at:
+      terminated_on:
         type: "string"
       role_name:
         type: "string"
@@ -3192,7 +3393,7 @@ definitions:
       status:
         type: "string"
         enum: [active, inactive]
-      terminated_at:
+      terminated_on:
         type: "string"
       phone_numbers_attributes:
         type: "object"
@@ -3342,7 +3543,7 @@ definitions:
         type: "integer"
       enrollment_date:
         type: "string"
-      terminated_at:
+      terminated_on:
         type: "string"
       insureds_name:
         type: "string"

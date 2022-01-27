@@ -46,7 +46,7 @@ class DeviseTokenAuthCreateUsers < ActiveRecord::Migration[6.1]
       # For an active user, terminated date must be blank.
       # For an inactive user, terminated date must be present.
       t.integer :status, default: 0
-      t.date :terminated_at, default: nil
+      t.date :terminated_on, default: nil
 
       t.boolean :service_provider, default: false
 

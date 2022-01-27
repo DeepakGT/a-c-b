@@ -19,7 +19,9 @@ Rails.application.routes.draw do
     resources :contacts, only: %i[index create show update destroy]
   end
   
-  resources :credentials, only: %i[index show create update] 
+  resources :credentials, only: %i[index show create update] do
+    get :types, on: :collection
+  end
 
   resources :staff, only: nil do
     resources :staff_credentials
@@ -28,4 +30,7 @@ Rails.application.routes.draw do
   resources :services, only: %i[index create update show]
 
   get 'meta_data/selectable_options'
+  get '/addresses/country_list', to: 'addresses#country_list'
+  resources :roles, only: :index
+  get '/phone_types', to: 'staff#phone_types'
 end

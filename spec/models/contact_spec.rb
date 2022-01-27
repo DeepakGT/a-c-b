@@ -17,11 +17,6 @@ RSpec.describe Contact, type: :model do
     it { should define_enum_for(:relation_type).with_prefix(true) }
     it { should define_enum_for(:relation).with_prefix(true) }
   end
-
-  describe "email" do
-    subject { build(:contact) }
-    it { should validate_uniqueness_of(:email) }
-  end
   
   describe "#validate_parent_portal_access" do
     context "when relation_type is not parent_or_ guardian, parent_portal_access" do

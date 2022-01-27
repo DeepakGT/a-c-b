@@ -25,14 +25,25 @@ RSpec.describe User, type: :model do
 
   describe 'validations' do
     it { should validate_presence_of(:email) }
-    it { should validate_presence_of(:password) }
+    it { should validate_presence_of(:password).on(:create) }
+    it { should validate_length_of(:password).is_at_least(6).is_at_most(128).on(:create) }
+    let(:user) {build :user, :with_role, role_name: 'aba_admin'}
+    it 'should not allow passwords that do not fit the specified format' do
+      invalid_passwords = %w[abcd abcde@12 ABCD@123 Abcd1234 ABCde@@]
+      invalid_passwords.each do |invalid_password|
+        user.password = invalid_password
+        user.validate
+        expect(user).to be_invalid
+      end
+    end
+    it { should validate_confirmation_of(:password).on(:create) }
   end
 
   it { should delegate_method(:name).to(:role).with_prefix(true).allow_nil }
 
   describe "#validate_status" do
     context "when user is active" do
-      let(:user) { build :user, :with_role, role_name: 'aba_admin', status: 'active', terminated_at: Date.new }
+      let(:user) { build :user, :with_role, role_name: 'aba_admin', status: 'active', terminated_on: Date.new }
       it "termination date should be blank" do
         user.validate
         expect(user.errors[:status]).to include('For an active user, terminated date must be blank.')

@@ -7,7 +7,7 @@ json.data do
   json.role @staff.role.name
   json.status @staff.status
   json.service_provider @staff.service_provider
-  json.terminated_at @staff.terminated_at
+  json.terminated_on @staff.terminated_on
   json.gender @staff.gender
   json.supervisor_id @staff.supervisor_id
   json.phone_numbers do

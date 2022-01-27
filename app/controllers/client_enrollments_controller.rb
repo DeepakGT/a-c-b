@@ -24,7 +24,7 @@ class ClientEnrollmentsController < ApplicationController
   private
 
   def enrollment_params
-    params.permit(:client_id, :funding_source_id, :enrollment_date, :terminated_at, 
+    params.permit(:client_id, :funding_source_id, :enrollment_date, :terminated_on, 
                   :insureds_name, :notes, :top_invoice_note, :bottom_invoice_note)
   end
 

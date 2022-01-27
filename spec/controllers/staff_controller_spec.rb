@@ -144,7 +144,7 @@ RSpec.describe StaffController, type: :controller do
           first_name: 'test',
           last_name: 'staff',
           email: 'bcba_test@yopmail.com',
-          password: '123456',
+          password: 'Abcd@123',
           supervisor_id: user.id,
           clinic_id: clinic.id,
           service_provider: false,
@@ -259,6 +259,23 @@ RSpec.describe StaffController, type: :controller do
     end
   end
 
+  describe "GET #phone_types" do 
+    context "when sign in" do
+      it "should fetch all phone types" do
+        set_auth_headers(auth_headers)
+
+        get :phone_types
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data'].map{|hash| hash['type']}).to match_array PhoneNumber.phone_types.keys
+        expect(response_body['data'].map{|hash| hash['id'] }).to match_array PhoneNumber.phone_types.values
+        expect(response_body['data']).to be_a_kind_of(Array)
+      end
+    end
+  end
+    
   describe "GET #supervisor_list" do
     let!(:staff_list) { create_list(:staff, 5, :with_role, role_name: 'billing', clinic_id: clinic.id)}
     context "when sign in" do

@@ -11,7 +11,7 @@ class ClientsController < ApplicationController
   def create
     @client = Client.new(client_params)
     @client.role = Role.client.first
-    @client.password = '123456' if !params[:password].present?
+    @client.password = 'Abcdef_1' if !params[:password].present?
     @client.save_with_exception_handler
   end
 

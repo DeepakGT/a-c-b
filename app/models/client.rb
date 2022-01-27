@@ -17,22 +17,14 @@ class Client < User
   validates :dq_reason, absence: true, if: ->{ !self.disqualified? }
 
   def save_with_exception_handler
-    begin
-      self.save
-    rescue Exception => e
-      if e.is_a? ActiveRecord::RecordNotUnique
-        errors.add(:address_type, "already present.")
-      end
-    end
+    self.save
+  rescue Exception => e
+    errors.add(:address_type, "already present.") if e.is_a? ActiveRecord::RecordNotUnique
   end
 
   def update_with_exception_handler(client_params)
-    begin
-      self.update(client_params)
-    rescue Exception => e
-      if e.is_a? ActiveRecord::RecordNotUnique
-        errors.add(:address_type, "already present.")
-      end
-    end
+    self.update(client_params)
+  rescue Exception => e
+    errors.add(:address_type, "already present.") if e.is_a? ActiveRecord::RecordNotUnique
   end
 end

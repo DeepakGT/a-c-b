@@ -4,7 +4,7 @@ FactoryBot.define do
       "testuser#{n}@yopmail.com"
     end
 
-    password { '123456' }
+    password { 'Abcd@123' }
 
     transient do
       role_name {'aba_admin'}

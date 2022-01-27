@@ -12,7 +12,7 @@ ActiveRecord::Base.transaction do
       # This block will run only on create new records
       # i.e. if record found, this block would be skip
       u.first_name, u.last_name = Faker::Name.unique.name.split(' ')
-      u.password = '123456'
+      u.password = 'Admin@123'
       u.role = role
     end
   end
@@ -123,7 +123,7 @@ ActiveRecord::Base.transaction do
         # This block will run only on create new records
         # i.e. if record found, this block would be skip
         u.first_name, u.last_name = Faker::Name.unique.name.split(' ')
-        u.password = '123456'
+        u.password = 'Staff@123'
         u.role = role
         u.clinic = clinic
       end
