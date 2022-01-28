@@ -78,8 +78,6 @@ RSpec.describe ClientsController, type: :controller do
           first_name: 'test',
           last_name: 'client',
           email: 'testcontact@gamil.com',
-          password: '123456',
-          password_confirmation: '123456',
           addresses_attributes: [{address_type: 'insurance_address', city: 'Indore'}, 
                                  {address_type: 'service_address', city: 'Delhi'}],
           phone_number_attributes: {phone_type: 'home', number: '99999 99999'}
@@ -98,9 +96,11 @@ RSpec.describe ClientsController, type: :controller do
 
   describe "PUT #update" do
     context "when sign in" do
-      let(:client) { create(:client, :with_role, clinic_id: clinic.id, first_name: 'test', 
-                            phone_number_attributes: {phone_type: 'home'}, 
-                            addresses_attributes: [{address_type: 'insurance_address', city: 'Indore'}])}
+      let(:client) { 
+        create(:client, :with_role, clinic_id: clinic.id, first_name: 'test', 
+               phone_number_attributes: {phone_type: 'home'}, 
+               addresses_attributes: [{address_type: 'insurance_address', city: 'Indore'}])
+      }
       let(:updated_first_name) {'test-client-1'}
       it "should update a client successfully" do
         set_auth_headers(auth_headers)

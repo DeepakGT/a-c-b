@@ -20,7 +20,7 @@ RSpec.describe DeviseTokenAuth::SessionsController, type: :controller do
 
     context "when input valid credentials" do
       let(:valid_email) { 'valid_user@yopmail.com' }
-      let(:valid_password) { '123456' }
+      let(:valid_password) { 'Abcd@123' }
       let!(:user) { create(:user, :with_role, email: valid_email, password: valid_password, role_name: 'aba_admin') }
       it "should login successfully" do
         post :create, params: { 

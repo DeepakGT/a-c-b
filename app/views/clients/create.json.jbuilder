@@ -8,6 +8,9 @@ json.data do
   json.gender @client.gender
   json.payer_status @client.payer_status
   json.status @client.status
+  json.preferred_language @client.preferred_language
+  json.disqualified @client.disqualified
+  json.disqualified_reason @client.dq_reason if @client.disqualified?
   if @client.addresses.present?
     json.addresses do
       json.array! @client.addresses do |address|

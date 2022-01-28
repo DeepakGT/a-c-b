@@ -11,17 +11,18 @@ class ClientsController < ApplicationController
   def create
     @client = Client.new(client_params)
     @client.role = Role.client.first
-    @client.save
+    @client.password = 'Abcdef_1' if !params[:password].present?
+    @client.save_with_exception_handler
   end
 
   def update
-    @client.update(client_params)
+    @client.update_with_exception_handler(client_params)
   end
 
   private
 
   def client_params
-    arr = %i[first_name last_name payer_status status gender email dob clinic_id]
+    arr = %i[first_name last_name payer_status status gender email dob clinic_id preferred_language disqualified dq_reason]
 
     arr.concat(%i[password password_confirmation]) if params['action']=='create'
 

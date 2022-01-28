@@ -34,7 +34,10 @@ class DeviseTokenAuthCreateUsers < ActiveRecord::Migration[6.1]
       t.string :last_name
       t.string :email
       t.integer :gender, default: 0
-      t.string :payer_status
+      t.integer :payer_status, default: 0
+      t.boolean :disqualified, default: false
+      t.integer :dq_reason, null: true
+      t.integer :preferred_language, default: 0 
       t.date :dob
       t.string :type, null: true
       t.references :supervisor, null: true, index: true, foreign_key: {to_table: :users}
@@ -43,7 +46,7 @@ class DeviseTokenAuthCreateUsers < ActiveRecord::Migration[6.1]
       # For an active user, terminated date must be blank.
       # For an inactive user, terminated date must be present.
       t.integer :status, default: 0
-      t.date :terminated_at, default: nil
+      t.date :terminated_on, default: nil
 
       t.boolean :service_provider, default: false
 

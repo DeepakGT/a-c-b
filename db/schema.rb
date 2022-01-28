@@ -28,12 +28,13 @@ ActiveRecord::Schema.define(version: 2022_01_18_094601) do
     t.bigint "addressable_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["addressable_id", "addressable_type", "address_type"], name: "index_on_address", unique: true
     t.index ["addressable_type", "addressable_id"], name: "index_addresses_on_addressable"
   end
 
   create_table "client_enrollments", force: :cascade do |t|
     t.date "enrollment_date"
-    t.date "terminated_at"
+    t.date "terminated_on"
     t.string "insureds_name"
     t.text "notes"
     t.text "top_invoice_note"
@@ -61,7 +62,14 @@ ActiveRecord::Schema.define(version: 2022_01_18_094601) do
   create_table "contacts", force: :cascade do |t|
     t.string "first_name"
     t.string "last_name"
-    t.bigint "client_id"
+    t.string "email"
+    t.integer "relation_type", default: 0
+    t.integer "relation", default: 0
+    t.boolean "legal_guardian", default: false, null: false
+    t.boolean "resides_with_client", default: false, null: false
+    t.boolean "guarantor", default: false, null: false
+    t.boolean "parent_portal_access", default: false, null: false
+    t.bigint "client_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["client_id"], name: "index_contacts_on_client_id"
@@ -190,12 +198,15 @@ ActiveRecord::Schema.define(version: 2022_01_18_094601) do
     t.string "last_name"
     t.string "email"
     t.integer "gender", default: 0
-    t.string "payer_status"
+    t.integer "payer_status", default: 0
+    t.boolean "disqualified", default: false
+    t.integer "dq_reason"
+    t.integer "preferred_language", default: 0
     t.date "dob"
     t.string "type"
     t.bigint "supervisor_id"
     t.integer "status", default: 0
-    t.date "terminated_at"
+    t.date "terminated_on"
     t.boolean "service_provider", default: false
     t.json "tokens"
     t.datetime "created_at", precision: 6, null: false
@@ -211,6 +222,7 @@ ActiveRecord::Schema.define(version: 2022_01_18_094601) do
   add_foreign_key "client_enrollments", "funding_sources"
   add_foreign_key "client_enrollments", "users", column: "client_id"
   add_foreign_key "clinics", "organizations"
+  add_foreign_key "contacts", "users", column: "client_id"
   add_foreign_key "funding_sources", "clinics"
   add_foreign_key "organizations", "users", column: "admin_id"
   add_foreign_key "rbt_supervisions", "users"

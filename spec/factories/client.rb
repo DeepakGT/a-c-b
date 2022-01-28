@@ -1,10 +1,11 @@
 FactoryBot.define do
   factory :client do
+    association :clinic
     sequence :email do |n|
       "testclient#{n}@yopmail.com"
     end
 
-    password { '123456' }
+    password { 'Abcd@123' }
 
     transient do
       role_name {'client'}

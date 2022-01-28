@@ -1,11 +1,30 @@
 require 'rails_helper'
 
 RSpec.describe Contact, type: :model do
-  it { should belong_to(:client) } 
-  
-  it { should have_one(:address).dependent(:destroy) }
-  it { should have_one(:phone_number).dependent(:destroy) }
+  describe "associations" do
+    it { should belong_to(:client) } 
+    
+    it { should have_one(:address).dependent(:destroy) }
+    it { should have_many(:phone_numbers).dependent(:destroy) }
+  end
 
-  it { should accept_nested_attributes_for(:address).update_only(true) }
-  it { should accept_nested_attributes_for(:phone_number).update_only(true) }
+  describe "nested attributes" do
+    it { should accept_nested_attributes_for(:address).update_only(true) }
+    it { should accept_nested_attributes_for(:phone_numbers).update_only(true) }
+  end
+
+  describe "enums" do
+    it { should define_enum_for(:relation_type).with_prefix(true) }
+    it { should define_enum_for(:relation).with_prefix(true) }
+  end
+  
+  describe "#validate_parent_portal_access" do
+    context "when relation_type is not parent_or_ guardian, parent_portal_access" do
+      let(:contact) { build :contact, relation_type: 'self', parent_portal_access: true }
+      it "should be false " do
+        contact.validate
+        expect(contact.errors[:parent_portal_access]).to include('must be false.')
+      end
+    end
+  end
 end

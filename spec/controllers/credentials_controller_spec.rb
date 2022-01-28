@@ -97,11 +97,10 @@ RSpec.describe CredentialsController, type: :controller do
     context "when sign in" do
       it "should list all credential types" do
         set_auth_headers(auth_headers)
-
+        
         get :types
-
         response_body = JSON.parse(response.body)
-
+        
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
         expect(response_body['data'].map{|hash| hash['type']}).to match_array Credential.credential_types.keys

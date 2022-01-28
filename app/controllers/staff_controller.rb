@@ -1,21 +1,17 @@
-# Staff is just an aliased for Users i.e. staff are nothing but users
-# so User model itself using as staff
 class StaffController < ApplicationController
   before_action :authenticate_user!
   before_action :set_clinic, only: %i[create supervisor_list]
+  before_action :set_staff, only: %i[show update]
 
   def index
-    staff = User.joins(:role).by_staff_roles
+    staff = Staff.all
     staff = do_filter(staff) if params[:search_value].present?
     @staff = staff.order(:first_name).paginate(page: params[:page])
   end
 
-  def show
-    @staff = User.find(params[:id])
-  end
+  def show; end
 
   def update
-    @staff = User.find(params[:id])
     set_role if params[:role_name].present?
     @staff.update(staff_params)
   end
@@ -41,9 +37,9 @@ class StaffController < ApplicationController
   end
 
   def staff_params
-    arr = [:first_name, :last_name, :status, :terminated_at, :email, :supervisor_id, :clinic_id]
+    arr = %i[first_name last_name status terminated_on email supervisor_id clinic_id]
     
-    arr.concat([:password, :service_provider, :password_confirmation]) if params[:action] == 'create'
+    arr.concat(%i[password service_provider password_confirmation]) if params[:action] == 'create'
     
     arr.concat([address_attributes: 
     %i[line1 line2 line3 zipcode city state country addressable_type addressable_id], 
@@ -55,6 +51,10 @@ class StaffController < ApplicationController
 
   def set_role
     @staff.role = Role.send(params[:role_name]).first
+  end
+
+  def set_staff
+    @staff = Staff.find(params[:id])
   end
 
   def do_filter(staff)
@@ -84,7 +84,7 @@ class StaffController < ApplicationController
   end
 
   def search_on_all_fields(value)
-    staff = User.includes(:role, :address, clinic: :organization).by_staff_roles
+    staff = Staff.includes(:role, :address, clinic: :organization).all
     formated_val = value.split.map{|x| "%#{x}%"}
     fname, lname = value.split
     staff.by_first_name(fname).by_last_name(lname)

@@ -2,7 +2,7 @@ class CreateClientEnrollments < ActiveRecord::Migration[6.1]
   def change
     create_table :client_enrollments do |t|
       t.date :enrollment_date
-      t.date :terminated_at
+      t.date :terminated_on
       t.string :insureds_name
       t.text :notes
       t.text :top_invoice_note

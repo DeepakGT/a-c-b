@@ -15,13 +15,10 @@ Rails.application.routes.draw do
 
   resources :staff, only: %i[index show update create]
   resources :clients, only: %i[index create update show] do
-    resources :client_enrollments, only: :create
+    resources :client_enrollments, only: %i[create show index update destroy]
+    resources :contacts, only: %i[index create show update destroy]
   end
-
-  get 'addresses/country_list', to: 'addresses#country_list'
   
-  get :phone_types, to: 'staff#phone_types'
-  resources :roles, only: :index
   resources :credentials, only: %i[index show create update] do
     get :types, on: :collection
   end
@@ -29,7 +26,11 @@ Rails.application.routes.draw do
   resources :staff, only: nil do
     resources :staff_credentials
   end
-  get '/staff/:staff_id/qualification', to: 'qualifications#show'
 
   resources :services, only: %i[index create update show]
+
+  get 'meta_data/selectable_options'
+  get '/addresses/country_list', to: 'addresses#country_list'
+  resources :roles, only: :index
+  get '/phone_types', to: 'staff#phone_types'
 end

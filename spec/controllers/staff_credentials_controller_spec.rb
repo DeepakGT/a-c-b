@@ -11,15 +11,15 @@ RSpec.describe StaffCredentialsController, type: :controller do
   
   describe "GET #index" do
     let!(:clinic) { create(:clinic, name: 'clinic1') }
-    let!(:user) { create(:user, :with_role, role_name: 'rbt', clinic_id: clinic.id) }
-    let!(:auth_headers) { user.create_new_auth_token }
+    let!(:staff) { create(:staff, :with_role, role_name: 'rbt', clinic_id: clinic.id) }
+    let!(:auth_headers) { staff.create_new_auth_token }
     before do
-      10.times { create(:staff_credential, staff_id: user.id) }
+      10.times { create(:staff_credential, staff_id: staff.id) }
     end
     context "when sign in" do
       it "should fetch credential list successfully" do
         set_auth_headers(auth_headers)
-        get :index, params: {staff_id: user.id}
+        get :index, params: {staff_id: staff.id}
         response_body = JSON.parse(response.body)
 
         expect(response.status).to eq(200)
@@ -31,31 +31,31 @@ RSpec.describe StaffCredentialsController, type: :controller do
 
   describe "POST #create" do
     let!(:clinic) { create(:clinic, name: 'clinic1') }
-    let!(:user) { create(:user, :with_role, role_name: 'rbt', clinic_id: clinic.id) }
-    let!(:auth_headers) { user.create_new_auth_token }
+    let!(:staff) { create(:staff, :with_role, role_name: 'rbt', clinic_id: clinic.id) }
+    let!(:auth_headers) { staff.create_new_auth_token }
     let!(:credential) { create(:credential) }
     context "when sign in" do
       it "should fetch credential list successfully" do
         set_auth_headers(auth_headers)
-        post :create, params: {staff_id: user.id, credential_id: credential.id}
+        post :create, params: {staff_id: staff.id, credential_id: credential.id}
         response_body = JSON.parse(response.body)
 
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
-        expect(response_body['data']['id']).to eq(user.reload.staff_credentials.first.id)
+        expect(response_body['data']['id']).to eq(staff.reload.staff_credentials.first.id)
       end
     end
   end
 
   describe "GET #show" do
     let!(:clinic) { create(:clinic, name: 'clinic1') }
-    let!(:user) { create(:user, :with_role, role_name: 'rbt', clinic_id: clinic.id) }
-    let!(:auth_headers) { user.create_new_auth_token }
-    let!(:staff_credential) { create(:staff_credential, staff_id: user.id) }
+    let!(:staff) { create(:staff, :with_role, role_name: 'rbt', clinic_id: clinic.id) }
+    let!(:auth_headers) { staff.create_new_auth_token }
+    let!(:staff_credential) { create(:staff_credential, staff_id: staff.id) }
     context "when sign in" do
       it "should fetch staff-credential detail successfully" do
         set_auth_headers(auth_headers)
-        get :show, params: {staff_id: user.id, id: staff_credential.id}
+        get :show, params: {staff_id: staff.id, id: staff_credential.id}
         response_body = JSON.parse(response.body)
 
         expect(response.status).to eq(200)
@@ -67,14 +67,14 @@ RSpec.describe StaffCredentialsController, type: :controller do
 
   describe "PUT #update" do
     let!(:clinic) { create(:clinic, name: 'clinic1') }
-    let!(:user) { create(:user, :with_role, role_name: 'rbt', clinic_id: clinic.id) }
-    let!(:auth_headers) { user.create_new_auth_token }
-    let!(:staff_credential) { create(:staff_credential, staff_id: user.id) }
+    let!(:staff) { create(:staff, :with_role, role_name: 'rbt', clinic_id: clinic.id) }
+    let!(:auth_headers) { staff.create_new_auth_token }
+    let!(:staff_credential) { create(:staff_credential, staff_id: staff.id) }
     let!(:updated_cert_lic_number) { 'updated_cert_lic_number' }
     context "when sign in" do
       it "should update staff-credential successfully" do
         set_auth_headers(auth_headers)
-        put :update, params: {staff_id: user.id, id: staff_credential.id, cert_lic_number: updated_cert_lic_number} 
+        put :update, params: {staff_id: staff.id, id: staff_credential.id, cert_lic_number: updated_cert_lic_number} 
         response_body = JSON.parse(response.body)
 
         expect(response.status).to eq(200)
@@ -86,13 +86,13 @@ RSpec.describe StaffCredentialsController, type: :controller do
 
   describe "DELETE #destroy" do
     let!(:clinic) { create(:clinic, name: 'clinic1') }
-    let!(:user) { create(:user, :with_role, role_name: 'rbt', clinic_id: clinic.id) }
-    let!(:auth_headers) { user.create_new_auth_token }
-    let!(:staff_credential) { create(:staff_credential, staff_id: user.id) }
+    let!(:staff) { create(:staff, :with_role, role_name: 'rbt', clinic_id: clinic.id) }
+    let!(:auth_headers) { staff.create_new_auth_token }
+    let!(:staff_credential) { create(:staff_credential, staff_id: staff.id) }
     context "when sign in" do
       it "should delete staff-credential successfully" do
         set_auth_headers(auth_headers)
-        delete :destroy, params: {staff_id: user.id, id: staff_credential.id} 
+        delete :destroy, params: {staff_id: staff.id, id: staff_credential.id} 
         response_body = JSON.parse(response.body)
 
         expect(response.status).to eq(200)

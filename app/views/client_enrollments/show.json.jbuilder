@@ -1,4 +1,4 @@
-json.status @client_enrollment.errors.any? ? 'failure' : 'success'
+json.status 'success'
 json.data do
   json.id @client_enrollment.id
   json.client_id @client_enrollment.client_id
@@ -11,4 +11,3 @@ json.data do
   json.top_invoice_note @client_enrollment.top_invoice_note
   json.bottom_invoice_note @client_enrollment.bottom_invoice_note
 end
-json.errors @client_enrollment.errors.full_messages

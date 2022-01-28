@@ -6,7 +6,7 @@ json.data do
   json.email @staff.email
   json.status @staff.status
   json.service_provider @staff.service_provider
-  json.terminated_at @staff.terminated_at
+  json.terminated_on @staff.terminated_on
   json.title @staff.role_name
   json.gender @staff.gender
   json.organization_id @staff.clinic.organization_id
