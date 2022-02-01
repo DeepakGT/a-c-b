@@ -8,13 +8,12 @@ RSpec.describe RolesController, type: :controller do
   before do
     @request.env["devise.mapping"] = Devise.mappings[:user]
   end
-
-  let!(:user) { create(:user, :with_role, role_name: 'administrator') }
+  let!(:role) { create(:role, permissions: ['roles_index'])}
+  let!(:user) { create(:user, :with_role, role_name: role.name) }
   let!(:auth_headers) { user.create_new_auth_token }
   
   describe "GET #index" do  
     context "when sign in" do 
-      let!(:role) { create(:role) }
       it "should list all roles" do
         set_auth_headers(auth_headers)
         

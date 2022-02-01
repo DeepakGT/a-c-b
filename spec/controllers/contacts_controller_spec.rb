@@ -8,11 +8,13 @@ RSpec.describe ContactsController, type: :controller do
   before do
     @request.env['devise.mapping'] = Devise.mappings[:user]
   end
-  let!(:user) { create(:user, :with_role, role_name: 'aba_admin', first_name: 'admin', last_name: 'user') }
+  let!(:role) { create(:role, permissions: ['contacts_index', 'contacts_show', 'contacts_create', 
+    'contacts_update', 'contacts_destroy'])}
+  let!(:user) { create(:user, :with_role, role_name: role.name, first_name: 'admin', last_name: 'user') }
   let!(:auth_headers) { user.create_new_auth_token }
   let!(:organization) {create(:organization, name: 'test-organization', admin_id: user.id)}
   let!(:clinic) {create(:clinic, name: 'test-clinic', organization_id: organization.id)}
-  let!(:client) { create(:client, :with_role, clinic_id: clinic.id)}
+  let!(:client) { create(:client, clinic_id: clinic.id)}
 
   describe "GET #index" do
     context "when sign in" do

@@ -9,14 +9,15 @@ RSpec.describe ClientsController, type: :controller do
     @request.env["devise.mapping"] = Devise.mappings[:user]
   end
 
-  let!(:user) { create(:user, :with_role, role_name: 'aba_admin', first_name: 'admin', last_name: 'user') }
+  let!(:role) { create(:role, permissions: ['clients_index', 'clients_show','clients_create', 'clients_update'])}
+  let!(:user) { create(:user, :with_role, role_name: role.name) }
   let!(:auth_headers) { user.create_new_auth_token }
   let!(:organization) {create(:organization, name: 'org1', admin_id: user.id)}
   let!(:clinic) {create(:clinic, name: 'clinic1', organization_id: organization.id)}
 
   describe "GET #index" do
     context "when sign in" do
-      let!(:clients) { create_list(:client, 4, :with_role, clinic_id: clinic.id)}
+      let!(:clients) { create_list(:client, 4, clinic_id: clinic.id)}
       it "should list client successfully" do
         set_auth_headers(auth_headers)
         
@@ -54,7 +55,7 @@ RSpec.describe ClientsController, type: :controller do
 
   describe "GET #show" do
     context "when sign in" do
-      let(:client) { create(:client, :with_role, clinic_id: clinic.id)}
+      let(:client) { create(:client, clinic_id: clinic.id)}
       it "should show client detail successfully" do
         set_auth_headers(auth_headers)
 
@@ -97,7 +98,7 @@ RSpec.describe ClientsController, type: :controller do
   describe "PUT #update" do
     context "when sign in" do
       let(:client) { 
-        create(:client, :with_role, clinic_id: clinic.id, first_name: 'test', 
+        create(:client, clinic_id: clinic.id, first_name: 'test', 
                phone_number_attributes: {phone_type: 'home'}, 
                addresses_attributes: [{address_type: 'insurance_address', city: 'Indore'}])
       }

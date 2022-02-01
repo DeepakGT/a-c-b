@@ -8,11 +8,13 @@ RSpec.describe ClientEnrollmentsController, type: :controller do
   before do
     @request.env["devise.mapping"] = Devise.mappings[:user]
   end
-  let!(:user) { create(:user, :with_role, role_name: 'aba_admin', first_name: 'admin', last_name: 'user') }
+  let(:role) { create(:role, permissions: ['client_enrollments_index', 'client_enrollments_create', 
+    'client_enrollments_show', 'client_enrollments_update', 'client_enrollments_destroy'])}
+  let!(:user) { create(:user, :with_role, role_name: role.name, first_name: 'admin', last_name: 'user') }
   let!(:auth_headers) { user.create_new_auth_token }
   let!(:organization) {create(:organization, name: 'test-organization', admin_id: user.id)}
   let!(:clinic) {create(:clinic, name: 'test-clinic', organization_id: organization.id)}
-  let!(:client) { create(:client, :with_role, clinic_id: clinic.id)}
+  let!(:client) { create(:client, clinic_id: clinic.id)}
   let!(:funding_source) {create(:funding_source, clinic_id: clinic.id)}
 
   describe "GET #index" do
@@ -20,7 +22,7 @@ RSpec.describe ClientEnrollmentsController, type: :controller do
       let!(:client_enrollments) { create_list(:client_enrollment, 4, client_id: client.id)}
       it "should fetch client enrollment list successfully" do
         set_auth_headers(auth_headers)
-
+        
         get :index, params: { client_id: client.id }
         response_body = JSON.parse(response.body)
 

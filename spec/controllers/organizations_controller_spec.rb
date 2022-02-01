@@ -9,10 +9,12 @@ RSpec.describe OrganizationsController, type: :controller do
     @request.env["devise.mapping"] = Devise.mappings[:user]
   end
 
-  describe "GET #index" do 
-    let!(:user) { create(:user, :with_role, role_name: 'aba_admin') }
-    let!(:auth_headers) { user.create_new_auth_token }
+  let!(:role) { create(:role, permissions: ['organizations_index', 'organizations_show',
+    'organizations_create', 'organizations_update'])}
+  let!(:user) { create(:user, :with_role, role_name: role.name) }
+  let!(:auth_headers) { user.create_new_auth_token }
 
+  describe "GET #index" do 
     context "when sign in" do
       let!(:organizations) do
         build_list(:organization, 5) do |organization, i|
@@ -56,11 +58,8 @@ RSpec.describe OrganizationsController, type: :controller do
   end
 
   describe "GET #show" do 
-    let!(:user) { create(:user, :with_role, role_name: 'aba_admin') }
-    let!(:auth_headers) { user.create_new_auth_token }
-
     context "when sign in" do
-      let(:organization) { create(:organization, name: 'test-organization')}
+      let(:organization) { create(:organization, name: 'test-organization', admin_id: user.id)}
       it "should show organization" do
         set_auth_headers(auth_headers)
 
@@ -75,9 +74,6 @@ RSpec.describe OrganizationsController, type: :controller do
   end
   
   describe "POST #create" do 
-    let!(:user) { create(:user, :with_role, role_name: 'aba_admin') }
-    let!(:auth_headers) { user.create_new_auth_token }
-
     context "when sign in" do
       let!(:organization_name){'test-organization-1'}
       let(:address_city) {'Indore'}
@@ -85,14 +81,14 @@ RSpec.describe OrganizationsController, type: :controller do
       let(:phone_number) {'8787878787'}
       it "should create an organization successfully" do
         set_auth_headers(auth_headers)
-
+        
         post :create, params: {
           name: organization_name, 
           address_attributes: {city: address_city}, 
           phone_number_attributes: {phone_type: phone_number_type, number: phone_number}
         }
         response_body = JSON.parse(response.body)
-
+        
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
         expect(response_body['data']['name']).to eq(organization_name)
@@ -104,9 +100,7 @@ RSpec.describe OrganizationsController, type: :controller do
   end
 
   describe "PUT #update" do
-    let!(:user) { create(:user, :with_role, role_name: 'aba_admin') }
-    let!(:auth_headers) { user.create_new_auth_token }
-    let!(:organization) {create(:organization, name: 'organization1')}
+    let!(:organization) {create(:organization, name: 'organization1', admin_id: admin.id)}
 
     context "when sign in" do
       let!(:updated_organization_name) {'organization-1-updated'}

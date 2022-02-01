@@ -8,12 +8,15 @@ RSpec.describe FundingSourcesController, type: :controller do
   before do
     @request.env["devise.mapping"] = Devise.mappings[:user]
   end
+
+  let!(:role) { create(:role, permissions: ['funding_sources_index', 'funding_sources_show',
+    'funding_sources_create', 'funding_sources_update'])}
+  let!(:user) { create(:user, :with_role, role_name: role.name) }
+  let!(:auth_headers) { user.create_new_auth_token }
+  let!(:organization) {create(:organization, name: 'org1')}
+  let!(:clinic) {create(:clinic, name: 'clinic1', organization_id: organization.id)}
   
   describe "GET #index" do
-    let!(:user) { create(:user, :with_role, role_name: 'aba_admin') }
-    let!(:auth_headers) { user.create_new_auth_token }
-    let!(:organization) {create(:organization, name: 'org1', admin_id: user.id)}
-    let!(:clinic) {create(:clinic, name: 'clinic1', organization_id: organization.id)}
     let!(:funding_sources) {create_list(:funding_source, 10, clinic_id: clinic.id)}
     context "when sign in" do
       it "should list funding sources successfully" do
@@ -52,10 +55,6 @@ RSpec.describe FundingSourcesController, type: :controller do
   end
 
   describe "POST #create" do
-    let!(:user) { create(:user, :with_role, role_name: 'aba_admin') }
-    let!(:auth_headers) { user.create_new_auth_token }
-    let!(:organization) {create(:organization, name: 'org1', admin_id: user.id)}
-    let!(:clinic) {create(:clinic, name: 'clinic1', organization_id: organization.id)}
     context "when sign in" do
       it "should create funding source successfully" do
         set_auth_headers(auth_headers)
@@ -71,9 +70,6 @@ RSpec.describe FundingSourcesController, type: :controller do
   end
 
   describe "GET #show" do
-    let!(:user) { create(:user, :with_role, role_name: 'aba_admin') }
-    let!(:auth_headers) { user.create_new_auth_token }
-    let!(:clinic) {create(:clinic, name: 'clinic1')}
     let!(:funding_source) {create(:funding_source, clinic_id: clinic.id)}
     context "when sign in" do
       it "should show funding source detail successfully" do
@@ -90,9 +86,6 @@ RSpec.describe FundingSourcesController, type: :controller do
   end
 
   describe "PUT #update" do
-    let!(:user) { create(:user, :with_role, role_name: 'aba_admin') }
-    let!(:auth_headers) { user.create_new_auth_token }
-    let!(:clinic) {create(:clinic, name: 'clinic1')}
     let!(:funding_source) {create(:funding_source, clinic_id: clinic.id)}
     let!(:updated_funding_source_name) {'update-name'}
     context "when sign in" do

@@ -9,10 +9,14 @@ RSpec.describe StaffCredentialsController, type: :controller do
     @request.env["devise.mapping"] = Devise.mappings[:user]
   end
   
+  let!(:role) { create(:role, permissions: ['staff_credentials_index', 'staff_credentials_show',
+    'staff_credentials_create', 'staff_credentials_update', 'staff_credentials_destroy'])}
+  let!(:user) { create(:user, :with_role, role_name: role.name) }
+  let!(:auth_headers) { user.create_new_auth_token }
+
   describe "GET #index" do
     let!(:clinic) { create(:clinic, name: 'clinic1') }
     let!(:staff) { create(:staff, :with_role, role_name: 'rbt', clinic_id: clinic.id) }
-    let!(:auth_headers) { staff.create_new_auth_token }
     before do
       10.times { create(:staff_credential, staff_id: staff.id) }
     end
@@ -32,7 +36,6 @@ RSpec.describe StaffCredentialsController, type: :controller do
   describe "POST #create" do
     let!(:clinic) { create(:clinic, name: 'clinic1') }
     let!(:staff) { create(:staff, :with_role, role_name: 'rbt', clinic_id: clinic.id) }
-    let!(:auth_headers) { staff.create_new_auth_token }
     let!(:credential) { create(:credential) }
     context "when sign in" do
       it "should fetch credential list successfully" do
@@ -50,7 +53,6 @@ RSpec.describe StaffCredentialsController, type: :controller do
   describe "GET #show" do
     let!(:clinic) { create(:clinic, name: 'clinic1') }
     let!(:staff) { create(:staff, :with_role, role_name: 'rbt', clinic_id: clinic.id) }
-    let!(:auth_headers) { staff.create_new_auth_token }
     let!(:staff_credential) { create(:staff_credential, staff_id: staff.id) }
     context "when sign in" do
       it "should fetch staff-credential detail successfully" do
@@ -68,7 +70,6 @@ RSpec.describe StaffCredentialsController, type: :controller do
   describe "PUT #update" do
     let!(:clinic) { create(:clinic, name: 'clinic1') }
     let!(:staff) { create(:staff, :with_role, role_name: 'rbt', clinic_id: clinic.id) }
-    let!(:auth_headers) { staff.create_new_auth_token }
     let!(:staff_credential) { create(:staff_credential, staff_id: staff.id) }
     let!(:updated_cert_lic_number) { 'updated_cert_lic_number' }
     context "when sign in" do
@@ -87,7 +88,6 @@ RSpec.describe StaffCredentialsController, type: :controller do
   describe "DELETE #destroy" do
     let!(:clinic) { create(:clinic, name: 'clinic1') }
     let!(:staff) { create(:staff, :with_role, role_name: 'rbt', clinic_id: clinic.id) }
-    let!(:auth_headers) { staff.create_new_auth_token }
     let!(:staff_credential) { create(:staff_credential, staff_id: staff.id) }
     context "when sign in" do
       it "should delete staff-credential successfully" do

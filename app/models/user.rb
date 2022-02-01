@@ -79,14 +79,10 @@ class User < ActiveRecord::Base
   end
 
   def organization
-    return nil if self.administrator?
+    return nil if self.administrator? || self.super_admin?
     return Organization.find_by(admin_id: self.id) if self.aba_admin?
 
     self.clinic.organization
-  end
-
-  def active_for_authentication?
-    super if !self.client?
   end
 
   private
@@ -106,7 +102,7 @@ class User < ActiveRecord::Base
   end
 
   def validate_presence_of_clinic
-    return if self.aba_admin? || self.administrator?
+    return if self.aba_admin? || self.administrator? || self.super_admin?
 
     errors.add(:clinic, 'must be associate with this user.') if self.clinic.blank?
   end

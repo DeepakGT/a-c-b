@@ -1,9 +1,8 @@
 class ApplicationController < ActionController::API
   include DeviseTokenAuth::Concerns::SetUserByToken
-  include Pundit
   before_action :configure_permitted_parameters, if: :devise_controller?
   rescue_from ActiveRecord::RecordNotFound, with: :send_record_not_found_response
-  rescue_from Pundit::NotAuthorizedError, with: :not_authorized
+  before_action :check_permissions, if: ->{ !devise_controller? && !current_user.super_admin? }
 
   protected
 
@@ -18,6 +17,10 @@ class ApplicationController < ActionController::API
     # end
     devise_parameter_sanitizer.permit(:sign_up, keys: whitelisted_user_params)
     devise_parameter_sanitizer.permit(:account_update, keys: whitelisted_user_params)
+  end
+
+  def check_permissions
+    not_authorized if current_user.role.permissions.blank? || !current_user.role.permissions.include?(params[:controller]+"_"+params[:action]) 
   end
 
   private

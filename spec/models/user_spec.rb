@@ -60,7 +60,7 @@ RSpec.describe User, type: :model do
   end
 
   describe "#validate_presence_of_clinic" do
-    context "when user role is bcba,rbt,billing or client" do
+    context "when user role is bcba,rbt,billing" do
       let(:user) { build :user, :with_role, role_name: 'bcba'}
       it "clinic must be present" do
         user.validate
@@ -73,7 +73,7 @@ RSpec.describe User, type: :model do
     let(:organization) { create(:organization, name: 'test-1')}
     let!(:clinic) { create(:clinic, name: 'clinic1', organization_id: organization.id) }
     let!(:user) { create(:user, :with_role, role_name: 'administrator') } 
-    it "should be administrator" do                             
+    it "should be administrator or super admin" do                             
       expect(user.organization).to eq(nil)  
     end   
     

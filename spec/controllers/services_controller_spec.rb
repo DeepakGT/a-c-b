@@ -8,10 +8,12 @@ RSpec.describe ServicesController, type: :controller do
   before do
     @request.env["devise.mapping"] = Devise.mappings[:user]
   end
+
+  let!(:role) { create(:role, permissions: ['services_index', 'services_show', 'services_create', 'services_update'])}
+  let!(:user) { create(:user, :with_role, role_name: role.name) }
+  let!(:auth_headers) { user.create_new_auth_token }
   
   describe "GET #index" do
-    let!(:user) { create(:user, :with_role, role_name: 'aba_admin') }
-    let!(:auth_headers) { user.create_new_auth_token }
     before do
       create(:service, name: 'service1')
       create(:service, name: 'service2')
@@ -52,9 +54,6 @@ RSpec.describe ServicesController, type: :controller do
   end
 
   describe "POST #create" do
-    let!(:user) { create(:user, :with_role, role_name: 'aba_admin') }
-    let!(:auth_headers) { user.create_new_auth_token }
-
     context "when sign in" do
       let!(:service_name) {'test-service-1'}
       it "should create service successfully" do
@@ -70,8 +69,6 @@ RSpec.describe ServicesController, type: :controller do
   end
 
   describe "PUT #update" do
-    let!(:user) { create(:user, :with_role, role_name: 'aba_admin') }
-    let!(:auth_headers) { user.create_new_auth_token }
     let!(:service) {create(:service, name: 'service1')}
     context "when sign in" do
       let!(:updated_service_name) {'service-1-updated'}
@@ -88,8 +85,6 @@ RSpec.describe ServicesController, type: :controller do
   end
 
   describe "GET #show" do
-    let!(:user) { create(:user, :with_role, role_name: 'aba_admin') }
-    let!(:auth_headers) { user.create_new_auth_token }
     let!(:service_name) {'service-1'}
     let!(:service) {create(:service, name: service_name)}
     context "when sign in" do

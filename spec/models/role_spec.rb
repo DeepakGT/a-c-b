@@ -10,12 +10,12 @@ RSpec.describe Role, type: :model do
   it do
     should define_enum_for(:name)
       .with_values(
+        super_admin: 'super admin',
         aba_admin: 'aba admin',
         administrator: 'administrator',
         bcba: 'bcba',
         rbt: 'rbt',
-        billing: 'billing',
-        client: 'client'
+        billing: 'billing'
       )
       .backed_by_column_of_type(:string)
   end

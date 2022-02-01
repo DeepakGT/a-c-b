@@ -11,12 +11,10 @@ class FundingSourcesController < ApplicationController
 
   def create
     @funding_source = @clinic.funding_sources.new(funding_source_params)
-    authorize @funding_source
     @funding_source.save
   end
 
   def update
-    authorize @funding_source
     @funding_source.update(funding_source_params)
   end
 
