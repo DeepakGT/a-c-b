@@ -15,7 +15,7 @@ schemes:
 - "https"
 - "http"
 paths:
-  "/auth":
+  "/api/auth":
     post:
       summary: User registration
       requestBody:
@@ -95,7 +95,7 @@ paths:
                 ]
                 status: "error"
 
-  "/auth/sign_in":
+  "/api/auth/sign_in":
     post:
       summary: User signin
       requestBody:
@@ -124,7 +124,7 @@ paths:
                 success: false
                 errors: ["Invalid login credentials. Please try again."]
 
-  "/auth/sign_out":
+  "/api/auth/sign_out":
     delete:
       summary: User signout
       parameters:
@@ -155,7 +155,7 @@ paths:
                 success: false
                 errors: ["User was not found or was not logged in."]
 
-  "/auth/password":
+  "/api/auth/password":
     post:
       summary: Password reset
       requestBody:
@@ -221,7 +221,7 @@ paths:
                 success: false
                 errors: ["Unauthorized"]
 
-  /clinics:
+  /api/clinics:
     get:
       summary: List of clinics
       parameters:
@@ -330,7 +330,7 @@ paths:
                 "errors": []
               }
 
-  /clinics/{id}:
+  /api/clinics/{id}:
     get:
       summary: clinic detail
       parameters:
@@ -443,7 +443,7 @@ paths:
                 "errors": []
               }
   
-  /staff:
+  /api/staff:
     get:
       summary: List of staff
       parameters:
@@ -586,7 +586,7 @@ paths:
                 }
               }
           
-  /staff/{staff_id}:
+  /api/staff/{staff_id}:
     get:
       summary: Staff detail
       parameters:
@@ -702,7 +702,7 @@ paths:
                           "errors": []
                         }
 
-  /credentials:
+  /api/credentials:
     get:
       summary: List of credentials
       parameters:
@@ -778,7 +778,7 @@ paths:
                           }
                         }
 
-  /credentials/{id}:
+  /api/credentials/{id}:
     put:
       summary: credential update
       parameters:
@@ -853,7 +853,7 @@ paths:
                           }
                         }
 
-  /clinics/{clinic_id}/staff/supervisor_list:
+  /api/clinics/{clinic_id}/staff/supervisor_list:
     get:
       summary: supervisors list
       parameters:
@@ -894,7 +894,7 @@ paths:
                   ]
                 }
 
-  /services:
+  /api/services:
     get:
       summary: services list
       parameters:
@@ -967,7 +967,7 @@ paths:
                         }
                       }
 
-  /services/{id}:
+  /api/services/{id}:
     put:
       summary: Service update
       parameters:
@@ -1040,7 +1040,7 @@ paths:
                 }
               }
 
-  /clinics/{clinic_id}/funding_sources:
+  /api/clinics/{clinic_id}/funding_sources:
     get:
       summary: Funding sources list
       parameters:
@@ -1185,7 +1185,7 @@ paths:
                 "errors": []
               }
 
-  /clinics/{clinic_id}/funding_sources/{id}:
+  /api/clinics/{clinic_id}/funding_sources/{id}:
     get:
       summary: funding source show
       parameters:
@@ -1308,7 +1308,7 @@ paths:
                 "errors": []
               }
 
-  /staff/{staff_id}/staff_credentials:
+  /api/staff/{staff_id}/staff_credentials:
     get:
       summary: staff credential listing
       parameters:
@@ -1387,7 +1387,7 @@ paths:
                   "documentation_notes": "doc temp"
                 }
               }
-  /staff/{staff_id}/staff_credentials/{id}:
+  /api/staff/{staff_id}/staff_credentials/{id}:
     get:
       summary: staff credential show
       parameters:
@@ -1512,7 +1512,7 @@ paths:
                 }
               }
 
-  /organizations:  
+  /api/organizations:  
     get:
       summary: organization list
       parameters:
@@ -1624,7 +1624,7 @@ paths:
                   }
                 }
               }
-  /organizations/{id}:
+  /api/organizations/{id}:
     get:
       summary: organization detail
       parameters:
@@ -1732,7 +1732,7 @@ paths:
                 "errors": []
               }
 
-  /clients:
+  /api/clients:
     get:
       summary: Client list
       parameters:
@@ -1889,7 +1889,7 @@ paths:
                 "errors": []
               }
   
-  /clients/{id}:
+  /api/clients/{id}:
     get:
       summary: client detail
       parameters:
@@ -2064,7 +2064,7 @@ paths:
                 "errors": []
               }
 
-  /clients/{client_id}/client_enrollments:
+  /api/clients/{client_id}/client_enrollments:
     get:
       summary: Client Enrollment list
       parameters:
@@ -2167,7 +2167,7 @@ paths:
                 "errors": []
               }
 
-  /clients/{client_id}/client_enrollments/{id}:
+  /api/clients/{client_id}/client_enrollments/{id}:
     get:
       summary: client enrollment detail
       parameters:
@@ -2304,7 +2304,7 @@ paths:
                 }
               }
 
-  /clients/{client_id}/contacts:
+  /api/clients/{client_id}/contacts:
     get:
       summary: Client Contacts list
       parameters:
@@ -2456,7 +2456,7 @@ paths:
                 "errors": []
               }
 
-  /clients/{client_id}/contacts/{id}:
+  /api/clients/{client_id}/contacts/{id}:
     get:
       summary: client contact detail
       parameters:
@@ -2644,7 +2644,7 @@ paths:
                 }
               }
 
-  /meta_data/selectable_options:
+  /api/meta_data/selectable_options:
     get:
       summary: Selectable options list
       parameters:
@@ -2707,7 +2707,7 @@ paths:
                 }
               }
 
-  /roles:
+  /api/roles:
     get:
       summary: List of roles
       parameters:
@@ -2751,7 +2751,7 @@ paths:
                 }
               ]
 
-  /credentials/types:
+  /api/credentials/types:
     get:
       summary: credential types
       parameters:
@@ -2790,7 +2790,7 @@ paths:
                 ]
               }
 
-  /phone_types:
+  /api/phone_types:
     get:
       summary: phone number types
       parameters:
@@ -2841,7 +2841,7 @@ paths:
                 ]
               }
 
-  /addresses/country_list:
+  /api/addresses/country_list:
     get:
       summary: country list
       parameters:
