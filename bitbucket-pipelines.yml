@@ -1,0 +1,27 @@
+clone:
+  depth: full
+
+pipelines:
+  branches:
+    '{master}':
+      - step:
+          name: SonarQube analysis
+          image: sonarsource/sonar-scanner-cli:latest
+          caches:
+            - sonar
+          script:
+            - sonar-scanner
+
+  pull-requests:
+    '**':
+      - step:
+          name: SonarQube analysis
+          image: sonarsource/sonar-scanner-cli:latest
+          caches:
+            - sonar
+          script:
+            - sonar-scanner
+
+definitions:
+  caches:
+    sonar: /opt/sonar-scanner/.sonar
