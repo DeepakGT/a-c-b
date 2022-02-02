@@ -33,6 +33,6 @@ class Staff < User
   private
 
   def validate_role
-    errors.add(:role, 'For staff, role must be bcba, rbt or billing.') if !self.bcba? && !self.billing? && !self.rbt?
+    errors.add(:role, 'For staff, role must be bcba, rbt or billing.') if self.role_name!='bcba' && self.role_name!='billing' && self.role_name!='rbt'
   end
 end

@@ -2707,7 +2707,7 @@ paths:
                 }
               }
 
-  /api/roles:
+  /api/roles_list:
     get:
       summary: List of roles
       parameters:
@@ -2907,6 +2907,43 @@ paths:
                   }
                 ]
               }
+
+  /api/roles:
+    post:
+      summary: role create
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/RolesCreateParameters"
+      responses:
+        "200":
+          description: "Created role"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 19,
+                  "name": "abcd",
+                  "permissions": []
+                },
+                "errors": []
+              }
+
 
 definitions:
   UserRegistrationParameters:
@@ -3659,3 +3696,14 @@ definitions:
             type: "string"
           country:
             type: "string"
+
+  RolesCreateParameters:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      permissions:
+        type: "array"
+        items:
+          type: "string"
+          

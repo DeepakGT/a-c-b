@@ -34,7 +34,7 @@ RSpec.describe StaffController, type: :controller do
 
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
-        expect(response_body['data'].count).to eq(Staff.billing.count)
+        expect(response_body['data'].count).to eq(Staff.joins(:role).by_role('billing').count)
       end
 
       it "should fetch the first page record by default" do

@@ -54,33 +54,33 @@ class User < ActiveRecord::Base
 
   # define methods dynamically, to check the user's role
   # like user.aba_admin?
-  Role.names.each_key do |key|
-    define_method "#{key}?" do
-      self.role_name == key
-    end
-  end
+  # Role.pluck(:name).map do |key|
+  #   define_method "#{key}?" do
+  #     self.role_name == key
+  #   end
+  # end
 
-  class << self
-    Role.names.each_key do |key|
-      define_method(key) do
-        User.joins(:role).by_role(key)
-      end
-    end
-  end
+  # class << self
+  #   Role.pluck(:name).map do |key|
+  #     define_method(key) do
+  #       User.joins(:role).by_role(key)
+  #     end
+  #   end
+  # end
 
   # format response
   def as_json(options = {})
     response = super(options)
                .select { |key| key.in?(['email', 'uid', 'first_name', 'last_name']) }
-               .merge({role: Role.names[self.role_name]})
+               .merge({role: Role.find_by(name: self.role_name)})
 
-    response.merge!({organization_id: self.organization&.id}) if self.aba_admin?
+    response.merge!({organization_id: self.organization&.id}) if self.role_name=='aba_admin'
     response
   end
 
   def organization
-    return nil if self.administrator? || self.super_admin?
-    return Organization.find_by(admin_id: self.id) if self.aba_admin?
+    return nil if self.role_name=='administrator' || self.role_name=='super_admin'
+    return Organization.find_by(admin_id: self.id) if self.role_name=='aba_admin'
 
     self.clinic.organization
   end
@@ -102,7 +102,7 @@ class User < ActiveRecord::Base
   end
 
   def validate_presence_of_clinic
-    return if self.aba_admin? || self.administrator? || self.super_admin?
+    return if self.role_name=='aba_admin' || self.role_name=='administrator' || self.role_name=='super_admin'
 
     errors.add(:clinic, 'must be associate with this user.') if self.clinic.blank?
   end

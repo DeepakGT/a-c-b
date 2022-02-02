@@ -12,14 +12,14 @@ RSpec.describe RolesController, type: :controller do
   let!(:user) { create(:user, :with_role, role_name: role.name) }
   let!(:auth_headers) { user.create_new_auth_token }
   
-  describe "GET #index" do  
+  describe "GET #roles_list" do  
     context "when sign in" do 
       it "should list all roles" do
         set_auth_headers(auth_headers)
         
         @roles = [FactoryBot.build_stubbed(:role)]
         allow(Role).to receive(:all).and_return(@roles)
-        get :index
+        get :roles_list
 
         response_body = JSON.parse(response.body)
         

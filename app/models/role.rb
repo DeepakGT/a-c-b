@@ -4,11 +4,4 @@ class Role < ApplicationRecord
 
   validates :name, uniqueness: true
   validates :name, presence: true
-
-  enum name: { super_admin: 'super admin',
-               aba_admin: 'aba admin',
-               administrator: 'administrator',
-               bcba: 'bcba',
-               rbt: 'rbt',
-               billing: 'billing'}
 end
