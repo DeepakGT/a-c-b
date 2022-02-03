@@ -10,6 +10,12 @@ class RolesController < ApplicationController
     @role = Role.create(role_params)
   end
 
+  def update
+    @role = Role.find(params[:id])
+    @role.update(permissions: params[:permissions])
+    @role.update(name: params[:name]) if params[:change_role_name].present? && params[:change_role_name]
+  end
+
   def roles_list
     @roles = Role.where.not(name: 'super_admin')
   end

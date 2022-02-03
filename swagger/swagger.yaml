@@ -3003,7 +3003,45 @@ paths:
                 },
                 "errors": []
               }
-
+  /api/roles/{id}:
+    put:
+      summary: role update
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "Role id"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/RolesUpdateParameters"
+      responses:
+        "200":
+          description: "Updated role"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 7,
+                  "name": "abcd",
+                  "permissions": "[]"
+                },
+                "errors": []
+              }
 
 definitions:
   UserRegistrationParameters:
@@ -3767,3 +3805,14 @@ definitions:
         items:
           type: "string"
           
+  RolesUpdateParameters:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      permissions:
+        type: "array"
+        items:
+          type: "string"
+      change_role_name:
+        type: "boolean"

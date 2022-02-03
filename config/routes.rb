@@ -29,7 +29,7 @@ Rails.application.routes.draw do
 
     resources :services, only: %i[index create update show]
 
-    resources :roles, only: %i[index create] 
+    resources :roles, only: %i[index create update] 
 
     get 'meta_data/selectable_options'
     get '/addresses/country_list', to: 'addresses#country_list'
