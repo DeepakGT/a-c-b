@@ -1,3 +1,4 @@
+@role.reload
 json.status @role.errors.any? ? 'failure' : 'success'
 json.data do
   json.id @role.id

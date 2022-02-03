@@ -8,14 +8,11 @@ RSpec.describe RolesController, type: :controller do
   before do
     @request.env["devise.mapping"] = Devise.mappings[:user]
   end
-  before do
-    ["test-role-1","test-role-2"].map do |name| 
-      create(:role, name: name) 
-    end
-  end
   
   let!(:user) { create(:user, :with_role, role_name: 'super_admin') }
   let!(:auth_headers) { user.create_new_auth_token }
+  let!(:role_1) { create(:role, name: 'test-role-1')}
+  let!(:role_2) { create(:role, name: 'test-role-2')}
 
   describe "GET #index" do
     context "when sign in" do
@@ -52,7 +49,7 @@ RSpec.describe RolesController, type: :controller do
       let(:role) { create(:role, name: 'abcd')}
       it "should update role successfully" do
         set_auth_headers(auth_headers)
-
+        
         put :update, params: { id: role.id, permissions: ["organization_view"]}
         response_body = JSON.parse(response.body)
         
@@ -78,10 +75,11 @@ RSpec.describe RolesController, type: :controller do
       end
 
       context "and change_role_name is absent" do
+        let(:updated_role_name) {'ABCD'}
         it "should not update role name" do
           set_auth_headers(auth_headers)
 
-          put :update, params: { id: role.id, name: 'ABCD'}
+          put :update, params: { id: role.id, name: updated_role_name}
           response_body = JSON.parse(response.body)
           
           expect(response.status).to eq(200)

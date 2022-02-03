@@ -1,19 +1,20 @@
 class RolesController < ApplicationController
   before_action :authenticate_user!
   # before_action :authorize_user, except: :roles_list
+  before_action :set_role, only: %i[update]
 
   def index
-    @roles = Role.all
+    @roles = Role.order(:name).paginate(page: params[:page])
   end
 
   def create
-    @role = Role.create(role_params)
+    @role = Role.create(name: params[:name], permissions: params[:permissions])
   end
 
   def update
-    @role = Role.find(params[:id])
-    @role.update(permissions: params[:permissions])
-    @role.update(name: params[:name]) if params[:change_role_name].present? && params[:change_role_name]
+    params_to_update = {permissions: params[:permissions]}
+    params_to_update.merge!(name: params[:name]) if params[:change_role_name].to_bool.true?
+    @role.update(params_to_update)
   end
 
   def roles_list
@@ -22,12 +23,12 @@ class RolesController < ApplicationController
 
   private
 
-  def role_params
-    params.permit(%i[name permissions])
-  end
-
   def authorize_user
     authorize Role if current_user.role_name!='super_admin'
+  end
+
+  def set_role
+    @role = Role.find(params[:id])
   end
   # end of private
   
