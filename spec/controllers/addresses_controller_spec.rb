@@ -9,8 +9,7 @@ RSpec.describe AddressesController, type: :controller do
     @request.env["devise.mapping"] = Devise.mappings[:user]
   end
 
-  let!(:role) { create(:role, permissions: ['addresses_country_list'])}
-  let!(:user) { create(:user, :with_role, role_name: role.name) }
+  let!(:user) { create(:user, :with_role) }
   let!(:auth_headers) { user.create_new_auth_token }
   let!(:countries) { create_list(:country,5)}
   let!(:country) { create(:country, name: 'United States of America')}

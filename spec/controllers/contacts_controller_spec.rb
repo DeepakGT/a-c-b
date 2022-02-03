@@ -8,8 +8,7 @@ RSpec.describe ContactsController, type: :controller do
   before do
     @request.env['devise.mapping'] = Devise.mappings[:user]
   end
-  let!(:role) { create(:role, permissions: ['contacts_index', 'contacts_show', 'contacts_create', 
-    'contacts_update', 'contacts_destroy'])}
+  let!(:role) { create(:role, name: 'aba_admin', permissions: ['client_contacts_view', 'client_contacts_update', 'client_contacts_delete'])}
   let!(:user) { create(:user, :with_role, role_name: role.name, first_name: 'admin', last_name: 'user') }
   let!(:auth_headers) { user.create_new_auth_token }
   let!(:organization) {create(:organization, name: 'test-organization', admin_id: user.id)}

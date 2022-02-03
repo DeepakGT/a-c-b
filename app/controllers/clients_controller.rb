@@ -1,5 +1,6 @@
 class ClientsController < ApplicationController
   before_action :authenticate_user!
+  # before_action :authorize_user
   before_action :set_client, only: %i[show update]
 
   def index
@@ -35,4 +36,10 @@ class ClientsController < ApplicationController
   def set_client
     @client = Client.find(params[:id])
   end
+
+  def authorize_user
+    authorize Client if current_user.role_name!='super_admin'
+  end
+  # end of private
+
 end

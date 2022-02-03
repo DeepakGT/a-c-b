@@ -9,8 +9,7 @@ RSpec.describe StaffController, type: :controller do
     @request.env["devise.mapping"] = Devise.mappings[:user]
   end
 
-  let!(:role_admin) { create(:role, permissions: ['staff_index', 'staff_show', 'staff_create', 
-    'staff_update', 'staff_phone_types', 'staff_supervisor_list'])}
+  let!(:role_admin) { create(:role, name: 'aba_admin', permissions: ['staff_view', 'staff_update', 'staff_delete'])}
   let!(:user) { create(:user, :with_role, role_name: role_admin.name, first_name: 'admin', last_name: 'user') }
   let!(:auth_headers) { user.create_new_auth_token }
   let!(:organization) { create(:organization, name: 'org1', admin_id: user.id) } 

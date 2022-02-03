@@ -9,7 +9,7 @@ RSpec.describe ClinicsController, type: :controller do
     @request.env["devise.mapping"] = Devise.mappings[:user]
   end
   
-  let!(:role) { create(:role, permissions: ['clinics_index', 'clinics_show', 'clinics_create', 'clinics_update'])}
+  let!(:role) { create(:role, name: 'aba_admin', permissions: ['location_view', 'location_update'])}
   let!(:user) { create(:user, :with_role, role_name: role.name) }
   let!(:auth_headers) { user.create_new_auth_token }
   let!(:organization) {create(:organization, name: 'org1', admin_id: user.id)}

@@ -9,8 +9,7 @@ RSpec.describe CredentialsController, type: :controller do
     @request.env["devise.mapping"] = Devise.mappings[:user]
   end
 
-  let!(:role) { create(:role, permissions: ['credentials_index', 'credentials_show', 'credentials_create', 
-    'credentials_update', 'credentials_types'])}
+  let!(:role) { create(:role, name: 'aba_admin', permissions: ['qualification_view', 'qualification_update'])}
   let!(:user) { create(:user, :with_role, role_name: role.name) }
   let!(:auth_headers) { user.create_new_auth_token }
 

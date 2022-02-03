@@ -9,8 +9,7 @@ RSpec.describe MetaDataController, type: :controller do
     @request.env["devise.mapping"] = Devise.mappings[:user]
   end
   
-  let!(:role) { create(:role, permissions: ['meta_data_selectable_options'])}
-  let!(:user) { create(:user, :with_role, role_name: role.name) }
+  let!(:user) { create(:user, :with_role) }
   let!(:auth_headers) { user.create_new_auth_token }
 
   describe "GET #selectable_options" do

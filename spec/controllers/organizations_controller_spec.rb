@@ -9,8 +9,7 @@ RSpec.describe OrganizationsController, type: :controller do
     @request.env["devise.mapping"] = Devise.mappings[:user]
   end
 
-  let!(:role) { create(:role, permissions: ['organizations_index', 'organizations_show',
-    'organizations_create', 'organizations_update'])}
+  let!(:role) { create(:role, name: 'aba_admin', permissions: ['organization_view', 'organization_update'])}
   let!(:user) { create(:user, :with_role, role_name: role.name) }
   let!(:auth_headers) { user.create_new_auth_token }
 

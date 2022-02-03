@@ -35,4 +35,6 @@ class ClientEnrollmentsController < ApplicationController
   def set_client_enrollment
     @client_enrollment = @client.client_enrollments.find(params[:id])
   end
+  # end of private
+  
 end

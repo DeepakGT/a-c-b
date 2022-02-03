@@ -1,5 +1,6 @@
 class CredentialsController < ApplicationController
   before_action :authenticate_user!
+  # before_action :authorize_user, except: :types
   before_action :set_credential, only: %i[show update]
 
   def index
@@ -32,6 +33,9 @@ class CredentialsController < ApplicationController
     @credential = Credential.find(params[:id])
   end
 
+  def authorize_user
+    authorize Credential if current_user.role_name!='super_admin'
+  end
   # end of private
 
 end

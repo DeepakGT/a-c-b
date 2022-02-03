@@ -8,9 +8,8 @@ RSpec.describe ClientEnrollmentsController, type: :controller do
   before do
     @request.env["devise.mapping"] = Devise.mappings[:user]
   end
-  let(:role) { create(:role, permissions: ['client_enrollments_index', 'client_enrollments_create', 
-    'client_enrollments_show', 'client_enrollments_update', 'client_enrollments_destroy'])}
-  let!(:user) { create(:user, :with_role, role_name: role.name, first_name: 'admin', last_name: 'user') }
+  
+  let!(:user) { create(:user, :with_role, first_name: 'admin', last_name: 'user') }
   let!(:auth_headers) { user.create_new_auth_token }
   let!(:organization) {create(:organization, name: 'test-organization', admin_id: user.id)}
   let!(:clinic) {create(:clinic, name: 'test-clinic', organization_id: organization.id)}

@@ -1,5 +1,6 @@
 class OrganizationsController < ApplicationController
   before_action :authenticate_user!
+  # before_action :authorize_user
   before_action :set_organization, only: %i[update show]
 
   def index
@@ -28,6 +29,10 @@ class OrganizationsController < ApplicationController
 
   def set_organization
     @organization = Organization.find(params[:id])
+  end
+
+  def authorize_user
+    authorize Organization if current_user.role_name!='super_admin'
   end
   # end of private
 

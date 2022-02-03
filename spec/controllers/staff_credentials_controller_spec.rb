@@ -9,8 +9,7 @@ RSpec.describe StaffCredentialsController, type: :controller do
     @request.env["devise.mapping"] = Devise.mappings[:user]
   end
   
-  let!(:role) { create(:role, permissions: ['staff_credentials_index', 'staff_credentials_show',
-    'staff_credentials_create', 'staff_credentials_update', 'staff_credentials_destroy'])}
+  let!(:role) { create(:role, name: 'aba_admin', permissions: ['staff_qualification_view', 'staff_qualification_update', 'staff_qualification_delete'])}
   let!(:user) { create(:user, :with_role, role_name: role.name) }
   let!(:auth_headers) { user.create_new_auth_token }
 
@@ -23,9 +22,10 @@ RSpec.describe StaffCredentialsController, type: :controller do
     context "when sign in" do
       it "should fetch credential list successfully" do
         set_auth_headers(auth_headers)
+        
         get :index, params: {staff_id: staff.id}
         response_body = JSON.parse(response.body)
-
+        
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
         expect(response_body['data'].count).to eq(10)
@@ -57,9 +57,10 @@ RSpec.describe StaffCredentialsController, type: :controller do
     context "when sign in" do
       it "should fetch staff-credential detail successfully" do
         set_auth_headers(auth_headers)
+        
         get :show, params: {staff_id: staff.id, id: staff_credential.id}
         response_body = JSON.parse(response.body)
-
+        
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
         expect(response_body['data']['id']).to eq(staff_credential.id)

@@ -1,5 +1,6 @@
 class StaffController < ApplicationController
   before_action :authenticate_user!
+  # before_action :authorize_user, except: %i[phone_types supervisor_list]
   before_action :set_clinic, only: %i[create supervisor_list]
   before_action :set_staff, only: %i[show update]
 
@@ -50,7 +51,7 @@ class StaffController < ApplicationController
   end
 
   def set_role
-    @staff.role = Role.send(params[:role_name]).first
+    @staff.role = Role.find_by(name: params[:role_name])
   end
 
   def set_staff
@@ -92,6 +93,10 @@ class StaffController < ApplicationController
          .or(staff.by_role(value))
          .or(staff.by_supervisor_name(fname,lname))
          .or(staff.by_location(formated_val))
+  end
+
+  def authorize_user
+    authorize Staff if current_user.role_name!='super_admin'
   end
   # end of private
 end
