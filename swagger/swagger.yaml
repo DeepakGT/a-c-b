@@ -2909,6 +2909,66 @@ paths:
               }
 
   /api/roles:
+    get:
+      summary: List of roles
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      responses:
+        "200":
+          description: "Roles list"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": [
+                  {
+                    "id": 13,
+                    "name": "super_admin",
+                    "permissions": []
+                  },
+                  {
+                    "id": 14,
+                    "name": "aba_admin",
+                    "permissions": []
+                  },
+                  {
+                    "id": 15,
+                    "name": "administrator",
+                    "permissions": []
+                  },
+                  {
+                    "id": 16,
+                    "name": "bcba",
+                    "permissions": []
+                  },
+                  {
+                    "id": 17,
+                    "name": "rbt",
+                    "permissions": []
+                  },
+                  {
+                    "id": 18,
+                    "name": "billing",
+                    "permissions": []
+                  },
+                  {
+                    "id": 20,
+                    "name": "abcd",
+                    "permissions": []
+                  }
+                ]
+              }
     post:
       summary: role create
       parameters:
