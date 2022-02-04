@@ -3004,6 +3004,38 @@ paths:
                 "errors": []
               }
   /api/roles/{id}:
+    get:
+      summary: role detail
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "role id"
+        required: true
+      responses:
+        "200":
+          description: "Role detail"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 2,
+                  "name": "aba_admin",
+                  "permissions": []
+                }
+              }
     put:
       summary: role update
       parameters:

@@ -1,11 +1,13 @@
 class RolesController < ApplicationController
   before_action :authenticate_user!
   # before_action :authorize_user, except: :roles_list
-  before_action :set_role, only: %i[update]
+  before_action :set_role, only: %i[show update]
 
   def index
     @roles = Role.order(:name).paginate(page: params[:page])
   end
+
+  def show; end
 
   def create
     @role = Role.create(name: params[:name], permissions: params[:permissions])

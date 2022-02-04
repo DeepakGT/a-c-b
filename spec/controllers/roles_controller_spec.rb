@@ -29,6 +29,21 @@ RSpec.describe RolesController, type: :controller do
     end
   end
 
+  describe "GET #show" do
+    context "when sign in" do
+      it "should fetch role detail successfully" do
+        set_auth_headers(auth_headers)
+
+        get :show, params: { id: role_1.id}
+        response_body = JSON.parse(response.body)
+        
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data']['id']).to eq(role_1.id) 
+      end
+    end
+  end
+  
   describe "POST #create" do
     context "when sign in" do
       it "should add role successfully" do
