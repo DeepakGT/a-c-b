@@ -14,6 +14,10 @@ class StaffController < ApplicationController
 
   def update
     set_role if params[:role_name].present?
+    if params[:password].present? && params[:password_confirmation].present?
+      @staff.password = params[:password]
+      @staff.password_confirmation = params[:password_confirmation]
+    end
     @staff.update(staff_params)
   end
   

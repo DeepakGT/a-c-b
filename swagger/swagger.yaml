@@ -530,7 +530,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/definitions/StaffCreateByAdminParameters"
+              $ref: "#/definitions/StaffCreateUpdateByAdminParameters"
       responses:
         "200":
           description: "Staff created"
@@ -688,7 +688,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/definitions/StaffUpdateByAdminParameters"
+              $ref: "#/definitions/StaffCreateUpdateByAdminParameters"
       responses:
         "200":
           description: "Staff Updated"
@@ -3310,7 +3310,7 @@ definitions:
           country:
             type: "string"
 
-  StaffCreateByAdminParameters:
+  StaffCreateUpdateByAdminParameters:
     type: "object"
     properties:
       first_name:
@@ -3541,57 +3541,6 @@ definitions:
         type: "boolean"
       credential_type:
         type: integer
-
-  StaffUpdateByAdminParameters:
-    type: "object"
-    properties:
-      first_name:
-        type: "string"
-      last_name:
-        type: "string"
-      email:
-        type: "string"
-      clinic_id:
-        type : "integer"
-      supervisor_id:
-        type: "integer"
-      role_name:
-        type: "string"
-      status:
-        type: "string"
-        enum: [active, inactive]
-      terminated_on:
-        type: "string"
-      phone_numbers_attributes:
-        type: "object"
-        properties:
-          0:
-            type: "object"
-            properties:
-              id:
-                type: "integer"
-              phone_type:
-                type: "string"
-                enum: [fax, home, mobile, pager, work, other]
-              number:
-                type: "string"
-      address_attributes:
-        type: "object"
-        properties:
-          line1:
-            type: "string"
-          line2:
-            type: "string"
-          line3:
-            type: "string"
-          zipcode:
-            type: "string"
-          city:
-            type: "string"
-          state:
-            type: "string"
-          country:
-            type: "string"
 
   ServiceCreateUpdateParameters:
     type: "object"

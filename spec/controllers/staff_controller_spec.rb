@@ -125,7 +125,7 @@ RSpec.describe StaffController, type: :controller do
       it "should fetch clinic staff" do
         set_auth_headers(auth_headers)
 
-        get :show, params: {clinic_id: clinic.id, id: staff.id}
+        get :show, params: {id: staff.id}
         response_body = JSON.parse(response.body)
 
         expect(response.status).to eq(200)
@@ -175,13 +175,23 @@ RSpec.describe StaffController, type: :controller do
       it "should update staff successfully" do
         set_auth_headers(auth_headers)
 
-        put :update, params: {clinic_id: clinic.id, id: staff.id, first_name: 'testing'}
+        put :update, params: {id: staff.id, first_name: 'testing'}
+        response_body = JSON.parse(response.body)
+        
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data']['id']).to eq(staff.id)
+      end
+
+      it "should update password if present in request" do
+        set_auth_headers(auth_headers)
+
+        put :update, params: {id: staff.id, password: 'Abcde@123', password_confirmation: 'Abcde@123'}
         response_body = JSON.parse(response.body)
 
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
         expect(response_body['data']['id']).to eq(staff.id)
-        expect(response_body['data']['first_name']).to eq(nil)
       end
 
       context "and update associated data" do
