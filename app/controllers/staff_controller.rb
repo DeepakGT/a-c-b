@@ -1,6 +1,6 @@
 class StaffController < ApplicationController
   before_action :authenticate_user!
-  # before_action :authorize_user, except: %i[phone_types supervisor_list]
+  before_action :authorize_user, except: %i[phone_types supervisor_list]
   before_action :set_clinic, only: %i[create supervisor_list]
   before_action :set_staff, only: %i[show update destroy]
 

@@ -1,6 +1,6 @@
 class ClinicsController < ApplicationController
   before_action :authenticate_user!
-  # before_action :authorize_user
+  before_action :authorize_user
   before_action :set_clinic, only: %i[show update]
 
   def index

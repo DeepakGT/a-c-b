@@ -1,6 +1,6 @@
 class FundingSourcesController < ApplicationController
   before_action :authenticate_user!
-  # before_action :authorize_user
+  before_action :authorize_user
   before_action :set_clinic
   before_action :set_funding_source, only: %i[show update]
 

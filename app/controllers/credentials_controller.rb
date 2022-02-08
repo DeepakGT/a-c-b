@@ -1,6 +1,6 @@
 class CredentialsController < ApplicationController
   before_action :authenticate_user!
-  # before_action :authorize_user, except: :types
+  before_action :authorize_user, except: :types
   before_action :set_credential, only: %i[show update]
 
   def index

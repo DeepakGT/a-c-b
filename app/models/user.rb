@@ -39,7 +39,7 @@ class User < ActiveRecord::Base
   # terminated_on field would also be validated with this
   PASSWORD_FORMAT = /\A(?=.{8,})(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[[:^alnum:]]) /x
   validates :password, presence: true, length: { in: Devise.password_length, wrong_length: "Password must be 8 to 128 characters long." },
-                       format: { with: PASSWORD_FORMAT, message: "must contain one uppercase, one lowercase, one digit and one special character." },
+                       format: { with: PASSWORD_FORMAT, message: "must contain one uppercase, one lowercase, one digit and one special character and must be minimum 8 characters long." },
                        confirmation: true, on: :create
   validate :validate_status
   validate :validate_presence_of_clinic
