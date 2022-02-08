@@ -52,22 +52,6 @@ class User < ActiveRecord::Base
   # delegates
   delegate :name, to: :role, prefix: true, allow_nil: true
 
-  # define methods dynamically, to check the user's role
-  # like user.aba_admin?
-  # Role.pluck(:name).map do |key|
-  #   define_method "#{key}?" do
-  #     self.role_name == key
-  #   end
-  # end
-
-  # class << self
-  #   Role.pluck(:name).map do |key|
-  #     define_method(key) do
-  #       User.joins(:role).by_role(key)
-  #     end
-  #   end
-  # end
-
   # format response
   def as_json(options = {})
     response = super(options)

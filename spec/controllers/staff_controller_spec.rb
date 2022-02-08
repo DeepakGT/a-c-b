@@ -270,6 +270,23 @@ RSpec.describe StaffController, type: :controller do
     end
   end
 
+  describe "DELETE #destroy" do
+    context "when sign in" do
+      let!(:staff) { create(:staff, :with_role, role_name: 'billing', last_name: 'Zachary',clinic_id: clinic.id) }   
+      it "should delete staff successfully" do
+        set_auth_headers(auth_headers)
+
+        delete :destroy, params: {id: staff.id}
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data']['id']).to eq(staff.id)
+        expect(Staff.find_by_id(staff.id)).to eq(nil)
+      end
+    end
+  end
+
   describe "GET #phone_types" do 
     context "when sign in" do
       it "should fetch all phone types" do

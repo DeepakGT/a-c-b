@@ -2,7 +2,7 @@ class StaffController < ApplicationController
   before_action :authenticate_user!
   # before_action :authorize_user, except: %i[phone_types supervisor_list]
   before_action :set_clinic, only: %i[create supervisor_list]
-  before_action :set_staff, only: %i[show update]
+  before_action :set_staff, only: %i[show update destroy]
 
   def index
     staff = Staff.all
@@ -14,10 +14,7 @@ class StaffController < ApplicationController
 
   def update
     set_role if params[:role_name].present?
-    if params[:password].present? && params[:password_confirmation].present?
-      @staff.password = params[:password]
-      @staff.password_confirmation = params[:password_confirmation]
-    end
+    set_password
     @staff.update(staff_params)
   end
   
@@ -25,6 +22,10 @@ class StaffController < ApplicationController
     @staff = @clinic.staff.new(staff_params)
     set_role
     @staff.save
+  end
+
+  def destroy
+    @staff.destroy
   end
 
   def phone_types
@@ -60,6 +61,12 @@ class StaffController < ApplicationController
 
   def set_staff
     @staff = Staff.find(params[:id])
+  end
+
+  def set_password
+    return if params[:password].blank? || params[:password_confirmation].blank?
+    @staff.password = params[:password]
+    @staff.password_confirmation = params[:password_confirmation]
   end
 
   def do_filter(staff)

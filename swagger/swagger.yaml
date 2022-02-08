@@ -3075,6 +3075,46 @@ paths:
                 "errors": []
               }
 
+  /api/staff/{id}:
+    delete:
+      summary: staff delete
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "staff id"
+        required: true
+      responses:
+        "200":
+          description: "Deleted Staff detail"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 11,
+                  "first_name": "Test",
+                  "last_name": "Staff ",
+                  "email": "bcba_test1@yopmail.com",
+                  "status": "active",
+                  "service_provider": false,
+                  "terminated_on": null,
+                  "gender": "male",
+                  "supervisor_id": 3
+                }
+              }
+
 definitions:
   UserRegistrationParameters:
     type: "object"
