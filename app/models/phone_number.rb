@@ -1,7 +1,14 @@
 class PhoneNumber < ApplicationRecord
-
   belongs_to :phoneable, polymorphic: true, inverse_of: :phoneable
   
-  enum phone_type: {fax: 0, home: 1, mobile: 2, pager: 3, work: 4, other: 5}
+  enum phone_type: {mobile: 0, home: 1, work: 2, other: 3}
 
+  after_initialize :set_default_phone_type
+
+  private
+
+  def set_default_phone_type
+    self.phone_type ||= 'mobile' 
+  end
+  # end of private
 end
