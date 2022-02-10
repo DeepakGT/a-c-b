@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_09_113005) do
+ActiveRecord::Schema.define(version: 2022_02_10_064221) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -209,6 +209,16 @@ ActiveRecord::Schema.define(version: 2022_02_09_113005) do
     t.index ["staff_id"], name: "index_staff_credentials_on_staff_id"
   end
 
+  create_table "user_clinics", force: :cascade do |t|
+    t.bigint "staff_id", null: false
+    t.bigint "clinic_id", null: false
+    t.boolean "is_home_clinic", default: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["clinic_id"], name: "index_user_clinics_on_clinic_id"
+    t.index ["staff_id"], name: "index_user_clinics_on_staff_id"
+  end
+
   create_table "user_roles", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "role_id", null: false
@@ -257,7 +267,6 @@ ActiveRecord::Schema.define(version: 2022_02_09_113005) do
     t.json "tokens"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.boolean "is_home_clinic", default: false
     t.index ["clinic_id"], name: "index_users_on_clinic_id"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
@@ -278,6 +287,8 @@ ActiveRecord::Schema.define(version: 2022_02_09_113005) do
   add_foreign_key "rbt_supervisions", "users"
   add_foreign_key "staff_credentials", "credentials"
   add_foreign_key "staff_credentials", "users", column: "staff_id"
+  add_foreign_key "user_clinics", "clinics"
+  add_foreign_key "user_clinics", "users", column: "staff_id"
   add_foreign_key "user_roles", "roles"
   add_foreign_key "user_roles", "users"
   add_foreign_key "user_services", "services"

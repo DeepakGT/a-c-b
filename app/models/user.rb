@@ -22,8 +22,6 @@ class User < ActiveRecord::Base
   has_one :role, through: :user_role
   has_many :services, through: :user_services
 
-  belongs_to :clinic, optional: true
-
   accepts_nested_attributes_for :services, :update_only => true
   accepts_nested_attributes_for :rbt_supervision, :update_only => true
 
@@ -42,7 +40,6 @@ class User < ActiveRecord::Base
                        format: { with: PASSWORD_FORMAT, message: "must contain one uppercase, one lowercase, one digit and one special character and must be minimum 8 characters long." },
                        confirmation: true, on: :create
   validate :validate_status
-  validate :validate_presence_of_clinic
 
   # scopes
   scope :by_first_name, ->(fname){ where('lower(first_name) LIKE ?',"%#{fname.downcase}%") }
@@ -83,12 +80,6 @@ class User < ActiveRecord::Base
   def validate_status
     errors.add(:status, 'For an active user, terminated date must be blank.') if self.active? && self.terminated_on.present?
     errors.add(:status, 'For an inactive user, terminated date must be present.') if self.inactive? && self.terminated_on.blank?
-  end
-
-  def validate_presence_of_clinic
-    return if self.role_name=='aba_admin' || self.role_name=='administrator' || self.role_name=='super_admin'
-
-    errors.add(:clinic, 'must be associate with this user.') if self.clinic.blank?
   end
 
   # end of private

@@ -3,6 +3,8 @@ class Staff < User
   has_many :credentials, through: :staff_credentials
   has_one :address, as: :addressable, dependent: :destroy
   has_many :phone_numbers, as: :phoneable, dependent: :destroy
+  has_many :user_clinics
+  has_many :clinics, through: :user_clinics
 
   belongs_to :supervisor, class_name: :User, optional: true
 

@@ -1,7 +1,8 @@
 class Clinic < ApplicationRecord
   has_one :address, as: :addressable
   has_one :phone_number, as: :phoneable
-  has_many :staff
+  has_many :user_clinics
+  has_many :staff, through: :user_clinics
   has_many :clients
   has_many :funding_sources
 

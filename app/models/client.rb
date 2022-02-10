@@ -6,6 +6,8 @@ class Client < User
   has_many :addresses, as: :addressable, dependent: :destroy
   has_many :client_enrollments, dependent: :destroy
   has_many :funding_sources, through: :client_enrollments
+  
+  belongs_to :clinic
 
   accepts_nested_attributes_for :addresses, update_only: true
   accepts_nested_attributes_for :phone_number, update_only: true
