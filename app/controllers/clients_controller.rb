@@ -7,7 +7,9 @@ class ClientsController < ApplicationController
     @clients = Client.order(:first_name).paginate(page: params[:page])
   end
 
-  def show; end
+  def show
+    @client_enrollments = list_client_enrollments
+  end
 
   def create
     @client = Client.new(client_params)
@@ -39,6 +41,13 @@ class ClientsController < ApplicationController
 
   def authorize_user
     authorize Client if current_user.role_name!='super_admin'
+  end
+
+  def list_client_enrollments
+    client_enrollments = @client.client_enrollments.all
+    prioritize_client_enrollment = client_enrollments.find_by(primary: true)
+    client_enrollments = client_enrollments.to_a.prepend(prioritize_client_enrollment)
+    client_enrollments = client_enrollments.uniq
   end
   # end of private
 

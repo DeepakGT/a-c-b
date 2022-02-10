@@ -3,5 +3,5 @@ class ClientNote < ApplicationRecord
 
   has_one :attachment, as: :attachable
 
-  accepts_nested_attributes_for :attachment
+  accepts_nested_attributes_for :attachment, update_only: true
 end
