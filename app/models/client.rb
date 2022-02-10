@@ -13,7 +13,7 @@ class Client < User
   accepts_nested_attributes_for :phone_number, update_only: true
   accepts_nested_attributes_for :note
 
-  enum payer_status: {in_network: 0, medicaid: 1, out_of_network: 2, scholarship: 3, self_pay: 4, single_case_agreement: 5}
+  enum payer_status: {self_pay: 0, single_case_agreement: 1, insurance: 2}
   enum preferred_language: {english: 0, spanish: 1}
   enum dq_reason: { lost_contact: 0, not_clinically_appropriate: 1, insurance_denial: 2, no_longer_interested: 3, 
                     competitor: 4, not_ready_to_move_forward: 5, other: 6}
