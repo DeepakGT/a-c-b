@@ -8,8 +8,10 @@ json.data do
   if @client.client_enrollments.present?
     json.funding_sources do
       json.array! @client.client_enrollments do |client_enrollment|
-        json.funding_source_name client_enrollment.funding_source.name
-        json.expiration_date client_enrollment.terminated_on
+        if client_enrollment.terminated_on.blank? || client_enrollment.terminated_on > Date.today.to_formatted_s(:db)
+          json.funding_source_name client_enrollment.funding_source.name
+          json.expiration_date client_enrollment.terminated_on
+        end
       end
     end
   end
