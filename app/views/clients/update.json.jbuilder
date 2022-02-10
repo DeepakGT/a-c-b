@@ -11,13 +11,15 @@ json.data do
   json.preferred_language @client.preferred_language
   json.disqualified @client.disqualified
   json.disqualified_reason @client.dq_reason if @client.disqualified?
-  if @client.note.present?
-    json.note do
-      json.id @client.note.id
-      json.note @client.note.note
-      json.attachments do
-        json.array! @client.note.attachments do |attachment|
-          json.url attachment.file.blob.service_url if attachment.file.attached?
+  if @client.notes.present?
+    json.notes do
+      json.array! @client.notes do |note|
+        json.id note.id
+        json.note note.note
+        if note.attachment.present?
+          json.attachment do
+            json.url note.attachment.file.blob.service_url if attachment.file.attached?
+          end
         end
       end
     end

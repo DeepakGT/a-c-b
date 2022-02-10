@@ -34,7 +34,7 @@ class ClientNotesController < ApplicationController
   end
 
   def client_note_params
-    params.permit(:note, attachments_attributes: %i[category base64])
+    params.permit(:note, attachment_attributes: %i[category base64])
   end
 
   def authorize_user

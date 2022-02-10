@@ -13,13 +13,13 @@ Rails.application.routes.draw do
       resources :funding_sources, only: %i[index create update show]
     end
 
-    resources :staff, only: %i[index show update create destroy] do
+    resources :staff do
       resources :staff_credentials
     end
 
     resources :clients, only: %i[index create update show] do
-      resources :client_enrollments, only: %i[create show index update destroy]
-      resources :contacts, only: %i[index create show update destroy]
+      resources :client_enrollments
+      resources :contacts
       resources :notes, controller: 'client_notes'
     end
     

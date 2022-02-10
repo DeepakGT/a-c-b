@@ -3133,6 +3133,212 @@ paths:
                 }
               }
 
+  /api/clients/{client_id}/notes:
+    get:
+      summary: Client Notes list
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "Associated Client id"
+        required: true
+      responses:
+        "200":
+          description: "Client notes list"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": [
+                  {
+                    "id": 1,
+                    "client_id": 12,
+                    "note": "test note",
+                    "attachment": {
+                      "url": "http://localhost:3000/rails/active_storage/disk/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdDVG9JYTJWNVNTSWhlR2x6TkdOcU0yTTVNSGxwTldNNWFqVjFjR3M1WVRNNWIzWm5iZ1k2QmtWVU9oQmthWE53YjNOcGRHbHZia2tpUFdsdWJHbHVaVHNnWm1sc1pXNWhiV1U5SW1sdFlXZGxMbXB3WnlJN0lHWnBiR1Z1WVcxbEtqMVZWRVl0T0NjbmFXMWhaMlV1YW5CbkJqc0dWRG9SWTI5dWRHVnVkRjkwZVhCbElnNXBiV0ZuWlM5bmFXWTZFWE5sY25acFkyVmZibUZ0WlRvS2JHOWpZV3c9IiwiZXhwIjoiMjAyMi0wMi0xMFQxMDo0NTozNy45NzBaIiwicHVyIjoiYmxvYl9rZXkifX0=--01484a4d1d4ead902e5b44b0409e7e25af1ffd15/image.jpg"
+                    }
+                  }
+                ]
+              }
+    post:
+      summary: Client notes create
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "Associated client id"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/ClientNotesCreateUpdateParameters"
+      responses:
+        "200":
+          description: "Created client note"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 2,
+                  "client_id": 12,
+                  "note": "test note",
+                  "attachment": {
+                    "url": "http://localhost:3000/rails/active_storage/disk/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdDVG9JYTJWNVNTSWhlR2x6TkdOcU0yTTVNSGxwTldNNWFqVjFjR3M1WVRNNWIzWm5iZ1k2QmtWVU9oQmthWE53YjNOcGRHbHZia2tpUFdsdWJHbHVaVHNnWm1sc1pXNWhiV1U5SW1sdFlXZGxMbXB3WnlJN0lHWnBiR1Z1WVcxbEtqMVZWRVl0T0NjbmFXMWhaMlV1YW5CbkJqc0dWRG9SWTI5dWRHVnVkRjkwZVhCbElnNXBiV0ZuWlM5bmFXWTZFWE5sY25acFkyVmZibUZ0WlRvS2JHOWpZV3c9IiwiZXhwIjoiMjAyMi0wMi0xMFQxMDo0NTozNy45NzBaIiwicHVyIjoiYmxvYl9rZXkifX0=--01484a4d1d4ead902e5b44b0409e7e25af1ffd15/image.jpg"
+                  }
+                },
+                "errors": []
+              }
+
+  /api/clients/{client_id}/client_notes/{id}:
+    get:
+      summary: client notes detail
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "Associated Client id"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "Client note id"
+        required: true
+      responses:
+        "200":
+          description: "Client note detail"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 1,
+                  "client_id": 12,
+                  "note": "test note",
+                  "attachment": {
+                    "url": "http://localhost:3000/rails/active_storage/disk/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdDVG9JYTJWNVNTSWhlR2x6TkdOcU0yTTVNSGxwTldNNWFqVjFjR3M1WVRNNWIzWm5iZ1k2QmtWVU9oQmthWE53YjNOcGRHbHZia2tpUFdsdWJHbHVaVHNnWm1sc1pXNWhiV1U5SW1sdFlXZGxMbXB3WnlJN0lHWnBiR1Z1WVcxbEtqMVZWRVl0T0NjbmFXMWhaMlV1YW5CbkJqc0dWRG9SWTI5dWRHVnVkRjkwZVhCbElnNXBiV0ZuWlM5bmFXWTZFWE5sY25acFkyVmZibUZ0WlRvS2JHOWpZV3c9IiwiZXhwIjoiMjAyMi0wMi0xMFQxMDo0NTozNy45NzBaIiwicHVyIjoiYmxvYl9rZXkifX0=--01484a4d1d4ead902e5b44b0409e7e25af1ffd15/image.jpg"
+                  }
+                }
+              }
+    put:
+      summary: Client note update
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "Associated Client id"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "Client note id"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/ClientNotesCreateUpdateParameters"
+      responses:
+        "200":
+          description: "Updated client note"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 2,
+                  "client_id": 12,
+                  "note": "test-note-2",
+                  "attachment": {
+                    "url": "http://localhost:3000/rails/active_storage/disk/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdDVG9JYTJWNVNTSWhlR2x6TkdOcU0yTTVNSGxwTldNNWFqVjFjR3M1WVRNNWIzWm5iZ1k2QmtWVU9oQmthWE53YjNOcGRHbHZia2tpUFdsdWJHbHVaVHNnWm1sc1pXNWhiV1U5SW1sdFlXZGxMbXB3WnlJN0lHWnBiR1Z1WVcxbEtqMVZWRVl0T0NjbmFXMWhaMlV1YW5CbkJqc0dWRG9SWTI5dWRHVnVkRjkwZVhCbElnNXBiV0ZuWlM5bmFXWTZFWE5sY25acFkyVmZibUZ0WlRvS2JHOWpZV3c9IiwiZXhwIjoiMjAyMi0wMi0xMFQxMDo0NTozNy45NzBaIiwicHVyIjoiYmxvYl9rZXkifX0=--01484a4d1d4ead902e5b44b0409e7e25af1ffd15/image.jpg"
+                  }
+                },
+                "errors": []
+              }
+    delete:
+      summary: client note delete
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "Associated client id"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "client note id"
+        required: true
+      responses:
+        "200":
+          description: "Deleted client note detail"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 2,
+                  "client_id": 12,
+                  "note": "test-note-2",
+                  "attachment": {
+                    "url": "http://localhost:3000/rails/active_storage/disk/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdDVG9JYTJWNVNTSWhlR2x6TkdOcU0yTTVNSGxwTldNNWFqVjFjR3M1WVRNNWIzWm5iZ1k2QmtWVU9oQmthWE53YjNOcGRHbHZia2tpUFdsdWJHbHVaVHNnWm1sc1pXNWhiV1U5SW1sdFlXZGxMbXB3WnlJN0lHWnBiR1Z1WVcxbEtqMVZWRVl0T0NjbmFXMWhaMlV1YW5CbkJqc0dWRG9SWTI5dWRHVnVkRjkwZVhCbElnNXBiV0ZuWlM5bmFXWTZFWE5sY25acFkyVmZibUZ0WlRvS2JHOWpZV3c9IiwiZXhwIjoiMjAyMi0wMi0xMFQxMDo0NTozNy45NzBaIiwicHVyIjoiYmxvYl9rZXkifX0=--01484a4d1d4ead902e5b44b0409e7e25af1ffd15/image.jpg"
+                  }
+                },
+                "errors": []
+              }
+
 definitions:
   UserRegistrationParameters:
     type: "object"
@@ -3480,18 +3686,6 @@ definitions:
         type: "string"
       dob:
         type: "string"
-      note_attributes:
-        type: "object"
-        properties:
-          note:
-            type: "string"
-          attachments_attributes:
-            type: "array"
-            items:
-              type: "object"
-              properties:
-                base64:
-                  type: "string"
       phone_number_attributes:
         type: "object"
         properties:
@@ -3554,18 +3748,6 @@ definitions:
         type: "string"
       dob:
         type: "string"
-      note_attributes:
-        type: "object"
-        properties:
-          note:
-            type: "string"
-          attachments_attributes:
-            type: "array"
-            items:
-              type: "object"
-              properties:
-                base64:
-                  type: "string"
       phone_number_attributes:
         type: "object"
         properties:
@@ -3879,3 +4061,16 @@ definitions:
           type: "string"
       change_role_name:
         type: "boolean"
+
+  ClientNotesCreateUpdateParameters:
+    type: "object"
+    properties:
+      note: 
+        type: "string"
+      attachment_attributes:
+        type: "object"
+        properties:
+          category:
+            type: "string"
+          base64:
+            type: "string"

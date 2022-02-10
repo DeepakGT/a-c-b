@@ -1,10 +1,10 @@
 class ClientNotePolicy < ApplicationPolicy
   def index?
-    show? || update?
+    show? || update? || destroy?
   end
 
   def show?
-    return true if permissions.include?('client_notes_view') || update?
+    return true if permissions.include?('client_notes_view') || update? || destroy?
 
     false
   end
@@ -15,6 +15,12 @@ class ClientNotePolicy < ApplicationPolicy
 
   def update?
     return true if permissions.include?('client_notes_update')
+
+    false
+  end
+
+  def destroy?
+    return true if permissions.include?('client_notes_delete')
 
     false
   end

@@ -1,7 +1,7 @@
 class ClientNote < ApplicationRecord
   belongs_to :client, optional: true
 
-  has_many :attachments, as: :attachable
+  has_one :attachment, as: :attachable
 
-  accepts_nested_attributes_for :attachments
+  accepts_nested_attributes_for :attachment
 end
