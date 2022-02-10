@@ -1861,7 +1861,7 @@ paths:
                       "note": "some-note",
                       "attachments": [
                           {
-                              "url": "http://localhost:3000/rails/active_storage/disk/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdDVG9JYTJWNVNTSWhlV1Z2WlcwM2JqTTVOM1J3YXpZMGFETndORzB6YjNoeGF6SnRlQVk2QmtWVU9oQmthWE53YjNOcGRHbHZia2tpUFdsdWJHbHVaVHNnWm1sc1pXNWhiV1U5SW1sdFlXZGxMbXB3WnlJN0lHWnBiR1Z1WVcxbEtqMVZWRVl0T0NjbmFXMWhaMlV1YW5CbkJqc0dWRG9SWTI5dWRHVnVkRjkwZVhCbElnNXBiV0ZuWlM5bmFXWTZFWE5sY25acFkyVmZibUZ0WlRvS2JHOWpZV3c9IiwiZXhwIjoiMjAyMi0wMi0wOVQxMjo1Mjo0Mi4wMjlaIiwicHVyIjoiYmxvYl9rZXkifX0=--6385c3c5fd07b6ace7dd18074439bd7a8ad5122f/image.jpg"
+                            "url": "http://localhost:3000/rails/active_storage/disk/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdDVG9JYTJWNVNTSWhlV1Z2WlcwM2JqTTVOM1J3YXpZMGFETndORzB6YjNoeGF6SnRlQVk2QmtWVU9oQmthWE53YjNOcGRHbHZia2tpUFdsdWJHbHVaVHNnWm1sc1pXNWhiV1U5SW1sdFlXZGxMbXB3WnlJN0lHWnBiR1Z1WVcxbEtqMVZWRVl0T0NjbmFXMWhaMlV1YW5CbkJqc0dWRG9SWTI5dWRHVnVkRjkwZVhCbElnNXBiV0ZuWlM5bmFXWTZFWE5sY25acFkyVmZibUZ0WlRvS2JHOWpZV3c9IiwiZXhwIjoiMjAyMi0wMi0wOVQxMjo1Mjo0Mi4wMjlaIiwicHVyIjoiYmxvYl9rZXkifX0=--6385c3c5fd07b6ace7dd18074439bd7a8ad5122f/image.jpg"
                           }
                       ]
                   },

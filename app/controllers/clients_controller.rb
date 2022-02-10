@@ -22,13 +22,13 @@ class ClientsController < ApplicationController
   private
 
   def client_params
-    arr = %i[first_name last_name payer_status status gender email dob clinic_id preferred_language disqualified dq_reason note]
+    arr = %i[first_name last_name payer_status status gender email dob clinic_id preferred_language disqualified dq_reason]
 
     arr.concat(%i[password password_confirmation]) if params['action']=='create'
 
     arr.concat([addresses_attributes: 
                 %i[id line1 line2 line3 zipcode city state country address_type addressable_type addressable_id],
-                phone_number_attributes: %i[phone_type number], note_attributes: [:note, attachments_attributes: %i[category base64]]])
+                phone_number_attributes: %i[phone_type number]])
 
     params.permit(arr)
   end

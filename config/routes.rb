@@ -20,6 +20,7 @@ Rails.application.routes.draw do
     resources :clients, only: %i[index create update show] do
       resources :client_enrollments, only: %i[create show index update destroy]
       resources :contacts, only: %i[index create show update destroy]
+      resources :notes, controller: 'client_notes'
     end
     
     resources :credentials, only: %i[index show create update] do

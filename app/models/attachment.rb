@@ -9,12 +9,6 @@ class Attachment < ApplicationRecord
   after_initialize :set_file
   after_initialize :set_storage
 
-  enum category: {
-    lmn: 'lmn',
-    dx: 'dx',
-    dx_video: 'dx_video'
-  }, _prefix: true
-
   private
 
     def set_file
