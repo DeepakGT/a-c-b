@@ -18,7 +18,7 @@ json.data do
         json.note note.note
         if note.attachment.present?
           json.attachment do
-            json.url note.attachment.file.blob.service_url if attachment.file.attached?
+            json.url note.attachment.file.blob.service_url if note.attachment.file.attached?
           end
         end
       end
