@@ -8,7 +8,7 @@ else
     json.client_id @client_enrollment.client_id
     json.funding_source_id @client_enrollment.funding_source_id
     json.funding_source @client_enrollment.funding_source.name
-    json.primary @client_enrollment.primary
+    json.primary @client_enrollment.is_primary
     json.enrollment_date @client_enrollment.enrollment_date
     json.terminated_on @client_enrollment.terminated_on
     json.insureds_name @client_enrollment.insureds_name

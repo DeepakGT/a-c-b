@@ -4,10 +4,7 @@ class ClientEnrollmentsController < ApplicationController
   before_action :set_client_enrollment, only: %i[show update destroy]
 
   def index
-    client_enrollments = @client.client_enrollments.all
-    prioritize_client_enrollment = client_enrollments.find_by(primary: true)
-    client_enrollments = client_enrollments.to_a.prepend(prioritize_client_enrollment)
-    @client_enrollments = client_enrollments.uniq.sort_by(&:enrollment_date).paginate(page: params[:page])
+    @client_enrollments = @client.client_enrollments.order(is_primary: :desc).paginate(page: params[:page])
   end
 
   def create
@@ -27,7 +24,7 @@ class ClientEnrollmentsController < ApplicationController
   private
 
   def enrollment_params
-    params.permit(:client_id, :funding_source_id, :enrollment_date, :terminated_on, :primary,
+    params.permit(:client_id, :funding_source_id, :enrollment_date, :terminated_on, :is_primary,
                   :insureds_name, :notes, :top_invoice_note, :bottom_invoice_note)
   end
 

@@ -3934,7 +3934,7 @@ definitions:
     properties:
       funding_source_id:
         type: "integer"
-      primary:
+      is_primary:
         type: "boolean"
       enrollment_date:
         type: "string"

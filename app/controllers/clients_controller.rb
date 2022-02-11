@@ -8,7 +8,7 @@ class ClientsController < ApplicationController
   end
 
   def show
-    @client_enrollments = list_client_enrollments
+    @client_enrollments = active_funding_sources
   end
 
   def create
@@ -43,11 +43,10 @@ class ClientsController < ApplicationController
     authorize Client if current_user.role_name!='super_admin'
   end
 
-  def list_client_enrollments
-    client_enrollments = @client.client_enrollments.all
-    prioritize_client_enrollment = client_enrollments.find_by(primary: true)
-    client_enrollments = client_enrollments.to_a.prepend(prioritize_client_enrollment)
-    client_enrollments = client_enrollments.uniq
+  def active_funding_sources
+    active_client_enrollments = @client.client_enrollments.where("terminated_on > ?", Time.now.to_date)
+                                       .or(@client.client_enrollments.where(terminated_on: nil))
+    active_client_enrollments.order(is_primary: :desc)
   end
   # end of private
 
