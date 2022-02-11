@@ -9,7 +9,5 @@ json.data do
   json.terminated_on @client_enrollment.terminated_on
   json.insureds_name @client_enrollment.insureds_name
   json.notes @client_enrollment.notes
-  json.top_invoice_note @client_enrollment.top_invoice_note
-  json.bottom_invoice_note @client_enrollment.bottom_invoice_note
 end
 json.errors @client_enrollment.errors.full_messages

@@ -2119,9 +2119,7 @@ paths:
                     "enrollment_date": "2022-01-17",
                     "terminated_on": null,
                     "insureds_name": "abcd",
-                    "notes": null,
-                    "top_invoice_note": null,
-                    "bottom_invoice_note": null
+                    "notes": null
                   },
                   {
                     "id": 2,
@@ -2132,9 +2130,7 @@ paths:
                     "enrollment_date": "2022-01-17",
                     "terminated_on": null,
                     "insureds_name": "abcd",
-                    "notes": null,
-                    "top_invoice_note": null,
-                    "bottom_invoice_note": null
+                    "notes": null
                   }
                 ],
                 "total_records": 2,
@@ -2181,9 +2177,7 @@ paths:
                   "enrollment_date": "2022-01-17",
                   "terminated_on": null,
                   "insureds_name": "abcd",
-                  "notes": null,
-                  "top_invoice_note": null,
-                  "bottom_invoice_note": null
+                  "notes": null
                 },
                 "errors": []
               }
@@ -2228,9 +2222,7 @@ paths:
                   "enrollment_date": "2022-01-17",
                   "terminated_on": null,
                   "insureds_name": "abcd",
-                  "notes": null,
-                  "top_invoice_note": null,
-                  "bottom_invoice_note": null
+                  "notes": null
                 }
               }
     put:
@@ -2277,9 +2269,7 @@ paths:
                   "enrollment_date": "2022-01-17",
                   "terminated_on": null,
                   "insureds_name": "A. B. verma",
-                  "notes": null,
-                  "top_invoice_note": null,
-                  "bottom_invoice_note": null
+                  "notes": null
                 },
                 "errors": []
               }
@@ -2322,9 +2312,7 @@ paths:
                   "enrollment_date": "2022-01-17",
                   "terminated_on": null,
                   "insureds_name": "abcd",
-                  "notes": null,
-                  "top_invoice_note": null,
-                  "bottom_invoice_note": null
+                  "notes": null
                 }
               }
 
@@ -3943,10 +3931,6 @@ definitions:
       insureds_name:
         type: "string"
       notes:
-        type: "string"
-      top_invoice_note:
-        type: "string"
-      bottom_invoice_note:
         type: "string"
 
   ClientContactCreateParameters:

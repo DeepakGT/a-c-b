@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_10_122017) do
+ActiveRecord::Schema.define(version: 2022_02_11_134731) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -74,8 +74,6 @@ ActiveRecord::Schema.define(version: 2022_02_10_122017) do
     t.date "terminated_on"
     t.string "insureds_name"
     t.text "notes"
-    t.text "top_invoice_note"
-    t.text "bottom_invoice_note"
     t.bigint "client_id", null: false
     t.bigint "funding_source_id", null: false
     t.datetime "created_at", precision: 6, null: false

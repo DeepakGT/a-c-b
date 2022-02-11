@@ -25,7 +25,7 @@ class ClientEnrollmentsController < ApplicationController
 
   def enrollment_params
     params.permit(:client_id, :funding_source_id, :enrollment_date, :terminated_on, :is_primary,
-                  :insureds_name, :notes, :top_invoice_note, :bottom_invoice_note)
+                  :insureds_name, :notes)
   end
 
   def set_client
