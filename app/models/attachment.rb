@@ -4,6 +4,7 @@ class Attachment < ApplicationRecord
 
   has_one_attached :file
 
+  validates_presence_of :file_name
   # order is important here
   before_save :set_file
   before_save :set_storage

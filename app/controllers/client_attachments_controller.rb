@@ -32,7 +32,7 @@ class ClientAttachmentsController < ApplicationController
   end
 
   def attachment_params
-    params.permit(:category, :base64)
+    params.permit(:category, :base64, :file_name)
   end
   # end of private
 end
