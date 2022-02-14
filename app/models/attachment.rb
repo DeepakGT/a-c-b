@@ -10,7 +10,7 @@ class Attachment < ApplicationRecord
 
     def set_storage
       # need to remove conditions after live
-      return if Rails.env.development? || Rails.env.production?
+      return if Rails.env.development? || Rails.env.production? || Rails.env.test? 
       # larger that 5mb file would be upload on s3
       if file.blob.byte_size > 5_000_000
         Rails.application.config.active_storage.service = :amazon

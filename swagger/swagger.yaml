@@ -3340,6 +3340,254 @@ paths:
                 "errors": []
               }
 
+  /api/clients/{client_id}/enrollment_payments:
+    get:
+      summary: Client enrollment payments list
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "Associated Client id"
+        required: true
+      responses:
+        "200":
+          description: "Client enrollment payments list"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": [
+                  {
+                    "id": 1,
+                    "client_id": 16,
+                    "source_of_payment": "insurance",
+                    "insurance": "optimhealth behavioral solutions",
+                    "insurance_id": "ABCDE43216",
+                    "group": null,
+                    "group_employer": null,
+                    "provider_phone": "9988776655",
+                    "relationship": "parent_or_guardian",
+                    "subscriber_name": "ABCD",
+                    "subscriber_dob": "1999-12-06",
+                    "subscriber_phone": "7788866688"
+                  },
+                  {
+                    "id": 2,
+                    "client_id": 16,
+                    "source_of_payment": "self_pay",
+                    "insurance_id": "CYCDE43216",
+                    "group": null,
+                    "group_employer": null,
+                    "provider_phone": "9988776644",
+                    "relationship": null,
+                    "subscriber_name": null,
+                    "subscriber_dob": null,
+                    "subscriber_phone": null
+                  }
+                ]
+              }
+    post:
+      summary: Client enrollment payment create
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "Associated client id"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/ClientEnrollmentPaymentsCreateUpdateParameters"
+      responses:
+        "200":
+          description: "Created client enrollment payment"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 2,
+                  "client_id": 16,
+                  "source_of_payment": "self_pay",
+                  "insurance_id": "CYCDE43216",
+                  "group": null,
+                  "group_employer": null,
+                  "provider_phone": "9988776644",
+                  "relationship": null,
+                  "subscriber_name": null,
+                  "subscriber_dob": null,
+                  "subscriber_phone": null
+                },
+                "errors": []
+              }
+
+  /api/clients/{client_id}/enrollment_payments/{id}:
+    get:
+      summary: client enrollment payment detail
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "Associated Client id"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "Client enrollment payment id"
+        required: true
+      responses:
+        "200":
+          description: "Client enrollment payment detail"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 1,
+                  "client_id": 16,
+                  "source_of_payment": "insurance",
+                  "insurance": "optimhealth behavioral solutions",
+                  "insurance_id": "ABCDE43216",
+                  "group": null,
+                  "group_employer": null,
+                  "provider_phone": "9988776655",
+                  "relationship": "parent_or_guardian",
+                  "subscriber_name": "ABCD",
+                  "subscriber_dob": "1999-12-06",
+                  "subscriber_phone": "7788866688"
+                }
+              }
+    put:
+      summary: Client enrollment payment update
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "Associated Client id"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "Client enrollment payment id"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/ClientEnrollmentPaymentsCreateUpdateParameters"
+      responses:
+        "200":
+          description: "Updated client enrollment payment"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 2,
+                  "client_id": 16,
+                  "source_of_payment": "insurance",
+                  "insurance": "amerihealth caritas nh",
+                  "insurance_id": "CYCDE43265",
+                  "group": null,
+                  "group_employer": null,
+                  "provider_phone": "8888776644",
+                  "relationship": "parent_or_guardian",
+                  "subscriber_name": "ABCDEF",
+                  "subscriber_dob": "1986-12-06",
+                  "subscriber_phone": "9988866688"
+                },
+                "errors": []
+              }
+    delete:
+      summary: client enrollment payment delete
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "Associated client id"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "client enrollment payment id"
+        required: true
+      responses:
+        "200":
+          description: "Deleted client enrollment payment detail"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 2,
+                  "client_id": 16,
+                  "source_of_payment": "insurance",
+                  "insurance": "amerihealth caritas nh",
+                  "insurance_id": "CYCDE43265",
+                  "group": null,
+                  "group_employer": null,
+                  "provider_phone": "8888776644",
+                  "relationship": "parent_or_guardian",
+                  "subscriber_name": "ABCDEF",
+                  "subscriber_dob": "1986-12-06",
+                  "subscriber_phone": "9988866688"
+                },
+                "errors": []
+              }
+
 definitions:
   UserRegistrationParameters:
     type: "object"
@@ -3956,6 +4204,8 @@ definitions:
         type: "boolean"
       resides_with_client:
         type: "boolean"
+      is_address_same_as_client:
+        type: "boolean"
       phone_numbers_attributes:
         type: "object"
         properties:
@@ -4007,6 +4257,8 @@ definitions:
       parent_portal_access:
         type: "boolean"
       resides_with_client:
+        type: "boolean"
+      is_address_same_as_client:
         type: "boolean"
       phone_numbers_attributes:
         type: "object"
@@ -4073,3 +4325,29 @@ definitions:
             type: "string"
           base64:
             type: "string"
+
+  ClientEnrollmentPaymentsCreateUpdateParameters:
+    type: "object"
+    properties:
+      source_of_payment:
+        type: "string"
+        enum: [self_pay, insurance, contract, medicaid, sca, scholarship]
+      funding_source_id:
+        type: "integer"
+      insurance_id:
+        type: "string"
+      group:
+        type: "string"
+      group_employer:
+        type: "string"
+      provider_phone:
+        type: "string"
+      relationship:
+        type: "string"
+        enum: [parent_or_guardian, spouse_or_partner]
+      subscriber_name:
+        type: "string"
+      subscriber_dob:
+        type: "string"
+      subscriber_phone:
+        type: "string"

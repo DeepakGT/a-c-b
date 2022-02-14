@@ -1,14 +1,17 @@
 json.status 'success'
 json.data do
   json.array! @staff do |staff|
+    user_clinic = staff.user_clinics.order(is_home_clinic: :desc).first
     json.id staff.id
     json.first_name staff.first_name
     json.last_name staff.last_name
     json.title staff.role_name
-    json.organization_id staff.clinic.organization_id
-    json.organization_name staff.clinic.organization_name
-    json.clinic_id staff.clinic_id
-    json.clinic_name staff.clinic.name
+    if user_clinic.present?
+      json.organization_id user_clinic.clinic.organization_id
+      json.organization_name user_clinic.clinic.organization_name
+      json.clinic_id user_clinic.clinic_id
+      json.clinic_name user_clinic.clinic.name
+    end
     json.status staff.status
     if staff.supervisor.present?
       json.supervisor_id staff.supervisor_id

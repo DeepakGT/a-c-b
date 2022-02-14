@@ -5,6 +5,7 @@ RSpec.describe FundingSource, type: :model do
   it { should have_one(:address).dependent(:destroy)}
   it { should have_many(:client_enrollments).dependent(:destroy) }
   it { should have_many(:clients).through(:client_enrollments) }  
+  it { should have_many(:enrollment_payments).class_name('ClientEnrollmentPayment') } 
   it { should belong_to(:clinic) }
 
   it { should define_enum_for(:status)}

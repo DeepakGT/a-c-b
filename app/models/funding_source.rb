@@ -7,6 +7,7 @@ class FundingSource < ApplicationRecord
   has_one :address, as: :addressable, dependent: :destroy
   has_many :client_enrollments, dependent: :destroy
   has_many :clients, through: :client_enrollments
+  has_many :enrollment_payments, class_name: :ClientEnrollmentPayment
   belongs_to :clinic
 
   enum status: {active: 0, inactive: 1}

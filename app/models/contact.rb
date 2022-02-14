@@ -1,4 +1,5 @@
 class Contact < ApplicationRecord
+  before_save :set_address
   # associations
   belongs_to :client
 
@@ -17,10 +18,20 @@ class Contact < ApplicationRecord
 
   # validations
   validate :validate_parent_portal_access
+  validate :validate_address
 
   private
 
   def validate_parent_portal_access
     errors.add(:parent_portal_access, 'must be false.') if self.relation_type != 'parent_or_guardian' && self.parent_portal_access?
   end
+
+  def validate_address
+    errors.add(:address, 'must be absent when contact have same address as client.') if self.is_address_same_as_client.true? && self.address.present?
+  end
+
+  def set_address
+    self.address = nil if self.is_address_same_as_client.true?
+  end
+  # end of private
 end

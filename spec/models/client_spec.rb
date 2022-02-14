@@ -6,6 +6,8 @@ RSpec.describe Client, type: :model do
   it { should have_one(:phone_number).dependent(:destroy) }
   it { should have_many(:client_enrollments).dependent(:destroy) }
   it { should have_many(:funding_sources).through(:client_enrollments) }  
+  it { should have_many(:notes).class_name('ClientNote') } 
+  it { should have_many(:enrollment_payments).class_name('ClientEnrollmentPayment') } 
 
   it { should belong_to(:clinic) } 
 
