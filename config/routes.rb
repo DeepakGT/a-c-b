@@ -22,6 +22,7 @@ Rails.application.routes.draw do
       resources :client_enrollments
       resources :contacts
       resources :notes, controller: 'client_notes'
+      resources :attachments, controller: 'client_attachments'
       resources :enrollment_payments, controller: 'client_enrollment_payments'
     end
     

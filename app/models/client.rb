@@ -2,6 +2,7 @@ class Client < User
   has_one :phone_number, as: :phoneable, dependent: :destroy
   has_many :notes, class_name: :ClientNote
   has_many :enrollment_payments, class_name: :ClientEnrollmentPayment
+  has_many :attachments, as: :attachable, dependent: :destroy
 
   has_many :contacts, dependent: :destroy
   has_many :addresses, as: :addressable, dependent: :destroy

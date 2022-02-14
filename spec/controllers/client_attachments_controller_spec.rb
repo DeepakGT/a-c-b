@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'support/render_views'
 
-RSpec.describe ClientNotesController, type: :controller do
+RSpec.describe ClientAttachmentsController, type: :controller do
   before :each do
     request.env['HTTP_ACCEPT'] = 'application/json'
   end
@@ -9,7 +9,7 @@ RSpec.describe ClientNotesController, type: :controller do
     @request.env["devise.mapping"] = Devise.mappings[:user]
   end
   
-  let!(:role) { create(:role, name: 'aba_admin', permissions: ['client_notes_view', 'client_notes_update', 'client_notes_delete'])}
+  let!(:role) { create(:role, name: 'aba_admin')}
   let!(:user) { create(:user, :with_role, role_name: role.name) }
   let!(:auth_headers) { user.create_new_auth_token }
   let!(:organization) {create(:organization, name: 'test-organization', admin_id: user.id)}
@@ -18,8 +18,8 @@ RSpec.describe ClientNotesController, type: :controller do
 
   describe "GET #index" do
     context "when sign in" do
-      let!(:client_notes) { create_list(:client_note, 5, client_id: client.id) }
-      it "should fetch client notes list successfully" do
+      let!(:client_attachments) { create_list(:attachment, 5, attachable_id: client.id, attachable_type: 'User') }
+      it "should fetch client attachments list successfully" do
         set_auth_headers(auth_headers)
 
         get :index, params: { client_id: client.id}
@@ -27,77 +27,79 @@ RSpec.describe ClientNotesController, type: :controller do
 
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
-        expect(response_body['data'].count).to eq(client_notes.count)
+        expect(response_body['data'].count).to eq(client_attachments.count)
       end
     end
   end
   
   describe "POST #create" do
     context "when sign in" do
-      it "should create client note successfully" do
+      it "should create client attachment successfully" do
         set_auth_headers(auth_headers)
 
         post :create, params: {
           client_id: client.id,
-          note: 'test-note'
+          category: 'image',
+          base64: 'data:image/gif;base64,R0lGODdhAQABAPAAAP8AAAAAACwAAAAAAQABAAACAkQBADs='
         }
         response_body = JSON.parse(response.body)
-
+        
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
         expect(response_body['data']['client_id']).to eq(client.id) 
-        expect(response_body['data']['note']).to eq('test-note')
+        expect(response_body['data']['category']).to eq('image')
+        expect(response_body['data']['url']).not_to eq(nil)
       end
     end
   end
 
   describe "GET #show" do
     context "when sign in" do
-      let(:client_note) { create(:client_note, client_id: client.id)}
-      it "should fetch client note detail successfully" do
+      let(:client_attachment) { create(:attachment, attachable_id: client.id, attachable_type: 'User', category: 'image')}
+      it "should fetch client attachment detail successfully" do
         set_auth_headers(auth_headers)
 
-        get :show, params: {client_id: client.id, id: client_note.id}
+        get :show, params: {client_id: client.id, id: client_attachment.id}
         response_body = JSON.parse(response.body)
-
+        
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
         expect(response_body['data']['client_id']).to eq(client.id) 
-        expect(response_body['data']['id']).to eq(client_note.id) 
+        expect(response_body['data']['id']).to eq(client_attachment.id) 
       end
     end
   end
 
   describe "PUT #update" do
     context "when sign in" do
-      let(:client_note) { create(:client_note, client_id: client.id)}
-      let(:updated_note) {'Test-note-1'}
-      it "should update client note successfully" do
+      let(:client_attachment) { create(:attachment, attachable_id: client.id, attachable_type: 'User', category: 'image')}
+      let(:updated_category) { 'png' }
+      it "should update client attachment successfully" do
         set_auth_headers(auth_headers)
 
-        put :update, params: {id: client_note.id, client_id: client.id, note: updated_note}
+        put :update, params: {id: client_attachment.id, client_id: client.id, category: updated_category}
         response_body = JSON.parse(response.body)
 
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
-        expect(response_body['data']['id']).to eq(client_note.id)
-        expect(response_body['data']['note']).to eq(updated_note)       
+        expect(response_body['data']['id']).to eq(client_attachment.id)
+        expect(response_body['data']['category']).to eq(updated_category)       
       end
     end
   end
 
   describe "DELETE #destroy" do
     context "when sign in" do
-      let(:client_note) { create(:client_note, client_id: client.id)}
-      it "should delete client note successfully" do
+      let(:client_attachment) { create(:attachment, attachable_id: client.id, attachable_type: 'User', category: 'image')}
+      it "should delete client attachment successfully" do
         set_auth_headers(auth_headers)
-        delete :destroy, params: {client_id: client.id, id: client_note.id} 
+        delete :destroy, params: {client_id: client.id, id: client_attachment.id} 
         response_body = JSON.parse(response.body)
 
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
-        expect(response_body['data']['id']).to eq(client_note.id)
-        expect(ClientNote.find_by_id(client_note.id)).to eq(nil)
+        expect(response_body['data']['id']).to eq(client_attachment.id)
+        expect(ClientNote.find_by_id(client_attachment.id)).to eq(nil)
       end
     end
   end

@@ -9,17 +9,13 @@ class ClientNotesController < ApplicationController
   end
 
   def create
-    @client_note = @client.notes.new(client_note_params)
-    set_attachment
-    @client_note.save
+    @client_note = @client.notes.create(client_note_params)
   end
 
   def show; end
 
   def update
     @client_note.update(client_note_params)
-    set_attachment
-    @client_note.save
   end
 
   def destroy
@@ -37,20 +33,11 @@ class ClientNotesController < ApplicationController
   end
 
   def client_note_params
-    params.permit(:note, attachment_attributes: :category)
+    params.permit(:note)
   end
 
   def authorize_user
     authorize ClientNote if current_user.role_name!='super_admin'
   end
-
-  def set_attachment
-    base64 = params.dig(:attachment_attributes, :base64)
-    if base64.present?
-      decoded_data = Base64.decode64(base64.split(',')[1])
-      @client_note.attachment.file = {filename: 'attachment', io: StringIO.new(decoded_data)}
-    end
-  end
-
   # end of private
 end

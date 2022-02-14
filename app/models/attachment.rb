@@ -1,12 +1,24 @@
 class Attachment < ApplicationRecord
+  attr_accessor :base64
   belongs_to :attachable, polymorphic: true
 
   has_one_attached :file
 
   # order is important here
-  after_initialize :set_storage
+  before_save :set_file
+  before_save :set_storage
 
   private
+
+    def set_file
+      return if self.base64.blank?
+
+      decoded_data = Base64.decode64(self.base64.split(',')[1])
+      self.file = {
+        io: StringIO.new(decoded_data),
+        filename: 'attachment'
+      }
+    end
 
     def set_storage
       # need to remove conditions after live
