@@ -78,6 +78,28 @@ RSpec.describe ContactsController, type: :controller do
         expect(response_body['data']['address']['city']).to eq('Indore')
         expect(response_body['data']['phone_numbers'].count).to eq(1)
       end
+
+      it "should create client with same address as contact" do
+        set_auth_headers(auth_headers)
+
+        post :create, params: {
+          client_id: client.id,
+          first_name: 'Test',
+          last_name: 'Contact2',
+          email: 'test2@yopmail.com',
+          relation_type: 'self',
+          relation: 'self',
+          is_address_same_as_client: true
+        }
+        response_body = JSON.parse(response.body)
+        
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data']['first_name']).to eq('Test')
+        expect(response_body['data']['last_name']).to eq('Contact2')
+        expect(response_body['data']['email']).to eq('test2@yopmail.com')
+        expect(response_body['data']).not_to include('address')
+      end
     end
   end
 
@@ -139,6 +161,18 @@ RSpec.describe ContactsController, type: :controller do
           expect(response_body['status']).to eq('success')
           expect(response_body['data']['id']).to eq(contact.id)
           expect(response_body['data']['phone_numbers'].first['number']).to eq(updated_phone_number)
+        end
+
+        it "should update address to be same as client address" do
+          set_auth_headers(auth_headers)
+
+          put :update, params: { client_id: client.id, id: contact.id, is_address_same_as_client: true }
+          response_body = JSON.parse(response.body)
+          
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data']['id']).to eq(contact.id)
+          expect(response_body['data']).not_to include('address')
         end
       end
     end

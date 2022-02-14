@@ -5,6 +5,7 @@ json.data do
     json.id staff.id
     json.first_name staff.first_name
     json.last_name staff.last_name
+    json.email staff.email
     json.title staff.role_name
     if user_clinic.present?
       json.organization_id user_clinic.clinic.organization_id

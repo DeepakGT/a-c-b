@@ -54,4 +54,16 @@ json.data do
       json.name country.name
     end
   end
+  json.source_of_payments do
+    json.array! @selectable_options[:source_of_payments] do |source_of_payment|
+      json.id source_of_payment.last
+      json.type source_of_payment.first
+    end
+  end
+  json.relationships do
+    json.array! @selectable_options[:relationships] do |relationship|
+      json.id relationship.last
+      json.name relationship.first
+    end
+  end
 end

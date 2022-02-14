@@ -1,5 +1,5 @@
 class Contact < ApplicationRecord
-  before_save :set_address
+  before_validation :set_address
   # associations
   belongs_to :client
 
