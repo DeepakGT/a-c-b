@@ -1,4 +1,4 @@
-class UserClinic < ApplicationRecord
+class StaffClinic < ApplicationRecord
   belongs_to :staff
   belongs_to :clinic
 

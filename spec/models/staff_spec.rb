@@ -5,8 +5,8 @@ RSpec.describe Staff, type: :model do
   it { should have_many(:credentials).through(:staff_credentials)}
   it { should have_one(:address).dependent(:destroy)}
   it { should have_many(:phone_numbers).dependent(:destroy)}
-  it { should have_many(:user_clinics) } 
-  it { should have_many(:clinics).through(:user_clinics) }
+  it { should have_many(:staff_clinics) } 
+  it { should have_many(:clinics).through(:staff_clinics) }
   
   it { should belong_to(:supervisor).class_name('User').optional }
 

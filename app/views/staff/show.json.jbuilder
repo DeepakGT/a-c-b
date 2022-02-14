@@ -1,6 +1,6 @@
 json.status 'success'
 json.data do
-  user_clinic = @staff.user_clinics.order(is_home_clinic: :desc).first
+  staff_clinic = @staff.staff_clinics.order(is_home_clinic: :desc).first
   json.id @staff.id
   json.first_name @staff.first_name
   json.last_name @staff.last_name
@@ -10,11 +10,11 @@ json.data do
   json.terminated_on @staff.terminated_on
   json.title @staff.role_name
   json.gender @staff.gender
-  if user_clinic.present?
-    json.organization_id user_clinic.clinic.organization_id
-    json.organization_name user_clinic.clinic.organization_name
-    json.clinic_id user_clinic.clinic_id
-    json.clinic_name user_clinic.clinic.name
+  if staff_clinic.present?
+    json.organization_id staff_clinic.clinic.organization_id
+    json.organization_name staff_clinic.clinic.organization_name
+    json.clinic_id staff_clinic.clinic_id
+    json.clinic_name staff_clinic.clinic.name
   end
   if @staff.supervisor.present?
     json.supervisor_id @staff.supervisor_id

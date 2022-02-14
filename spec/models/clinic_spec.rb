@@ -3,8 +3,8 @@ require 'rails_helper'
 RSpec.describe Clinic, type: :model do
   it { should have_one(:address) }
   it { should have_one(:phone_number)}
-  it { should have_many(:user_clinics) } 
-  it { should have_many(:staff).through(:user_clinics) }
+  it { should have_many(:staff_clinics) } 
+  it { should have_many(:staff).through(:staff_clinics) }
   it { should have_many(:clients) } 
   it { should have_many(:funding_sources)}
 
