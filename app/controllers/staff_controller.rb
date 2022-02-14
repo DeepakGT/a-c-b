@@ -1,7 +1,7 @@
 class StaffController < ApplicationController
   before_action :authenticate_user!
   before_action :authorize_user, except: %i[phone_types supervisor_list]
-  before_action :set_clinic, only: %i[create supervisor_list]
+  before_action :set_clinic, only: :supervisor_list
   before_action :set_staff, only: %i[show update destroy]
 
   def index
@@ -19,7 +19,8 @@ class StaffController < ApplicationController
   end
   
   def create
-    @staff = @clinic.staff.new(staff_params)
+    debugger
+    @staff = Staff.new(staff_params)
     set_role
     @staff.save
   end
@@ -43,7 +44,7 @@ class StaffController < ApplicationController
   end
 
   def staff_params
-    arr = %i[first_name last_name status terminated_on email supervisor_id clinic_id]
+    arr = %i[first_name last_name terminated_on email supervisor_id clinic_id]
     
     arr.concat(%i[password service_provider password_confirmation]) if params[:action] == 'create'
     

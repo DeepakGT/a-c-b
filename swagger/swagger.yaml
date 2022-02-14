@@ -3605,13 +3605,17 @@ paths:
                     "id": 2,
                     "client_id": 18,
                     "category": "image",
-                    "url": "http://localhost:3000/rails/active_storage/disk/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdDVG9JYTJWNVNTSWhZVE56WTJGaGFta3lZak4xWVhaaE9ESmlOblpwTmpab056WjJkQVk2QmtWVU9oQmthWE53YjNOcGRHbHZia2tpUDJsdWJHbHVaVHNnWm1sc1pXNWhiV1U5SW1GMGRHRmphRzFsYm5RaU95Qm1hV3hsYm1GdFpTbzlWVlJHTFRnbkoyRjBkR0ZqYUcxbGJuUUdPd1pVT2hGamIyNTBaVzUwWDNSNWNHVkpJZzlwYldGblpTOXFjR1ZuQmpzR1ZEb1JjMlZ5ZG1salpWOXVZVzFsT2dwc2IyTmhiQT09IiwiZXhwIjoiMjAyMi0wMi0xNFQwOToyNzo1Ny4yNDNaIiwicHVyIjoiYmxvYl9rZXkifX0=--8543cd87f7aad4deca5d11a36e557086f2e6a74b/attachment"
+                    "file_name": "test1",
+                    "url": "http://localhost:3000/rails/active_storage/disk/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdDVG9JYTJWNVNTSWhZVE56WTJGaGFta3lZak4xWVhaaE9ESmlOblpwTmpab056WjJkQVk2QmtWVU9oQmthWE53YjNOcGRHbHZia2tpUDJsdWJHbHVaVHNnWm1sc1pXNWhiV1U5SW1GMGRHRmphRzFsYm5RaU95Qm1hV3hsYm1GdFpTbzlWVlJHTFRnbkoyRjBkR0ZqYUcxbGJuUUdPd1pVT2hGamIyNTBaVzUwWDNSNWNHVkpJZzlwYldGblpTOXFjR1ZuQmpzR1ZEb1JjMlZ5ZG1salpWOXVZVzFsT2dwc2IyTmhiQT09IiwiZXhwIjoiMjAyMi0wMi0xNFQwOToyNzo1Ny4yNDNaIiwicHVyIjoiYmxvYl9rZXkifX0=--8543cd87f7aad4deca5d11a36e557086f2e6a74b/attachment",
+                    "add_date": "2022-02-14"
                   },
                   {
                     "id": 3,
                     "client_id": 18,
                     "category": "image",
-                    "url": "http://localhost:3000/rails/active_storage/disk/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdDVG9JYTJWNVNTSWhNRFV5Y21Wb2VUQTJaM056TW5KaE1qSTNlRGc0TkhsMWVIZDRPUVk2QmtWVU9oQmthWE53YjNOcGRHbHZia2tpUDJsdWJHbHVaVHNnWm1sc1pXNWhiV1U5SW1GMGRHRmphRzFsYm5RaU95Qm1hV3hsYm1GdFpTbzlWVlJHTFRnbkoyRjBkR0ZqYUcxbGJuUUdPd1pVT2hGamIyNTBaVzUwWDNSNWNHVkpJZzVwYldGblpTOW5hV1lHT3daVU9oRnpaWEoyYVdObFgyNWhiV1U2Q214dlkyRnMiLCJleHAiOiIyMDIyLTAyLTE0VDA5OjI3OjU3LjI1MFoiLCJwdXIiOiJibG9iX2tleSJ9fQ==--6f0154c9ca22f09cb9ba25a9be0363d8d2f8afb8/attachment"
+                    "file_name": "test2",
+                    "url": "http://localhost:3000/rails/active_storage/disk/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdDVG9JYTJWNVNTSWhNRFV5Y21Wb2VUQTJaM056TW5KaE1qSTNlRGc0TkhsMWVIZDRPUVk2QmtWVU9oQmthWE53YjNOcGRHbHZia2tpUDJsdWJHbHVaVHNnWm1sc1pXNWhiV1U5SW1GMGRHRmphRzFsYm5RaU95Qm1hV3hsYm1GdFpTbzlWVlJHTFRnbkoyRjBkR0ZqYUcxbGJuUUdPd1pVT2hGamIyNTBaVzUwWDNSNWNHVkpJZzVwYldGblpTOW5hV1lHT3daVU9oRnpaWEoyYVdObFgyNWhiV1U2Q214dlkyRnMiLCJleHAiOiIyMDIyLTAyLTE0VDA5OjI3OjU3LjI1MFoiLCJwdXIiOiJibG9iX2tleSJ9fQ==--6f0154c9ca22f09cb9ba25a9be0363d8d2f8afb8/attachment",
+                    "add_date": "2022-02-14"
                   }
                 ]
               }
@@ -3690,7 +3694,9 @@ paths:
                   "id": 3,
                   "client_id": 18,
                   "category": "image",
-                  "url": "http://localhost:3000/rails/active_storage/disk/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdDVG9JYTJWNVNTSWhNRFV5Y21Wb2VUQTJaM056TW5KaE1qSTNlRGc0TkhsMWVIZDRPUVk2QmtWVU9oQmthWE53YjNOcGRHbHZia2tpUDJsdWJHbHVaVHNnWm1sc1pXNWhiV1U5SW1GMGRHRmphRzFsYm5RaU95Qm1hV3hsYm1GdFpTbzlWVlJHTFRnbkoyRjBkR0ZqYUcxbGJuUUdPd1pVT2hGamIyNTBaVzUwWDNSNWNHVkpJZzVwYldGblpTOW5hV1lHT3daVU9oRnpaWEoyYVdObFgyNWhiV1U2Q214dlkyRnMiLCJleHAiOiIyMDIyLTAyLTE0VDA5OjM0OjI1LjEzNFoiLCJwdXIiOiJibG9iX2tleSJ9fQ==--bad72b11c5c047f6df823e52181bead8fb08cc68/attachment"
+                  "file_name": "test123",
+                  "url": "http://localhost:3000/rails/active_storage/disk/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdDVG9JYTJWNVNTSWhNRFV5Y21Wb2VUQTJaM056TW5KaE1qSTNlRGc0TkhsMWVIZDRPUVk2QmtWVU9oQmthWE53YjNOcGRHbHZia2tpUDJsdWJHbHVaVHNnWm1sc1pXNWhiV1U5SW1GMGRHRmphRzFsYm5RaU95Qm1hV3hsYm1GdFpTbzlWVlJHTFRnbkoyRjBkR0ZqYUcxbGJuUUdPd1pVT2hGamIyNTBaVzUwWDNSNWNHVkpJZzVwYldGblpTOW5hV1lHT3daVU9oRnpaWEoyYVdObFgyNWhiV1U2Q214dlkyRnMiLCJleHAiOiIyMDIyLTAyLTE0VDA5OjM0OjI1LjEzNFoiLCJwdXIiOiJibG9iX2tleSJ9fQ==--bad72b11c5c047f6df823e52181bead8fb08cc68/attachment",
+                  "add_date": "2022-02-14"
                 }
               }
     put:
@@ -4027,9 +4033,6 @@ definitions:
         type: "string"
       supervisor_id:
         type: "integer"
-      status:
-        type: "string"
-        enum: [active, inactive]
       terminated_on:
         type: "string"
       role_name:
@@ -4538,4 +4541,6 @@ definitions:
       category: 
         type: "string"
       base64:
+        type: "string"
+      file_name:
         type: "string"
