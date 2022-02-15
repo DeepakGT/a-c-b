@@ -23,7 +23,6 @@ Rails.application.routes.draw do
       resources :contacts
       resources :notes, controller: 'client_notes'
       resources :attachments, controller: 'client_attachments'
-      resources :enrollment_payments, controller: 'client_enrollment_payments'
     end
     
     resources :credentials, only: %i[index show create update] do

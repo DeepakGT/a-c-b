@@ -10,7 +10,6 @@ json.data do
     json.funding_sources do
       json.array! @client_enrollments do |client_enrollment|
         json.funding_source_name client_enrollment.funding_source.name
-        json.expiration_date client_enrollment.terminated_on
       end
     end
   end
@@ -41,7 +40,7 @@ json.data do
   json.email @client.email
   json.dob @client.dob
   json.gender @client.gender
-  json.payer_status @client.payer_status
+  json.payor_status @client.payor_status
   json.status @client.status
   json.preferred_language @client.preferred_language
   json.disqualified @client.disqualified

@@ -9,7 +9,7 @@ class MetaDataController < ApplicationController
 
   def get_selectable_options_data
     selectable_options = { countries: country_list,
-                           payer_statuses: Client.payer_statuses,
+                           payor_statuses: Client.payor_statuses,
                            preferred_languages: Client.preferred_languages,
                            dq_reasons: Client.dq_reasons, 
                            relation_types: Contact.relation_types,
@@ -17,8 +17,7 @@ class MetaDataController < ApplicationController
                            credential_types: Credential.credential_types,
                            roles: Role.where.not(name: 'super_admin'),
                            phone_types: PhoneNumber.phone_types,
-                           source_of_payments: ClientEnrollmentPayment.source_of_payments,
-                           relationships: ClientEnrollmentPayment.relationships }
+                           relationships: ClientEnrollment.relationships }
   end
 
   def country_list

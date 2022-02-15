@@ -19,7 +19,6 @@ class StaffController < ApplicationController
   end
   
   def create
-    debugger
     @staff = Staff.new(staff_params)
     set_role
     @staff.save

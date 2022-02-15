@@ -1,5 +1,6 @@
 class ClientEnrollmentsController < ApplicationController
   before_action :authenticate_user!
+  before_action :authorize_user
   before_action :set_client
   before_action :set_client_enrollment, only: %i[show update destroy]
 
@@ -23,9 +24,14 @@ class ClientEnrollmentsController < ApplicationController
 
   private
 
+  def authorize_user
+    authorize ClientEnrollment if current_user.role_name!='super_admin'
+  end
+
   def enrollment_params
-    params.permit(:client_id, :funding_source_id, :enrollment_date, :terminated_on, :is_primary,
-                  :insureds_name, :notes)
+    params.permit(:client_id, :funding_source_id, :is_primary, :insurance_id, :group, :group_employer, 
+                  :subscriber_name, :subscriber_phone, :subscriber_dob, :provider_phone, 
+                  :relationship, :source_of_payment)
   end
 
   def set_client

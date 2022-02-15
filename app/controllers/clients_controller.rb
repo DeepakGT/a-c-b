@@ -24,7 +24,7 @@ class ClientsController < ApplicationController
   private
 
   def client_params
-    arr = %i[first_name last_name payer_status status gender email dob clinic_id preferred_language disqualified dq_reason]
+    arr = %i[first_name last_name payor_status status gender email dob clinic_id preferred_language disqualified dq_reason]
 
     arr.concat(%i[password password_confirmation]) if params['action']=='create'
 
@@ -44,9 +44,7 @@ class ClientsController < ApplicationController
   end
 
   def active_funding_sources
-    active_client_enrollments = @client.client_enrollments.where("terminated_on > ?", Time.now.to_date)
-                                       .or(@client.client_enrollments.where(terminated_on: nil))
-    active_client_enrollments.order(is_primary: :desc)
+    client_enrollments = @client.client_enrollments.order(is_primary: :desc)
   end
   # end of private
 

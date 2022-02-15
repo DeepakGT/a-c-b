@@ -10,7 +10,7 @@ json.data do
     json.email client.email
     json.dob client.dob
     json.gender client.gender
-    json.payer_status client.payer_status
+    json.payor_status client.payor_status
     json.status client.status
     json.preferred_language client.preferred_language
     json.disqualified client.disqualified

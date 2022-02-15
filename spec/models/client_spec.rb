@@ -7,7 +7,6 @@ RSpec.describe Client, type: :model do
   it { should have_many(:client_enrollments).dependent(:destroy) }
   it { should have_many(:funding_sources).through(:client_enrollments) }  
   it { should have_many(:notes).class_name('ClientNote') } 
-  it { should have_many(:enrollment_payments).class_name('ClientEnrollmentPayment') } 
   it { should have_many(:attachments).dependent(:destroy) }
 
   it { should belong_to(:clinic) } 
@@ -15,7 +14,7 @@ RSpec.describe Client, type: :model do
   it { should accept_nested_attributes_for(:addresses).update_only(true)}
   it { should accept_nested_attributes_for(:phone_number).update_only(true)}
 
-  it { should define_enum_for(:payer_status)}
+  it { should define_enum_for(:payor_status)}
   it { should define_enum_for(:preferred_language)}
   it { should define_enum_for(:dq_reason)}
 

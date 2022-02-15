@@ -2,8 +2,8 @@ FactoryBot.define do
   factory :client_enrollment do
     association :client
     association :funding_source
-    enrollment_date { Date.new }
-    insureds_name { Faker::Name.name }
     is_primary { false }
+    insurance_id { 'UXY56773' }
+    source_of_payment { 'insurance' }
   end
 end

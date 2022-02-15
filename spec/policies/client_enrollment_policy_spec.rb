@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe ClientEnrollmentPaymentPolicy, type: :policy do
+RSpec.describe ClientEnrollmentPolicy, type: :policy do
   let!(:role1) { create(:role, name: 'aba_admin') }
   let!(:user1) { create(:user, :with_role, role_name: role1.name)}
   let!(:role2) { create(:role, name: 'administrator', permissions: ['client_source_of_payments_view', 'client_source_of_payments_update', 'client_source_of_payments_delete']) }

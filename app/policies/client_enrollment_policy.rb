@@ -1,4 +1,4 @@
-class ClientEnrollmentPaymentPolicy < ApplicationPolicy
+class ClientEnrollmentPolicy < ApplicationPolicy
   def index?
     show? || update? || destroy?
   end

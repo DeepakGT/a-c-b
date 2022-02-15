@@ -3,7 +3,7 @@ json.data do
   json.id @funding_source.id
   json.name @funding_source.name
   json.plan_name @funding_source.plan_name
-  json.payer_type @funding_source.payer_type
+  json.payor_type @funding_source.payor_type
   json.network_status @funding_source.network_status
   json.status @funding_source.status
   json.email @funding_source.email

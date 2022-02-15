@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_14_123311) do
+ActiveRecord::Schema.define(version: 2022_02_15_085852) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -70,34 +70,21 @@ ActiveRecord::Schema.define(version: 2022_02_14_123311) do
     t.index ["attachable_type", "attachable_id"], name: "index_attachments_on_attachable"
   end
 
-  create_table "client_enrollment_payments", force: :cascade do |t|
-    t.string "insurance_id", null: false
-    t.string "group"
-    t.string "group_employer"
-    t.string "provider_phone"
-    t.string "subscriber_name"
-    t.date "subscriber_dob"
-    t.string "subscriber_phone"
-    t.integer "relationship"
-    t.integer "source_of_payment", default: 0
-    t.bigint "funding_source_id"
-    t.bigint "client_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["client_id"], name: "index_client_enrollment_payments_on_client_id"
-    t.index ["funding_source_id"], name: "index_client_enrollment_payments_on_funding_source_id"
-  end
-
   create_table "client_enrollments", force: :cascade do |t|
-    t.date "enrollment_date"
-    t.date "terminated_on"
-    t.string "insureds_name"
-    t.text "notes"
     t.bigint "client_id", null: false
     t.bigint "funding_source_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.boolean "is_primary", default: false
+    t.string "insurance_id"
+    t.string "group"
+    t.string "group_employer"
+    t.string "provider_phone"
+    t.integer "relationship"
+    t.string "subscriber_name"
+    t.string "subscriber_phone"
+    t.date "subscriber_dob"
+    t.integer "source_of_payment", default: 0
     t.index ["client_id"], name: "index_client_enrollments_on_client_id"
     t.index ["funding_source_id"], name: "index_client_enrollments_on_funding_source_id"
   end
@@ -157,7 +144,7 @@ ActiveRecord::Schema.define(version: 2022_02_14_123311) do
   create_table "funding_sources", force: :cascade do |t|
     t.string "name"
     t.string "plan_name"
-    t.integer "payer_type", default: 0
+    t.integer "payor_type", default: 0
     t.string "email"
     t.string "notes"
     t.bigint "clinic_id", null: false
@@ -273,7 +260,7 @@ ActiveRecord::Schema.define(version: 2022_02_14_123311) do
     t.string "last_name"
     t.string "email"
     t.integer "gender", default: 0
-    t.integer "payer_status", default: 0
+    t.integer "payor_status", default: 0
     t.boolean "disqualified", default: false
     t.integer "dq_reason"
     t.integer "preferred_language", default: 0
@@ -296,8 +283,6 @@ ActiveRecord::Schema.define(version: 2022_02_14_123311) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "client_enrollment_payments", "funding_sources"
-  add_foreign_key "client_enrollment_payments", "users", column: "client_id"
   add_foreign_key "client_enrollments", "funding_sources"
   add_foreign_key "client_enrollments", "users", column: "client_id"
   add_foreign_key "client_notes", "users", column: "client_id"

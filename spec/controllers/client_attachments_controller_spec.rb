@@ -40,7 +40,8 @@ RSpec.describe ClientAttachmentsController, type: :controller do
         post :create, params: {
           client_id: client.id,
           category: 'image',
-          base64: 'data:image/gif;base64,R0lGODdhAQABAPAAAP8AAAAAACwAAAAAAQABAAACAkQBADs='
+          base64: 'data:image/gif;base64,R0lGODdhAQABAPAAAP8AAAAAACwAAAAAAQABAAACAkQBADs=',
+          file_name: 'test-file'
         }
         response_body = JSON.parse(response.body)
         

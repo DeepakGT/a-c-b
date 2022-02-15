@@ -1073,7 +1073,7 @@ paths:
                   {
                     "id": 1,
                     "name": "united behavioral health",
-                    "payer_type": "commercial",
+                    "payor_type": "commercial",
                     "plan_name": "abc",
                     "network_status": "in_network",
                     "status": "active",
@@ -1082,7 +1082,7 @@ paths:
                   {
                     "id": 2,
                     "name": "fs1",
-                    "payer_type": "commercial",
+                    "payor_type": "commercial",
                     "plan_name": "abc",
                     "network_status": "in_network",
                     "status": "active",
@@ -1101,7 +1101,7 @@ paths:
                   {
                     "id": 3,
                     "name": "fs2",
-                    "payer_type": "commercial",
+                    "payor_type": "commercial",
                     "plan_name": "abc",
                     "network_status": "in_network",
                     "status": "active",
@@ -1162,7 +1162,7 @@ paths:
                   "id": 12,
                   "name": "fs2",
                   "plan_name": "abc",
-                  "payer_type": "commercial",
+                  "payor_type": "commercial",
                   "network_status": "in_network",
                   "status": "active",
                   "email": "contact@fs2.com",
@@ -1222,7 +1222,7 @@ paths:
                   "id": 12,
                   "name": "fs2",
                   "plan_name": "abc",
-                  "payer_type": "commercial",
+                  "payor_type": "commercial",
                   "network_status": "in_network",
                   "status": "active",
                   "email": "contact@fs2.com",
@@ -1285,7 +1285,7 @@ paths:
                     "id": 11,
                     "name": "fs1",
                     "plan_name": "abc",
-                    "payer_type": "commercial",
+                    "payor_type": "commercial",
                     "network_status": "in_network",
                     "status": "active",
                     "email": "contact@fs1.com",
@@ -1768,7 +1768,7 @@ paths:
                     "email": "testc7@gmail.com",
                     "dob": "2012-12-12",
                     "gender": "male",
-                    "payer_status": "in_network",
+                    "payor_status": "in_network",
                     "status": "active",
                     "preferred_language": "english",
                     "disqualified": true,
@@ -1784,7 +1784,7 @@ paths:
                     "email": "testc1@gmail.com",
                     "dob": "2012-12-12",
                     "gender": "male",
-                    "payer_status": "in_network",
+                    "payor_status": "in_network",
                     "status": "active",
                     "preferred_language": "english",
                     "disqualified": false,
@@ -1857,7 +1857,7 @@ paths:
                   "email": "testc1@gmail.com",
                   "dob": "2012-12-12",
                   "gender": "male",
-                  "payer_status": "in_network",
+                  "payor_status": "in_network",
                   "status": "active",
                   "disqualified": false,
                   "note": {
@@ -1969,7 +1969,7 @@ paths:
                   "email": "testc5@gmail.com",
                   "dob": "2012-12-12",
                   "gender": "male",
-                  "payer_status": "in_network",
+                  "payor_status": "in_network",
                   "status": "active",
                   "preferred_language": "english",
                   "disqualified": false,
@@ -2042,7 +2042,7 @@ paths:
                   "email": "testc1@gmail.com",
                   "dob": "2012-12-12",
                   "gender": "male",
-                  "payer_status": "in_network",
+                  "payor_status": "in_network",
                   "status": "active",
                   "disqualified": false,
                   "note": {
@@ -2117,25 +2117,35 @@ paths:
                 "data": [
                   {
                     "id": 1,
-                    "client_id": 10,
-                    "funding_source_id": 3,
-                    "funding_source": "amerihealth caritas nh",
+                    "client_id": 16,
+                    "source_of_payment": "insurance",
+                    "funding_source_id": 31,
+                    "funding_source": "aetna",
                     "primary": true,
-                    "enrollment_date": "2022-01-17",
-                    "terminated_on": null,
-                    "insureds_name": "abcd",
-                    "notes": null
+                    "insurance_id": "VDYS4756",
+                    "group": "group1",
+                    "group_employer": "test",
+                    "provider_phone": "87876-59954",
+                    "relationship": "parent_or_guardian",
+                    "subscriber_name": "Abcd",
+                    "subscriber_phone": "76854-56443",
+                    "subscriber_dob": "1997-12-12"
                   },
                   {
                     "id": 2,
-                    "client_id": 10,
-                    "funding_source_id": 5,
-                    "funding_source": "cigna",
+                    "client_id": 16,
+                    "source_of_payment": "insurance",
+                    "funding_source_id": 38,
+                    "funding_source": "optimhealth behavioral solutions",
                     "primary": false,
-                    "enrollment_date": "2022-01-17",
-                    "terminated_on": null,
-                    "insureds_name": "abcd",
-                    "notes": null
+                    "insurance_id": "SBAJ6473",
+                    "group": "group2",
+                    "group_employer": "test employer",
+                    "provider_phone": "87876-59955",
+                    "relationship": "spouse_or_partner",
+                    "subscriber_name": "Abcdef",
+                    "subscriber_phone": "76854-56443",
+                    "subscriber_dob": "1996-12-12"
                   }
                 ],
                 "total_records": 2,
@@ -2174,15 +2184,20 @@ paths:
               example: {
                 "status": "success",
                 "data": {
-                  "id": 2,
-                  "client_id": 9,
-                  "funding_source_id": 3,
-                  "funding_source": "amerihealth caritas nh",
-                  "primary": false,
-                  "enrollment_date": "2022-01-17",
-                  "terminated_on": null,
-                  "insureds_name": "abcd",
-                  "notes": null
+                  "id": 1,
+                  "client_id": 16,
+                  "source_of_payment": "insurance",
+                  "funding_source_id": 31,
+                  "funding_source": "aetna",
+                  "primary": true,
+                  "insurance_id": "VDYS4756",
+                  "group": "group1",
+                  "group_employer": "test",
+                  "provider_phone": "87876-59954",
+                  "relationship": "parent_or_guardian",
+                  "subscriber_name": "Abcd",
+                  "subscriber_phone": "76854-56443",
+                  "subscriber_dob": "1997-12-12"
                 },
                 "errors": []
               }
@@ -2220,14 +2235,19 @@ paths:
                 "status": "success",
                 "data": {
                   "id": 1,
-                  "client_id": 10,
-                  "funding_source_id": 3,
-                  "funding_source": "amerihealth caritas nh",
-                  "primary": false,
-                  "enrollment_date": "2022-01-17",
-                  "terminated_on": null,
-                  "insureds_name": "abcd",
-                  "notes": null
+                  "client_id": 16,
+                  "source_of_payment": "insurance",
+                  "funding_source_id": 31,
+                  "funding_source": "aetna",
+                  "primary": true,
+                  "insurance_id": "VDYS4756",
+                  "group": "group1",
+                  "group_employer": "test",
+                  "provider_phone": "87876-59954",
+                  "relationship": "parent_or_guardian",
+                  "subscriber_name": "Abcd",
+                  "subscriber_phone": "76854-56443",
+                  "subscriber_dob": "1997-12-12"
                 }
               }
     put:
@@ -2266,15 +2286,20 @@ paths:
               example: {
                 "status": "success",
                 "data": {
-                  "id": 1,
-                  "client_id": 10,
-                  "funding_source_id": 1,
-                  "funding_source": "aetna",
+                  "id": 2,
+                  "client_id": 16,
+                  "source_of_payment": "insurance",
+                  "funding_source_id": 38,
+                  "funding_source": "optimhealth behavioral solutions",
                   "primary": false,
-                  "enrollment_date": "2022-01-17",
-                  "terminated_on": null,
-                  "insureds_name": "A. B. verma",
-                  "notes": null
+                  "insurance_id": "SBAJ6473",
+                  "group": "group2",
+                  "group_employer": "test employer",
+                  "provider_phone": "87876-59955",
+                  "relationship": "spouse_or_partner",
+                  "subscriber_name": "Abcdef",
+                  "subscriber_phone": "76854-56443",
+                  "subscriber_dob": "1996-12-12"
                 },
                 "errors": []
               }
@@ -2309,15 +2334,20 @@ paths:
               example: {
                 "status": "success",
                 "data": {
-                  "id": 3,
-                  "client_id": 10,
-                  "funding_source_id": 8,
+                  "id": 2,
+                  "client_id": 16,
+                  "source_of_payment": "insurance",
+                  "funding_source_id": 38,
                   "funding_source": "optimhealth behavioral solutions",
                   "primary": false,
-                  "enrollment_date": "2022-01-17",
-                  "terminated_on": null,
-                  "insureds_name": "abcd",
-                  "notes": null
+                  "insurance_id": "SBAJ6473",
+                  "group": "group2",
+                  "group_employer": "test employer",
+                  "provider_phone": "87876-59955",
+                  "relationship": "spouse_or_partner",
+                  "subscriber_name": "Abcdef",
+                  "subscriber_phone": "76854-56443",
+                  "subscriber_dob": "1996-12-12"
                 }
               }
 
@@ -2685,7 +2715,7 @@ paths:
               example: {
                 "status": "success",
                 "data": {
-                  "payer_statuses": [
+                  "payor_statuses": [
                     {
                       "id": 0,
                       "type": "in_network"
@@ -3321,254 +3351,6 @@ paths:
                   "id": 2,
                   "client_id": 12,
                   "note": "test-note-2"
-                },
-                "errors": []
-              }
-
-  /api/clients/{client_id}/enrollment_payments:
-    get:
-      summary: Client enrollment payments list
-      parameters:
-      - in: "header"
-        name: "access-token"
-        description: "Request headers"
-        required: true
-      - in: "header"
-        name: "client"
-        description: "Request headers"
-        required: true
-      - in: "header"
-        name: "uid"
-        description: "Request headers"
-        required: true
-      - in: "path"
-        name: "client_id"
-        description: "Associated Client id"
-        required: true
-      responses:
-        "200":
-          description: "Client enrollment payments list"
-          content:
-            application/json:
-              example: {
-                "status": "success",
-                "data": [
-                  {
-                    "id": 1,
-                    "client_id": 16,
-                    "source_of_payment": "insurance",
-                    "insurance": "optimhealth behavioral solutions",
-                    "insurance_id": "ABCDE43216",
-                    "group": null,
-                    "group_employer": null,
-                    "provider_phone": "9988776655",
-                    "relationship": "parent_or_guardian",
-                    "subscriber_name": "ABCD",
-                    "subscriber_dob": "1999-12-06",
-                    "subscriber_phone": "7788866688"
-                  },
-                  {
-                    "id": 2,
-                    "client_id": 16,
-                    "source_of_payment": "self_pay",
-                    "insurance_id": "CYCDE43216",
-                    "group": null,
-                    "group_employer": null,
-                    "provider_phone": "9988776644",
-                    "relationship": null,
-                    "subscriber_name": null,
-                    "subscriber_dob": null,
-                    "subscriber_phone": null
-                  }
-                ]
-              }
-    post:
-      summary: Client enrollment payment create
-      parameters:
-      - in: "header"
-        name: "access-token"
-        description: "Request headers"
-        required: true
-      - in: "header"
-        name: "client"
-        description: "Request headers"
-        required: true
-      - in: "header"
-        name: "uid"
-        description: "Request headers"
-        required: true
-      - in: "path"
-        name: "client_id"
-        description: "Associated client id"
-        required: true
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/definitions/ClientEnrollmentPaymentsCreateUpdateParameters"
-      responses:
-        "200":
-          description: "Created client enrollment payment"
-          content:
-            application/json:
-              example: {
-                "status": "success",
-                "data": {
-                  "id": 2,
-                  "client_id": 16,
-                  "source_of_payment": "self_pay",
-                  "insurance_id": "CYCDE43216",
-                  "group": null,
-                  "group_employer": null,
-                  "provider_phone": "9988776644",
-                  "relationship": null,
-                  "subscriber_name": null,
-                  "subscriber_dob": null,
-                  "subscriber_phone": null
-                },
-                "errors": []
-              }
-
-  /api/clients/{client_id}/enrollment_payments/{id}:
-    get:
-      summary: client enrollment payment detail
-      parameters:
-      - in: "header"
-        name: "access-token"
-        description: "Request headers"
-        required: true
-      - in: "header"
-        name: "client"
-        description: "Request headers"
-        required: true
-      - in: "header"
-        name: "uid"
-        description: "Request headers"
-        required: true
-      - in: "path"
-        name: "client_id"
-        description: "Associated Client id"
-        required: true
-      - in: "path"
-        name: "id"
-        description: "Client enrollment payment id"
-        required: true
-      responses:
-        "200":
-          description: "Client enrollment payment detail"
-          content:
-            application/json:
-              example: {
-                "status": "success",
-                "data": {
-                  "id": 1,
-                  "client_id": 16,
-                  "source_of_payment": "insurance",
-                  "insurance": "optimhealth behavioral solutions",
-                  "insurance_id": "ABCDE43216",
-                  "group": null,
-                  "group_employer": null,
-                  "provider_phone": "9988776655",
-                  "relationship": "parent_or_guardian",
-                  "subscriber_name": "ABCD",
-                  "subscriber_dob": "1999-12-06",
-                  "subscriber_phone": "7788866688"
-                }
-              }
-    put:
-      summary: Client enrollment payment update
-      parameters:
-      - in: "header"
-        name: "access-token"
-        description: "Request headers"
-        required: true
-      - in: "header"
-        name: "client"
-        description: "Request headers"
-        required: true
-      - in: "header"
-        name: "uid"
-        description: "Request headers"
-        required: true
-      - in: "path"
-        name: "client_id"
-        description: "Associated Client id"
-        required: true
-      - in: "path"
-        name: "id"
-        description: "Client enrollment payment id"
-        required: true
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/definitions/ClientEnrollmentPaymentsCreateUpdateParameters"
-      responses:
-        "200":
-          description: "Updated client enrollment payment"
-          content:
-            application/json:
-              example: {
-                "status": "success",
-                "data": {
-                  "id": 2,
-                  "client_id": 16,
-                  "source_of_payment": "insurance",
-                  "insurance": "amerihealth caritas nh",
-                  "insurance_id": "CYCDE43265",
-                  "group": null,
-                  "group_employer": null,
-                  "provider_phone": "8888776644",
-                  "relationship": "parent_or_guardian",
-                  "subscriber_name": "ABCDEF",
-                  "subscriber_dob": "1986-12-06",
-                  "subscriber_phone": "9988866688"
-                },
-                "errors": []
-              }
-    delete:
-      summary: client enrollment payment delete
-      parameters:
-      - in: "header"
-        name: "access-token"
-        description: "Request headers"
-        required: true
-      - in: "header"
-        name: "client"
-        description: "Request headers"
-        required: true
-      - in: "header"
-        name: "uid"
-        description: "Request headers"
-        required: true
-      - in: "path"
-        name: "client_id"
-        description: "Associated client id"
-        required: true
-      - in: "path"
-        name: "id"
-        description: "client enrollment payment id"
-        required: true
-      responses:
-        "200":
-          description: "Deleted client enrollment payment detail"
-          content:
-            application/json:
-              example: {
-                "status": "success",
-                "data": {
-                  "id": 2,
-                  "client_id": 16,
-                  "source_of_payment": "insurance",
-                  "insurance": "amerihealth caritas nh",
-                  "insurance_id": "CYCDE43265",
-                  "group": null,
-                  "group_employer": null,
-                  "provider_phone": "8888776644",
-                  "relationship": "parent_or_guardian",
-                  "subscriber_name": "ABCDEF",
-                  "subscriber_dob": "1986-12-06",
-                  "subscriber_phone": "9988866688"
                 },
                 "errors": []
               }
@@ -4281,7 +4063,7 @@ definitions:
         type: "string"
       last_name:
         type: "string"
-      payer_status:
+      payor_status:
         type: "string"
         enum: [in_network, medicaid, out_of_network, scholarship, self_pay, single_case_agreement]
       disqualified:
@@ -4347,7 +4129,7 @@ definitions:
         type: "string"
       last_name:
         type: "string"
-      payer_status:
+      payor_status:
         type: "string"
         enum: [in_network, medicaid, out_of_network, scholarship, self_pay, single_case_agreement]
       disqualified:
@@ -4445,7 +4227,7 @@ definitions:
         type: "string"
       plan_name:
         type: "string"
-      payer_type:
+      payor_type:
         type: "string"
         enum: [commercial, medicaid, medicare]
       email:
@@ -4541,17 +4323,29 @@ definitions:
   ClientEnrollmentCreateUpdateParameters:
     type: "object"
     properties:
+      source_of_payment:
+        type: "string"
+        enum: [self_pay, insurance, contract, medicaid, single_case_agreement, scholarship]
       funding_source_id:
         type: "integer"
       is_primary:
         type: "boolean"
-      enrollment_date:
+      insurance_id:
         type: "string"
-      terminated_on:
+      group:
         type: "string"
-      insureds_name:
+      group_employer:
         type: "string"
-      notes:
+      provider_phone:
+        type: "string"
+      relationship:
+        type: "string"
+        enum: [parent_or_guardian, spouse_or_partner]
+      subscriber_name:
+        type: "string"
+      subscriber_phone:
+        type: "string"
+      subscriber_dob:
         type: "string"
 
   ClientContactCreateParameters:
@@ -4690,32 +4484,6 @@ definitions:
     type: "object"
     properties:
       note: 
-        type: "string"
-
-  ClientEnrollmentPaymentsCreateUpdateParameters:
-    type: "object"
-    properties:
-      source_of_payment:
-        type: "string"
-        enum: [self_pay, insurance, contract, medicaid, sca, scholarship]
-      funding_source_id:
-        type: "integer"
-      insurance_id:
-        type: "string"
-      group:
-        type: "string"
-      group_employer:
-        type: "string"
-      provider_phone:
-        type: "string"
-      relationship:
-        type: "string"
-        enum: [parent_or_guardian, spouse_or_partner]
-      subscriber_name:
-        type: "string"
-      subscriber_dob:
-        type: "string"
-      subscriber_phone:
         type: "string"
 
   ClientAttachmentCreateUpdateParameters:
