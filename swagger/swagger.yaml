@@ -3781,6 +3781,189 @@ paths:
                 "errors": []
               }
 
+  /api/staff/{staff_id}/staff_clinics:
+    get:
+      summary: Staff clinics list
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "staff_id"
+        description: "Associated staff id"
+        required: true
+      responses:
+        "200":
+          description: "Staff clinics list"
+          content:
+            application/json:
+              example: {
+                  "status": "success",
+                  "data": [
+                    {
+                      "id": 6,
+                      "clinic_id": 3,
+                      "clinic_name": "clinic1",
+                      "organization_id": 3,
+                      "organization_name": "org1",
+                      "is_home_clinic": true
+                    },
+                    {
+                      "id": 8,
+                      "clinic_id": 4,
+                      "clinic_name": "clinic2",
+                      "organization_id": 3,
+                      "organization_name": "org1",
+                      "is_home_clinic": false
+                    }
+                ]
+              }
+    post:
+      summary: staff clinic create
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "staff_id"
+        description: "Associated staff id"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/StaffClinicCreateParameters"
+      responses:
+        "200":
+          description: "Created staff clinic"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": [
+                  {
+                    "id": 7,
+                    "clinic_id": 3,
+                    "clinic_name": "clinic1",
+                    "organization_id": 3,
+                    "organization_name": "org1",
+                    "is_home_clinic": false
+                  },
+                  {
+                    "id": 8,
+                    "clinic_id": 4,
+                    "clinic_name": "clinic2",
+                    "organization_id": 3,
+                    "organization_name": "org1",
+                    "is_home_clinic": false
+                  }
+                ]
+              }
+
+  /api/staff/{staff_id}/staff_clinics/{id}:
+    put:
+      summary: Staff clinic update
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "staff_id"
+        description: "Associated staff id"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "Staff clinic id"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/StaffClinicUpdateParameters"
+      responses:
+        "200":
+          description: "Updated staff clinic"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 6,
+                  "clinic_id": 3,
+                  "clinic_name": "clinic1",
+                  "organization_id": 3,
+                  "organization_name": "org1",
+                  "is_home_clinic": true
+                },
+                "errors": []
+              }
+    delete:
+      summary: staff clinic delete
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "staff_id"
+        description: "Associated staff id"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "staff clinic id"
+        required: true
+      responses:
+        "200":
+          description: "Deleted staff clinic detail"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 7,
+                  "clinic_id": 3,
+                  "clinic_name": "clinic1",
+                  "organization_id": 3,
+                  "organization_name": "org1",
+                  "is_home_clinic": false
+                }
+              }
+
 definitions:
   UserRegistrationParameters:
     type: "object"
@@ -4544,3 +4727,24 @@ definitions:
         type: "string"
       file_name:
         type: "string"
+
+  StaffClinicCreateParameters:
+    type: "object"
+    properties:
+      clinics:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            clinic_id:
+              type: "integer"
+            is_home_clinic:
+              type: "boolean"
+
+  StaffClinicUpdateParameters:
+    type: "object"
+    properties:
+      clinic_id:
+        type: "integer"
+      is_home_clinic:
+        type: "boolean"
