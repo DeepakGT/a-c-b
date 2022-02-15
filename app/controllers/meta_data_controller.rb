@@ -9,7 +9,6 @@ class MetaDataController < ApplicationController
 
   def get_selectable_options_data
     selectable_options = { countries: country_list,
-                           payor_statuses: Client.payor_statuses,
                            preferred_languages: Client.preferred_languages,
                            dq_reasons: Client.dq_reasons, 
                            relation_types: Contact.relation_types,

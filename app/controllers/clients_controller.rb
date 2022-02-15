@@ -7,9 +7,7 @@ class ClientsController < ApplicationController
     @clients = Client.order(:first_name).paginate(page: params[:page])
   end
 
-  def show
-    @client_enrollments = active_funding_sources
-  end
+  def show; end
 
   def create
     @client = Client.new(client_params)
@@ -24,7 +22,7 @@ class ClientsController < ApplicationController
   private
 
   def client_params
-    arr = %i[first_name last_name payor_status status gender email dob clinic_id preferred_language disqualified dq_reason]
+    arr = %i[first_name last_name status gender email dob clinic_id preferred_language disqualified dq_reason]
 
     arr.concat(%i[password password_confirmation]) if params['action']=='create'
 
@@ -41,10 +39,6 @@ class ClientsController < ApplicationController
 
   def authorize_user
     authorize Client if current_user.role_name!='super_admin'
-  end
-
-  def active_funding_sources
-    client_enrollments = @client.client_enrollments.order(is_primary: :desc)
   end
   # end of private
 

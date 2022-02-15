@@ -1,3 +1,4 @@
+client_enrollment = @client.client_enrollments.order(is_primary: :desc).first
 json.status 'success'
 json.data do
   json.id @client.id
@@ -6,14 +7,21 @@ json.data do
   json.email @client.email
   json.clinic_id @client.clinic_id
   json.clinic_name @client.clinic.name
-  if @client_enrollments.present?
-    json.funding_sources do
-      json.array! @client_enrollments do |client_enrollment|
-        json.funding_source_name client_enrollment.funding_source.name
-      end
+  json.email @client.email
+  json.dob @client.dob
+  json.gender @client.gender
+  json.status @client.status
+  json.preferred_language @client.preferred_language
+  json.disqualified @client.disqualified
+  json.disqualified_reason @client.dq_reason if @client.disqualified?
+  if client_enrollment.present?
+    if client_enrollment.source_of_payment=='self_pay'
+      json.payor_status client_enrollment.source_of_payment
+    else
+      json.payor_status client_enrollment.funding_source.name
     end
   end
-  if @client.contacts.present? 
+  if @client.contacts.present?
     json.contact do
       json.id @client.contacts.first.id
       json.first_name @client.contacts.first.first_name
@@ -37,14 +45,6 @@ json.data do
       end
     end
   end
-  json.email @client.email
-  json.dob @client.dob
-  json.gender @client.gender
-  json.payor_status @client.payor_status
-  json.status @client.status
-  json.preferred_language @client.preferred_language
-  json.disqualified @client.disqualified
-  json.disqualified_reason @client.dq_reason if @client.disqualified?
   if @client.addresses.present?
     json.addresses do
       json.array! @client.addresses do |address|

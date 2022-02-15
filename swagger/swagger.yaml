@@ -1768,7 +1768,6 @@ paths:
                     "email": "testc7@gmail.com",
                     "dob": "2012-12-12",
                     "gender": "male",
-                    "payor_status": "in_network",
                     "status": "active",
                     "preferred_language": "english",
                     "disqualified": true,
@@ -1784,7 +1783,6 @@ paths:
                     "email": "testc1@gmail.com",
                     "dob": "2012-12-12",
                     "gender": "male",
-                    "payor_status": "in_network",
                     "status": "active",
                     "preferred_language": "english",
                     "disqualified": false,
@@ -1857,7 +1855,6 @@ paths:
                   "email": "testc1@gmail.com",
                   "dob": "2012-12-12",
                   "gender": "male",
-                  "payor_status": "in_network",
                   "status": "active",
                   "disqualified": false,
                   "note": {
@@ -1936,16 +1933,6 @@ paths:
                   "email": "client5@yopmail.com",
                   "clinic_id": 1,
                   "clinic_name": "clinic1",
-                  "funding_sources": [
-                    {
-                      "funding_source_name": "optimhealth behavioral solutions",
-                      "expiration_date": "2025-12-12"
-                    },
-                    {
-                      "funding_source_name": "aetna",
-                      "expiration_date": "2030-01-01"
-                    }
-                  ],
                   "contact": {
                     "id": 2,
                     "first_name": "test",
@@ -1969,7 +1956,6 @@ paths:
                   "email": "testc5@gmail.com",
                   "dob": "2012-12-12",
                   "gender": "male",
-                  "payor_status": "in_network",
                   "status": "active",
                   "preferred_language": "english",
                   "disqualified": false,
@@ -2042,7 +2028,6 @@ paths:
                   "email": "testc1@gmail.com",
                   "dob": "2012-12-12",
                   "gender": "male",
-                  "payor_status": "in_network",
                   "status": "active",
                   "disqualified": false,
                   "note": {
@@ -2715,32 +2700,6 @@ paths:
               example: {
                 "status": "success",
                 "data": {
-                  "payor_statuses": [
-                    {
-                      "id": 0,
-                      "type": "in_network"
-                    },
-                    {
-                      "id": 1,
-                      "type": "medicaid"
-                    },
-                    {
-                      "id": 2,
-                      "type": "out_of_network"
-                    },
-                    {
-                      "id": 3,
-                      "type": "scholarship"
-                    },
-                    {
-                      "id": 4,
-                      "type": "self_pay"
-                    },
-                    {
-                      "id": 5,
-                      "type": "single_case_agreement"
-                    }
-                  ],
                   "preferred_languages": [
                     {
                       "id": 0,
@@ -4063,9 +4022,6 @@ definitions:
         type: "string"
       last_name:
         type: "string"
-      payor_status:
-        type: "string"
-        enum: [in_network, medicaid, out_of_network, scholarship, self_pay, single_case_agreement]
       disqualified:
         type: "boolean"
       dq_reason:
@@ -4129,9 +4085,6 @@ definitions:
         type: "string"
       last_name:
         type: "string"
-      payor_status:
-        type: "string"
-        enum: [in_network, medicaid, out_of_network, scholarship, self_pay, single_case_agreement]
       disqualified:
         type: "boolean"
       dq_reason:
@@ -4346,6 +4299,12 @@ definitions:
       subscriber_phone:
         type: "string"
       subscriber_dob:
+        type: "string"
+      enrollment_date:
+        type: "string"
+      terminated_on:
+        type: "string"
+      notes:
         type: "string"
 
   ClientContactCreateParameters:

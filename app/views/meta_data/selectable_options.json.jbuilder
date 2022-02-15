@@ -1,11 +1,5 @@
 json.status 'success'
 json.data do
-  json.payor_statuses do
-    json.array! @selectable_options[:payor_statuses] do |payor_status|
-      json.id payor_status.last
-      json.type payor_status.first
-    end
-  end
   json.preferred_languages do
     json.array! @selectable_options[:preferred_languages] do |preferred_language|
       json.id preferred_language.last

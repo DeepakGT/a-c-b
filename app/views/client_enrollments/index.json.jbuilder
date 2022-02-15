@@ -5,7 +5,7 @@ json.data do
     json.client_id client_enrollment.client_id
     json.source_of_payment client_enrollment.source_of_payment
     json.funding_source_id client_enrollment.funding_source_id
-    json.funding_source client_enrollment.funding_source.name
+    json.funding_source client_enrollment.funding_source.name if client_enrollment.funding_source.present?
     json.primary client_enrollment.is_primary
     json.insurance_id client_enrollment.insurance_id
     json.group client_enrollment.group

@@ -72,10 +72,13 @@ ActiveRecord::Schema.define(version: 2022_02_15_085852) do
 
   create_table "client_enrollments", force: :cascade do |t|
     t.bigint "client_id", null: false
-    t.bigint "funding_source_id", null: false
+    t.bigint "funding_source_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.boolean "is_primary", default: false
+    t.date "terminated_on"
+    t.date "enrollment_date"
+    t.string "notes"
     t.string "insurance_id"
     t.string "group"
     t.string "group_employer"
@@ -260,7 +263,6 @@ ActiveRecord::Schema.define(version: 2022_02_15_085852) do
     t.string "last_name"
     t.string "email"
     t.integer "gender", default: 0
-    t.integer "payor_status", default: 0
     t.boolean "disqualified", default: false
     t.integer "dq_reason"
     t.integer "preferred_language", default: 0
