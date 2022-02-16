@@ -9,14 +9,15 @@ class ClientEnrollmentsController < ApplicationController
   end
 
   def create
-    set_primary_funding_source if params[:is_primary].to_bool.true?
-    @client_enrollment = @client.client_enrollments.create(enrollment_params)
+    @client_enrollment = @client.client_enrollments.new(enrollment_params)
+    @client_enrollment.is_primary = is_any_primary? ? true : false
+    @client_enrollment.save
   end
 
   def show; end
 
   def update
-    set_primary_funding_source if params[:is_primary].to_bool.true?
+    reset_primary if params[:is_primary].to_bool.true?
     @client_enrollment.update(enrollment_params)
   end
 
@@ -44,10 +45,16 @@ class ClientEnrollmentsController < ApplicationController
     @client_enrollment = @client.client_enrollments.find(params[:id])
   end
 
-  def set_primary_funding_source
-    return if @client.client_enrollments.where(is_primary: true).blank?
+  def reset_primary
     client_enrollment = @client.client_enrollments.find_by(is_primary: true)
     client_enrollment.update(is_primary: false)
+  end
+
+  def is_any_primary?
+    # return true if @client.client_enrollments.where(is_primary: true).blank?
+    return false if @client.client_enrollments.find_by(is_primary: true).present?
+
+    true
   end
   # end of private
   

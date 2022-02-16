@@ -1,8 +1,8 @@
 class ClientNotesController < ApplicationController
   before_action :authenticate_user!
+  before_action :authorize_user
   before_action :set_client
   before_action :set_client_note, only: [:show, :update, :destroy]
-  before_action :authorize_user
 
   def index
     @client_notes = @client.notes.order(:created_at)
@@ -39,13 +39,7 @@ class ClientNotesController < ApplicationController
   end
 
   def authorize_user
-    if current_user.role_name!='super_admin'
-      if params[:action]=='destroy'
-        authorize @client_note 
-      else
-        authorize ClientNote 
-      end
-    end
+    authorize ClientNote if current_user.role_name!='super_admin'
   end
 
   def set_creator_id

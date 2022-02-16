@@ -1,7 +1,7 @@
 json.status 'success'
 json.data do
   json.array! @clients do |client|
-    client_enrollment = client.client_enrollments.order(is_primary: :desc).first
+    client_enrollment = client.client_enrollments.active.order(is_primary: :desc).first
     json.id client.id
     json.first_name client.first_name
     json.last_name client.last_name

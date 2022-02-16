@@ -1,4 +1,4 @@
-client_enrollment = @client.client_enrollments.order(is_primary: :desc).first
+client_enrollment = @client.client_enrollments.active.order(is_primary: :desc).first
 json.status 'success'
 json.data do
   json.id @client.id
