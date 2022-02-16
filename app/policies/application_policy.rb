@@ -6,6 +6,7 @@ class ApplicationPolicy
   def initialize(user, record)
     @user = user
     @permissions = user.role.permissions
+    @record = record
   end
 
   def index?

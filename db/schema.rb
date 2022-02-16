@@ -98,7 +98,9 @@ ActiveRecord::Schema.define(version: 2022_02_16_061413) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.date "add_date"
+    t.bigint "creator_id"
     t.index ["client_id"], name: "index_client_notes_on_client_id"
+    t.index ["creator_id"], name: "index_client_notes_on_creator_id"
   end
 
   create_table "clinics", force: :cascade do |t|
@@ -289,6 +291,7 @@ ActiveRecord::Schema.define(version: 2022_02_16_061413) do
   add_foreign_key "client_enrollments", "funding_sources"
   add_foreign_key "client_enrollments", "users", column: "client_id"
   add_foreign_key "client_notes", "users", column: "client_id"
+  add_foreign_key "client_notes", "users", column: "creator_id"
   add_foreign_key "clinics", "organizations"
   add_foreign_key "contacts", "users", column: "client_id"
   add_foreign_key "funding_sources", "clinics"

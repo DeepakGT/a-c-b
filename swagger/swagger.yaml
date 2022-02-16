@@ -3153,7 +3153,9 @@ paths:
                     "id": 1,
                     "client_id": 12,
                     "note": "test note",
-                    "add_date": "2022-02-10"
+                    "add_date": "2022-02-10",
+                    "creator_id": 7,
+                    "creator": "Odis Murphy"
                   }
                 ]
               }
@@ -3232,7 +3234,9 @@ paths:
                   "id": 1,
                   "client_id": 12,
                   "note": "test note",
-                  "add_date": "2022-02-10"
+                  "add_date": "2022-02-10",
+                  "creator_id": 7,
+                  "creator": "Odis Murphy"
                 }
               }
     put:

@@ -20,7 +20,7 @@ class ClientNotePolicy < ApplicationPolicy
   end
 
   def destroy?
-    return true if permissions.include?('client_notes_delete')
+    return true if permissions.include?('client_notes_delete') || record.creator_id==user.id
 
     false
   end
