@@ -1,7 +1,7 @@
 json.status 'success'
 json.data do
   json.array! @clients do |client|
-    client_enrollment = client.client_enrollments.active.order(is_primary: :desc).first
+    primary_client_enrollment = client.client_enrollments.active.order(is_primary: :desc).first
     json.id client.id
     json.first_name client.first_name
     json.last_name client.last_name
@@ -15,11 +15,12 @@ json.data do
     json.preferred_language client.preferred_language
     json.disqualified client.disqualified
     json.disqualified_reason client.dq_reason if client.disqualified?
-    if client_enrollment.present?
-      if client_enrollment.source_of_payment=='self_pay'
-        json.payor_status client_enrollment.source_of_payment
+    json.payor_status client.payor_status 
+    if primary_client_enrollment.present?
+      if primary_client_enrollment.source_of_payment=='self_pay'
+        json.payor nil
       else
-        json.payor_status client_enrollment.funding_source.name
+        json.payor primary_client_enrollment.funding_source.name
       end
     end
     if client.addresses.present?

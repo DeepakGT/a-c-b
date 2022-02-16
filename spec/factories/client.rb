@@ -6,5 +6,6 @@ FactoryBot.define do
     end
 
     password { 'Abcd@123' }
+    payor_status { 'insurance' }
   end
 end
