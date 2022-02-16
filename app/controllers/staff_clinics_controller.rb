@@ -8,7 +8,7 @@ class StaffClinicsController < ApplicationController
   end
 
   def create
-    clinics = (params[:clinics].class==String) ? JSON.parse(params[:clinics]) : params[:clinics]
+    clinics = params[:clinics].instance_of?(String) ? JSON.parse(params[:clinics]) : params[:clinics]
     @staff_clinics = clinics.map do |clinic|
       @staff.staff_clinics.create(clinic_id: clinic["clinic_id"], is_home_clinic: clinic["is_home_clinic"])
     end

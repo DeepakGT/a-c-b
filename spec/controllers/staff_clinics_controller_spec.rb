@@ -36,10 +36,10 @@ RSpec.describe StaffClinicsController, type: :controller do
 
   describe "POST #create" do
     context "when sign in" do
-      let(:clinics) { "[{\"clinic_id\": 7, \"is_home_clinic\": false}, {\"clinic_id\": 8, \"is_home_clinic\": false}]"}
+      let(:clinics) { [{"clinic_id": clinic3.id, "is_home_clinic": false}, {"clinic_id": clinic4.id, "is_home_clinic": false}] }
       it "should create staff clinic successfully" do
         set_auth_headers(auth_headers)
-        
+
         post :create, params: {
           staff_id: staff.id, 
           clinics: clinics

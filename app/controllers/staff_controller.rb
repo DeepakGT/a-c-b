@@ -1,3 +1,4 @@
+require 'will_paginate/array'
 class StaffController < ApplicationController
   before_action :authenticate_user!
   before_action :authorize_user, except: %i[phone_types supervisor_list]
@@ -7,7 +8,7 @@ class StaffController < ApplicationController
   def index
     staff = Staff.all
     staff = do_filter(staff) if params[:search_value].present?
-    @staff = staff.order(:first_name).paginate(page: params[:page])
+    @staff = staff.uniq.sort_by(&:first_name).paginate(page: params[:page])
   end
 
   def show; end
@@ -78,7 +79,7 @@ class StaffController < ApplicationController
         staff = staff.by_last_name(lname) if lname.present?
         return staff
       when "organization"
-        staff.joins(clinic: :organization).by_organization(params[:search_value])
+        staff.joins(clinics: :organization).by_organization(params[:search_value])
       when "title"
         staff.joins(:role).by_role(params[:search_value])
       when "immediate_supervisor"
@@ -96,7 +97,7 @@ class StaffController < ApplicationController
   end
 
   def search_on_all_fields(value)
-    staff = Staff.includes(:role, :address, clinic: :organization).all
+    staff = Staff.includes(:role, :address, clinics: :organization).all
     formated_val = value.split.map{|x| "%#{x}%"}
     fname, lname = value.split
     staff.by_first_name(fname).by_last_name(lname)

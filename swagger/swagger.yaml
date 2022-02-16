@@ -3191,7 +3191,8 @@ paths:
                 "data": {
                   "id": 2,
                   "client_id": 12,
-                  "note": "test note"
+                  "note": "test note",
+                  "add_date": "2022-02-10"
                 },
                 "errors": []
               }
@@ -3272,7 +3273,8 @@ paths:
                 "data": {
                   "id": 2,
                   "client_id": 12,
-                  "note": "test-note-2"
+                  "note": "test-note-2",
+                  "add_date": "2022-02-10"
                 },
                 "errors": []
               }
@@ -3309,7 +3311,8 @@ paths:
                 "data": {
                   "id": 2,
                   "client_id": 12,
-                  "note": "test-note-2"
+                  "note": "test-note-2",
+                  "add_date": "2022-02-10"
                 },
                 "errors": []
               }
@@ -4278,7 +4281,7 @@ definitions:
     properties:
       source_of_payment:
         type: "string"
-        enum: [self_pay, insurance, contract, medicaid, single_case_agreement, scholarship]
+        enum: [self_pay, insurance, single_case_agreement]
       funding_source_id:
         type: "integer"
       is_primary:
@@ -4443,6 +4446,8 @@ definitions:
     type: "object"
     properties:
       note: 
+        type: "string"
+      add_date:
         type: "string"
 
   ClientAttachmentCreateUpdateParameters:

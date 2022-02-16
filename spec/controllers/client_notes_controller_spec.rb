@@ -39,7 +39,8 @@ RSpec.describe ClientNotesController, type: :controller do
 
         post :create, params: {
           client_id: client.id,
-          note: 'test-note'
+          note: 'test-note',
+          add_date: Date.today
         }
         response_body = JSON.parse(response.body)
 

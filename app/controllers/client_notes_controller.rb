@@ -33,7 +33,7 @@ class ClientNotesController < ApplicationController
   end
 
   def client_note_params
-    params.permit(:note)
+    params.permit(:note, :add_date)
   end
 
   def authorize_user
