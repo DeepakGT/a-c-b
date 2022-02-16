@@ -34,7 +34,7 @@ class ContactsController < ApplicationController
 
   def contact_params
     params.permit(:first_name, :last_name, :email, :client_id, :relation_type, :relation, :legal_guardian, 
-                  :guarantor, :parent_portal_access, :resides_with_client, address_attributes: 
+                  :guarantor, :parent_portal_access, :resides_with_client, :is_address_same_as_client, address_attributes: 
                   %i[line1 line2 line3 zipcode city state country addressable_type addressable_id], 
                   phone_numbers_attributes: %i[id phone_type number])
   end

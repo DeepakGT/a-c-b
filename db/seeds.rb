@@ -137,7 +137,7 @@ ActiveRecord::Base.transaction do
         u.first_name, u.last_name = Faker::Name.unique.name.split(' ')
         u.password = 'Staff@123'
         u.role = role
-        u.clinic = clinic
+        u.clinics << clinic
       end
       # end of user block
     end

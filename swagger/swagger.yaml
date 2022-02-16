@@ -471,6 +471,7 @@ paths:
                     "id": 3,
                     "first_name": "Harland",
                     "last_name": "O'Connell",
+                    "email": "bcba_staff1@yopmail.com",
                     "title": "bcba",
                     "organization_id": 1,
                     "organization_name": "org1",
@@ -484,6 +485,7 @@ paths:
                     "id": 15,
                     "first_name": "test",
                     "last_name": "staff",
+                    "email": "bcba_staff1@yopmail.com",
                     "title": "bcba",
                     "organization_id": 1,
                     "organization_name": "org1",
@@ -1071,7 +1073,7 @@ paths:
                   {
                     "id": 1,
                     "name": "united behavioral health",
-                    "payer_type": "commercial",
+                    "payor_type": "commercial",
                     "plan_name": "abc",
                     "network_status": "in_network",
                     "status": "active",
@@ -1080,7 +1082,7 @@ paths:
                   {
                     "id": 2,
                     "name": "fs1",
-                    "payer_type": "commercial",
+                    "payor_type": "commercial",
                     "plan_name": "abc",
                     "network_status": "in_network",
                     "status": "active",
@@ -1099,7 +1101,7 @@ paths:
                   {
                     "id": 3,
                     "name": "fs2",
-                    "payer_type": "commercial",
+                    "payor_type": "commercial",
                     "plan_name": "abc",
                     "network_status": "in_network",
                     "status": "active",
@@ -1160,7 +1162,7 @@ paths:
                   "id": 12,
                   "name": "fs2",
                   "plan_name": "abc",
-                  "payer_type": "commercial",
+                  "payor_type": "commercial",
                   "network_status": "in_network",
                   "status": "active",
                   "email": "contact@fs2.com",
@@ -1220,7 +1222,7 @@ paths:
                   "id": 12,
                   "name": "fs2",
                   "plan_name": "abc",
-                  "payer_type": "commercial",
+                  "payor_type": "commercial",
                   "network_status": "in_network",
                   "status": "active",
                   "email": "contact@fs2.com",
@@ -1283,7 +1285,7 @@ paths:
                     "id": 11,
                     "name": "fs1",
                     "plan_name": "abc",
-                    "payer_type": "commercial",
+                    "payor_type": "commercial",
                     "network_status": "in_network",
                     "status": "active",
                     "email": "contact@fs1.com",
@@ -1760,12 +1762,12 @@ paths:
                     "id": 9,
                     "first_name": "Test",
                     "last_name": "Client7",
+                    "email": "client7@yopmail.com",
                     "clinic_id": 1,
                     "clinic_name": "clinic1",
                     "email": "testc7@gmail.com",
                     "dob": "2012-12-12",
                     "gender": "male",
-                    "payer_status": "in_network",
                     "status": "active",
                     "preferred_language": "english",
                     "disqualified": true,
@@ -1775,12 +1777,12 @@ paths:
                     "id": 10,
                     "first_name": "Test",
                     "last_name": "Client1",
+                    "email": "client1@yopmail.com",
                     "clinic_id": 1,
                     "clinic_name": "clinic1",
                     "email": "testc1@gmail.com",
                     "dob": "2012-12-12",
                     "gender": "male",
-                    "payer_status": "in_network",
                     "status": "active",
                     "preferred_language": "english",
                     "disqualified": false,
@@ -1853,9 +1855,17 @@ paths:
                   "email": "testc1@gmail.com",
                   "dob": "2012-12-12",
                   "gender": "male",
-                  "payer_status": "in_network",
                   "status": "active",
                   "disqualified": false,
+                  "note": {
+                      "id": 3,
+                      "note": "some-note",
+                      "attachments": [
+                          {
+                            "url": "http://localhost:3000/rails/active_storage/disk/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdDVG9JYTJWNVNTSWhlV1Z2WlcwM2JqTTVOM1J3YXpZMGFETndORzB6YjNoeGF6SnRlQVk2QmtWVU9oQmthWE53YjNOcGRHbHZia2tpUFdsdWJHbHVaVHNnWm1sc1pXNWhiV1U5SW1sdFlXZGxMbXB3WnlJN0lHWnBiR1Z1WVcxbEtqMVZWRVl0T0NjbmFXMWhaMlV1YW5CbkJqc0dWRG9SWTI5dWRHVnVkRjkwZVhCbElnNXBiV0ZuWlM5bmFXWTZFWE5sY25acFkyVmZibUZ0WlRvS2JHOWpZV3c9IiwiZXhwIjoiMjAyMi0wMi0wOVQxMjo1Mjo0Mi4wMjlaIiwicHVyIjoiYmxvYl9rZXkifX0=--6385c3c5fd07b6ace7dd18074439bd7a8ad5122f/image.jpg"
+                          }
+                      ]
+                  },
                   "addresses": [
                     {
                       "id": 3,
@@ -1920,18 +1930,9 @@ paths:
                   "id": 27,
                   "first_name": "Test",
                   "last_name": "Client5",
+                  "email": "client5@yopmail.com",
                   "clinic_id": 1,
                   "clinic_name": "clinic1",
-                  "funding_sources": [
-                    {
-                      "funding_source_name": "optimhealth behavioral solutions",
-                      "expiration_date": "2025-12-12"
-                    },
-                    {
-                      "funding_source_name": "aetna",
-                      "expiration_date": "2030-01-01"
-                    }
-                  ],
                   "contact": {
                     "id": 2,
                     "first_name": "test",
@@ -1955,7 +1956,6 @@ paths:
                   "email": "testc5@gmail.com",
                   "dob": "2012-12-12",
                   "gender": "male",
-                  "payer_status": "in_network",
                   "status": "active",
                   "preferred_language": "english",
                   "disqualified": false,
@@ -2028,9 +2028,17 @@ paths:
                   "email": "testc1@gmail.com",
                   "dob": "2012-12-12",
                   "gender": "male",
-                  "payer_status": "in_network",
                   "status": "active",
                   "disqualified": false,
+                  "note": {
+                    "id": 3,
+                    "note": "some-note",
+                    "attachments": [
+                        {
+                          "url": "http://localhost:3000/rails/active_storage/disk/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdDVG9JYTJWNVNTSWhlV1Z2WlcwM2JqTTVOM1J3YXpZMGFETndORzB6YjNoeGF6SnRlQVk2QmtWVU9oQmthWE53YjNOcGRHbHZia2tpUFdsdWJHbHVaVHNnWm1sc1pXNWhiV1U5SW1sdFlXZGxMbXB3WnlJN0lHWnBiR1Z1WVcxbEtqMVZWRVl0T0NjbmFXMWhaMlV1YW5CbkJqc0dWRG9SWTI5dWRHVnVkRjkwZVhCbElnNXBiV0ZuWlM5bmFXWTZFWE5sY25acFkyVmZibUZ0WlRvS2JHOWpZV3c9IiwiZXhwIjoiMjAyMi0wMi0wOVQxMjo1Mjo0Mi4wMjlaIiwicHVyIjoiYmxvYl9rZXkifX0=--6385c3c5fd07b6ace7dd18074439bd7a8ad5122f/image.jpg"
+                        }
+                    ]
+                  },
                   "addresses": [
                     {
                       "id": 3,
@@ -2094,27 +2102,35 @@ paths:
                 "data": [
                   {
                     "id": 1,
-                    "client_id": 10,
-                    "funding_source_id": 3,
-                    "funding_source": "amerihealth caritas nh",
-                    "enrollment_date": "2022-01-17",
-                    "terminated_on": null,
-                    "insureds_name": "abcd",
-                    "notes": null,
-                    "top_invoice_note": null,
-                    "bottom_invoice_note": null
+                    "client_id": 16,
+                    "source_of_payment": "insurance",
+                    "funding_source_id": 31,
+                    "funding_source": "aetna",
+                    "primary": true,
+                    "insurance_id": "VDYS4756",
+                    "group": "group1",
+                    "group_employer": "test",
+                    "provider_phone": "87876-59954",
+                    "relationship": "parent_or_guardian",
+                    "subscriber_name": "Abcd",
+                    "subscriber_phone": "76854-56443",
+                    "subscriber_dob": "1997-12-12"
                   },
                   {
                     "id": 2,
-                    "client_id": 10,
-                    "funding_source_id": 5,
-                    "funding_source": "cigna",
-                    "enrollment_date": "2022-01-17",
-                    "terminated_on": null,
-                    "insureds_name": "abcd",
-                    "notes": null,
-                    "top_invoice_note": null,
-                    "bottom_invoice_note": null
+                    "client_id": 16,
+                    "source_of_payment": "insurance",
+                    "funding_source_id": 38,
+                    "funding_source": "optimhealth behavioral solutions",
+                    "primary": false,
+                    "insurance_id": "SBAJ6473",
+                    "group": "group2",
+                    "group_employer": "test employer",
+                    "provider_phone": "87876-59955",
+                    "relationship": "spouse_or_partner",
+                    "subscriber_name": "Abcdef",
+                    "subscriber_phone": "76854-56443",
+                    "subscriber_dob": "1996-12-12"
                   }
                 ],
                 "total_records": 2,
@@ -2153,16 +2169,20 @@ paths:
               example: {
                 "status": "success",
                 "data": {
-                  "id": 2,
-                  "client_id": 9,
-                  "funding_source_id": 3,
-                  "funding_source": "amerihealth caritas nh",
-                  "enrollment_date": "2022-01-17",
-                  "terminated_on": null,
-                  "insureds_name": "abcd",
-                  "notes": null,
-                  "top_invoice_note": null,
-                  "bottom_invoice_note": null
+                  "id": 1,
+                  "client_id": 16,
+                  "source_of_payment": "insurance",
+                  "funding_source_id": 31,
+                  "funding_source": "aetna",
+                  "primary": true,
+                  "insurance_id": "VDYS4756",
+                  "group": "group1",
+                  "group_employer": "test",
+                  "provider_phone": "87876-59954",
+                  "relationship": "parent_or_guardian",
+                  "subscriber_name": "Abcd",
+                  "subscriber_phone": "76854-56443",
+                  "subscriber_dob": "1997-12-12"
                 },
                 "errors": []
               }
@@ -2200,15 +2220,19 @@ paths:
                 "status": "success",
                 "data": {
                   "id": 1,
-                  "client_id": 10,
-                  "funding_source_id": 3,
-                  "funding_source": "amerihealth caritas nh",
-                  "enrollment_date": "2022-01-17",
-                  "terminated_on": null,
-                  "insureds_name": "abcd",
-                  "notes": null,
-                  "top_invoice_note": null,
-                  "bottom_invoice_note": null
+                  "client_id": 16,
+                  "source_of_payment": "insurance",
+                  "funding_source_id": 31,
+                  "funding_source": "aetna",
+                  "primary": true,
+                  "insurance_id": "VDYS4756",
+                  "group": "group1",
+                  "group_employer": "test",
+                  "provider_phone": "87876-59954",
+                  "relationship": "parent_or_guardian",
+                  "subscriber_name": "Abcd",
+                  "subscriber_phone": "76854-56443",
+                  "subscriber_dob": "1997-12-12"
                 }
               }
     put:
@@ -2247,16 +2271,20 @@ paths:
               example: {
                 "status": "success",
                 "data": {
-                  "id": 1,
-                  "client_id": 10,
-                  "funding_source_id": 1,
-                  "funding_source": "aetna",
-                  "enrollment_date": "2022-01-17",
-                  "terminated_on": null,
-                  "insureds_name": "A. B. verma",
-                  "notes": null,
-                  "top_invoice_note": null,
-                  "bottom_invoice_note": null
+                  "id": 2,
+                  "client_id": 16,
+                  "source_of_payment": "insurance",
+                  "funding_source_id": 38,
+                  "funding_source": "optimhealth behavioral solutions",
+                  "primary": false,
+                  "insurance_id": "SBAJ6473",
+                  "group": "group2",
+                  "group_employer": "test employer",
+                  "provider_phone": "87876-59955",
+                  "relationship": "spouse_or_partner",
+                  "subscriber_name": "Abcdef",
+                  "subscriber_phone": "76854-56443",
+                  "subscriber_dob": "1996-12-12"
                 },
                 "errors": []
               }
@@ -2291,16 +2319,20 @@ paths:
               example: {
                 "status": "success",
                 "data": {
-                  "id": 3,
-                  "client_id": 10,
-                  "funding_source_id": 8,
+                  "id": 2,
+                  "client_id": 16,
+                  "source_of_payment": "insurance",
+                  "funding_source_id": 38,
                   "funding_source": "optimhealth behavioral solutions",
-                  "enrollment_date": "2022-01-17",
-                  "terminated_on": null,
-                  "insureds_name": "abcd",
-                  "notes": null,
-                  "top_invoice_note": null,
-                  "bottom_invoice_note": null
+                  "primary": false,
+                  "insurance_id": "SBAJ6473",
+                  "group": "group2",
+                  "group_employer": "test employer",
+                  "provider_phone": "87876-59955",
+                  "relationship": "spouse_or_partner",
+                  "subscriber_name": "Abcdef",
+                  "subscriber_phone": "76854-56443",
+                  "subscriber_dob": "1996-12-12"
                 }
               }
 
@@ -2668,32 +2700,6 @@ paths:
               example: {
                 "status": "success",
                 "data": {
-                  "payer_statuses": [
-                    {
-                      "id": 0,
-                      "type": "in_network"
-                    },
-                    {
-                      "id": 1,
-                      "type": "medicaid"
-                    },
-                    {
-                      "id": 2,
-                      "type": "out_of_network"
-                    },
-                    {
-                      "id": 3,
-                      "type": "scholarship"
-                    },
-                    {
-                      "id": 4,
-                      "type": "self_pay"
-                    },
-                    {
-                      "id": 5,
-                      "type": "single_case_agreement"
-                    }
-                  ],
                   "preferred_languages": [
                     {
                       "id": 0,
@@ -3115,6 +3121,597 @@ paths:
                 }
               }
 
+  /api/clients/{client_id}/notes:
+    get:
+      summary: Client Notes list
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "Associated Client id"
+        required: true
+      responses:
+        "200":
+          description: "Client notes list"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": [
+                  {
+                    "id": 1,
+                    "client_id": 12,
+                    "note": "test note",
+                    "add_date": "2022-02-10",
+                    "creator_id": 7,
+                    "creator": "Odis Murphy"
+                  }
+                ]
+              }
+    post:
+      summary: Client notes create
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "Associated client id"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/ClientNotesCreateUpdateParameters"
+      responses:
+        "200":
+          description: "Created client note"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 2,
+                  "client_id": 12,
+                  "note": "test note",
+                  "add_date": "2022-02-10"
+                },
+                "errors": []
+              }
+
+  /api/clients/{client_id}/client_notes/{id}:
+    get:
+      summary: client notes detail
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "Associated Client id"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "Client note id"
+        required: true
+      responses:
+        "200":
+          description: "Client note detail"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 1,
+                  "client_id": 12,
+                  "note": "test note",
+                  "add_date": "2022-02-10",
+                  "creator_id": 7,
+                  "creator": "Odis Murphy"
+                }
+              }
+    put:
+      summary: Client note update
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "Associated Client id"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "Client note id"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/ClientNotesCreateUpdateParameters"
+      responses:
+        "200":
+          description: "Updated client note"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 2,
+                  "client_id": 12,
+                  "note": "test-note-2",
+                  "add_date": "2022-02-10"
+                },
+                "errors": []
+              }
+    delete:
+      summary: client note delete
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "Associated client id"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "client note id"
+        required: true
+      responses:
+        "200":
+          description: "Deleted client note detail"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 2,
+                  "client_id": 12,
+                  "note": "test-note-2",
+                  "add_date": "2022-02-10"
+                },
+                "errors": []
+              }
+
+  /api/clients/{client_id}/attachments:
+    get:
+      summary: Client attachments list
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "Associated Client id"
+        required: true
+      responses:
+        "200":
+          description: "Client attachments list"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": [
+                  {
+                    "id": 2,
+                    "client_id": 18,
+                    "category": "image",
+                    "file_name": "test1",
+                    "url": "http://localhost:3000/rails/active_storage/disk/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdDVG9JYTJWNVNTSWhZVE56WTJGaGFta3lZak4xWVhaaE9ESmlOblpwTmpab056WjJkQVk2QmtWVU9oQmthWE53YjNOcGRHbHZia2tpUDJsdWJHbHVaVHNnWm1sc1pXNWhiV1U5SW1GMGRHRmphRzFsYm5RaU95Qm1hV3hsYm1GdFpTbzlWVlJHTFRnbkoyRjBkR0ZqYUcxbGJuUUdPd1pVT2hGamIyNTBaVzUwWDNSNWNHVkpJZzlwYldGblpTOXFjR1ZuQmpzR1ZEb1JjMlZ5ZG1salpWOXVZVzFsT2dwc2IyTmhiQT09IiwiZXhwIjoiMjAyMi0wMi0xNFQwOToyNzo1Ny4yNDNaIiwicHVyIjoiYmxvYl9rZXkifX0=--8543cd87f7aad4deca5d11a36e557086f2e6a74b/attachment",
+                    "add_date": "2022-02-14"
+                  },
+                  {
+                    "id": 3,
+                    "client_id": 18,
+                    "category": "image",
+                    "file_name": "test2",
+                    "url": "http://localhost:3000/rails/active_storage/disk/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdDVG9JYTJWNVNTSWhNRFV5Y21Wb2VUQTJaM056TW5KaE1qSTNlRGc0TkhsMWVIZDRPUVk2QmtWVU9oQmthWE53YjNOcGRHbHZia2tpUDJsdWJHbHVaVHNnWm1sc1pXNWhiV1U5SW1GMGRHRmphRzFsYm5RaU95Qm1hV3hsYm1GdFpTbzlWVlJHTFRnbkoyRjBkR0ZqYUcxbGJuUUdPd1pVT2hGamIyNTBaVzUwWDNSNWNHVkpJZzVwYldGblpTOW5hV1lHT3daVU9oRnpaWEoyYVdObFgyNWhiV1U2Q214dlkyRnMiLCJleHAiOiIyMDIyLTAyLTE0VDA5OjI3OjU3LjI1MFoiLCJwdXIiOiJibG9iX2tleSJ9fQ==--6f0154c9ca22f09cb9ba25a9be0363d8d2f8afb8/attachment",
+                    "add_date": "2022-02-14"
+                  }
+                ]
+              }
+    post:
+      summary: Client attachment create
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "Associated client id"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/ClientAttachmentCreateUpdateParameters"
+      responses:
+        "200":
+          description: "Created client attachment"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 3,
+                  "client_id": 18,
+                  "category": "image",
+                  "url": "http://localhost:3000/rails/active_storage/disk/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdDVG9JYTJWNVNTSWhNRFV5Y21Wb2VUQTJaM056TW5KaE1qSTNlRGc0TkhsMWVIZDRPUVk2QmtWVU9oQmthWE53YjNOcGRHbHZia2tpUDJsdWJHbHVaVHNnWm1sc1pXNWhiV1U5SW1GMGRHRmphRzFsYm5RaU95Qm1hV3hsYm1GdFpTbzlWVlJHTFRnbkoyRjBkR0ZqYUcxbGJuUUdPd1pVT2hGamIyNTBaVzUwWDNSNWNHVWlEbWx0WVdkbEwyZHBaam9SYzJWeWRtbGpaVjl1WVcxbE9ncHNiMk5oYkE9PSIsImV4cCI6IjIwMjItMDItMTRUMDk6MTI6NTAuOTUyWiIsInB1ciI6ImJsb2Jfa2V5In19--e91375971aee5dfa4f42f152610647586470e028/attachment"
+                },
+                "errors": []
+              }
+
+  /api/clients/{client_id}/attachments/{id}:
+    get:
+      summary: client attachment detail
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "Associated Client id"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "Client attachment id"
+        required: true
+      responses:
+        "200":
+          description: "Client attachment detail"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 3,
+                  "client_id": 18,
+                  "category": "image",
+                  "file_name": "test123",
+                  "url": "http://localhost:3000/rails/active_storage/disk/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdDVG9JYTJWNVNTSWhNRFV5Y21Wb2VUQTJaM056TW5KaE1qSTNlRGc0TkhsMWVIZDRPUVk2QmtWVU9oQmthWE53YjNOcGRHbHZia2tpUDJsdWJHbHVaVHNnWm1sc1pXNWhiV1U5SW1GMGRHRmphRzFsYm5RaU95Qm1hV3hsYm1GdFpTbzlWVlJHTFRnbkoyRjBkR0ZqYUcxbGJuUUdPd1pVT2hGamIyNTBaVzUwWDNSNWNHVkpJZzVwYldGblpTOW5hV1lHT3daVU9oRnpaWEoyYVdObFgyNWhiV1U2Q214dlkyRnMiLCJleHAiOiIyMDIyLTAyLTE0VDA5OjM0OjI1LjEzNFoiLCJwdXIiOiJibG9iX2tleSJ9fQ==--bad72b11c5c047f6df823e52181bead8fb08cc68/attachment",
+                  "add_date": "2022-02-14"
+                }
+              }
+    put:
+      summary: Client attachment update
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "Associated Client id"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "Client attachment id"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/ClientAttachmentCreateUpdateParameters"
+      responses:
+        "200":
+          description: "Updated client attachment"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 2,
+                  "client_id": 18,
+                  "category": "image",
+                  "url": "http://localhost:3000/rails/active_storage/disk/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdDVG9JYTJWNVNTSWhZVE56WTJGaGFta3lZak4xWVhaaE9ESmlOblpwTmpab056WjJkQVk2QmtWVU9oQmthWE53YjNOcGRHbHZia2tpUDJsdWJHbHVaVHNnWm1sc1pXNWhiV1U5SW1GMGRHRmphRzFsYm5RaU95Qm1hV3hsYm1GdFpTbzlWVlJHTFRnbkoyRjBkR0ZqYUcxbGJuUUdPd1pVT2hGamIyNTBaVzUwWDNSNWNHVWlEMmx0WVdkbEwycHdaV2M2RVhObGNuWnBZMlZmYm1GdFpUb0tiRzlqWVd3PSIsImV4cCI6IjIwMjItMDItMTRUMDk6Mjc6MTkuODM1WiIsInB1ciI6ImJsb2Jfa2V5In19--bf928eb40661aeb3fccec73f5b7f6103440ef08e/attachment"
+                },
+                "errors": []
+              }
+    delete:
+      summary: client attachment delete
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "Associated client id"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "client attachment id"
+        required: true
+      responses:
+        "200":
+          description: "Deleted client attachment detail"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 2,
+                  "client_id": 18,
+                  "category": "image",
+                  "url": "http://localhost:3000/rails/active_storage/disk/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdDVG9JYTJWNVNTSWhZVE56WTJGaGFta3lZak4xWVhaaE9ESmlOblpwTmpab056WjJkQVk2QmtWVU9oQmthWE53YjNOcGRHbHZia2tpUDJsdWJHbHVaVHNnWm1sc1pXNWhiV1U5SW1GMGRHRmphRzFsYm5RaU95Qm1hV3hsYm1GdFpTbzlWVlJHTFRnbkoyRjBkR0ZqYUcxbGJuUUdPd1pVT2hGamIyNTBaVzUwWDNSNWNHVkpJZzlwYldGblpTOXFjR1ZuQmpzR1ZEb1JjMlZ5ZG1salpWOXVZVzFsT2dwc2IyTmhiQT09IiwiZXhwIjoiMjAyMi0wMi0xNFQwOTozNzowNi4xMjBaIiwicHVyIjoiYmxvYl9rZXkifX0=--0e42cf2d88d0a9c6fa0e9f2c7af6eddd9391c457/attachment"
+                },
+                "errors": []
+              }
+
+  /api/staff/{staff_id}/staff_clinics:
+    get:
+      summary: Staff clinics list
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "staff_id"
+        description: "Associated staff id"
+        required: true
+      responses:
+        "200":
+          description: "Staff clinics list"
+          content:
+            application/json:
+              example: {
+                  "status": "success",
+                  "data": [
+                    {
+                      "id": 6,
+                      "clinic_id": 3,
+                      "clinic_name": "clinic1",
+                      "organization_id": 3,
+                      "organization_name": "org1",
+                      "is_home_clinic": true
+                    },
+                    {
+                      "id": 8,
+                      "clinic_id": 4,
+                      "clinic_name": "clinic2",
+                      "organization_id": 3,
+                      "organization_name": "org1",
+                      "is_home_clinic": false
+                    }
+                ]
+              }
+    post:
+      summary: staff clinic create
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "staff_id"
+        description: "Associated staff id"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/StaffClinicCreateParameters"
+      responses:
+        "200":
+          description: "Created staff clinic"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": [
+                  {
+                    "id": 7,
+                    "clinic_id": 3,
+                    "clinic_name": "clinic1",
+                    "organization_id": 3,
+                    "organization_name": "org1",
+                    "is_home_clinic": false
+                  },
+                  {
+                    "id": 8,
+                    "clinic_id": 4,
+                    "clinic_name": "clinic2",
+                    "organization_id": 3,
+                    "organization_name": "org1",
+                    "is_home_clinic": false
+                  }
+                ]
+              }
+
+  /api/staff/{staff_id}/staff_clinics/{id}:
+    put:
+      summary: Staff clinic update
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "staff_id"
+        description: "Associated staff id"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "Staff clinic id"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/StaffClinicUpdateParameters"
+      responses:
+        "200":
+          description: "Updated staff clinic"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 6,
+                  "clinic_id": 3,
+                  "clinic_name": "clinic1",
+                  "organization_id": 3,
+                  "organization_name": "org1",
+                  "is_home_clinic": true
+                },
+                "errors": []
+              }
+    delete:
+      summary: staff clinic delete
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "staff_id"
+        description: "Associated staff id"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "staff clinic id"
+        required: true
+      responses:
+        "200":
+          description: "Deleted staff clinic detail"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 7,
+                  "clinic_id": 3,
+                  "clinic_name": "clinic1",
+                  "organization_id": 3,
+                  "organization_name": "org1",
+                  "is_home_clinic": false
+                }
+              }
+
 definitions:
   UserRegistrationParameters:
     type: "object"
@@ -3367,9 +3964,6 @@ definitions:
         type: "string"
       supervisor_id:
         type: "integer"
-      status:
-        type: "string"
-        enum: [active, inactive]
       terminated_on:
         type: "string"
       role_name:
@@ -3435,9 +4029,6 @@ definitions:
         type: "string"
       last_name:
         type: "string"
-      payer_status:
-        type: "string"
-        enum: [in_network, medicaid, out_of_network, scholarship, self_pay, single_case_agreement]
       disqualified:
         type: "boolean"
       dq_reason:
@@ -3501,9 +4092,6 @@ definitions:
         type: "string"
       last_name:
         type: "string"
-      payer_status:
-        type: "string"
-        enum: [in_network, medicaid, out_of_network, scholarship, self_pay, single_case_agreement]
       disqualified:
         type: "boolean"
       dq_reason:
@@ -3599,7 +4187,7 @@ definitions:
         type: "string"
       plan_name:
         type: "string"
-      payer_type:
+      payor_type:
         type: "string"
         enum: [commercial, medicaid, medicare]
       email:
@@ -3695,19 +4283,35 @@ definitions:
   ClientEnrollmentCreateUpdateParameters:
     type: "object"
     properties:
+      source_of_payment:
+        type: "string"
+        enum: [self_pay, insurance, single_case_agreement]
       funding_source_id:
         type: "integer"
+      is_primary:
+        type: "boolean"
+      insurance_id:
+        type: "string"
+      group:
+        type: "string"
+      group_employer:
+        type: "string"
+      provider_phone:
+        type: "string"
+      relationship:
+        type: "string"
+        enum: [parent_or_guardian, spouse_or_partner]
+      subscriber_name:
+        type: "string"
+      subscriber_phone:
+        type: "string"
+      subscriber_dob:
+        type: "string"
       enrollment_date:
         type: "string"
       terminated_on:
         type: "string"
-      insureds_name:
-        type: "string"
       notes:
-        type: "string"
-      top_invoice_note:
-        type: "string"
-      bottom_invoice_note:
         type: "string"
 
   ClientContactCreateParameters:
@@ -3732,6 +4336,8 @@ definitions:
       parent_portal_access:
         type: "boolean"
       resides_with_client:
+        type: "boolean"
+      is_address_same_as_client:
         type: "boolean"
       phone_numbers_attributes:
         type: "object"
@@ -3785,6 +4391,8 @@ definitions:
         type: "boolean"
       resides_with_client:
         type: "boolean"
+      is_address_same_as_client:
+        type: "boolean"
       phone_numbers_attributes:
         type: "object"
         properties:
@@ -3836,4 +4444,43 @@ definitions:
         items:
           type: "string"
       change_role_name:
+        type: "boolean"
+
+  ClientNotesCreateUpdateParameters:
+    type: "object"
+    properties:
+      note: 
+        type: "string"
+      add_date:
+        type: "string"
+
+  ClientAttachmentCreateUpdateParameters:
+    type: "object"
+    properties:
+      category: 
+        type: "string"
+      base64:
+        type: "string"
+      file_name:
+        type: "string"
+
+  StaffClinicCreateParameters:
+    type: "object"
+    properties:
+      clinics:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            clinic_id:
+              type: "integer"
+            is_home_clinic:
+              type: "boolean"
+
+  StaffClinicUpdateParameters:
+    type: "object"
+    properties:
+      clinic_id:
+        type: "integer"
+      is_home_clinic:
         type: "boolean"

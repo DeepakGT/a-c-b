@@ -1,13 +1,14 @@
+require 'will_paginate/array'
 class StaffController < ApplicationController
   before_action :authenticate_user!
   before_action :authorize_user, except: %i[phone_types supervisor_list]
-  before_action :set_clinic, only: %i[create supervisor_list]
+  before_action :set_clinic, only: :supervisor_list
   before_action :set_staff, only: %i[show update destroy]
 
   def index
     staff = Staff.all
     staff = do_filter(staff) if params[:search_value].present?
-    @staff = staff.order(:first_name).paginate(page: params[:page])
+    @staff = staff.uniq.sort_by(&:first_name).paginate(page: params[:page])
   end
 
   def show; end
@@ -19,7 +20,7 @@ class StaffController < ApplicationController
   end
   
   def create
-    @staff = @clinic.staff.new(staff_params)
+    @staff = Staff.new(staff_params)
     set_role
     @staff.save
   end
@@ -43,7 +44,7 @@ class StaffController < ApplicationController
   end
 
   def staff_params
-    arr = %i[first_name last_name status terminated_on email supervisor_id clinic_id]
+    arr = %i[first_name last_name terminated_on email supervisor_id clinic_id]
     
     arr.concat(%i[password service_provider password_confirmation]) if params[:action] == 'create'
     
@@ -78,7 +79,7 @@ class StaffController < ApplicationController
         staff = staff.by_last_name(lname) if lname.present?
         return staff
       when "organization"
-        staff.joins(clinic: :organization).by_organization(params[:search_value])
+        staff.joins(clinics: :organization).by_organization(params[:search_value])
       when "title"
         staff.joins(:role).by_role(params[:search_value])
       when "immediate_supervisor"
@@ -96,7 +97,7 @@ class StaffController < ApplicationController
   end
 
   def search_on_all_fields(value)
-    staff = Staff.includes(:role, :address, clinic: :organization).all
+    staff = Staff.includes(:role, :address, clinics: :organization).all
     formated_val = value.split.map{|x| "%#{x}%"}
     fname, lname = value.split
     staff.by_first_name(fname).by_last_name(lname)

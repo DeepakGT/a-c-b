@@ -1,11 +1,5 @@
 json.status 'success'
 json.data do
-  json.payer_statuses do
-    json.array! @selectable_options[:payer_statuses] do |payer_status|
-      json.id payer_status.last
-      json.type payer_status.first
-    end
-  end
   json.preferred_languages do
     json.array! @selectable_options[:preferred_languages] do |preferred_language|
       json.id preferred_language.last
@@ -52,6 +46,18 @@ json.data do
     json.array! @selectable_options[:countries] do |country|
       json.id country.id
       json.name country.name
+    end
+  end
+  json.source_of_payments do
+    json.array! @selectable_options[:source_of_payments] do |source_of_payment|
+      json.id source_of_payment.last
+      json.name source_of_payment.first
+    end
+  end
+  json.relationships do
+    json.array! @selectable_options[:relationships] do |relationship|
+      json.id relationship.last
+      json.name relationship.first
     end
   end
 end

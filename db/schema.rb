@@ -10,10 +10,38 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_08_134739) do
+ActiveRecord::Schema.define(version: 2022_02_16_061413) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "active_storage_attachments", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "record_type", null: false
+    t.bigint "record_id", null: false
+    t.bigint "blob_id", null: false
+    t.datetime "created_at", null: false
+    t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
+    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
+  end
+
+  create_table "active_storage_blobs", force: :cascade do |t|
+    t.string "key", null: false
+    t.string "filename", null: false
+    t.string "content_type"
+    t.text "metadata"
+    t.string "service_name", null: false
+    t.bigint "byte_size", null: false
+    t.string "checksum", null: false
+    t.datetime "created_at", null: false
+    t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
+  end
+
+  create_table "active_storage_variant_records", force: :cascade do |t|
+    t.bigint "blob_id", null: false
+    t.string "variation_digest", null: false
+    t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
 
   create_table "addresses", force: :cascade do |t|
     t.string "line1"
@@ -32,19 +60,47 @@ ActiveRecord::Schema.define(version: 2022_02_08_134739) do
     t.index ["addressable_type", "addressable_id"], name: "index_addresses_on_addressable"
   end
 
-  create_table "client_enrollments", force: :cascade do |t|
-    t.date "enrollment_date"
-    t.date "terminated_on"
-    t.string "insureds_name"
-    t.text "notes"
-    t.text "top_invoice_note"
-    t.text "bottom_invoice_note"
-    t.bigint "client_id", null: false
-    t.bigint "funding_source_id", null: false
+  create_table "attachments", force: :cascade do |t|
+    t.string "category"
+    t.string "attachable_type"
+    t.bigint "attachable_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "file_name"
+    t.index ["attachable_type", "attachable_id"], name: "index_attachments_on_attachable"
+  end
+
+  create_table "client_enrollments", force: :cascade do |t|
+    t.bigint "client_id", null: false
+    t.bigint "funding_source_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.boolean "is_primary", default: false
+    t.date "terminated_on"
+    t.date "enrollment_date"
+    t.string "notes"
+    t.string "insurance_id"
+    t.string "group"
+    t.string "group_employer"
+    t.string "provider_phone"
+    t.integer "relationship"
+    t.string "subscriber_name"
+    t.string "subscriber_phone"
+    t.date "subscriber_dob"
+    t.integer "source_of_payment", default: 0
     t.index ["client_id"], name: "index_client_enrollments_on_client_id"
     t.index ["funding_source_id"], name: "index_client_enrollments_on_funding_source_id"
+  end
+
+  create_table "client_notes", force: :cascade do |t|
+    t.bigint "client_id"
+    t.text "note"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.date "add_date"
+    t.bigint "creator_id"
+    t.index ["client_id"], name: "index_client_notes_on_client_id"
+    t.index ["creator_id"], name: "index_client_notes_on_creator_id"
   end
 
   create_table "clinics", force: :cascade do |t|
@@ -72,6 +128,7 @@ ActiveRecord::Schema.define(version: 2022_02_08_134739) do
     t.bigint "client_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.boolean "is_address_same_as_client", default: false
     t.index ["client_id"], name: "index_contacts_on_client_id"
   end
 
@@ -93,7 +150,7 @@ ActiveRecord::Schema.define(version: 2022_02_08_134739) do
   create_table "funding_sources", force: :cascade do |t|
     t.string "name"
     t.string "plan_name"
-    t.integer "payer_type", default: 0
+    t.integer "payor_type", default: 0
     t.string "email"
     t.string "notes"
     t.bigint "clinic_id", null: false
@@ -151,6 +208,16 @@ ActiveRecord::Schema.define(version: 2022_02_08_134739) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "staff_clinics", force: :cascade do |t|
+    t.bigint "staff_id", null: false
+    t.bigint "clinic_id", null: false
+    t.boolean "is_home_clinic", default: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["clinic_id"], name: "index_staff_clinics_on_clinic_id"
+    t.index ["staff_id"], name: "index_staff_clinics_on_staff_id"
+  end
+
   create_table "staff_credentials", force: :cascade do |t|
     t.bigint "staff_id", null: false
     t.bigint "credential_id", null: false
@@ -199,7 +266,6 @@ ActiveRecord::Schema.define(version: 2022_02_08_134739) do
     t.string "last_name"
     t.string "email"
     t.integer "gender", default: 0
-    t.integer "payer_status", default: 0
     t.boolean "disqualified", default: false
     t.integer "dq_reason"
     t.integer "preferred_language", default: 0
@@ -220,13 +286,19 @@ ActiveRecord::Schema.define(version: 2022_02_08_134739) do
     t.index ["uid", "provider"], name: "index_users_on_uid_and_provider", unique: true
   end
 
+  add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "client_enrollments", "funding_sources"
   add_foreign_key "client_enrollments", "users", column: "client_id"
+  add_foreign_key "client_notes", "users", column: "client_id"
+  add_foreign_key "client_notes", "users", column: "creator_id"
   add_foreign_key "clinics", "organizations"
   add_foreign_key "contacts", "users", column: "client_id"
   add_foreign_key "funding_sources", "clinics"
   add_foreign_key "organizations", "users", column: "admin_id"
   add_foreign_key "rbt_supervisions", "users"
+  add_foreign_key "staff_clinics", "clinics"
+  add_foreign_key "staff_clinics", "users", column: "staff_id"
   add_foreign_key "staff_credentials", "credentials"
   add_foreign_key "staff_credentials", "users", column: "staff_id"
   add_foreign_key "user_roles", "roles"

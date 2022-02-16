@@ -2,6 +2,7 @@ class ApplicationController < ActionController::API
   include DeviseTokenAuth::Concerns::SetUserByToken
   include Pundit
   before_action :configure_permitted_parameters, if: :devise_controller?
+  before_action :set_active_storage_host
   rescue_from ActiveRecord::RecordNotFound, with: :send_record_not_found_response
   rescue_from Pundit::NotAuthorizedError, with: :not_authorized
 
@@ -32,6 +33,10 @@ class ApplicationController < ActionController::API
   # end
 
   private
+
+  def set_active_storage_host
+    ActiveStorage::Current.host = request.base_url
+  end
 
   def send_record_not_found_response
     render json: {status: :failure, errors: ['record not found']}, status: 404

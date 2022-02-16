@@ -9,11 +9,6 @@ RSpec.describe User, type: :model do
     it { should have_one(:role).through(:user_role)}
     it { should have_many(:services).through(:user_services)}
 
-    context "when user is admin" do
-      subject { build :user, :with_role, role_name: 'aba_admin' }
-      it { should belong_to(:clinic).optional } 
-    end
-
     it { should accept_nested_attributes_for(:services).update_only(true) }
     it { should accept_nested_attributes_for(:rbt_supervision).update_only(true) }
   end
@@ -59,27 +54,16 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe "#validate_presence_of_clinic" do
-    context "when user role is bcba,rbt,billing" do
-      let(:user) { build :user, :with_role, role_name: 'bcba'}
-      it "clinic must be present" do
-        user.validate
-        expect(user.errors[:clinic]).to include('must be associate with this user.')
-      end
-    end
-  end
-
   describe "#organization" do
-    let(:organization) { create(:organization, name: 'test-1')}
-    let!(:clinic) { create(:clinic, name: 'clinic1', organization_id: organization.id) }
     let!(:user) { create(:user, :with_role, role_name: 'administrator') } 
     it "should be administrator or super admin" do                             
       expect(user.organization).to eq(nil)  
     end   
     
-    let(:user) { create(:user, :with_role, role_name: 'aba_admin', clinic_id: clinic.id) } 
-    it "should be aba_admin" do                             
-      expect(user.clinic.organization).not_to eq(nil)  
-    end   
+    let(:user) { create(:user, :with_role, role_name: 'aba_admin') }
+    let(:organization) { create(:organization, name: 'test-2', admin_id: user.id)}
+    it "should be aba_admin" do
+      expect(Organization.where(admin_id: user.id)).not_to eq(nil)  
+    end
   end
 end

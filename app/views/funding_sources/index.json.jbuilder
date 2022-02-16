@@ -3,7 +3,7 @@ json.data do
   json.array! @funding_sources do |funding_source|
     json.id funding_source.id
     json.name funding_source.name
-    json.payer_type funding_source.payer_type
+    json.payor_type funding_source.payor_type
     json.plan_name funding_source.plan_name
     json.network_status funding_source.network_status
     json.status funding_source.status
