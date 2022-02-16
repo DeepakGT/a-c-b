@@ -73,7 +73,6 @@ RSpec.describe ClientEnrollmentsController, type: :controller do
         expect(response_body['data']['client_id']).to eq(client.id) 
         expect(response_body['data']['funding_source_id']).to eq(funding_source.id)
         expect(response_body['data']['insurance_id']).to eq('xd64758')
-        expect(response_body['data']['primary']).to eq(false)
         expect(response_body['data']['source_of_payment']).to eq('insurance')
       end
     end

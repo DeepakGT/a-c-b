@@ -4043,6 +4043,8 @@ definitions:
       gender:
         type: "string"
         enum: [male, female]
+      payor_status:
+        type: "string"
       clinic_id:
         type: "integer"
       email:
@@ -4106,6 +4108,8 @@ definitions:
       gender:
         type: "string"
         enum: [male, female]
+      payor_status:
+        type: "string"
       clinic_id:
         type: "integer"
       email:

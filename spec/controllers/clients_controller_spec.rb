@@ -79,6 +79,7 @@ RSpec.describe ClientsController, type: :controller do
           first_name: 'test',
           last_name: 'client',
           email: 'testcontact@gamil.com',
+          payor_status: 'insurance',
           addresses_attributes: [{address_type: 'insurance_address', city: 'Indore'}, 
                                  {address_type: 'service_address', city: 'Delhi'}],
           phone_number_attributes: {phone_type: 'home', number: '99999 99999'}
