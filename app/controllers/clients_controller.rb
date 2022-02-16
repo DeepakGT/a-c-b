@@ -1,5 +1,6 @@
 class ClientsController < ApplicationController
   before_action :authenticate_user!
+  before_action :authorize_user
   before_action :set_client, only: %i[show update]
 
   def index
@@ -10,7 +11,6 @@ class ClientsController < ApplicationController
 
   def create
     @client = Client.new(client_params)
-    @client.role = Role.client.first
     @client.password = 'Abcdef_1' if !params[:password].present?
     @client.save_with_exception_handler
   end
@@ -22,7 +22,7 @@ class ClientsController < ApplicationController
   private
 
   def client_params
-    arr = %i[first_name last_name payer_status status gender email dob clinic_id preferred_language disqualified dq_reason]
+    arr = %i[first_name last_name status gender email dob clinic_id preferred_language disqualified dq_reason]
 
     arr.concat(%i[password password_confirmation]) if params['action']=='create'
 
@@ -36,4 +36,10 @@ class ClientsController < ApplicationController
   def set_client
     @client = Client.find(params[:id])
   end
+
+  def authorize_user
+    authorize Client if current_user.role_name!='super_admin'
+  end
+  # end of private
+
 end

@@ -3,6 +3,8 @@ class Staff < User
   has_many :credentials, through: :staff_credentials
   has_one :address, as: :addressable, dependent: :destroy
   has_many :phone_numbers, as: :phoneable, dependent: :destroy
+  has_many :staff_clinics
+  has_many :clinics, through: :staff_clinics
 
   belongs_to :supervisor, class_name: :User, optional: true
 
@@ -10,6 +12,8 @@ class Staff < User
   accepts_nested_attributes_for :phone_numbers, :update_only => true
   # validations for role
   validate :validate_role
+
+  before_validation :set_status
 
   # scopes
   scope :by_organization, ->(org_name){ where('organization.name.downcase': org_name&.downcase)}
@@ -33,6 +37,13 @@ class Staff < User
   private
 
   def validate_role
-    errors.add(:role, 'For staff, role must be bcba, rbt or billing.') if !self.bcba? && !self.billing? && !self.rbt?
+    errors.add(:role, 'For staff, role must be bcba, rbt or billing.') if self.role_name!='bcba' && self.role_name!='billing' && self.role_name!='rbt'
   end
+
+  def set_status
+    if self.terminated_on.present? && self.terminated_on <= Time.now.to_date
+      self.status = Staff.statuses['inactive'] 
+    end
+  end
+  # end of privates
 end

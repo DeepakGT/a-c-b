@@ -1,5 +1,6 @@
 class StaffCredentialsController < ApplicationController
   before_action :authenticate_user!
+  before_action :authorize_user
   before_action :set_staff
   before_action :set_staff_credential, only: %i[show update destroy]
 
@@ -8,8 +9,7 @@ class StaffCredentialsController < ApplicationController
   end
 
   def create
-    @staff_credential = @staff.staff_credentials.new(staff_credential_params)
-    @staff_credential.save
+    @staff_credential = @staff.staff_credentials.create(staff_credential_params)
   end
 
   def show; end
@@ -36,6 +36,9 @@ class StaffCredentialsController < ApplicationController
     @staff_credential = @staff.staff_credentials.find(params[:id])
   end
 
+  def authorize_user
+    authorize StaffCredential if current_user.role_name!='super_admin'
+  end
   # end of private
 
 end

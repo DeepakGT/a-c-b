@@ -20,7 +20,7 @@ class Organization < ApplicationRecord
   private
 
   def admin_must_be_a_aba_admin
-    errors.add(:admin, 'User must be an aba_admin.') unless admin.aba_admin?
+    errors.add(:admin, 'User must be an aba_admin.') unless admin.role_name=='aba_admin'
   end
 
   # end of private

@@ -9,7 +9,8 @@ RSpec.describe StaffController, type: :controller do
     @request.env["devise.mapping"] = Devise.mappings[:user]
   end
 
-  let!(:user) { create(:user, :with_role, role_name: 'aba_admin', first_name: 'admin', last_name: 'user') }
+  let!(:role_admin) { create(:role, name: 'aba_admin', permissions: ['staff_view', 'staff_update', 'staff_delete'])}
+  let!(:user) { create(:user, :with_role, role_name: role_admin.name, first_name: 'admin', last_name: 'user') }
   let!(:auth_headers) { user.create_new_auth_token }
   let!(:organization) { create(:organization, name: 'org1', admin_id: user.id) } 
   let!(:role) { create(:role, name: 'bcba')}
@@ -19,7 +20,7 @@ RSpec.describe StaffController, type: :controller do
     context "when sign in" do
       before do
         ["Test1","Test2"].map do |first_name| 
-          create(:staff, :with_role, role_name: 'billing', clinic_id: clinic.id, first_name: first_name, 
+          create(:staff, :with_role, role_name: 'billing', first_name: first_name, 
                   address_attributes: {city: 'Indore'}, supervisor_id: user.id) 
         end
       end
@@ -32,7 +33,7 @@ RSpec.describe StaffController, type: :controller do
 
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
-        expect(response_body['data'].count).to eq(Staff.billing.count)
+        expect(response_body['data'].count).to eq(Staff.joins(:role).by_role('billing').count)
       end
 
       it "should fetch the first page record by default" do
@@ -89,7 +90,7 @@ RSpec.describe StaffController, type: :controller do
 
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
-        expect(response_body['data'].count).to eq(Staff.joins(clinic: :organization).by_organization(organization.name).count)
+        expect(response_body['data'].count).to eq(Staff.joins(clinics: :organization).by_organization(organization.name).count)
       end
 
       it "should list staff filtered by location successfully" do
@@ -124,7 +125,7 @@ RSpec.describe StaffController, type: :controller do
       it "should fetch clinic staff" do
         set_auth_headers(auth_headers)
 
-        get :show, params: {clinic_id: clinic.id, id: staff.id}
+        get :show, params: {id: staff.id}
         response_body = JSON.parse(response.body)
 
         expect(response.status).to eq(200)
@@ -174,13 +175,23 @@ RSpec.describe StaffController, type: :controller do
       it "should update staff successfully" do
         set_auth_headers(auth_headers)
 
-        put :update, params: {clinic_id: clinic.id, id: staff.id, first_name: 'testing'}
+        put :update, params: {id: staff.id, first_name: 'testing'}
+        response_body = JSON.parse(response.body)
+        
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data']['id']).to eq(staff.id)
+      end
+
+      it "should update password if present in request" do
+        set_auth_headers(auth_headers)
+
+        put :update, params: {id: staff.id, password: 'Abcde@123', password_confirmation: 'Abcde@123'}
         response_body = JSON.parse(response.body)
 
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
         expect(response_body['data']['id']).to eq(staff.id)
-        expect(response_body['data']['first_name']).to eq(nil)
       end
 
       context "and update associated data" do
@@ -259,6 +270,23 @@ RSpec.describe StaffController, type: :controller do
     end
   end
 
+  describe "DELETE #destroy" do
+    context "when sign in" do
+      let!(:staff) { create(:staff, :with_role, role_name: 'billing', last_name: 'Zachary',clinic_id: clinic.id) }   
+      it "should delete staff successfully" do
+        set_auth_headers(auth_headers)
+
+        delete :destroy, params: {id: staff.id}
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data']['id']).to eq(staff.id)
+        expect(Staff.find_by_id(staff.id)).to eq(nil)
+      end
+    end
+  end
+
   describe "GET #phone_types" do 
     context "when sign in" do
       it "should fetch all phone types" do
@@ -277,7 +305,7 @@ RSpec.describe StaffController, type: :controller do
   end
     
   describe "GET #supervisor_list" do
-    let!(:staff_list) { create_list(:staff, 5, :with_role, role_name: 'billing', clinic_id: clinic.id)}
+    let!(:staff_list) { create_list(:staff, 5, :with_role, role_name: 'billing', clinics: [clinic])}
     context "when sign in" do
       it "should list supervisors successfuly" do
         set_auth_headers(auth_headers)

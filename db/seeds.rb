@@ -2,8 +2,20 @@ puts "Data seed is in progress..."
 
 ActiveRecord::Base.transaction do
   # Roles
-  Role.names.each_key do |role_name|
-    Role.find_or_create_by!(name: role_name)
+  Role.find_or_create_by!(name: 'super_admin')
+  Role.find_or_create_by!(name: 'aba_admin')
+  Role.find_or_create_by!(name: 'administrator')
+  Role.find_or_create_by!(name: 'bcba')
+  Role.find_or_create_by!(name: 'rbt')
+  Role.find_or_create_by!(name: 'billing')
+
+  # create a user with role super_admin
+  User.where(email: "super_admin_user@yopmail.com").first_or_create! do |u|
+    # This block will run only on create new records
+    # i.e. if record found, this block would be skip
+    u.first_name, u.last_name = Faker::Name.unique.name.split(' ')
+    u.password = 'SuperAdmin@123'
+    u.role = Role.find_by(name: 'super_admin')
   end
 
   # create two users with each role, [aba_admin' and 'administrator]
@@ -18,7 +30,7 @@ ActiveRecord::Base.transaction do
   end
 
   # credentials
-  Credential.destroy_all
+  Credential.delete_all
   credentials_data = [{credential_type: 'education',
                        name: "Bachelor's Degree",
                        description: 'The holder has completed a four year college program.',
@@ -79,7 +91,7 @@ ActiveRecord::Base.transaction do
     Credential.create(data)
   end
 
-  Service.destroy_all
+  Service.delete_all
   services_data = [{name: 'state service name	display code	category default pay code', display_code: rand(11..100)},
                    {name: 'additional 30 minutes spent performing activities', display_code: rand(11..100)},
                    {name: 'caregiver training', display_code: rand(11..100)},
@@ -95,13 +107,13 @@ ActiveRecord::Base.transaction do
 
 
   # Organization
-  org = Organization.find_or_create_by!(name: 'org1', admin_id: Role.aba_admin.first.users.first.id)
+  org = Organization.find_or_create_by!(name: 'org1', admin_id: Role.find_by(name: 'aba_admin').users.first.id)
 
   # Clinic
   clinic = Clinic.find_or_create_by!(name: 'clinic1', organization_id: org.id)
 
     # funding sources
-    FundingSource.destroy_all
+    FundingSource.delete_all
     funding_sources_data = [{name: 'aetna'},
                             {name: 'ambetter nnhf'},
                             {name: 'amerihealth caritas nh'},
@@ -125,7 +137,7 @@ ActiveRecord::Base.transaction do
         u.first_name, u.last_name = Faker::Name.unique.name.split(' ')
         u.password = 'Staff@123'
         u.role = role
-        u.clinic = clinic
+        u.clinics << clinic
       end
       # end of user block
     end

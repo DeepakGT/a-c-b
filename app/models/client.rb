@@ -1,14 +1,18 @@
 class Client < User
+  has_one :phone_number, as: :phoneable, dependent: :destroy
+  has_many :notes, class_name: :ClientNote
+  has_many :attachments, as: :attachable, dependent: :destroy
+
   has_many :contacts, dependent: :destroy
   has_many :addresses, as: :addressable, dependent: :destroy
-  has_one :phone_number, as: :phoneable, dependent: :destroy
   has_many :client_enrollments, dependent: :destroy
   has_many :funding_sources, through: :client_enrollments
+  
+  belongs_to :clinic
 
   accepts_nested_attributes_for :addresses, update_only: true
   accepts_nested_attributes_for :phone_number, update_only: true
 
-  enum payer_status: {in_network: 0, medicaid: 1, out_of_network: 2, scholarship: 3, self_pay: 4, single_case_agreement: 5}
   enum preferred_language: {english: 0, spanish: 1}
   enum dq_reason: { lost_contact: 0, not_clinically_appropriate: 1, insurance_denial: 2, no_longer_interested: 3, 
                     competitor: 4, not_ready_to_move_forward: 5, other: 6}

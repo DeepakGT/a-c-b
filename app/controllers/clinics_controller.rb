@@ -1,5 +1,6 @@
 class ClinicsController < ApplicationController
   before_action :authenticate_user!
+  before_action :authorize_user
   before_action :set_clinic, only: %i[show update]
 
   def index
@@ -29,4 +30,10 @@ class ClinicsController < ApplicationController
     %i[line1 line2 line3 zipcode city state country addressable_type addressable_id],
     phone_number_attributes: %i[phone_type number])
   end
+
+  def authorize_user
+    authorize Clinic if current_user.role_name!='super_admin'
+  end
+  # end of private
+  
 end

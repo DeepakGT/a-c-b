@@ -1,5 +1,6 @@
 class FundingSourcesController < ApplicationController
   before_action :authenticate_user!
+  before_action :authorize_user
   before_action :set_clinic
   before_action :set_funding_source, only: %i[show update]
 
@@ -11,19 +12,17 @@ class FundingSourcesController < ApplicationController
 
   def create
     @funding_source = @clinic.funding_sources.new(funding_source_params)
-    authorize @funding_source
     @funding_source.save
   end
 
   def update
-    authorize @funding_source
     @funding_source.update(funding_source_params)
   end
 
   private
 
   def funding_source_params
-    params.permit(:name, :plan_name, :payer_type, :email, :notes, :network_status, :status, address_attributes: 
+    params.permit(:name, :plan_name, :payor_type, :email, :notes, :network_status, :status, address_attributes: 
                   %i[line1 line2 line3 zipcode city state country addressable_type addressable_id],
                   phone_number_attributes: %i[phone_type number])
   end
@@ -36,4 +35,9 @@ class FundingSourcesController < ApplicationController
     @funding_source = @clinic.funding_sources.find(params[:id])
   end
 
+  def authorize_user
+    authorize FundingSource if current_user.role_name!='super_admin'
+  end
+  # end of private
+  
 end

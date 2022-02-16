@@ -8,11 +8,13 @@ RSpec.describe ClientEnrollmentsController, type: :controller do
   before do
     @request.env["devise.mapping"] = Devise.mappings[:user]
   end
-  let!(:user) { create(:user, :with_role, role_name: 'aba_admin', first_name: 'admin', last_name: 'user') }
+  
+  let!(:role) { create(:role, name: 'aba_admin', permissions: ['client_source_of_payments_view', 'client_source_of_payments_update', 'client_source_of_payments_delete'])}
+  let!(:user) { create(:user, :with_role, role_name: role.name) }
   let!(:auth_headers) { user.create_new_auth_token }
   let!(:organization) {create(:organization, name: 'test-organization', admin_id: user.id)}
   let!(:clinic) {create(:clinic, name: 'test-clinic', organization_id: organization.id)}
-  let!(:client) { create(:client, :with_role, clinic_id: clinic.id)}
+  let!(:client) { create(:client, clinic_id: clinic.id)}
   let!(:funding_source) {create(:funding_source, clinic_id: clinic.id)}
 
   describe "GET #index" do
@@ -20,7 +22,7 @@ RSpec.describe ClientEnrollmentsController, type: :controller do
       let!(:client_enrollments) { create_list(:client_enrollment, 4, client_id: client.id)}
       it "should fetch client enrollment list successfully" do
         set_auth_headers(auth_headers)
-
+        
         get :index, params: { client_id: client.id }
         response_body = JSON.parse(response.body)
 
@@ -61,8 +63,8 @@ RSpec.describe ClientEnrollmentsController, type: :controller do
         post :create, params: {
           client_id: client.id, 
           funding_source_id: funding_source.id,
-          enrollment_date: Date.today,
-          insureds_name: 'client2'
+          insurance_id: 'xd64758',
+          source_of_payment: 'insurance'
         }
         response_body = JSON.parse(response.body)
 
@@ -70,8 +72,9 @@ RSpec.describe ClientEnrollmentsController, type: :controller do
         expect(response_body['status']).to eq('success')
         expect(response_body['data']['client_id']).to eq(client.id) 
         expect(response_body['data']['funding_source_id']).to eq(funding_source.id)
-        expect(response_body['data']['enrollment_date']).to eq(Date.today.to_s)
-        expect(response_body['data']['insureds_name']).to eq('client2')  
+        expect(response_body['data']['insurance_id']).to eq('xd64758')
+        expect(response_body['data']['primary']).to eq(false)
+        expect(response_body['data']['source_of_payment']).to eq('insurance')
       end
     end
   end
@@ -96,17 +99,17 @@ RSpec.describe ClientEnrollmentsController, type: :controller do
   describe "PUT #update" do
     context "when sign in" do
       let(:client_enrollment) { create(:client_enrollment, client_id: client.id)}
-      let(:updated_insureds_name) {'Test-insured-1'}
+      let(:updated_insurance_id) {'VFCD8543'}
       it "should update client enrollment successfully" do
         set_auth_headers(auth_headers)
 
-        put :update, params: {id: client_enrollment.id, client_id: client.id, insureds_name: updated_insureds_name}
+        put :update, params: {id: client_enrollment.id, client_id: client.id, insurance_id: updated_insurance_id}
         response_body = JSON.parse(response.body)
 
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
         expect(response_body['data']['id']).to eq(client_enrollment.id)
-        expect(response_body['data']['insureds_name']).to eq(updated_insureds_name)       
+        expect(response_body['data']['insurance_id']).to eq(updated_insurance_id)       
       end
 
       context "and update associated data" do
