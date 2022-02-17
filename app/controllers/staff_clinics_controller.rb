@@ -1,21 +1,20 @@
 class StaffClinicsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_staff
-  before_action :set_staff_clinic, only: %i[update destroy]
+  before_action :set_staff_clinic, only: %i[show update destroy]
 
   def index 
     @staff_clinics = @staff.staff_clinics.order(is_home_clinic: :desc)
   end
 
+  def show; end
+  
   def create
-    clinics = params[:clinics].instance_of?(String) ? JSON.parse(params[:clinics]) : params[:clinics]
-    @staff_clinics = clinics.map do |clinic|
-      @staff.staff_clinics.create(clinic_id: clinic["clinic_id"], is_home_clinic: clinic["is_home_clinic"])
-    end
+    @staff_clinic = @staff.staff_clinics.create(staff_clinic_params)
   end
 
   def update
-    @staff_clinic.update(update_params)
+    @staff_clinic.update(staff_clinic_params)
   end
 
   def destroy
@@ -32,12 +31,8 @@ class StaffClinicsController < ApplicationController
     @staff_clinic = @staff.staff_clinics.find(params[:id])
   end
 
-  def update_params
+  def staff_clinic_params
     params.permit(:clinic_id, :is_home_clinic)
-  end
-
-  def create_params
-    params.permit(:clinics)
   end
   # end of private
 end

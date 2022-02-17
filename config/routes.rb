@@ -15,7 +15,7 @@ Rails.application.routes.draw do
 
     resources :staff do
       resources :staff_credentials
-      resources :staff_clinics, only: %i[index create update destroy]
+      resources :staff_clinics
     end
 
     resources :clients, only: %i[index create update show] do
