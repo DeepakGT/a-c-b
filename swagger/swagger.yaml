@@ -3846,6 +3846,67 @@ paths:
                 }
               }
 
+  /api/clients/{client_id}/meta_data:
+    get:
+      summary: Client meta data selectable options list
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "Associated client id"
+        required: true
+      responses:
+        "200":
+          description: "Client meta data selectable options list"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "services": [
+                    {
+                      "id": 26,
+                      "name": "additional 30 minutes spent performing activities"
+                    },
+                    {
+                      "id": 27,
+                      "name": "supervision"
+                    }
+                  ],
+                  "funding_sources": [
+                    {
+                      "id": 31,
+                      "name": "aetna"
+                    }
+                  ],
+                  "service_providers": [
+                    {
+                      "id": 20,
+                      "name": "May Dach",
+                      "services": [
+                        {
+                          "id": 25
+                        },
+                        {
+                          "id": 32
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+
 definitions:
   UserRegistrationParameters:
     type: "object"
