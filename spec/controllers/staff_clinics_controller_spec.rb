@@ -36,25 +36,39 @@ RSpec.describe StaffClinicsController, type: :controller do
 
   describe "POST #create" do
     context "when sign in" do
-      let(:clinics) { [{"clinic_id": clinic3.id, "is_home_clinic": false}, {"clinic_id": clinic4.id, "is_home_clinic": false}] }
       it "should create staff clinic successfully" do
         set_auth_headers(auth_headers)
 
         post :create, params: {
           staff_id: staff.id, 
-          clinics: clinics
+          clinic_id: clinic3.id,
+          is_home_clinic: false
         }
         response_body = JSON.parse(response.body)
         
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
-        expect(response_body['data'].count).to eq(2)
-        expect(response_body['data'].first['clinic_id']).to eq(clinic3.id)
-        expect(response_body['data'].first['is_home_clinic']).to eq(false)
+        expect(response_body['data']['clinic_id']).to eq(clinic3.id)
+        expect(response_body['data']['is_home_clinic']).to eq(false)
       end
     end
   end
 
+  describe "GET #show" do
+    context "when sign in" do
+      it "should fetch staff clinic detail successfully" do
+        set_auth_headers(auth_headers)
+
+        get :show, params: {staff_id: staff.id, id: staff_clinic1.id}
+        response_body = JSON.parse(response.body)
+        
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data']['id']).to eq(staff_clinic1.id)
+      end
+    end
+  end
+  
   describe "PUT #update" do
     context "when sign in" do
       it "should update staff clinic successfully" do

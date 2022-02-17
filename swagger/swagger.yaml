@@ -3598,7 +3598,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/definitions/StaffClinicCreateParameters"
+              $ref: "#/definitions/StaffClinicCreateUpdateParameters"
       responses:
         "200":
           description: "Created staff clinic"
@@ -3606,27 +3606,57 @@ paths:
             application/json:
               example: {
                 "status": "success",
-                "data": [
-                  {
-                    "id": 7,
-                    "clinic_id": 3,
-                    "clinic_name": "clinic1",
-                    "organization_id": 3,
-                    "organization_name": "org1",
-                    "is_home_clinic": false
-                  },
-                  {
-                    "id": 8,
-                    "clinic_id": 4,
-                    "clinic_name": "clinic2",
-                    "organization_id": 3,
-                    "organization_name": "org1",
-                    "is_home_clinic": false
-                  }
-                ]
+                "data": {
+                  "id": 7,
+                  "clinic_id": 3,
+                  "clinic_name": "clinic1",
+                  "organization_id": 3,
+                  "organization_name": "org1",
+                  "is_home_clinic": false
+                },
+                errors: []
               }
 
   /api/staff/{staff_id}/staff_clinics/{id}:
+    get:
+      summary: Staff clinics detail
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "staff_id"
+        description: "Associated staff id"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "staff clinic id"
+        required: true
+      responses:
+        "200":
+          description: "Staff clinics detail"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 6,
+                  "clinic_id": 3,
+                  "clinic_name": "clinic1",
+                  "organization_id": 3,
+                  "organization_name": "org1",
+                  "is_home_clinic": true
+                }
+              }
     put:
       summary: Staff clinic update
       parameters:
@@ -3654,7 +3684,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/definitions/StaffClinicUpdateParameters"
+              $ref: "#/definitions/StaffClinicCreateUpdateParameters"
       responses:
         "200":
           description: "Updated staff clinic"
@@ -3763,6 +3793,57 @@ paths:
                   ]
                 },
                 "errors": []
+              }
+
+  /api/clients/{client_id}/client_enrollment_services/{id}:
+    get:
+      summary: Client enrollment service detail
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_enrollment_id"
+        description: "Associated client enrollment id"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "client enrollment service id"
+        required: true
+      responses:
+        "200":
+          description: "client enrollment service detail"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 1,
+                  "client_enrollment_id": 1,
+                  "funding_source_id": 31,
+                  "funding_source": "aetna",
+                  "service_id": 27,
+                  "service": "caregiver training",
+                  "start_date": "2022-02-17",
+                  "end_date": "2022-02-21",
+                  "units": "6",
+                  "minutes": null,
+                  "service_providers": [
+                    {
+                      "id": 20,
+                      "name": "May Dach"
+                    }
+                  ]
+                }
               }
 
 definitions:
@@ -4520,21 +4601,8 @@ definitions:
         type: "string"
       file_name:
         type: "string"
-
-  StaffClinicCreateParameters:
-    type: "object"
-    properties:
-      clinics:
-        type: "array"
-        items:
-          type: "object"
-          properties:
-            clinic_id:
-              type: "integer"
-            is_home_clinic:
-              type: "boolean"
-
-  StaffClinicUpdateParameters:
+  
+  StaffClinicCreateUpdateParameters:
     type: "object"
     properties:
       clinic_id:
