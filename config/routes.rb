@@ -38,5 +38,6 @@ Rails.application.routes.draw do
     get '/addresses/country_list', to: 'addresses#country_list'
     get '/roles_list', to: 'roles#roles_list'
     get '/phone_types', to: 'staff#phone_types'
+    get '/clients/:client_id/meta_data', to: 'client_meta_data#selectable_options'
   end
 end
