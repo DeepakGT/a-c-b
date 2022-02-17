@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_16_135243) do
+ActiveRecord::Schema.define(version: 2022_02_17_103216) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -68,6 +68,28 @@ ActiveRecord::Schema.define(version: 2022_02_16_135243) do
     t.datetime "updated_at", precision: 6, null: false
     t.string "file_name"
     t.index ["attachable_type", "attachable_id"], name: "index_attachments_on_attachable"
+  end
+
+  create_table "client_enrollment_service_providers", force: :cascade do |t|
+    t.bigint "client_enrollment_service_id", null: false
+    t.bigint "staff_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["client_enrollment_service_id"], name: "index_on_service_provider"
+    t.index ["staff_id"], name: "index_client_enrollment_service_providers_on_staff_id"
+  end
+
+  create_table "client_enrollment_services", force: :cascade do |t|
+    t.date "start_date"
+    t.date "end_date"
+    t.float "units"
+    t.float "minutes"
+    t.bigint "client_enrollment_id", null: false
+    t.bigint "service_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["client_enrollment_id"], name: "index_client_enrollment_services_on_client_enrollment_id"
+    t.index ["service_id"], name: "index_client_enrollment_services_on_service_id"
   end
 
   create_table "client_enrollments", force: :cascade do |t|
@@ -231,6 +253,15 @@ ActiveRecord::Schema.define(version: 2022_02_16_135243) do
     t.index ["staff_id"], name: "index_staff_credentials_on_staff_id"
   end
 
+  create_table "staff_services", force: :cascade do |t|
+    t.bigint "service_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.bigint "staff_id", null: false
+    t.index ["service_id"], name: "index_staff_services_on_service_id"
+    t.index ["staff_id"], name: "index_staff_services_on_staff_id"
+  end
+
   create_table "user_roles", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "role_id", null: false
@@ -238,15 +269,6 @@ ActiveRecord::Schema.define(version: 2022_02_16_135243) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["role_id"], name: "index_user_roles_on_role_id"
     t.index ["user_id"], name: "index_user_roles_on_user_id"
-  end
-
-  create_table "user_services", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.bigint "service_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["service_id"], name: "index_user_services_on_service_id"
-    t.index ["user_id"], name: "index_user_services_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -289,6 +311,10 @@ ActiveRecord::Schema.define(version: 2022_02_16_135243) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "client_enrollment_service_providers", "client_enrollment_services"
+  add_foreign_key "client_enrollment_service_providers", "users", column: "staff_id"
+  add_foreign_key "client_enrollment_services", "client_enrollments"
+  add_foreign_key "client_enrollment_services", "services"
   add_foreign_key "client_enrollments", "funding_sources"
   add_foreign_key "client_enrollments", "users", column: "client_id"
   add_foreign_key "client_notes", "users", column: "client_id"
@@ -302,9 +328,9 @@ ActiveRecord::Schema.define(version: 2022_02_16_135243) do
   add_foreign_key "staff_clinics", "users", column: "staff_id"
   add_foreign_key "staff_credentials", "credentials"
   add_foreign_key "staff_credentials", "users", column: "staff_id"
+  add_foreign_key "staff_services", "services"
+  add_foreign_key "staff_services", "users", column: "staff_id"
   add_foreign_key "user_roles", "roles"
   add_foreign_key "user_roles", "users"
-  add_foreign_key "user_services", "services"
-  add_foreign_key "user_services", "users"
   add_foreign_key "users", "users", column: "supervisor_id"
 end

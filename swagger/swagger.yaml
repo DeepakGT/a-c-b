@@ -3712,6 +3712,59 @@ paths:
                 }
               }
 
+  /api/client_enrollments/{client_enrollment_id}/client_enrollment_services:
+    post:
+      summary: Client enrollment service create
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_enrollment_id"
+        description: "Associated client enrollment id"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/ClientEnrollmentServiceCreateParameters"
+      responses:
+        "200":
+          description: "Created client enrollment service"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 1,
+                  "client_enrollment_id": 1,
+                  "funding_source_id": 31,
+                  "funding_source": "aetna",
+                  "service_id": 27,
+                  "service": "caregiver training",
+                  "start_date": "2022-02-17",
+                  "end_date": "2022-02-21",
+                  "units": "6",
+                  "minutes": null,
+                  "service_providers": [
+                    {
+                      "id": 20,
+                      "name": "May Dach"
+                    }
+                  ]
+                },
+                "errors": []
+              }
+
 definitions:
   UserRegistrationParameters:
     type: "object"
@@ -4488,3 +4541,25 @@ definitions:
         type: "integer"
       is_home_clinic:
         type: "boolean"
+
+  ClientEnrollmentServiceCreateParameters:
+    type: "object"
+    properties:
+      service_id:
+        type: "integer"
+      start_date:
+        type: "string"
+      end_date:
+        type: "string"
+      units:
+        type: "number"
+      minutes:
+        type: "number"
+      funding_source_id:
+        type: "integer"
+      service_providers_attributes:
+        type: "object"
+        properties:
+          0:
+            staff_id:
+              type: "integer"

@@ -5,11 +5,15 @@ class Staff < User
   has_many :phone_numbers, as: :phoneable, dependent: :destroy
   has_many :staff_clinics
   has_many :clinics, through: :staff_clinics
+  has_many :staff_services
+  has_many :services, through: :staff_services
 
   belongs_to :supervisor, class_name: :User, optional: true
 
   accepts_nested_attributes_for :address, :update_only => true
   accepts_nested_attributes_for :phone_numbers, :update_only => true
+  accepts_nested_attributes_for :services, :update_only => true
+  
   # validations for role
   validate :validate_role
 

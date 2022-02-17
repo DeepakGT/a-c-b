@@ -15,11 +15,12 @@ Rails.application.routes.draw do
 
     resources :staff do
       resources :staff_credentials
-      resources :staff_clinics, except: :show
+      resources :staff_clinics, only: %i[index create update destroy]
     end
 
     resources :clients, only: %i[index create update show] do
       resources :client_enrollments
+      resources :client_enrollment_services
       resources :contacts
       resources :notes, controller: 'client_notes'
       resources :attachments, controller: 'client_attachments'

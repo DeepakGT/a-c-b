@@ -18,13 +18,13 @@ RSpec.describe ClientNotesController, type: :controller do
 
   describe "GET #index" do
     context "when sign in" do
-      let!(:client_notes) { create_list(:client_note, 5, client_id: client.id) }
+      let!(:client_notes) { create_list(:client_note, 5, client_id: client.id, creator_id: user.id) }
       it "should fetch client notes list successfully" do
         set_auth_headers(auth_headers)
-
+        
         get :index, params: { client_id: client.id}
         response_body = JSON.parse(response.body)
-
+        
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
         expect(response_body['data'].count).to eq(client_notes.count)
@@ -54,7 +54,7 @@ RSpec.describe ClientNotesController, type: :controller do
 
   describe "GET #show" do
     context "when sign in" do
-      let(:client_note) { create(:client_note, client_id: client.id)}
+      let(:client_note) { create(:client_note, client_id: client.id, creator_id: user.id)}
       it "should fetch client note detail successfully" do
         set_auth_headers(auth_headers)
 
@@ -71,7 +71,7 @@ RSpec.describe ClientNotesController, type: :controller do
 
   describe "PUT #update" do
     context "when sign in" do
-      let(:client_note) { create(:client_note, client_id: client.id)}
+      let(:client_note) { create(:client_note, client_id: client.id, creator_id: user.id)}
       let(:updated_note) {'Test-note-1'}
       it "should update client note successfully" do
         set_auth_headers(auth_headers)
@@ -89,7 +89,7 @@ RSpec.describe ClientNotesController, type: :controller do
 
   describe "DELETE #destroy" do
     context "when sign in" do
-      let(:client_note) { create(:client_note, client_id: client.id)}
+      let(:client_note) { create(:client_note, client_id: client.id, creator_id: user.id)}
       it "should delete client note successfully" do
         set_auth_headers(auth_headers)
         delete :destroy, params: {client_id: client.id, id: client_note.id} 
