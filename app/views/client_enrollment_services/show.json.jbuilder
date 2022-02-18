@@ -12,15 +12,7 @@ json.data do
   json.minutes @enrollment_service.minutes
   json.service_number @enrollment_service.service_number
   json.service_providers do
-    json.ids do
-      json.array! @enrollment_service.service_providers do |service_provider|
-        json.id service_provider.staff_id
-      end
-    end
-    json.names do
-      json.array! @enrollment_service.service_providers do |service_provider|
-        json.name "#{service_provider.staff.first_name} #{service_provider.staff.last_name}"
-      end
-    end
+    json.ids @enrollment_service.service_providers.pluck(:staff_id)
+    json.names @enrollment_service.staff.map{|staff| "#{staff.first_name} #{staff.last_name}"}
   end
 end

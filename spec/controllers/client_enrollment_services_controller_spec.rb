@@ -44,4 +44,23 @@ RSpec.describe ClientEnrollmentServicesController, type: :controller do
       end
     end
   end
+
+  describe "GET #show" do
+    context "when sign in" do
+      let(:enrollment_service) { create(:client_enrollment_service, 
+        client_enrollment_id: client_enrollment.id, service_id: service.id) }
+      it "should fetch client enrollment service detail successfully" do
+        set_auth_headers(auth_headers)
+
+        get :show, params: {client_id: client.id, id: enrollment_service.id}
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data']['id']).to eq(enrollment_service.id) 
+        expect(response_body['data']['client_enrollment_id']).to eq(client_enrollment.id) 
+        expect(response_body['data']['service_id']).to eq(service.id)
+      end
+    end
+  end
 end

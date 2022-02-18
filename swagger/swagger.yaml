@@ -2110,7 +2110,27 @@ paths:
                     "relationship": "parent_or_guardian",
                     "subscriber_name": "Abcd",
                     "subscriber_phone": "76854-56443",
-                    "subscriber_dob": "1997-12-12"
+                    "subscriber_dob": "1997-12-12",
+                    "services": [
+                      {
+                        "id": 1,
+                        "service_id": 27,
+                        "service": "caregiver training",
+                        "start_date": "2022-02-17",
+                        "end_date": "2022-02-21",
+                        "units": null,
+                        "minutes": null,
+                        "service_number": null,
+                        "service_providers": {
+                          "ids": [
+                            20
+                          ],
+                          "names": [
+                            "May Dach"
+                          ]
+                        }
+                      }
+                    ]
                   },
                   {
                     "id": 2,
@@ -2126,7 +2146,8 @@ paths:
                     "relationship": "spouse_or_partner",
                     "subscriber_name": "Abcdef",
                     "subscriber_phone": "76854-56443",
-                    "subscriber_dob": "1996-12-12"
+                    "subscriber_dob": "1996-12-12",
+                    "services": []
                   }
                 ],
                 "total_records": 2,
@@ -2228,7 +2249,15 @@ paths:
                   "relationship": "parent_or_guardian",
                   "subscriber_name": "Abcd",
                   "subscriber_phone": "76854-56443",
-                  "subscriber_dob": "1997-12-12"
+                  "subscriber_dob": "1997-12-12",
+                  "service_providers": {
+                    "ids": [
+                      20
+                    ],
+                    "names": [
+                      "May Dach"
+                    ]
+                  }
                 }
               }
     put:
@@ -3833,12 +3862,14 @@ paths:
                   "end_date": "2022-02-21",
                   "units": "6",
                   "minutes": null,
-                  "service_providers": [
-                    {
-                      "id": 20,
-                      "name": "May Dach"
-                    }
-                  ]
+                  "service_providers": {
+                    "ids": [
+                      20
+                    ],
+                    "names": [
+                      "May Dach"
+                    ]
+                  }
                 }
               }
 
