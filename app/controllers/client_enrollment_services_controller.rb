@@ -1,7 +1,7 @@
 class ClientEnrollmentServicesController < ApplicationController
   before_action :authenticate_user!
   before_action :authorize_user
-  before_action :set_client_enrollment_service, only: %i[show update]
+  before_action :set_client_enrollment_service, only: %i[show update destroy]
 
   def create
     set_client_enrollment
@@ -12,11 +12,11 @@ class ClientEnrollmentServicesController < ApplicationController
 
   def update 
     @enrollment_service.update(enrollment_service_params)
-    if params[:funding_source_id].present?
-      set_client_enrollment 
-      @enrollment_service.client_enrollment = @client_enrollment
-      @enrollment_service.save
-    end
+    update_client_enrollment if params[:funding_source_id].present?
+  end
+
+  def destroy
+    @enrollment_service.destroy
   end
 
   private
@@ -32,6 +32,12 @@ class ClientEnrollmentServicesController < ApplicationController
 
   def set_client_enrollment_service
     @enrollment_service = ClientEnrollmentService.find(params[:id])
+  end
+
+  def update_client_enrollment
+    set_client_enrollment 
+    @enrollment_service.client_enrollment = @client_enrollment
+    @enrollment_service.save
   end
 
   def enrollment_service_params

@@ -3932,6 +3932,51 @@ paths:
                 },
                 "errors": []
               }
+    delete:
+      summary: client enrollment service delete
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "Associated client id"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "client enrollment service id"
+        required: true
+      responses:
+        "200":
+          description: "Deleted client enrollment service detail"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 2,
+                  "client_enrollment_id": 1,
+                  "funding_source_id": 31,
+                  "funding_source": "aetna",
+                  "service_id": 27,
+                  "service": "caregiver training",
+                  "start_date": "2022-02-17",
+                  "end_date": "2022-02-21",
+                  "units": null,
+                  "minutes": null,
+                  "service_number": null,
+                  "service_providers": []
+                }
+              }
 
   /api/clients/{client_id}/meta_data:
     get:

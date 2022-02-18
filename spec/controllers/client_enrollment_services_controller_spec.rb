@@ -92,4 +92,22 @@ RSpec.describe ClientEnrollmentServicesController, type: :controller do
       end
     end
   end
+
+  describe "DELETE #destroy" do
+    context "when sign in" do
+      let(:enrollment_service) { create(:client_enrollment_service, 
+        client_enrollment_id: client_enrollment.id, service_id: service.id) }
+      it "should delete client enrollment service detail successfully" do
+        set_auth_headers(auth_headers)
+
+        delete :destroy, params: { client_id: client.id, id: enrollment_service.id }
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data']['id']).to eq(enrollment_service.id)
+        expect(ClientEnrollmentService.find_by_id(enrollment_service.id)).to eq(nil)
+      end
+    end
+  end
 end
