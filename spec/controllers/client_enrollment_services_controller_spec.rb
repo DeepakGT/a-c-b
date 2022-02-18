@@ -9,7 +9,7 @@ RSpec.describe ClientEnrollmentServicesController, type: :controller do
     @request.env["devise.mapping"] = Devise.mappings[:user]
   end
   
-  let!(:role) { create(:role, name: 'aba_admin')}
+  let!(:role) { create(:role, name: 'aba_admin', permissions: ['client_authorizations_view', 'client_authorizations_update', 'client_authorizations_delete'])}
   let!(:user) { create(:user, :with_role, role_name: role.name) }
   let!(:auth_headers) { user.create_new_auth_token }
   let!(:organization) {create(:organization, name: 'test-organization', admin_id: user.id)}
@@ -24,7 +24,7 @@ RSpec.describe ClientEnrollmentServicesController, type: :controller do
     context "when sign in" do
       it "should create client enrollment service successfully" do
         set_auth_headers(auth_headers)
-
+        
         post :create, params: {
           client_id: client.id,
           funding_source_id: funding_source.id, 
@@ -60,6 +60,35 @@ RSpec.describe ClientEnrollmentServicesController, type: :controller do
         expect(response_body['data']['id']).to eq(enrollment_service.id) 
         expect(response_body['data']['client_enrollment_id']).to eq(client_enrollment.id) 
         expect(response_body['data']['service_id']).to eq(service.id)
+      end
+    end
+  end
+
+  describe "PUT #update" do
+    context "when sign in" do
+      let(:enrollment_service) { create(:client_enrollment_service, 
+        client_enrollment_id: client_enrollment.id, service_id: service.id) }
+      let(:service) { create(:service) }
+      let(:funding_source) {create(:funding_source, clinic_id: clinic.id)}
+      let(:client_enrollment) { create(:client_enrollment, client_id: client.id, funding_source_id: funding_source.id)}
+      it "should update client enrollment service successfully" do
+        set_auth_headers(auth_headers)
+        
+        put :update, params: {
+          client_id: client.id,
+          id: enrollment_service.id,
+          funding_source_id: funding_source.id,
+          service_id: service.id,
+          start_date: Date.yesterday
+        }
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data']['id']).to eq(enrollment_service.id) 
+        expect(response_body['data']['client_enrollment_id']).to eq(client_enrollment.id) 
+        expect(response_body['data']['service_id']).to eq(service.id)
+        expect(response_body['data']['start_date']).to eq(Date.yesterday.to_s)
       end
     end
   end
