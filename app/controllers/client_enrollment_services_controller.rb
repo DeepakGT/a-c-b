@@ -1,14 +1,23 @@
 class ClientEnrollmentServicesController < ApplicationController
   before_action :authenticate_user!
   before_action :authorize_user
-  before_action :set_client_enrollment, only: :create
-  before_action :set_client_enrollment_service, only: :show
+  before_action :set_client_enrollment_service, only: %i[show update]
 
   def create
+    set_client_enrollment
     @enrollment_service = @client_enrollment.client_enrollment_services.create(enrollment_service_params)
   end
 
   def show; end
+
+  def update 
+    @enrollment_service.update(enrollment_service_params)
+    if params[:funding_source_id].present?
+      set_client_enrollment 
+      @enrollment_service.client_enrollment = @client_enrollment
+      @enrollment_service.save
+    end
+  end
 
   private
 
@@ -27,7 +36,7 @@ class ClientEnrollmentServicesController < ApplicationController
 
   def enrollment_service_params
     params.permit(:service_id, :start_date, :end_date, :units, :minutes, :service_number,
-                  service_providers_attributes: %i[staff_id])
+                  service_providers_attributes: %i[id staff_id])
   end
   # end of private
 end

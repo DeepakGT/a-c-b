@@ -3791,7 +3791,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/definitions/ClientEnrollmentServiceCreateParameters"
+              $ref: "#/definitions/ClientEnrollmentServiceCreateUpdateParameters"
       responses:
         "200":
           description: "Created client enrollment service"
@@ -3871,6 +3871,66 @@ paths:
                     ]
                   }
                 }
+              }
+    put:
+      summary: Client enrollment service update
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "Associated client id"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "client enrollment service id"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/ClientEnrollmentServiceCreateUpdateParameters"
+      responses:
+        "200":
+          description: "Updated client enrollment service"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 1,
+                  "client_enrollment_id": 3,
+                  "funding_source_id": 35,
+                  "funding_source": "cigna",
+                  "service_id": 27,
+                  "service": "caregiver training",
+                  "start_date": "2022-02-17",
+                  "end_date": "2022-02-21",
+                  "units": null,
+                  "minutes": null,
+                  "service_number": null,
+                  "service_providers": [
+                    {
+                      "id": 20,
+                      "name": "May Dach"
+                    },
+                    {
+                      "id": 22,
+                      "name": "Jolyn Mraz"
+                    }
+                  ]
+                },
+                "errors": []
               }
 
   /api/clients/{client_id}/meta_data:
@@ -4696,7 +4756,7 @@ definitions:
       is_home_clinic:
         type: "boolean"
 
-  ClientEnrollmentServiceCreateParameters:
+  ClientEnrollmentServiceCreateUpdateParameters:
     type: "object"
     properties:
       service_id:
@@ -4719,5 +4779,7 @@ definitions:
           0:
             type: "object"
             properties:
+              id:
+                type: "integer"
               staff_id:
                 type: "integer"
