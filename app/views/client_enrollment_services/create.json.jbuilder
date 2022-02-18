@@ -10,6 +10,7 @@ json.data do
   json.end_date @enrollment_service.end_date
   json.units @enrollment_service.units
   json.minutes @enrollment_service.minutes
+  json.service_number @enrollment_service.service_number
   json.service_providers do
     json.array! @enrollment_service.service_providers do |service_provider|
       json.id service_provider.staff_id

@@ -3742,7 +3742,7 @@ paths:
                 }
               }
 
-  /api/client_enrollments/{client_enrollment_id}/client_enrollment_services:
+  /api/clients/{client_id}/client_enrollment_services:
     post:
       summary: Client enrollment service create
       parameters:
@@ -3759,8 +3759,8 @@ paths:
         description: "Request headers"
         required: true
       - in: "path"
-        name: "client_enrollment_id"
-        description: "Associated client enrollment id"
+        name: "client_id"
+        description: "Associated client id"
         required: true
       requestBody:
         content:
@@ -3812,8 +3812,8 @@ paths:
         description: "Request headers"
         required: true
       - in: "path"
-        name: "client_enrollment_id"
-        description: "Associated client enrollment id"
+        name: "client_id"
+        description: "Associated client id"
         required: true
       - in: "path"
         name: "id"
@@ -4686,9 +4686,13 @@ definitions:
         type: "number"
       funding_source_id:
         type: "integer"
+      service_number:
+        type: "string"
       service_providers_attributes:
         type: "object"
         properties:
           0:
-            staff_id:
-              type: "integer"
+            type: "object"
+            properties:
+              staff_id:
+                type: "integer"

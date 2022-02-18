@@ -84,6 +84,7 @@ ActiveRecord::Schema.define(version: 2022_02_17_103216) do
     t.date "end_date"
     t.float "units"
     t.float "minutes"
+    t.string "service_number"
     t.bigint "client_enrollment_id", null: false
     t.bigint "service_id", null: false
     t.datetime "created_at", precision: 6, null: false
