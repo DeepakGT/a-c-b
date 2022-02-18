@@ -7,12 +7,8 @@ Rails.application.routes.draw do
     resources :organizations, only: %i[create update show index] 
     
     resources :clinics, only: %i[index create show update] do
-      resources :staff, only: %i[] do
-        get :supervisor_list, on: :collection
-      end
       resources :funding_sources, only: %i[index create update show]
     end
-
     resources :staff do
       resources :staff_credentials
       resources :staff_clinics
@@ -35,6 +31,7 @@ Rails.application.routes.draw do
     resources :roles, only: %i[index create update show] 
 
     get 'meta_data/selectable_options'
+    get '/supervisor_list', to: 'staff#supervisor_list'
     get '/addresses/country_list', to: 'addresses#country_list'
     get '/roles_list', to: 'roles#roles_list'
     get '/phone_types', to: 'staff#phone_types'
