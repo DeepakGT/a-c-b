@@ -855,7 +855,7 @@ paths:
                           }
                         }
 
-  /api/clinics/{clinic_id}/staff/supervisor_list:
+  /api/supervisor_list:
     get:
       summary: supervisors list
       parameters:
@@ -870,10 +870,6 @@ paths:
       - in: "header"
         name: "uid"
         description: "Request headers"
-        required: true
-      - in: "path"
-        name: "clinic_id"
-        description: "Clinic id"
         required: true
       responses:
         "200":
@@ -4149,8 +4145,6 @@ definitions:
         type: "string"
       last_name:
         type: "string"
-      clinic_id:
-        type: "integer"
       email:
         type: "string"
       password:

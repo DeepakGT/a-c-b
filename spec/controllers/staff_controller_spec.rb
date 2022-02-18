@@ -310,12 +310,12 @@ RSpec.describe StaffController, type: :controller do
       it "should list supervisors successfuly" do
         set_auth_headers(auth_headers)
 
-        get :supervisor_list, params: {clinic_id: clinic.id}
+        get :supervisor_list
         response_body = JSON.parse(response.body)
 
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
-        expect(response_body['data'].count).to eq(staff_list.count)
+        expect(response_body['data'].count).to eq(Staff.all.count)
       end
     end
   end

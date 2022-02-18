@@ -2,7 +2,6 @@ require 'will_paginate/array'
 class StaffController < ApplicationController
   before_action :authenticate_user!
   before_action :authorize_user, except: %i[phone_types supervisor_list]
-  before_action :set_clinic, only: :supervisor_list
   before_action :set_staff, only: %i[show update destroy]
 
   def index
@@ -34,17 +33,13 @@ class StaffController < ApplicationController
   end
 
   def supervisor_list
-    @supervisors = @clinic.staff.order(:first_name)
+    @supervisors = Staff.order(:first_name)
   end
 
   private
 
-  def set_clinic
-    @clinic = Clinic.find(params[:clinic_id])
-  end
-
   def staff_params
-    arr = %i[first_name last_name terminated_on email supervisor_id clinic_id]
+    arr = %i[first_name last_name terminated_on email supervisor_id]
     
     arr.concat(%i[password service_provider password_confirmation]) if params[:action] == 'create'
     
