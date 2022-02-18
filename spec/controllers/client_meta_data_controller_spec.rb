@@ -18,7 +18,7 @@ RSpec.describe ClientMetaDataController, type: :controller do
   describe "GET #selectable_options" do
     context "when sign in" do
       let(:client_enrollments) { client.client_enrollments.active.where.not(source_of_payment: 'self_pay') }
-      let(:service_providers) { clinic.staff.service_providers }
+      let(:service_providers) { clinic.staff.joins(:role).where('role.name': ['bcba', 'rbt']) }
       it "should fetch client selectable options list successfully" do
         set_auth_headers(auth_headers)
         

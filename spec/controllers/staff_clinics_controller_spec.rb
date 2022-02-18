@@ -9,7 +9,8 @@ RSpec.describe StaffClinicsController, type: :controller do
     @request.env["devise.mapping"] = Devise.mappings[:user]
   end
 
-  let!(:staff) { create(:staff, :with_role, role_name: 'billing', last_name: 'Zachary') } 
+  let!(:role) { create(:role, name: 'billing', permissions: ['staff_locations_view', 'staff_locations_update', 'staff_locations_delete'])}
+  let!(:staff) { create(:staff, :with_role, role_name: role.name, last_name: 'Zachary') } 
   let!(:auth_headers) { staff.create_new_auth_token }
   let!(:organization) { create(:organization, name: 'org1') } 
   let!(:clinic1) { create(:clinic, name: 'clinic1', organization_id: organization.id) } 
