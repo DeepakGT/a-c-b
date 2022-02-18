@@ -5,6 +5,7 @@ class CreateClientEnrollmentServices < ActiveRecord::Migration[6.1]
       t.date :end_date
       t.float :units
       t.float :minutes
+      t.string :service_number
       t.references :client_enrollment, null: false, foreign_key: true
       t.references :service, null: false, foreign_key: true
 
