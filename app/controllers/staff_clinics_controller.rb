@@ -1,5 +1,6 @@
 class StaffClinicsController < ApplicationController
   before_action :authenticate_user!
+  before_action :authorize_user
   before_action :set_staff
   before_action :set_staff_clinic, only: %i[show update destroy]
 
@@ -22,6 +23,10 @@ class StaffClinicsController < ApplicationController
   end
 
   private
+
+  def authorize_user
+    authorize StaffClinic if current_user.role_name != 'super_admin'
+  end
 
   def set_staff
     @staff = Staff.find(params[:staff_id])
