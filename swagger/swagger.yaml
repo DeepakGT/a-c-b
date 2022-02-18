@@ -547,7 +547,6 @@ paths:
                   "email": "bcba_teststaff2@yopmail.com",
                   "role": "bcba",
                   "status": "active",
-                  "service_provider": true,
                   "terminated_on": null,
                   "gender": "male",
                   "supervisor_id": 1,
@@ -621,7 +620,6 @@ paths:
                   "last_name": "staff",
                   "email": "bcba_test_staff@yopmail.com",
                   "status": "active",
-                  "service_provider": true,
                   "terminated_on": null,
                   "title": "bcba",
                   "gender": "male",
@@ -3139,7 +3137,6 @@ paths:
                   "last_name": "Staff ",
                   "email": "bcba_test1@yopmail.com",
                   "status": "active",
-                  "service_provider": false,
                   "terminated_on": null,
                   "gender": "male",
                   "supervisor_id": 3
@@ -4065,8 +4062,6 @@ definitions:
         enum: [active, inactive]
       terminated_on:
         type: "string"
-      service_provider:
-        type: "boolean"
       phone_numbers_attributes:
         type: "object"
         properties:
@@ -4293,8 +4288,6 @@ definitions:
         type: "string"
       role_name:
         type: "string"
-      service_provider:
-        type: "boolean"
       phone_numbers_attributes:
         type: "object"
         properties:

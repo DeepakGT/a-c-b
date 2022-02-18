@@ -148,7 +148,6 @@ RSpec.describe StaffController, type: :controller do
           password: 'Abcd@123',
           supervisor_id: user.id,
           clinic_id: clinic.id,
-          service_provider: false,
           address_attributes: { country: 'India'},
           phone_numbers_attributes: [{ number: '9898767655'}, {number: '8787876565'}],
           rbt_supervision_attributes: { status: 'requires'},
@@ -257,7 +256,6 @@ RSpec.describe StaffController, type: :controller do
 
           put :update, params: {
             id:staff.id,
-            service_provider: true,
             services_attributes: [{name: 'service-1'}]
           }
           response_body = JSON.parse(response.body)

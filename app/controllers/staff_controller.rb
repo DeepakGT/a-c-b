@@ -41,7 +41,7 @@ class StaffController < ApplicationController
   def staff_params
     arr = %i[first_name last_name terminated_on email supervisor_id]
     
-    arr.concat(%i[password service_provider password_confirmation]) if params[:action] == 'create'
+    arr.concat(%i[password password_confirmation]) if params[:action] == 'create'
     
     arr.concat([address_attributes: 
     %i[line1 line2 line3 zipcode city state country addressable_type addressable_id], 

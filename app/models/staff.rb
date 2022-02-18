@@ -22,7 +22,6 @@ class Staff < User
   before_validation :set_status
 
   # scopes
-  scope :service_providers, ->{ where(service_provider: true) }
   scope :by_organization, ->(org_name){ where('organization.name.downcase': org_name&.downcase)}
   scope :by_supervisor_name, ->(fname,lname){ where(supervisor_id: User.by_first_name(fname&.downcase).by_last_name(lname&.downcase)) }
   scope :by_location, ->(location) do 
