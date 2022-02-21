@@ -231,6 +231,16 @@ ActiveRecord::Schema.define(version: 2022_02_21_121445) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "staff_clinics", force: :cascade do |t|
+    t.bigint "staff_id", null: false
+    t.bigint "clinic_id", null: false
+    t.boolean "is_home_clinic", default: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["clinic_id"], name: "index_staff_clinics_on_clinic_id"
+    t.index ["staff_id"], name: "index_staff_clinics_on_staff_id"
+  end
+
   create_table "staff_credentials", force: :cascade do |t|
     t.bigint "staff_id", null: false
     t.bigint "credential_id", null: false
@@ -325,6 +335,8 @@ ActiveRecord::Schema.define(version: 2022_02_21_121445) do
   add_foreign_key "funding_sources", "clinics"
   add_foreign_key "organizations", "users", column: "admin_id"
   add_foreign_key "rbt_supervisions", "users"
+  add_foreign_key "staff_clinics", "clinics"
+  add_foreign_key "staff_clinics", "users", column: "staff_id"
   add_foreign_key "staff_credentials", "credentials"
   add_foreign_key "staff_credentials", "users", column: "staff_id"
   add_foreign_key "staff_services", "services"
