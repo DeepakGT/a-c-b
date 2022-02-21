@@ -39,7 +39,7 @@ class StaffController < ApplicationController
   private
 
   def staff_params
-    arr = %i[first_name last_name terminated_on email supervisor_id]
+    arr = %i[first_name last_name hired_at terminated_on email supervisor_id]
     
     arr.concat(%i[password password_confirmation]) if params[:action] == 'create'
     
