@@ -14,7 +14,7 @@ json.data do
   json.service_providers do
     json.array! @enrollment_service.service_providers do |service_provider|
       json.id service_provider.staff_id
-      json.name "#{service_provider.staff.first_name} #{service_provider.staff.last_name}"
+      json.name "#{service_provider.staff&.first_name} #{service_provider.staff&.last_name}"
     end 
   end
 end
