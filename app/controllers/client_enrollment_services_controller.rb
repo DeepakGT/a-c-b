@@ -10,9 +10,12 @@ class ClientEnrollmentServicesController < ApplicationController
 
   def show; end
 
-  def update 
-    @enrollment_service.update(enrollment_service_params)
-    update_client_enrollment if params[:funding_source_id].present?
+  def update
+    ClientEnrollmentService.transaction do
+      remove_service_providers if params[:service_providers_attributes].present?
+      @enrollment_service.update(enrollment_service_params)
+      update_client_enrollment if params[:funding_source_id].present?
+    end
   end
 
   def destroy
@@ -43,6 +46,10 @@ class ClientEnrollmentServicesController < ApplicationController
   def enrollment_service_params
     params.permit(:service_id, :start_date, :end_date, :units, :minutes, :service_number,
                   service_providers_attributes: %i[id staff_id])
+  end
+
+  def remove_service_providers
+    @enrollment_service.service_providers.destroy_all
   end
   # end of private
 end
