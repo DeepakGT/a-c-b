@@ -67,7 +67,7 @@ class ClientEnrollmentsController < ApplicationController
   end
 
   def other_primary_objects
-    @client.client_enrollments.except(@client_enrollment.id).where(is_primary: true)
+    @client.client_enrollments.except_ids(@client_enrollment.id).where(is_primary: true)
   end
   # end of private
   
