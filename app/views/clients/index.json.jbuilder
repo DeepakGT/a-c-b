@@ -17,7 +17,7 @@ json.data do
     json.disqualified_reason client.dq_reason if client.disqualified?
     json.payor_status client.payor_status 
     if primary_client_enrollment.present?
-      if primary_client_enrollment.source_of_payment=='self_pay'
+      if primary_client_enrollment.source_of_payment=='self_pay' || primary_client_enrollment.funding_source.blank?
         json.payor nil
       else
         json.payor primary_client_enrollment.funding_source.name

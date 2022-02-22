@@ -7,4 +7,5 @@ class ClientEnrollment < ApplicationRecord
   enum source_of_payment: { self_pay: 0, insurance: 1, single_case_agreement: 2 }
 
   scope :active, ->{ where('terminated_on > ?',Time.now.to_date).or(where('terminated_on IS NULL')) }
+  scope :except_ids, ->(ids) { where.not(id: ids) }
 end
