@@ -1,7 +1,6 @@
 require "active_support/core_ext/integer/time"
 
 Rails.application.configure do
-  config.require_master_key = true
   # Settings specified here will take precedence over those in config/application.rb.
 
   # In the development environment your application's code is reloaded any time
@@ -65,16 +64,13 @@ Rails.application.configure do
   # Uncomment if you wish to allow Action Cable access from any origin.
   # config.action_cable.disable_request_forgery_protection = true
 
-
-  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.delivery_method = :letter_opener
   config.action_mailer.perform_deliveries = true
-  config.action_mailer.default_url_options = { host: 'stage989800.abaconnectemr.com' }
-  config.action_mailer.smtp_settings = {
-    address:              'smtp.sendgrid.net',
-    port:                 587,
-    authentication:       'plain',
-    user_name:            Rails.application.credentials[:smtp][:user_name],
-    password:             Rails.application.credentials[:smtp][:password]
+  config.action_mailer.default_url_options = { host: 'localhost:3000' }
+  config.action_mailer.default_options  = {
+    from:  "no-reply <from_test_user@codes.com>"
   }
 
+  config.require_master_key = true
 end
+
