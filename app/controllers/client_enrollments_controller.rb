@@ -9,16 +9,21 @@ class ClientEnrollmentsController < ApplicationController
   end
 
   def create
-    @client_enrollment = @client.client_enrollments.new(enrollment_params)
-    @client_enrollment.is_primary = is_any_primary? ? true : false
-    @client_enrollment.save
+    ActiveRecord::Base.transaction do
+      @client_enrollment = @client.client_enrollments.new(enrollment_params)
+      # note : reset_primary must be called after initialize, we are overriding is_primary value.
+      reset_primary
+      @client_enrollment.save
+    end
   end
 
   def show; end
 
   def update
-    reset_primary if params[:is_primary].to_bool.true?
-    @client_enrollment.update(enrollment_params)
+    ActiveRecord::Base.transaction do
+      reset_primary
+      @client_enrollment.update(enrollment_params)
+    end
   end
 
   def destroy
@@ -46,15 +51,23 @@ class ClientEnrollmentsController < ApplicationController
   end
 
   def reset_primary
-    client_enrollment = @client.client_enrollments.find_by(is_primary: true)
-    client_enrollment.update(is_primary: false)
+    if is_any_other_primary?
+      if params[:is_primary].to_bool.true?
+        other_primary_objects.update_all(is_primary: false)
+      end
+    else
+      @client_enrollment.is_primary = true
+    end
   end
 
-  def is_any_primary?
-    # return true if @client.client_enrollments.where(is_primary: true).blank?
-    return false if @client.client_enrollments.find_by(is_primary: true).present?
+  def is_any_other_primary?
+    return true if other_primary_objects.any?
 
-    true
+    false
+  end
+
+  def other_primary_objects
+    @client.client_enrollments.except_ids(@client_enrollment.id).where(is_primary: true)
   end
   # end of private
   
