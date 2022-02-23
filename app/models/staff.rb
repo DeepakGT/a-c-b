@@ -7,6 +7,7 @@ class Staff < User
   has_many :clinics, through: :staff_clinics
   has_many :client_enrollment_service_providers
   has_many :client_enrollment_services, through: :client_enrollment_service_providers
+  has_one :scheduling
 
   belongs_to :supervisor, class_name: :User, optional: true
 

@@ -36,5 +36,8 @@ Rails.application.routes.draw do
     get '/roles_list', to: 'roles#roles_list'
     get '/phone_types', to: 'staff#phone_types'
     get '/clients/:client_id/meta_data', to: 'client_meta_data#selectable_options'
+    get '/scheduling_meta_data', to: 'scheduling_meta_data#selectable_options'
+
+    resources :schedulings
   end
 end
