@@ -4097,6 +4097,110 @@ paths:
                 }
               }
 
+  /api/schedulings:
+    get:
+      summary: Schedulings list
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      responses:
+        "200":
+          description: "Schedulings list"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": [
+                  {
+                    "id": 1,
+                    "client_id": 16,
+                    "client_name": "Test Client3",
+                    "staff_id": 20,
+                    "staff_name": "May Dach",
+                    "service_id": 28,
+                    "service_name": "developmental test administration by physician or",
+                    "status": "scheduled",
+                    "date": "2022-12-23",
+                    "start_time": "2022-02-23T18:27:57+05:30",
+                    "end_time": "2022-02-23T23:27:57+05:30",
+                    "units": "6",
+                    "minutes": "360"
+                  },
+                  {
+                    "id": 2,
+                    "client_id": 17,
+                    "client_name": "Test Client2",
+                    "staff_id": 24,
+                    "staff_name": "Fr. Dinorah",
+                    "service_id": 30,
+                    "service_name": "initial assessment",
+                    "status": "scheduled",
+                    "date": "2022-12-23",
+                    "start_time": "2022-02-23T18:27:57+05:30",
+                    "end_time": "2022-02-23T23:27:57+05:30",
+                    "units": "6",
+                    "minutes": "360"
+                  }
+                ],
+                "total_records": 2,
+                "limit": 30,
+                "page": 1
+              }
+    post:
+      summary: scheduling create
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/SchedulingCreateParameters"
+      responses:
+        "200":
+          description: "Created scheduling"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 2,
+                  "client_id": 17,
+                  "client_name": "Test Client2",
+                  "staff_id": 24,
+                  "staff_name": "Fr. Dinorah",
+                  "service_id": 30,
+                  "service_name": "initial assessment",
+                  "status": "scheduled",
+                  "date": "2022-12-23",
+                  "start_time": "2022-02-23T18:27:57+05:30",
+                  "end_time": "2022-02-23T23:27:57+05:30",
+                  "units": "6",
+                  "minutes": "360"
+                },
+                "errors": []
+              }
+
 definitions:
   UserRegistrationParameters:
     type: "object"
@@ -4876,3 +4980,27 @@ definitions:
                 type: "integer"
               staff_id:
                 type: "integer"
+
+  SchedulingCreateParameters:
+    type: "object"
+    properties: 
+      client_id: 
+        type: "integer"
+      staff_id:
+        type: "integer"
+      service_id:
+        type: "integer"
+      status:
+        type: "string"
+        enum: [scheduled, client_cancel_greater_than_24_h, client_cancel_less_than_24_h, client_no_show, non_billable, staff_cancellation, unavailable]
+      date:
+        type: "string"
+      start_time:
+        type: "string"
+      end_time:
+        type: "string"
+      units:
+        type: "string"
+      minutes:
+        type: "string"
+      

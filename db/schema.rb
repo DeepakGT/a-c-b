@@ -225,16 +225,18 @@ ActiveRecord::Schema.define(version: 2022_02_23_101351) do
 
   create_table "schedulings", force: :cascade do |t|
     t.date "date"
-    t.time "start_time"
-    t.time "end_time"
+    t.datetime "start_time"
+    t.datetime "end_time"
     t.string "status"
     t.string "units"
     t.string "minutes"
     t.bigint "staff_id", null: false
-    t.bigint "client_enrollment_service_id", null: false
+    t.bigint "client_id", null: false
+    t.bigint "service_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["client_enrollment_service_id"], name: "index_schedulings_on_client_enrollment_service_id"
+    t.index ["client_id"], name: "index_schedulings_on_client_id"
+    t.index ["service_id"], name: "index_schedulings_on_service_id"
     t.index ["staff_id"], name: "index_schedulings_on_staff_id"
   end
 
@@ -340,7 +342,8 @@ ActiveRecord::Schema.define(version: 2022_02_23_101351) do
   add_foreign_key "funding_sources", "clinics"
   add_foreign_key "organizations", "users", column: "admin_id"
   add_foreign_key "rbt_supervisions", "users"
-  add_foreign_key "schedulings", "client_enrollment_services"
+  add_foreign_key "schedulings", "services"
+  add_foreign_key "schedulings", "users", column: "client_id"
   add_foreign_key "schedulings", "users", column: "staff_id"
   add_foreign_key "staff_clinic_services", "services"
   add_foreign_key "staff_clinic_services", "staff_clinics"

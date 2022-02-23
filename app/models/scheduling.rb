@@ -1,6 +1,7 @@
 class Scheduling < ApplicationRecord
   belongs_to :staff
-  belongs_to :client_enrollment_service
+  belongs_to :client
+  belongs_to :service
 
   enum status: { scheduled: 'scheduled',
                  client_cancel_greater_than_24_h: 'Client Cancel Greater than 24 h',

@@ -2,7 +2,8 @@ require 'rails_helper'
 
 RSpec.describe Scheduling, type: :model do
   it { should belong_to(:staff) }
-  it { should belong_to(:client_enrollment_service) }
+  it { should belong_to(:client) }
+  it { should belong_to(:service) }
   
   it do
     should define_enum_for(:status).
