@@ -45,16 +45,12 @@ json.data do
       json.status @staff.rbt_supervision.status
     end
   end
-  json.services do
-    json.array! @staff.services do |service|
-      json.id service.id
-      json.name service.name
-      json.status service.status
-      #json.default_pay_code service.default_pay_code
-      #json.category service.category
-      #json.display_pay_code service.display_pay_code
-      #json.tracking_id service.tracking_id
-      json.display_code service.display_code
-    end
-  end
+  # json.services do
+  #   json.array! @staff.services do |service|
+  #     json.id service.id
+  #     json.name service.name
+  #     json.status service.status
+  #     json.display_code service.display_code
+  #   end
+  # end
 end

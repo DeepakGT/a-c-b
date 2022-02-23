@@ -17,12 +17,9 @@ class User < ActiveRecord::Base
   # Associations
   has_one :user_role, dependent: :destroy
   has_one :rbt_supervision, dependent: :destroy
-  # has_many :user_services, dependent: :destroy
   
   has_one :role, through: :user_role
-  # has_many :services, through: :user_services
 
-  # accepts_nested_attributes_for :services, :update_only => true
   accepts_nested_attributes_for :rbt_supervision, :update_only => true
 
   # Enums

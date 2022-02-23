@@ -4,12 +4,9 @@ RSpec.describe User, type: :model do
   describe 'associations' do
     it { should have_one(:user_role).dependent(:destroy)}
     it { should have_one(:rbt_supervision).dependent(:destroy)}
-    # it { should have_many(:user_services).dependent(:destroy)}
 
     it { should have_one(:role).through(:user_role)}
-    # it { should have_many(:services).through(:user_services)}
 
-    # it { should accept_nested_attributes_for(:services).update_only(true) }
     it { should accept_nested_attributes_for(:rbt_supervision).update_only(true) }
   end
 

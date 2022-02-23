@@ -46,7 +46,7 @@ class StaffController < ApplicationController
     arr.concat([address_attributes: 
     %i[line1 line2 line3 zipcode city state country addressable_type addressable_id], 
     phone_numbers_attributes: %i[id phone_type number], rbt_supervision_attributes: 
-    %i[status start_date end_date], services_attributes: %i[name status display_code]])
+    %i[status start_date end_date]])
     
     params.permit(arr)
   end

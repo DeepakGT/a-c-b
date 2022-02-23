@@ -37,7 +37,7 @@ class StaffClinicsController < ApplicationController
   end
 
   def staff_clinic_params
-    params.permit(:clinic_id, :is_home_clinic)
+    params.permit(:clinic_id, :is_home_clinic, staff_clinic_services_attributes: %i[service_id])
   end
   # end of private
 end

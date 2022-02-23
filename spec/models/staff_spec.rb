@@ -7,14 +7,11 @@ RSpec.describe Staff, type: :model do
   it { should have_many(:phone_numbers).dependent(:destroy)}
   it { should have_many(:staff_clinics) } 
   it { should have_many(:clinics).through(:staff_clinics) }
-  it { should have_many(:staff_services) } 
-  it { should have_many(:services).through(:staff_services) } 
   
   it { should belong_to(:supervisor).class_name('User').optional }
 
   it { should accept_nested_attributes_for(:address).update_only(true) }
   it { should accept_nested_attributes_for(:phone_numbers).update_only(true) }
-  it { should accept_nested_attributes_for(:services).update_only(true) }
 
   describe "#validate_role" do
     context "when staff is created" do

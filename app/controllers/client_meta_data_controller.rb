@@ -14,7 +14,7 @@ class ClientMetaDataController < ApplicationController
 
   def get_selectable_options_data
     client_enrollments = @client.client_enrollments.active.where.not(source_of_payment: 'self_pay')
-    staff = @client.clinic.staff.joins(:role).where('role.name': ['bcba', 'rbt'])
+    staff = @client.clinic.staff_clinics
     selectable_options = { services: Service.all,
                            client_enrollments: client_enrollments,
                            service_providers: staff }

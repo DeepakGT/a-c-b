@@ -4325,20 +4325,7 @@ definitions:
           start_date:
             type: "string"
           end_date:
-            type: "string" 
-      services_attributes:
-        type: "object"
-        properties:
-          0:
-            type: "object"
-            properties:
-              name:
-                type: "string"
-              status:
-                type: "string"
-                enum: [active, inactive]
-              display_code:
-                type: "integer"
+            type: "string"
 
   ClientCreateParameters:
     type: "object"
@@ -4793,6 +4780,13 @@ definitions:
         type: "integer"
       is_home_clinic:
         type: "boolean"
+      staff_clinic_services_attributes:
+        type: "object"
+        properties:
+          service_id:
+            type: "array"
+            items:
+              type: "integer"
 
   ClientEnrollmentServiceCreateUpdateParameters:
     type: "object"

@@ -5,5 +5,5 @@ RSpec.describe ClientEnrollmentService, type: :model do
   it { should belong_to(:service) } 
 
   it { should have_many(:service_providers).class_name('ClientEnrollmentServiceProvider').dependent(:destroy) } 
-  it { should accept_nested_attributes_for(:service_providers).update_only(true)}
+  it { should accept_nested_attributes_for(:service_providers) }
 end
