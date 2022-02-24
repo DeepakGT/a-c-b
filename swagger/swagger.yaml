@@ -4175,7 +4175,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/definitions/SchedulingCreateParameters"
+              $ref: "#/definitions/SchedulingCreateUpdateParameters"
       responses:
         "200":
           description: "Created scheduling"
@@ -5025,7 +5025,7 @@ definitions:
               staff_id:
                 type: "integer"
 
-  SchedulingCreateParameters:
+  SchedulingCreateUpdateParameters:
     type: "object"
     properties: 
       client_id: 
@@ -5036,7 +5036,6 @@ definitions:
         type: "integer"
       status:
         type: "string"
-        enum: [scheduled, client_cancel_greater_than_24_h, client_cancel_less_than_24_h, client_no_show, non_billable, staff_cancellation, unavailable]
       date:
         type: "string"
       start_time:

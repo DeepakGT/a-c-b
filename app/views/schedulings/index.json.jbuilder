@@ -10,8 +10,8 @@ json.data do
     json.service_name schedule.service.name if schedule.service.present?
     json.status schedule.status
     json.date schedule.date
-    json.start_time schedule.start_time
-    json.end_time schedule.end_time
+    json.start_time schedule.start_time.strftime("%H:%M")
+    json.end_time schedule.end_time.strftime("%H:%M")
     json.units schedule.units
     json.minutes schedule.minutes
   end
