@@ -4201,6 +4201,50 @@ paths:
                 "errors": []
               }
 
+  /api/schedulings/{id}:
+    get:
+      summary: Scheduling detail
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "Scheduling id"
+        required: true
+      responses:
+        "200":
+          description: "Scheduling detail"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 1,
+                  "client_id": 16,
+                  "client_name": "Test Client3",
+                  "staff_id": 20,
+                  "staff_name": "May Dach",
+                  "service_id": 28,
+                  "service_name": "developmental test administration by physician",
+                  "status": "scheduled",
+                  "date": "2022-12-23",
+                  "start_time": null,
+                  "end_time": null,
+                  "units": "6",
+                  "minutes": "360"
+                }
+              }
+
 definitions:
   UserRegistrationParameters:
     type: "object"

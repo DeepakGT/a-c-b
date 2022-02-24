@@ -19,14 +19,14 @@ RSpec.describe SchedulingsController, type: :controller do
   let!(:staff) { create(:staff, :with_role, role_name: 'bcba') }
   
   describe "GET #index" do
-    let!(:schedulings) {create_list(:scheduling, 5)}
     context "when sign in" do
+      let!(:schedulings) {create_list(:scheduling, 5)}
       it "should list schedulings successfully" do
         set_auth_headers(auth_headers)
         
         get :index
         response_body = JSON.parse(response.body)
-
+        
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
         expect(response_body['total_records']).to eq(schedulings.count)
@@ -57,8 +57,6 @@ RSpec.describe SchedulingsController, type: :controller do
   end
 
   describe "POST #create" do
-    let(:start_time) { DateTime.now+0.1 }
-    let(:end_time) { DateTime.now+0.3 }
     context "when sign in" do
       it "should create scheduling successfully" do
         set_auth_headers(auth_headers)
@@ -81,6 +79,25 @@ RSpec.describe SchedulingsController, type: :controller do
         expect(response_body['data']['date']).to eq(Time.now.to_date.to_s)
         expect(response_body['data']['status']).to eq('scheduled')
         expect(response_body['data']['minutes']).to eq('288')
+      end
+    end
+  end
+
+  describe "GET #show" do
+    context "when sign in" do
+      let(:scheduling) { create(:scheduling, client_id: client.id, staff_id: staff.id, service_id: service.id) }
+      it "should fetch scheduling detail successfully" do
+        set_auth_headers(auth_headers)
+        
+        get :show, params: { id: scheduling.id }
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data']['id']).to eq(scheduling.id)
+        expect(response_body['data']['client_id']).to eq(client.id)
+        expect(response_body['data']['staff_id']).to eq(staff.id)
+        expect(response_body['data']['service_id']).to eq(service.id)
       end
     end
   end
