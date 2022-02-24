@@ -4818,7 +4818,7 @@ definitions:
         type: "string"
       relationship:
         type: "string"
-        enum: [parent_or_guardian, spouse_or_partner]
+        enum: [parent_or_guardian, spouse_or_partner, self]
       subscriber_name:
         type: "string"
       subscriber_phone:
