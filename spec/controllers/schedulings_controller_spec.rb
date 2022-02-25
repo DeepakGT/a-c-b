@@ -101,4 +101,62 @@ RSpec.describe SchedulingsController, type: :controller do
       end
     end
   end
+
+  describe "PUT #update" do
+    context "when sign in" do
+      let(:scheduling) { create(:scheduling, client_id: client.id, staff_id: staff.id, service_id: service.id) }
+      it "should update scheduling successfully" do
+        set_auth_headers(auth_headers)
+
+        put :update, params: { id: scheduling.id, status: 'unavailable' }
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data']['id']).to eq(scheduling.id)
+        expect(response_body['data']['status']).to eq('unavailable')
+      end
+
+      context "and update associated data" do
+        let(:staff) { create(:staff, :with_role, role_name: 'rbt') }
+        it "should update associated staff successfully" do
+          set_auth_headers(auth_headers)
+
+          put :update, params: { id: scheduling.id, staff_id: staff.id }
+          response_body = JSON.parse(response.body)
+
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data']['id']).to eq(scheduling.id)
+          expect(response_body['data']['staff_id']).to eq(staff.id)
+        end
+
+        let(:client) { create(:client, clinic_id: clinic.id) }
+        it "should update associated client successfully" do
+          set_auth_headers(auth_headers)
+
+          put :update, params: { id: scheduling.id, client_id: client.id }
+          response_body = JSON.parse(response.body)
+
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data']['id']).to eq(scheduling.id)
+          expect(response_body['data']['client_id']).to eq(client.id)
+        end
+
+        let(:service) { create(:service) }
+        it "should update associated service successfully" do
+          set_auth_headers(auth_headers)
+
+          put :update, params: { id: scheduling.id, service_id: service.id }
+          response_body = JSON.parse(response.body)
+
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data']['id']).to eq(scheduling.id)
+          expect(response_body['data']['service_id']).to eq(service.id)
+        end
+      end
+    end
+  end
 end

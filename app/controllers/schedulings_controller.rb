@@ -1,7 +1,7 @@
 class SchedulingsController < ApplicationController
   before_action :authenticate_user!
   before_action :authorize_user
-  before_action :set_scheduling, only: :show
+  before_action :set_scheduling, only: %i[show update]
 
   def index
     @schedules = Scheduling.order(:date).paginate(page: params[:page])
@@ -11,6 +11,10 @@ class SchedulingsController < ApplicationController
 
   def create
     @schedule = Scheduling.create(scheduling_params)
+  end
+
+  def update
+    @schedule.update(scheduling_params)
   end
 
   private

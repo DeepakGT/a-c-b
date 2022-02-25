@@ -4244,6 +4244,54 @@ paths:
                   "minutes": "360"
                 }
               }
+    put:
+      summary: scheduling update
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "Scheduling id"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/SchedulingCreateUpdateParameters"
+      responses:
+        "200":
+          description: "Updated scheduling"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 1,
+                  "client_id": 17,
+                  "client_name": "Test Client2",
+                  "staff_id": 24,
+                  "staff_name": "Fr. Dinorah",
+                  "service_id": 30,
+                  "service_name": "initial assessment",
+                  "status": "scheduled",
+                  "date": "2022-12-23",
+                  "start_time": "2022-02-23T18:27:57+05:30",
+                  "end_time": "2022-02-23T23:27:57+05:30",
+                  "units": "6",
+                  "minutes": "360"
+                },
+                "errors": []
+              }
 
 definitions:
   UserRegistrationParameters:
