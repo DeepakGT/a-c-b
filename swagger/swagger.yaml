@@ -4293,6 +4293,49 @@ paths:
                 "errors": []
               }
 
+  /api/schedulings/{scheduling_id}/soap_notes:
+    post:
+      summary: soap note create
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "scheduling_id"
+        description: "Associated Scheduling Id"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/SoapNoteCreateUpdateParameters"
+      responses:
+        "200":
+          description: "Created soap note"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 1,
+                  "scheduling_id": 5,
+                  "note": "test-note",
+                  "add_date": "2022-02-28",
+                  "creator_id": 7,
+                  "creator": "Odis Murphy"
+                },
+                "errors": []
+              }
+
 definitions:
   UserRegistrationParameters:
     type: "object"
@@ -5095,3 +5138,10 @@ definitions:
       minutes:
         type: "string"
       
+  SoapNoteCreateUpdateParameters:
+    type: "object"
+    properties:
+      note: 
+        type: "string"
+      add_date:
+        type: "string"

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_23_101351) do
+ActiveRecord::Schema.define(version: 2022_02_28_072511) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -248,6 +248,17 @@ ActiveRecord::Schema.define(version: 2022_02_23_101351) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "soap_notes", force: :cascade do |t|
+    t.string "note"
+    t.date "add_date"
+    t.bigint "scheduling_id", null: false
+    t.bigint "creator_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["creator_id"], name: "index_soap_notes_on_creator_id"
+    t.index ["scheduling_id"], name: "index_soap_notes_on_scheduling_id"
+  end
+
   create_table "staff_clinic_services", force: :cascade do |t|
     t.bigint "service_id", null: false
     t.datetime "created_at", precision: 6, null: false
@@ -345,6 +356,8 @@ ActiveRecord::Schema.define(version: 2022_02_23_101351) do
   add_foreign_key "schedulings", "services"
   add_foreign_key "schedulings", "users", column: "client_id"
   add_foreign_key "schedulings", "users", column: "staff_id"
+  add_foreign_key "soap_notes", "schedulings"
+  add_foreign_key "soap_notes", "users", column: "creator_id"
   add_foreign_key "staff_clinic_services", "services"
   add_foreign_key "staff_clinic_services", "staff_clinics"
   add_foreign_key "staff_clinics", "clinics"

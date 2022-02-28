@@ -38,6 +38,8 @@ Rails.application.routes.draw do
     get '/clients/:client_id/meta_data', to: 'client_meta_data#selectable_options'
     get '/scheduling_meta_data', to: 'scheduling_meta_data#selectable_options'
 
-    resources :schedulings
+    resources :schedulings, except: :destroy do
+      resources :soap_notes
+    end
   end
 end
