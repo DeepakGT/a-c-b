@@ -9,7 +9,8 @@ class Scheduling < ApplicationRecord
   private
 
   def validate_time
-    same_day_schedules = Scheduling.where(staff_id: self.staff_id, client_id: self.client_id, service_id: self.service_id, date: self.date)
+    possible_schedules = Scheduling.where.not(id: self.id)
+    same_day_schedules = possible_schedules.where(staff_id: self.staff_id, client_id: self.client_id, service_id: self.service_id, date: self.date)
     return if same_day_schedules.blank?
     
     overlapping_time_schedules = same_day_schedules.where("start_time <= ? AND end_time >= ?", self.start_time, self.end_time)

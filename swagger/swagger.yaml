@@ -4292,6 +4292,48 @@ paths:
                 },
                 "errors": []
               }
+    delete:
+      summary: scheduling delete
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "scheduling id"
+        required: true
+      responses:
+        "200":
+          description: "Deleted scheduling detail"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 1,
+                  "client_id": 16,
+                  "client_name": "Test Client3",
+                  "staff_id": 20,
+                  "staff_name": "May Dach",
+                  "service_id": 28,
+                  "service_name": "developmental test administration by physician",
+                  "status": "scheduled",
+                  "date": "2022-12-23",
+                  "start_time": null,
+                  "end_time": null,
+                  "units": "6",
+                  "minutes": "360"
+                }
+              }
 
   /api/schedulings/{scheduling_id}/soap_notes:
     post:

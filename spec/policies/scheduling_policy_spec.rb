@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe SchedulingPolicy, type: :policy do
   let!(:role1) { create(:role, name: 'aba_admin') }
   let!(:user1) { create(:user, :with_role, role_name: role1.name)}
-  let!(:role2) { create(:role, name: 'administrator', permissions: ['scheduling_view', 'scheduling_update']) }
+  let!(:role2) { create(:role, name: 'administrator', permissions: ['scheduling_view', 'scheduling_update', 'scheduling_delete']) }
   let!(:user2) { create(:user, :with_role, role_name: role2.name)}
   subject { described_class }
 
@@ -38,6 +38,16 @@ RSpec.describe SchedulingPolicy, type: :policy do
   end
 
   permissions :update? do
+    it "denies access if permission is not included" do
+      expect(subject).not_to permit(user1)
+    end
+
+    it "grants access if permission is included" do
+      expect(subject).to permit(user2)
+    end
+  end
+
+  permissions :destroy? do
     it "denies access if permission is not included" do
       expect(subject).not_to permit(user1)
     end

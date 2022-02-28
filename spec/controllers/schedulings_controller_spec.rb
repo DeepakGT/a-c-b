@@ -9,7 +9,7 @@ RSpec.describe SchedulingsController, type: :controller do
     @request.env["devise.mapping"] = Devise.mappings[:user]
   end
 
-  let!(:role) { create(:role, name: 'aba_admin', permissions: ['scheduling_view', 'scheduling_update'])}
+  let!(:role) { create(:role, name: 'aba_admin', permissions: ['scheduling_view', 'scheduling_update', 'scheduling_delete'])}
   let!(:user) { create(:user, :with_role, role_name: role.name) }
   let!(:auth_headers) { user.create_new_auth_token }
   let!(:organization) { create(:organization, name: 'org1') }
@@ -66,6 +66,8 @@ RSpec.describe SchedulingsController, type: :controller do
           staff_id: staff.id,
           service_id: service.id,
           date: Time.now.to_date,
+          start_time: '16:00',
+          end_time: '17:00',
           status: 'scheduled',
           minutes: '288'
         }
@@ -77,6 +79,8 @@ RSpec.describe SchedulingsController, type: :controller do
         expect(response_body['data']['staff_id']).to eq(staff.id)
         expect(response_body['data']['service_id']).to eq(service.id)
         expect(response_body['data']['date']).to eq(Time.now.to_date.to_s)
+        expect(response_body['data']['start_time']).to eq('16:00')
+        expect(response_body['data']['end_time']).to eq('17:00')
         expect(response_body['data']['status']).to eq('scheduled')
         expect(response_body['data']['minutes']).to eq('288')
       end
@@ -85,7 +89,8 @@ RSpec.describe SchedulingsController, type: :controller do
 
   describe "GET #show" do
     context "when sign in" do
-      let(:scheduling) { create(:scheduling, client_id: client.id, staff_id: staff.id, service_id: service.id) }
+      let(:scheduling) { create(:scheduling, client_id: client.id, staff_id: staff.id, service_id: service.id,
+        date: '2022-02-28', start_time: '9:00', end_time: '10:00') }
       it "should fetch scheduling detail successfully" do
         set_auth_headers(auth_headers)
         
@@ -104,17 +109,19 @@ RSpec.describe SchedulingsController, type: :controller do
 
   describe "PUT #update" do
     context "when sign in" do
-      let(:scheduling) { create(:scheduling, client_id: client.id, staff_id: staff.id, service_id: service.id) }
+      let(:scheduling) { create(:scheduling, client_id: client.id, staff_id: staff.id, service_id: service.id,
+        start_time: '12:00', end_time: '13:00') }
       it "should update scheduling successfully" do
         set_auth_headers(auth_headers)
 
-        put :update, params: { id: scheduling.id, status: 'unavailable' }
+        put :update, params: { id: scheduling.id, status: 'unavailable', end_time: '14:00' }
         response_body = JSON.parse(response.body)
 
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
         expect(response_body['data']['id']).to eq(scheduling.id)
         expect(response_body['data']['status']).to eq('unavailable')
+        expect(response_body['data']['end_time']).to eq('14:00')
       end
 
       context "and update associated data" do
@@ -156,6 +163,24 @@ RSpec.describe SchedulingsController, type: :controller do
           expect(response_body['data']['id']).to eq(scheduling.id)
           expect(response_body['data']['service_id']).to eq(service.id)
         end
+      end
+    end
+  end
+
+  describe "DELETE #destroy" do
+    context "when sign in" do
+      let(:scheduling) { create(:scheduling, client_id: client.id, staff_id: staff.id, service_id: service.id,
+        start_time: '17:00', end_time: '18:00') }
+      it "should delete scheduling detail successfully" do
+        set_auth_headers(auth_headers)
+
+        delete :destroy, params: { id: scheduling.id }
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data']['id']).to eq(scheduling.id)
+        expect(Scheduling.find_by_id(scheduling.id)).to eq(nil)    
       end
     end
   end
