@@ -4423,6 +4423,49 @@ paths:
                 "errors": []
               }
 
+  /api/schedulings/{scheduling_id}/soap_notes/{id}:
+    get:
+      summary: Soap Note detail
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "scheduling_id"
+        description: "Associated scheduling id"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "Soap note id"
+        required: true
+      responses:
+        "200":
+          description: "Soap note detail"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": [
+                  {
+                    "id": 1,
+                    "scheduling_id": 5,
+                    "note": "test-note",
+                    "add_date": "2022-02-28",
+                    "creator_id": 7,
+                    "creator": "Odis Murphy"
+                  }
+                ]
+              }
+
 definitions:
   UserRegistrationParameters:
     type: "object"
