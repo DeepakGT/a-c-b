@@ -2,6 +2,10 @@ class SoapNotesController < ApplicationController
   before_action :authenticate_user!
   before_action :set_scheduling
 
+  def index
+    @soap_notes = @scheduling.soap_notes.order(:add_date)
+  end
+
   def create 
     @soap_note = @scheduling.soap_notes.new(soap_note_params)
     @soap_note.creator_id = current_user.id

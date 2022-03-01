@@ -19,6 +19,22 @@ RSpec.describe SoapNotesController, type: :controller do
   let!(:staff) { create(:staff, :with_role, role_name: 'bcba') }
   let!(:scheduling) { create(:scheduling, client_id: client.id, staff_id: staff.id, service_id: service.id) }
 
+  describe "GET #index" do
+    context "when sign in" do
+      let!(:soap_notes) { create_list(:soap_note, 5, scheduling_id: scheduling.id)}
+      it "should fetch soap notes list successfully" do
+        set_auth_headers(auth_headers)
+
+        get :index, params: { scheduling_id: scheduling.id }
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data'].count).to eq(soap_notes.count)
+      end
+    end
+  end
+  
   describe "POST #create" do
     context "when sign in" do
       it "should create soap note successfully" do
