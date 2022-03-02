@@ -13,16 +13,4 @@ class Organization < ApplicationRecord
 
   validates :name, presence: true
   validates_uniqueness_of :name
-
-  # validations
-  validate :admin_must_be_a_aba_admin
-
-  private
-
-  def admin_must_be_a_aba_admin
-    errors.add(:admin, 'User must be an aba_admin.') unless admin.role_name=='aba_admin'
-  end
-
-  # end of private
-
 end

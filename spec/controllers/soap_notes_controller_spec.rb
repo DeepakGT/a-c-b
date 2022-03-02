@@ -12,7 +12,7 @@ RSpec.describe SoapNotesController, type: :controller do
   let!(:role) { create(:role, name: 'aba_admin', permissions: ['soap_notes_view', 'soap_notes_update', 'soap_notes_delete'])}
   let!(:user) { create(:user, :with_role, role_name: role.name) }
   let!(:auth_headers) { user.create_new_auth_token }
-  let!(:organization) { create(:organization, name: 'org1') }
+  let!(:organization) { create(:organization, name: 'org1', admin_id: user.id) }
   let!(:clinic) { create(:clinic, name: 'clinic1', organization_id: organization.id) }
   let!(:client) { create(:client, clinic_id: clinic.id) }
   let!(:service) { create(:service) }
@@ -24,13 +24,30 @@ RSpec.describe SoapNotesController, type: :controller do
       let!(:soap_notes) { create_list(:soap_note, 5, scheduling_id: scheduling.id)}
       it "should fetch soap notes list successfully" do
         set_auth_headers(auth_headers)
-
+        
         get :index, params: { scheduling_id: scheduling.id }
         response_body = JSON.parse(response.body)
 
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
         expect(response_body['data'].count).to eq(soap_notes.count)
+      end
+    end
+  end
+
+  describe "GET #show" do
+    context "when sign in" do
+      let(:soap_note) { create(:soap_note, scheduling_id: scheduling.id, note: 'test-note', add_date: '2022-02-28') }
+      it "should fetch soap note detail successfully" do
+        set_auth_headers(auth_headers)
+
+        get :show, params: { scheduling_id: scheduling.id, id: soap_note.id }
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data']['id']).to eq(soap_note.id)
+        expect(response_body['data']['scheduling_id']).to eq(scheduling.id)
       end
     end
   end
