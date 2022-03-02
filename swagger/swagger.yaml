@@ -4465,6 +4465,90 @@ paths:
                   }
                 ]
               }
+    put:
+      summary: soap note update
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "scheduling_id"
+        description: "associated scheduling id"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "soap_note id"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/SoapNoteCreateUpdateParameters"
+      responses:
+        "200":
+          description: "Updated soap note"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 1,
+                  "scheduling_id": 5,
+                  "note": "note-1",
+                  "add_date": "2022-03-01",
+                  "creator_id": 7,
+                  "creator": "Odis Murphy"
+                },
+                "errors": []
+              }
+    delete:
+      summary: soap note delete
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "scheduling_id"
+        description: "associated scheduling id"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "soap note id"
+        required: true
+      responses:
+        "200":
+          description: "Deleted soap note detail"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 1,
+                  "scheduling_id": 5,
+                  "note": "note-1",
+                  "add_date": "2022-03-01",
+                  "creator_id": 7,
+                  "creator": "Odis Murphy"
+                }
+              }
 
 definitions:
   UserRegistrationParameters:
@@ -4714,6 +4798,8 @@ definitions:
         type: "string"
       supervisor_id:
         type: "integer"
+      hired_at:
+        type: "string"
       terminated_on:
         type: "string"
       role_name:

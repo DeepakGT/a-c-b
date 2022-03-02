@@ -2,7 +2,7 @@ class SoapNotesController < ApplicationController
   before_action :authenticate_user!
   before_action :authorize_user
   before_action :set_scheduling
-  before_action :set_soap_note, only: :show
+  before_action :set_soap_note, only: %i[show update destroy]
 
   def index
     @soap_notes = @scheduling.soap_notes.order(:add_date)
@@ -14,6 +14,14 @@ class SoapNotesController < ApplicationController
     @soap_note = @scheduling.soap_notes.new(soap_note_params)
     @soap_note.creator_id = current_user.id
     @soap_note.save
+  end
+
+  def update
+    @soap_note.update(soap_note_params)
+  end
+
+  def destroy
+    @soap_note.destroy
   end
 
   private

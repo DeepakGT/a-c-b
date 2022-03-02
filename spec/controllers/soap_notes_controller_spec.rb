@@ -72,4 +72,41 @@ RSpec.describe SoapNotesController, type: :controller do
       end
     end
   end
+
+  describe "PUT #update" do
+    context "when sign in" do
+      let(:soap_note) { create(:soap_note, scheduling_id: scheduling.id, note: 'test-note-1', add_date: '2022-02-28') }
+      it "should fetch soap note detail successfully" do
+        set_auth_headers(auth_headers)
+
+        put :update, params: { scheduling_id: scheduling.id, id: soap_note.id, note: 'test-note', add_date: '2022-03-02' }
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data']['id']).to eq(soap_note.id)
+        expect(response_body['data']['scheduling_id']).to eq(scheduling.id)
+        expect(response_body['data']['note']).to eq('test-note')
+        expect(response_body['data']['add_date']).to eq('2022-03-02')
+      end
+    end
+  end
+
+  describe "DELETE #destroy" do
+    context "when sign in" do
+      let(:soap_note) { create(:soap_note, scheduling_id: scheduling.id, note: 'test-note', add_date: '2022-02-28') }
+      it "should fetch soap note detail successfully" do
+        set_auth_headers(auth_headers)
+
+        delete :destroy, params: { scheduling_id: scheduling.id, id: soap_note.id }
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data']['id']).to eq(soap_note.id)
+        expect(response_body['data']['scheduling_id']).to eq(scheduling.id)
+        expect(SoapNote.find_by_id(soap_note.id)).to eq(nil)
+      end
+    end
+  end
 end

@@ -41,7 +41,7 @@ class Staff < User
   private
 
   def validate_role
-    errors.add(:role, 'For staff, role must be bcba, rbt or billing.') if self.role_name!='bcba' && self.role_name!='billing' && self.role_name!='rbt'
+    errors.add(:role, 'cannot be super_admin for staff.') if self.role_name=='super_admin'
   end
 
   def set_status
