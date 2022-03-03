@@ -7,11 +7,12 @@ json.data do
     json.staff_id schedule.staff_id
     json.staff_name "#{schedule.staff.first_name} #{schedule.staff.last_name}" if schedule.staff.present?
     json.service_id schedule.service_id
-    json.service_name schedule.service.name if schedule.service.present?
+    json.service_name schedule.service.name
+    json.service_display_code schedule.service.display_code 
     json.status schedule.status
     json.date schedule.date
-    json.start_time schedule.start_time.strftime("%H:%M")
-    json.end_time schedule.end_time.strftime("%H:%M")
+    json.start_time schedule.start_time
+    json.end_time schedule.end_time
     json.units schedule.units
     json.minutes schedule.minutes
   end

@@ -7,6 +7,5 @@ FactoryBot.define do
     date { Time.now.to_date }
     start_time { DateTime.now+0.1 }
     end_time { DateTime.now+0.3 }
-    minutes { '288' }
   end
 end

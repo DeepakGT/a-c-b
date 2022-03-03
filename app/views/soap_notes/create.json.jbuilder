@@ -5,7 +5,7 @@ json.data do
   json.scheduling_id @soap_note.scheduling_id
   json.note @soap_note.note
   json.add_date @soap_note.add_date
-  json.creator_id user.id
-  json.creator "#{user.first_name} #{user.last_name}"
+  json.creator_id user&.id
+  json.creator "#{user&.first_name} #{user&.last_name}"
 end
 json.errors @soap_note.errors.full_messages

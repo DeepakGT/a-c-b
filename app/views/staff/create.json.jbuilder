@@ -34,13 +34,5 @@ json.data do
       json.status @staff.rbt_supervision.status
     end
   end
-  # json.services do
-  #   json.array! @staff.services do |service|
-  #     json.id service.id
-  #     json.name service.name
-  #     json.status service.status
-  #     json.display_code service.display_code
-  #   end
-  # end
 end
 json.errors @staff.errors.full_messages

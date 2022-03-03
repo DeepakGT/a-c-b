@@ -5,7 +5,7 @@ class FundingSourcesController < ApplicationController
   before_action :set_funding_source, only: %i[show update]
 
   def index
-    @funding_sources = @clinic.funding_sources.paginate(page: params[:page])
+    @funding_sources = @clinic.funding_sources.order(:created_at).paginate(page: params[:page])
   end
 
   def show; end

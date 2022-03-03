@@ -5,7 +5,7 @@ class CredentialsController < ApplicationController
 
   def index
     # if page parameter would be pass then return paginated records otherwise return all records
-    @credentials = Credential.all
+    @credentials = Credential.order(:created_at)
     @credentials = @credentials.paginate(page: params[:page]) if params[:page].present?
   end
 

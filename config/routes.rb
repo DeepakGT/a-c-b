@@ -16,7 +16,7 @@ Rails.application.routes.draw do
 
     resources :clients, only: %i[index create update show] do
       resources :client_enrollments
-      resources :client_enrollment_services
+      resources :client_enrollment_services, only: %i[create update show destroy]
       resources :contacts
       resources :notes, controller: 'client_notes'
       resources :attachments, controller: 'client_attachments'

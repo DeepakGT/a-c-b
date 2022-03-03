@@ -20,7 +20,7 @@ RSpec.describe SchedulingsController, type: :controller do
   
   describe "GET #index" do
     context "when sign in" do
-      let!(:schedulings) {create_list(:scheduling, 5)}
+      let!(:schedulings) {create_list(:scheduling, 5, units: '2')}
       it "should list schedulings successfully" do
         set_auth_headers(auth_headers)
         
@@ -90,7 +90,7 @@ RSpec.describe SchedulingsController, type: :controller do
   describe "GET #show" do
     context "when sign in" do
       let(:scheduling) { create(:scheduling, client_id: client.id, staff_id: staff.id, service_id: service.id,
-        date: '2022-02-28', start_time: '9:00', end_time: '10:00') }
+        date: '2022-02-28', start_time: '9:00', end_time: '10:00', units: '2') }
       it "should fetch scheduling detail successfully" do
         set_auth_headers(auth_headers)
         
@@ -110,7 +110,7 @@ RSpec.describe SchedulingsController, type: :controller do
   describe "PUT #update" do
     context "when sign in" do
       let(:scheduling) { create(:scheduling, client_id: client.id, staff_id: staff.id, service_id: service.id,
-        start_time: '12:00', end_time: '13:00') }
+        start_time: '12:00', end_time: '13:00', units: '2') }
       it "should update scheduling successfully" do
         set_auth_headers(auth_headers)
 
@@ -170,7 +170,7 @@ RSpec.describe SchedulingsController, type: :controller do
   describe "DELETE #destroy" do
     context "when sign in" do
       let(:scheduling) { create(:scheduling, client_id: client.id, staff_id: staff.id, service_id: service.id,
-        start_time: '17:00', end_time: '18:00') }
+        start_time: '17:00', end_time: '18:00', units: '2') }
       it "should delete scheduling detail successfully" do
         set_auth_headers(auth_headers)
 

@@ -22,7 +22,7 @@ json.data do
       json.array! client_enrollment.client_enrollment_services do |enrollment_service|
         json.id enrollment_service.id
         json.service_id enrollment_service.service_id
-        json.service_name enrollment_service.service.name
+        json.service_name enrollment_service.service&.name
         json.start_date enrollment_service.start_date
         json.end_date enrollment_service.end_date
         json.units enrollment_service.units
@@ -30,7 +30,7 @@ json.data do
         json.service_number enrollment_service.service_number
         json.service_providers do
           json.ids enrollment_service.service_providers.pluck(:staff_id)
-          json.names enrollment_service.staff.map{|staff| "#{staff.first_name} #{staff.last_name}"}
+          json.names enrollment_service.staff&.map{|staff| "#{staff.first_name} #{staff.last_name}"}
         end
       end
     end

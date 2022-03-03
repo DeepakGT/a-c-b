@@ -10,15 +10,15 @@ json.data do
     json.hired_at staff.hired_at
     json.terminated_on staff.terminated_on
     if staff_clinic.present?
-      json.organization_id staff_clinic.clinic.organization_id
-      json.organization_name staff_clinic.clinic.organization_name
+      json.organization_id staff_clinic.clinic&.organization_id
+      json.organization_name staff_clinic.clinic&.organization_name
       json.clinic_id staff_clinic.clinic_id
-      json.clinic_name staff_clinic.clinic.name
+      json.clinic_name staff_clinic.clinic&.name
     end
     json.status staff.status
     if staff.supervisor.present?
       json.supervisor_id staff.supervisor_id
-      json.immediate_supervisor "#{staff.supervisor.first_name} #{staff.supervisor.last_name}"
+      json.immediate_supervisor "#{staff.supervisor&.first_name} #{staff.supervisor&.last_name}"
     end
     json.phone staff.phone_numbers.first&.number
     json.phone_numbers do

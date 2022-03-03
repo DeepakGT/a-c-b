@@ -19,13 +19,4 @@ RSpec.describe Organization, type: :model do
     it { should validate_presence_of(:name) } 
     it { should validate_uniqueness_of(:name) } 
   end
-
-  describe "#admin_must_be_a_aba_admin" do
-    let(:user) { create(:user, :with_role, role_name: 'administrator') }
-    let(:organization) { build :organization, admin_id: user.id }
-    it "should be aba_admin" do
-      organization.validate
-      expect(organization.errors[:admin]).to include('User must be an aba_admin.')
-    end
-  end
 end

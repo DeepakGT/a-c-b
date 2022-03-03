@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_28_072511) do
+ActiveRecord::Schema.define(version: 2022_03_03_083807) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -94,14 +94,14 @@ ActiveRecord::Schema.define(version: 2022_02_28_072511) do
   end
 
   create_table "client_enrollments", force: :cascade do |t|
+    t.date "enrollment_date"
+    t.date "terminated_on"
+    t.text "notes"
     t.bigint "client_id", null: false
     t.bigint "funding_source_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.boolean "is_primary", default: false
-    t.date "terminated_on"
-    t.date "enrollment_date"
-    t.string "notes"
     t.string "insurance_id"
     t.string "group"
     t.string "group_employer"
@@ -225,8 +225,8 @@ ActiveRecord::Schema.define(version: 2022_02_28_072511) do
 
   create_table "schedulings", force: :cascade do |t|
     t.date "date"
-    t.datetime "start_time"
-    t.datetime "end_time"
+    t.string "start_time"
+    t.string "end_time"
     t.string "status"
     t.string "units"
     t.string "minutes"
