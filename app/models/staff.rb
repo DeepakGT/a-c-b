@@ -22,18 +22,17 @@ class Staff < User
   # scopes
   scope :by_organization, ->(org_name){ where('organization.name.downcase': org_name&.downcase)}
   scope :by_supervisor_name, ->(fname,lname){ where(supervisor_id: User.by_first_name(fname&.downcase).by_last_name(lname&.downcase)) }
-  scope :by_location, ->(location) do 
+
+  def self.by_location(query) 
     staff = self
-    location.each do |loc|
-      break if staff.none?
-      
+    query.split.each do |q|
       staff = staff.where('lower(addresses.line1) LIKE :loc OR
         lower(addresses.line2) LIKE :loc OR
         lower(addresses.line3) LIKE :loc OR
         lower(addresses.zipcode) LIKE :loc OR
         lower(addresses.city) LIKE :loc OR
         lower(addresses.state) LIKE :loc OR
-        lower(addresses.country) LIKE :loc', loc: loc&.downcase)
+        lower(addresses.country) LIKE :loc', loc: "%#{q&.downcase}%")
     end
     staff
   end

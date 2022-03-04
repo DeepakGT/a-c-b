@@ -91,15 +91,15 @@ class StaffController < ApplicationController
     end
   end
 
-  def search_on_all_fields(value)
+  def search_on_all_fields(query)
     staff = Staff.includes(:role, :address, clinics: :organization).all
-    formated_val = value.split.map{|x| "%#{x}%"}
-    fname, lname = value.split
+    # formated_val = query.split.map{|x| "%#{x}%"}
+    fname, lname = query.split
     staff.by_first_name(fname).by_last_name(lname)
-         .or(staff.by_organization(value))
-         .or(staff.by_role(value))
+         .or(staff.by_organization(query))
+         .or(staff.by_role(query))
          .or(staff.by_supervisor_name(fname,lname))
-         .or(staff.by_location(formated_val))
+         .or(staff.by_location(query))
   end
 
   def authorize_user
