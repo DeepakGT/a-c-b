@@ -36,6 +36,9 @@ gem 'rails', '~> 6.1.4'
 gem 'rack-cors'
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 
+# for jobs
+gem "sidekiq"
+
 gem 'rspec-rails'
 
 # Api documentation
@@ -47,6 +50,8 @@ gem 'rubocop', '~> 1.22', require: false
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 # pagination library 
 gem 'will_paginate', '~> 3.3'
+# to perform job daily
+gem 'whenever', require: false
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
