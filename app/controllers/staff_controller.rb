@@ -91,14 +91,14 @@ class StaffController < ApplicationController
   end
 
   def search_on_all_fields(query)
-    # staff = Staff.joins(:role, :address, clinics: :organization).all
+    staff = Staff.left_joins(:role, :address, clinics: :organization).all
     # formated_val = query.split.map{|x| "%#{x}%"}
     fname, lname = query.split
-    staff = Staff.by_first_name(fname).by_last_name(lname)
-         .or(Staff.by_organization(query)).joins(clinics: :organization)
-         .or(Staff.by_role(query)).joins(:role)
-         .or(Staff.by_supervisor_name(fname,lname))
-         .or(Staff.by_location(query)).joins(:address)
+    staff = staff.by_first_name(fname).by_last_name(lname)
+         .or(staff.by_organization(query))#.joins(clinics: :organization)
+         .or(staff.by_role(query))#.joins(:role)
+         .or(staff.by_supervisor_name(fname,lname))
+         .or(staff.by_location(query))#.joins(:address)
   end
 
   def authorize_user

@@ -459,6 +459,18 @@ paths:
         name: "uid"
         description: "Request headers"
         required: true
+      - in: "query"
+        name: "search_by"
+        schema:
+          type: "string"
+        description: "Field to search by"
+        required: false
+      - in: "query"
+        name: "search_value"
+        schema:
+          type: "string"
+        description: "value to be searched"
+        required: false
       responses:
         "200":
           description: "Staff list"
@@ -4113,6 +4125,18 @@ paths:
         name: "uid"
         description: "Request headers"
         required: true
+      - in: "query"
+        name: "search_by"
+        schema:
+          type: "string"
+        description: "Field to search by"
+        required: false
+      - in: "query"
+        name: "search_value"
+        schema:
+          type: "string"
+        description: "value to be searched"
+        required: false
       responses:
         "200":
           description: "Schedulings list"
