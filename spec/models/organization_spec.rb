@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe Organization, type: :model do
   let!(:user) { create(:user, :with_role, role_name: 'aba_admin') }
   subject { create(:organization, name: 'org1', admin_id: user.id)}
+  it {should belong_to(:admin).class_name('User')}
 
   context 'associations' do
     it { should have_one(:address) }

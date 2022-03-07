@@ -1,5 +1,5 @@
 class ClientEnrollment < ApplicationRecord
-  before_validation :set_status
+  before_save :set_status
 
   belongs_to :client
   belongs_to :funding_source, optional: true
@@ -18,4 +18,6 @@ class ClientEnrollment < ApplicationRecord
       self.client.status = Client.statuses['active'] 
     end
   end
+  # end of private
+  
 end

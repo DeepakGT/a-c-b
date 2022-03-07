@@ -6,9 +6,9 @@ RSpec.describe User, type: :model do
     it { should have_one(:rbt_supervision).dependent(:destroy)}
 
     it { should have_one(:role).through(:user_role)}
-
-    it { should accept_nested_attributes_for(:rbt_supervision).update_only(true) }
   end
+
+  it { should accept_nested_attributes_for(:rbt_supervision).update_only(true) }
 
   describe 'enums' do
     it { should define_enum_for(:status)}
@@ -34,14 +34,6 @@ RSpec.describe User, type: :model do
   it { should delegate_method(:name).to(:role).with_prefix(true).allow_nil }
 
   describe "#validate_status" do
-    context "when user is active" do
-      let(:user) { build :user, :with_role, role_name: 'aba_admin', status: 'active', terminated_on: Date.new }
-      it "termination date should be blank" do
-        user.validate
-        expect(user.errors[:status]).to include('For an active user, terminated date must be blank.')
-      end
-    end
-
     context "when user is inactive" do
       let(:user) { build :user, :with_role, role_name: 'aba_admin', status: 'inactive' }
       it "termination date must be present" do

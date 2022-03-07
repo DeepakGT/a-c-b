@@ -14,9 +14,9 @@ RSpec.describe SchedulingsController, type: :controller do
   let!(:auth_headers) { user.create_new_auth_token }
   let!(:organization) { create(:organization, name: 'org1') }
   let!(:clinic) { create(:clinic, name: 'clinic1', organization_id: organization.id) }
-  let!(:client) { create(:client, clinic_id: clinic.id) }
+  let!(:client) { create(:client, clinic_id: clinic.id, first_name: 'test') }
   let!(:service) { create(:service) }
-  let!(:staff) { create(:staff, :with_role, role_name: 'bcba') }
+  let!(:staff) { create(:staff, :with_role, role_name: 'bcba', first_name: 'abcd') }
   
   describe "GET #index" do
     context "when sign in" do
@@ -53,6 +53,39 @@ RSpec.describe SchedulingsController, type: :controller do
         expect(response_body['status']).to eq('success')
         expect(response_body['page']).to eq("2")
       end
+
+      it "should staff filter by client name successfully" do
+        set_auth_headers(auth_headers)
+        
+        get :index, params: { search_by:"client_name", search_value: client.first_name }
+        response_body = JSON.parse(response.body)
+        
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data'].count).to eq(Scheduling.joins(:client).by_first_name(client.first_name).count)
+      end
+
+      it "should staff filter by staff name successfully" do
+        set_auth_headers(auth_headers)
+        
+        get :index, params: { search_by:"staff_name", search_value: staff.first_name }
+        response_body = JSON.parse(response.body)
+        
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data'].count).to eq(Scheduling.joins(:staff).by_first_name(staff.first_name).count)
+      end
+
+      it "should list staff filtered by service successfully" do
+        set_auth_headers(auth_headers)
+
+        get :index, params: { search_by:"service", search_value: service.name}
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data'].count).to eq(Scheduling.joins(:service).by_service(service.name).count)
+      end
     end
   end
 
@@ -82,7 +115,7 @@ RSpec.describe SchedulingsController, type: :controller do
         expect(response_body['data']['start_time']).to eq('16:00')
         expect(response_body['data']['end_time']).to eq('17:00')
         expect(response_body['data']['status']).to eq('scheduled')
-        expect(response_body['data']['minutes']).to eq('288')
+        expect(response_body['data']['minutes']).to eq(288.0)
       end
     end
   end
