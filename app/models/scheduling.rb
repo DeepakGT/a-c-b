@@ -10,6 +10,13 @@ class Scheduling < ApplicationRecord
 
   validate :validate_time
 
+  scope :by_status, ->{ where('lower(status) = ?','scheduled') }
+  scope :completed_scheduling, ->{ where('date < ?',Time.now.to_date) }
+  scope :scheduled_scheduling, ->{ where('date >= ?',Time.now.to_date) }
+  scope :with_units, ->{ where.not(units: nil) }
+  scope :with_minutes, ->{ where.not(minutes: nil) }
+  scope :by_client_and_service, ->(client_id, service_id){ where(client_id: client_id, service_id: service_id)}
+
   private
 
   def validate_time

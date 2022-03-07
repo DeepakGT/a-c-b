@@ -20,7 +20,7 @@ class Staff < User
   before_validation :set_status
 
   # scopes
-  scope :by_organization, ->(org_name){ where('organization.name.downcase': org_name&.downcase)}
+  scope :by_organization, ->(org_name){ where('lower(organizations.name) = ?', org_name&.downcase)}
   scope :by_supervisor_name, ->(fname,lname){ where(supervisor_id: User.by_first_name(fname&.downcase).by_last_name(lname&.downcase)) }
 
   def self.by_location(query) 
@@ -46,6 +46,8 @@ class Staff < User
   def set_status
     if self.terminated_on.present? && self.terminated_on <= Time.now.to_date
       self.status = Staff.statuses['inactive'] 
+    elsif self.terminated_on.blank? || self.terminated_on > Time.now.to_date
+      self.status = Staff.statuses['active'] 
     end
   end
   # end of privates

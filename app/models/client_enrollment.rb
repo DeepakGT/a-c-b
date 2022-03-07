@@ -1,4 +1,6 @@
 class ClientEnrollment < ApplicationRecord
+  before_validation :set_status
+
   belongs_to :client
   belongs_to :funding_source, optional: true
   has_many :client_enrollment_services
@@ -8,4 +10,12 @@ class ClientEnrollment < ApplicationRecord
 
   scope :active, ->{ where('terminated_on > ?',Time.now.to_date).or(where('terminated_on IS NULL')) }
   scope :except_ids, ->(ids) { where.not(id: ids) }
+
+  private
+
+  def set_status
+    if self.client.status=='inactive' && (self.terminated_on.blank? || self.terminated_on > Time.now.to_date)
+      self.client.status = Client.statuses['active'] 
+    end
+  end
 end

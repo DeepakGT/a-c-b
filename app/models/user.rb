@@ -41,7 +41,7 @@ class User < ActiveRecord::Base
   # scopes
   scope :by_first_name, ->(fname){ where('lower(first_name) LIKE ?',"%#{fname.downcase}%") }
   scope :by_last_name, ->(lname){ where('lower(last_name) LIKE ?', "%#{lname&.downcase}%") }
-  scope :by_role, ->(role_name){ where('role.name.downcase': role_name&.downcase)}
+  scope :by_role, ->(title){ where('lower(roles.name) = ?', title&.downcase)}
 
   # delegates
   delegate :name, to: :role, prefix: true, allow_nil: true

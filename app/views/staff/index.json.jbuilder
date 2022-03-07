@@ -28,6 +28,18 @@ json.data do
         json.number phone.number
       end
     end
+    if staff.address.present?
+      json.address do
+        json.id staff.address.id
+        json.line1 staff.address.line1
+        json.line2 staff.address.line2
+        json.line3 staff.address.line3
+        json.zipcode staff.address.zipcode
+        json.city staff.address.city
+        json.state staff.address.state
+        json.country staff.address.country
+      end
+    end
   end
 end
 json.total_records @staff.total_entries
