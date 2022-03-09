@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe StaffCredentialPolicy, type: :policy do
+RSpec.describe StaffQualificationPolicy, type: :policy do
   let!(:role1) { create(:role, name: 'aba_admin') }
   let!(:user1) { create(:user, :with_role, role_name: role1.name)}
   let!(:role2) { create(:role, name: 'administrator', permissions: ['staff_qualification_view', 'staff_qualification_update', 'staff_qualification_delete']) }

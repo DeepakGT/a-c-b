@@ -1,4 +1,4 @@
-class StaffCredentialPolicy < ApplicationPolicy
+class StaffQualificationPolicy < ApplicationPolicy
   def index?
     show? || update? || destroy?
   end

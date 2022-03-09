@@ -14,13 +14,16 @@ class ServicesController < ApplicationController
   def show; end
 
   def update
-    @service.update(service_params)
+    Service.transaction do
+      remove_qualifications if params[:service_qualifications_attributes].present?
+      @service.update(service_params)
+    end
   end
 
   private
 
   def service_params
-    params.permit(:name, :status, :display_code)
+    params.permit(:name, :status, :display_code, service_qualifications_attributes: :qualification_id)
   end
 
   def set_service
@@ -29,6 +32,10 @@ class ServicesController < ApplicationController
 
   def authorize_user
     authorize Service if current_user.role_name!='super_admin'
+  end
+
+  def remove_qualifications
+    @service.qualifications.destroy_all
   end
   # end of private
 

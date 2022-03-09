@@ -1,6 +1,6 @@
 class Staff < User
-  has_many :staff_credentials, dependent: :destroy, foreign_key: :staff_id
-  has_many :credentials, through: :staff_credentials
+  has_many :staff_qualifications, dependent: :destroy, foreign_key: :staff_id
+  has_many :qualifications, through: :staff_qualifications
   has_one :address, as: :addressable, dependent: :destroy
   has_many :phone_numbers, as: :phoneable, dependent: :destroy
   has_many :staff_clinics

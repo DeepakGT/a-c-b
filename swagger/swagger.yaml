@@ -716,7 +716,7 @@ paths:
 
   /api/credentials:
     get:
-      summary: List of credentials
+      summary: List of qualifications
       parameters:
       - in: "header"
         name: "access-token"
@@ -732,7 +732,7 @@ paths:
         required: true
       responses:
         "200":
-          description: "Credentials list"
+          description: "qualifications list"
           content:
             application/json:
               example: {
@@ -755,7 +755,7 @@ paths:
                           ]
                         }
     post:
-      summary: Credential create
+      summary: qualification create
       parameters:
       - in: "header"
         name: "access-token"
@@ -773,10 +773,10 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/definitions/CredentialCreateParameters"
+              $ref: "#/definitions/QualificationCreateParameters"
       responses:
         "200":
-          description: "Credentials list"
+          description: "qualifications list"
           content:
             application/json:
               example: {
@@ -792,7 +792,7 @@ paths:
 
   /api/credentials/{id}:
     put:
-      summary: credential update
+      summary: qualification update
       parameters:
       - in: "header"
         name: "access-token"
@@ -808,16 +808,16 @@ paths:
         required: true
       - in: "path"
         name: "id"
-        description: "Credential id"
+        description: "qualification id"
         required: true
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/definitions/CredentialUpdateParameters"
+              $ref: "#/definitions/QualificationUpdateParameters"
       responses:
         "200":
-          description: "Updated Credential"
+          description: "Updated qualification"
           content:
             application/json:
               example: {
@@ -831,7 +831,7 @@ paths:
                           }
                         }
     get:
-      summary: credential show
+      summary: qualification show
       parameters:
       - in: "header"
         name: "access-token"
@@ -847,11 +847,11 @@ paths:
         required: true
       - in: "path"
         name: "id"
-        description: "Credential id"
+        description: "qualification id"
         required: true
       responses:
         "200":
-          description: "Credential detail"
+          description: "qualification detail"
           content:
             application/json:
               example: {
@@ -927,16 +927,22 @@ paths:
                 "status": "success",
                 "data": [
                     {
-                        "id": 2,
-                        "name": "additional 30 minutes spent performing activities",
-                        "display_code": null,
-                        "category": null
+                      "id": 2,
+                      "name": "additional 30 minutes spent performing activities",
+                      "display_code": null,
+                      "qualification_ids": [
+                        4,
+                        8
+                      ],
+                      "qualification_names": [
+                        "Associate's Degree",
+                        "Auto Insurance"
+                      ]
                     },
                     {
-                        "id": 3,
-                        "name": "caregiver training",
-                        "display_code": null,
-                        "category": null
+                      "id": 3,
+                      "name": "caregiver training",
+                      "display_code": null
                     }
                   ]
                 }
@@ -971,7 +977,15 @@ paths:
                           "id": 9,
                           "name": "test-service-name",
                           "status": "active",
-                          "display_code": null
+                          "display_code": 0,
+                          "qualification_ids": [
+                            4,
+                            8
+                          ],
+                          "qualification_names": [
+                            "Associate's Degree",
+                            "Auto Insurance"
+                          ]
                         }
                       }
 
@@ -1008,10 +1022,18 @@ paths:
               example: {
                 "status": "success",
                 "data": {
-                    "id": 1,
-                    "name": "test-service-name-updated",
-                    "status": "active",
-                    "display_code": null
+                  "id": 1,
+                  "name": "test-service-name-updated",
+                  "status": "active",
+                  "display_code": null,
+                  "qualification_ids": [
+                    4,
+                    8
+                  ],
+                  "qualification_names": [
+                    "Associate's Degree",
+                    "Auto Insurance"
+                  ]
                 }
               }
     get:
@@ -1041,10 +1063,18 @@ paths:
               example: {
                 "status": "success",
                 "data": {
-                    "id": 27,
-                    "name": "test-service-name-up-2",
-                    "status": "active",
-                    "display_code": 21
+                  "id": 27,
+                  "name": "test-service-name-up-2",
+                  "status": "active",
+                  "display_code": 21,
+                  "qualification_ids": [
+                    4,
+                    8
+                  ],
+                  "qualification_names": [
+                    "Associate's Degree",
+                    "Auto Insurance"
+                  ]
                 }
               }
 
@@ -1318,7 +1348,7 @@ paths:
 
   /api/staff/{staff_id}/staff_credentials:
     get:
-      summary: staff credential listing
+      summary: staff qualification listing
       parameters:
       - in: "header"
         name: "access-token"
@@ -1338,7 +1368,7 @@ paths:
         required: true
       responses:
         "200":
-          description: "Staff Credendentials list"
+          description: "Staff qualifications list"
           content:
             application/json:
               example: {
@@ -1356,7 +1386,7 @@ paths:
                 ]
               }
     post:
-      summary: staff credential create
+      summary: staff qualification create
       parameters:
       - in: "header"
         name: "access-token"
@@ -1378,10 +1408,10 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/definitions/StaffCredentialCreateUpdateParameters"
+              $ref: "#/definitions/StaffQualificationCreateUpdateParameters"
       responses:
         "200":
-          description: "Created staff credential"
+          description: "Created staff qualification"
           content:
             application/json:
               example: {
@@ -1397,7 +1427,7 @@ paths:
               }
   /api/staff/{staff_id}/staff_credentials/{id}:
     get:
-      summary: staff credential show
+      summary: staff qualification show
       parameters:
       - in: "header"
         name: "access-token"
@@ -1417,11 +1447,11 @@ paths:
         required: true
       - in: "path"
         name: "id"
-        description: "staff_credential id"
+        description: "staff_qualification id"
         required: true
       responses:
         "200":
-          description: "Staff credential detail"
+          description: "Staff qualification detail"
           content:
             application/json:
               example: {
@@ -1437,7 +1467,7 @@ paths:
                 }
               }
     put:
-      summary: staff credential update
+      summary: staff qualification update
       parameters:
       - in: "header"
         name: "access-token"
@@ -1457,16 +1487,16 @@ paths:
         required: true
       - in: "path"
         name: "id"
-        description: "Staff credential id"
+        description: "Staff qualification id"
         required: true
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/definitions/StaffCredentialCreateUpdateParameters"
+              $ref: "#/definitions/StaffQualificationCreateUpdateParameters"
       responses:
         "200":
-          description: "Updated staff credential"
+          description: "Updated staff qualification"
           content:
             application/json:
               example: {
@@ -1481,7 +1511,7 @@ paths:
                 }
               }
     delete:
-      summary: staff credential delete
+      summary: staff qualification delete
       parameters:
       - in: "header"
         name: "access-token"
@@ -1501,11 +1531,11 @@ paths:
         required: true
       - in: "path"
         name: "id"
-        description: "staff_credential id"
+        description: "staff_qualification id"
         required: true
       responses:
         "200":
-          description: "Deleted Staff credential detail"
+          description: "Deleted Staff qualification detail"
           content:
             application/json:
               example: {
@@ -4995,7 +5025,7 @@ definitions:
                 type: "string"
                 enum: [office, insurance_address, service_address]
 
-  CredentialCreateParameters:
+  QualificationCreateParameters:
     type: "object"
     properties:
       name:
@@ -5007,7 +5037,7 @@ definitions:
       credential_type:
         type: integer
 
-  CredentialUpdateParameters:
+  QualificationUpdateParameters:
     type: "object"
     properties:
       name:
@@ -5028,6 +5058,14 @@ definitions:
         type: "integer"
       display_code:
         type: "integer"
+      service_qualifications_attributes:
+        type: "object"
+        properties:
+          0:
+            type: "object"
+            properties:
+              qualification_id:
+                type: "integer"
 
   FundingSourceCreateUpdateParameters:
     type: "object"
@@ -5075,7 +5113,7 @@ definitions:
           country:
             type: "string"
 
-  StaffCredentialCreateUpdateParameters:
+  StaffQualificationCreateUpdateParameters:
     type: "object"
     properties:
       credential_id:
@@ -5320,13 +5358,6 @@ definitions:
         type: "integer"
       is_home_clinic:
         type: "boolean"
-      staff_clinic_services_attributes:
-        type: "object"
-        properties:
-          service_id:
-            type: "array"
-            items:
-              type: "integer"
 
   ClientEnrollmentServiceCreateUpdateParameters:
     type: "object"

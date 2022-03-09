@@ -28,7 +28,7 @@ RSpec.describe MetaDataController, type: :controller do
         expect(response_body['data']['dq_reasons'].count).to eq(Client.dq_reasons.count)
         expect(response_body['data']['relation_types'].count).to eq(Contact.relation_types.count)
         expect(response_body['data']['relations'].count).to eq(Contact.relations.count)
-        expect(response_body['data']['credential_types'].count).to eq(Credential.credential_types.count)
+        expect(response_body['data']['credential_types'].count).to eq(Qualification.credential_types.count)
         expect(response_body['data']['roles'].count).to eq(Role.all.count)
         expect(response_body['data']['phone_types'].count).to eq(PhoneNumber.phone_types.count)
         expect(response_body['data']['country_list'].count).to eq(country_lists.count+1)

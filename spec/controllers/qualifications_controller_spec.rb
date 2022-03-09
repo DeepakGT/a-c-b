@@ -1,7 +1,7 @@
 require 'rails_helper'
 require "support/render_views"
 
-RSpec.describe CredentialsController, type: :controller do
+RSpec.describe QualificationsController, type: :controller do
   before :each do
     request.headers["accept"] = 'application/json'
   end
@@ -16,18 +16,18 @@ RSpec.describe CredentialsController, type: :controller do
   
   describe "GET #index" do  
     context "when sign in" do 
-      let!(:credentials) { create_list(:credential, 10) }
-      it "should list all credential" do
+      let!(:qualifications) { create_list(:qualification, 10) }
+      it "should list all qualification" do
         set_auth_headers(auth_headers)
         get :index
         response_body = JSON.parse(response.body)
 
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
-        expect(response_body['data'].count).to eq(credentials.count)
+        expect(response_body['data'].count).to eq(qualifications.count)
       end
 
-      it "should list all credentials on a specific page" do
+      it "should list all qualifications on a specific page" do
         set_auth_headers(auth_headers)
 
         get :index, params: { page: 2 }
@@ -42,7 +42,7 @@ RSpec.describe CredentialsController, type: :controller do
  
   describe "POST #create" do   
     context "when sign in" do
-      it "should create a credential" do
+      it "should create a qualification" do
         set_auth_headers(auth_headers)
         post :create, params: { 
           credential_type: 'certification',
@@ -61,18 +61,18 @@ RSpec.describe CredentialsController, type: :controller do
 
   describe "GET #show" do  
     context "when sign in" do
-      let(:credential) { create(:credential, credential_type: 'education') }
+      let(:qualification) { create(:qualification, credential_type: 'education') }
 
-      it "should show credential" do
+      it "should show qualification" do
         set_auth_headers(auth_headers)
       
-        get :show, params: { id: credential.id }
+        get :show, params: { id: qualification.id }
         
         response_body = JSON.parse(response.body)
 
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
-        expect(response_body['data']['id']).to eq(credential.id)
+        expect(response_body['data']['id']).to eq(qualification.id)
         expect(response_body['data']['type']).to eq('education')
       end
     end
@@ -80,10 +80,10 @@ RSpec.describe CredentialsController, type: :controller do
 
   describe "PUT #update" do  
     context "when sign in" do
-      let!(:credential) { create(:credential, credential_type: 'education') }
-      it "should update credential" do
+      let!(:qualification) { create(:qualification, credential_type: 'education') }
+      it "should update qualification" do
         set_auth_headers(auth_headers)
-        put :update, params: { id: credential.id, credential_type: 'certification' }
+        put :update, params: { id: qualification.id, credential_type: 'certification' }
 
         response_body = JSON.parse(response.body)
         
@@ -104,8 +104,8 @@ RSpec.describe CredentialsController, type: :controller do
         
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
-        expect(response_body['data'].map{|hash| hash['type']}).to match_array Credential.credential_types.keys
-        expect(response_body['data'].map{|hash| hash['id']}).to match_array Credential.credential_types.values
+        expect(response_body['data'].map{|hash| hash['type']}).to match_array Qualification.credential_types.keys
+        expect(response_body['data'].map{|hash| hash['id']}).to match_array Qualification.credential_types.values
         expect(response_body['data']).to be_a_kind_of(Array)
       end
     end

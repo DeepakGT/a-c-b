@@ -1,4 +1,4 @@
-class CredentialPolicy < ApplicationPolicy
+class QualificationPolicy < ApplicationPolicy
   def index?
     show? || update?
   end

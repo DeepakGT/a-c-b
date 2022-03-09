@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :credential do
+  factory :qualification do
     name {Faker::Lorem.word}
   end
 end

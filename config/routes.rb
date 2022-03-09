@@ -17,7 +17,7 @@ Rails.application.routes.draw do
       resources :funding_sources, only: %i[index create update show]
     end
     resources :staff do
-      resources :staff_credentials
+      resources :staff_credentials, controller: 'staff_qualifications'
       resources :staff_clinics
     end
 
@@ -29,7 +29,7 @@ Rails.application.routes.draw do
       resources :attachments, controller: 'client_attachments'
     end
     
-    resources :credentials, only: %i[index show create update] do
+    resources :credentials, controller: 'qualifications', only: %i[index show create update] do
       get :types, on: :collection
     end
 

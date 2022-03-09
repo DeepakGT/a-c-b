@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe CredentialPolicy, type: :policy do
+RSpec.describe QualificationPolicy, type: :policy do
   let!(:role1) { create(:role, name: 'aba_admin') }
   let!(:user1) { create(:user, :with_role, role_name: role1.name)}
   let!(:role2) { create(:role, name: 'administrator', permissions: ['qualification_view', 'qualification_update']) }
