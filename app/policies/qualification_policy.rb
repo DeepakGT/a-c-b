@@ -18,4 +18,8 @@ class QualificationPolicy < ApplicationPolicy
 
     false
   end
+
+  def destroy?
+    false
+  end
 end

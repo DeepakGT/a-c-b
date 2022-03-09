@@ -27,4 +27,10 @@ RSpec.describe RolePolicy, type: :policy do
       expect(subject).not_to permit(user1)
     end
   end
+
+  permissions :destroy? do
+    it "denies access" do
+      expect(subject).not_to permit(user1)
+    end
+  end
 end

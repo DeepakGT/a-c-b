@@ -114,6 +114,7 @@ RSpec.describe FundingSourcesController, type: :controller do
         let!(:updated_phone_number) {'8989898989'}
         it "should update phone number successfully" do
           set_auth_headers(auth_headers)
+
           put :update, params: {clinic_id: clinic.id, id: funding_source.id, phone_number_attributes: {number: updated_phone_number} }
           response_body = JSON.parse(response.body)
 
@@ -121,6 +122,25 @@ RSpec.describe FundingSourcesController, type: :controller do
           expect(response_body['status']).to eq('success')
           expect(response_body['data']['phone_number']['number']).to eq(updated_phone_number)
         end
+      end
+    end
+  end
+
+  describe "DELETE #destroy" do
+    context "when sign in" do
+      let(:user) { create(:user, :with_role, role_name: 'super_admin') }
+      let(:auth_headers) { user.create_new_auth_token }
+      let(:funding_source) {create(:funding_source, clinic_id: clinic.id)}
+      it "should delete funding source successfully" do
+        set_auth_headers(auth_headers)
+
+        delete :destroy, params: { clinic_id: clinic.id, id: funding_source.id }
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data']['id']).to eq(funding_source.id)
+        expect(FundingSource.find_by_id(funding_source.id)).to eq(nil)
       end
     end
   end

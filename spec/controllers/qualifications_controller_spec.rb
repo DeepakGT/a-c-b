@@ -110,4 +110,23 @@ RSpec.describe QualificationsController, type: :controller do
       end
     end
   end
+
+  describe "DELETE #destroy" do
+    context "when sign in" do
+      let(:user) { create(:user, :with_role, role_name: 'super_admin') }
+      let(:auth_headers) { user.create_new_auth_token }
+      let(:qualification) { create(:qualification, credential_type: 'education') }
+      it "should delete qualification successfully" do
+        set_auth_headers(auth_headers)
+
+        delete :destroy, params: { id: qualification.id }
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data']['id']).to eq(qualification.id)
+        expect(Qualification.find_by_id(qualification.id)).to eq(nil)
+      end
+    end
+  end
 end

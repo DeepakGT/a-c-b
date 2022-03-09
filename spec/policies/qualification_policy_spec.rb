@@ -46,4 +46,11 @@ RSpec.describe QualificationPolicy, type: :policy do
       expect(subject).to permit(user2)
     end
   end
+
+  permissions :destroy? do
+    it "denies access" do
+      expect(subject).not_to permit(user1)
+      expect(subject).not_to permit(user2)
+    end
+  end
 end

@@ -1,7 +1,7 @@
 class ClientsController < ApplicationController
   before_action :authenticate_user!
   before_action :authorize_user
-  before_action :set_client, only: %i[show update]
+  before_action :set_client, only: %i[show update destroy]
 
   def index
     @clients = Client.order(:first_name).paginate(page: params[:page])
@@ -17,6 +17,10 @@ class ClientsController < ApplicationController
 
   def update
     @client.update_with_exception_handler(client_params)
+  end
+
+  def destroy
+    @client.destroy
   end
 
   private

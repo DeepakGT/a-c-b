@@ -442,6 +442,58 @@ paths:
                 },
                 "errors": []
               }
+    delete:
+      summary: clinic delete
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "clinic id"
+        required: true
+      responses:
+        "200":
+          description: "Clinic deleted"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 3,
+                  "name": "clinic3",
+                  "aka": "Test Clinic ",
+                  "web": "www.clinic3.com",
+                  "email": "admin@clinic3.com",
+                  "status": "inactive",
+                  "organization_id": 4,
+                  "organization_name": "Organization 4",
+                  "phone_number": {
+                    "id": 3,
+                    "phone_type": "work",
+                    "number": "7890123457"
+                  },
+                  "address": {
+                    "id": 3,
+                    "line1": "Princess Business Skypark",
+                    "line2": null,
+                    "line3": null,
+                    "zipcode": null,
+                    "city": "Indore",
+                    "state": null,
+                    "country": null
+                  }
+                }
+              }
   
   /api/staff:
     get:
@@ -864,6 +916,40 @@ paths:
                               "lifetime": false
                           }
                         }
+    delete:
+      summary: qualification delete
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "qualification id"
+        required: true
+      responses:
+        "200":
+          description: "qualification deleted"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                    "id": 1,
+                    "type": "education",
+                    "name": "name",
+                    "description": "some description",
+                    "lifetime": false
+                }
+              }
 
   /api/supervisor_list:
     get:
@@ -1058,6 +1144,47 @@ paths:
       responses:
         "200":
           description: "Service detail"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 27,
+                  "name": "test-service-name-up-2",
+                  "status": "active",
+                  "display_code": 21,
+                  "qualification_ids": [
+                    4,
+                    8
+                  ],
+                  "qualification_names": [
+                    "Associate's Degree",
+                    "Auto Insurance"
+                  ]
+                }
+              }
+    delete:
+      summary: Service delete
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "Service id"
+        required: true
+      responses:
+        "200":
+          description: "deleted service"
           content:
             application/json:
               example: {
@@ -1344,6 +1471,63 @@ paths:
                     }
                 },
                 "errors": []
+              }
+    delete:
+      summary: Funding source delete
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "clinic_id"
+        description: "Associated Clinic id"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "Funding source id to delete"
+        required: true
+      responses:
+        "200":
+          description: "Deleted funding source"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                    "id": 11,
+                    "name": "fs1",
+                    "plan_name": "abc",
+                    "payor_type": "commercial",
+                    "network_status": "in_network",
+                    "status": "active",
+                    "email": "contact@fs1.com",
+                    "notes": "good",
+                    "clinic_id": 1,
+                    "address": {
+                      "id": 1,
+                      "line1": "Princess Business Skypark",
+                      "line2": null,
+                      "line3": null,
+                      "zipcode": null,
+                      "city": "Indore",
+                      "state": null,
+                      "country": null
+                    },
+                    "phone_number": {
+                      "id": 2,
+                      "phone_type": "work",
+                      "number": "8989898988"
+                    }
+                }
               }
 
   /api/staff/{staff_id}/staff_credentials:
@@ -2106,6 +2290,49 @@ paths:
                   }
                 },
                 "errors": []
+              }
+    delete:
+      summary: Client delete
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "Client id"
+        required: true
+      responses:
+        "200":
+          description: "Deleted client"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 11,
+                  "first_name": "Test",
+                  "last_name": "Client1",
+                  "email": "testc1@gmail.com",
+                  "dob": "2012-12-12",
+                  "gender": "male",
+                  "status": "active",
+                  "preferred_language": "english",
+                  "disqualified": false,
+                  "phone_number": {
+                    "id": 4,
+                    "phone_type": "mobile",
+                    "number": "9988998888543"
+                  }
+                }
               }
 
   /api/clients/{client_id}/client_enrollments:
@@ -3144,6 +3371,38 @@ paths:
                   "permissions": "[]"
                 },
                 "errors": []
+              }
+    delete:
+      summary: role delete
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "Role id"
+        required: true
+      responses:
+        "200":
+          description: "deleted role"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 7,
+                  "name": "abcd",
+                  "permissions": "[]"
+                }
               }
 
   /api/staff/{id}:

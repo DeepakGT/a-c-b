@@ -2,7 +2,7 @@ class FundingSourcesController < ApplicationController
   before_action :authenticate_user!
   before_action :authorize_user
   before_action :set_clinic
-  before_action :set_funding_source, only: %i[show update]
+  before_action :set_funding_source, only: %i[show update destroy]
 
   def index
     @funding_sources = @clinic.funding_sources.order(:created_at).paginate(page: params[:page])
@@ -17,6 +17,10 @@ class FundingSourcesController < ApplicationController
 
   def update
     @funding_source.update(funding_source_params)
+  end
+
+  def destroy
+    @funding_source.destroy
   end
 
   private

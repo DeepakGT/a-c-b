@@ -13,15 +13,15 @@ Rails.application.routes.draw do
 
     resources :organizations, only: %i[create update show index] 
     
-    resources :clinics, only: %i[index create show update] do
-      resources :funding_sources, only: %i[index create update show]
+    resources :clinics do
+      resources :funding_sources
     end
     resources :staff do
       resources :staff_credentials, controller: 'staff_qualifications'
       resources :staff_clinics
     end
 
-    resources :clients, only: %i[index create update show] do
+    resources :clients do
       resources :client_enrollments
       resources :client_enrollment_services, only: %i[create update show destroy]
       resources :contacts
@@ -29,13 +29,13 @@ Rails.application.routes.draw do
       resources :attachments, controller: 'client_attachments'
     end
     
-    resources :credentials, controller: 'qualifications', only: %i[index show create update] do
+    resources :credentials, controller: 'qualifications' do
       get :types, on: :collection
     end
 
-    resources :services, only: %i[index create update show]
+    resources :services
 
-    resources :roles, only: %i[index create update show] 
+    resources :roles 
 
     get 'meta_data/selectable_options'
     get '/supervisor_list', to: 'staff#supervisor_list'

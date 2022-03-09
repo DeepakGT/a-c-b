@@ -18,4 +18,8 @@ class FundingSourcePolicy < ApplicationPolicy
 
     false
   end
+
+  def destroy?
+    false
+  end
 end

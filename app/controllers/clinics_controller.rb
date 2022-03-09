@@ -1,7 +1,7 @@
 class ClinicsController < ApplicationController
   before_action :authenticate_user!
   before_action :authorize_user
-  before_action :set_clinic, only: %i[show update]
+  before_action :set_clinic, only: %i[show update destroy]
 
   def index
     @clinics = Clinic.all
@@ -17,6 +17,10 @@ class ClinicsController < ApplicationController
 
   def update
     @clinic.update(clinic_params)
+  end
+
+  def destroy
+    @clinic.destroy
   end
 
   private

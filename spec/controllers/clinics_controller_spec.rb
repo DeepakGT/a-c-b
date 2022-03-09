@@ -140,4 +140,23 @@ RSpec.describe ClinicsController, type: :controller do
       end
     end
   end
+
+  describe "DELETE #destroy" do
+    context "when sign in" do
+      let(:user) { create(:user, :with_role, role_name: 'super_admin') }
+      let(:auth_headers) { user.create_new_auth_token }
+      let(:clinic) { create(:clinic, name: 'Test-Clinic-1') }
+      it "should delete clinic successfully" do
+        set_auth_headers(auth_headers)
+
+        delete :destroy, params: { id: clinic.id }
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data']['id']).to eq(clinic.id)
+        expect(Clinic.find_by_id(clinic.id)).to eq(nil)
+      end
+    end
+  end
 end

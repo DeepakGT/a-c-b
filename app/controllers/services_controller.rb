@@ -1,7 +1,7 @@
 class ServicesController < ApplicationController
   before_action :authenticate_user!
   before_action :authorize_user
-  before_action :set_service, only: %i[update show]
+  before_action :set_service, only: %i[update show destroy]
 
   def index
     @services = Service.order(:name).paginate(page: params[:page])
@@ -18,6 +18,10 @@ class ServicesController < ApplicationController
       remove_qualifications if params[:service_qualifications_attributes].present?
       @service.update(service_params)
     end
+  end
+
+  def destroy
+    @service.destroy
   end
 
   private

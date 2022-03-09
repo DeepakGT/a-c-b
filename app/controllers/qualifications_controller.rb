@@ -1,7 +1,7 @@
 class QualificationsController < ApplicationController
   before_action :authenticate_user!
   before_action :authorize_user, except: :types
-  before_action :set_qualification, only: %i[show update]
+  before_action :set_qualification, only: %i[show update destroy]
 
   def index
     # if page parameter would be pass then return paginated records otherwise return all records
@@ -17,6 +17,10 @@ class QualificationsController < ApplicationController
 
   def update
     @qualification.update(qualification_params)
+  end
+
+  def destroy
+    @qualification.destroy
   end
 
   def types
