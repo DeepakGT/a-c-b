@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe OrganizationPolicy, type: :policy do
-  let!(:role1) { create(:role, name: 'aba_admin') }
+  let!(:role1) { create(:role, name: 'bcba') }
   let!(:user1) { create(:user, :with_role, role_name: role1.name)}
   let!(:role2) { create(:role, name: 'administrator', permissions: ['organization_view', 'organization_update']) }
   let!(:user2) { create(:user, :with_role, role_name: role2.name)}

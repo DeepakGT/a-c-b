@@ -5,7 +5,7 @@ class StaffCredentialsController < ApplicationController
   before_action :set_staff_credential, only: %i[show update destroy]
 
   def index
-    @credentials = @staff.credentials
+    @credentials = @staff.credentials.order(:created_at)
   end
 
   def create

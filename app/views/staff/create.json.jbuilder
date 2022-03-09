@@ -6,7 +6,6 @@ json.data do
   json.email @staff.email
   json.role @staff.role.name
   json.status @staff.status
-  json.service_provider @staff.service_provider
   json.terminated_on @staff.terminated_on
   json.gender @staff.gender
   json.supervisor_id @staff.supervisor_id
@@ -33,14 +32,6 @@ json.data do
     json.rbt_supervision do
       json.id @staff.rbt_supervision.id
       json.status @staff.rbt_supervision.status
-    end
-  end
-  json.services do
-    json.array! @staff.services do |service|
-      json.id service.id
-      json.name service.name
-      json.status service.status
-      json.display_code service.display_code
     end
   end
 end

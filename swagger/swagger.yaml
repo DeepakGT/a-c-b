@@ -459,6 +459,18 @@ paths:
         name: "uid"
         description: "Request headers"
         required: true
+      - in: "query"
+        name: "search_by"
+        schema:
+          type: "string"
+        description: "Field to search by"
+        required: false
+      - in: "query"
+        name: "search_value"
+        schema:
+          type: "string"
+        description: "value to be searched"
+        required: false
       responses:
         "200":
           description: "Staff list"
@@ -547,7 +559,6 @@ paths:
                   "email": "bcba_teststaff2@yopmail.com",
                   "role": "bcba",
                   "status": "active",
-                  "service_provider": true,
                   "terminated_on": null,
                   "gender": "male",
                   "supervisor_id": 1,
@@ -621,7 +632,6 @@ paths:
                   "last_name": "staff",
                   "email": "bcba_test_staff@yopmail.com",
                   "status": "active",
-                  "service_provider": true,
                   "terminated_on": null,
                   "title": "bcba",
                   "gender": "male",
@@ -855,7 +865,7 @@ paths:
                           }
                         }
 
-  /api/clinics/{clinic_id}/staff/supervisor_list:
+  /api/supervisor_list:
     get:
       summary: supervisors list
       parameters:
@@ -870,10 +880,6 @@ paths:
       - in: "header"
         name: "uid"
         description: "Request headers"
-        required: true
-      - in: "path"
-        name: "clinic_id"
-        description: "Clinic id"
         required: true
       responses:
         "200":
@@ -2114,7 +2120,27 @@ paths:
                     "relationship": "parent_or_guardian",
                     "subscriber_name": "Abcd",
                     "subscriber_phone": "76854-56443",
-                    "subscriber_dob": "1997-12-12"
+                    "subscriber_dob": "1997-12-12",
+                    "services": [
+                      {
+                        "id": 1,
+                        "service_id": 27,
+                        "service": "caregiver training",
+                        "start_date": "2022-02-17",
+                        "end_date": "2022-02-21",
+                        "units": null,
+                        "minutes": null,
+                        "service_number": null,
+                        "service_providers": {
+                          "ids": [
+                            20
+                          ],
+                          "names": [
+                            "May Dach"
+                          ]
+                        }
+                      }
+                    ]
                   },
                   {
                     "id": 2,
@@ -2130,7 +2156,8 @@ paths:
                     "relationship": "spouse_or_partner",
                     "subscriber_name": "Abcdef",
                     "subscriber_phone": "76854-56443",
-                    "subscriber_dob": "1996-12-12"
+                    "subscriber_dob": "1996-12-12",
+                    "services": []
                   }
                 ],
                 "total_records": 2,
@@ -2232,7 +2259,15 @@ paths:
                   "relationship": "parent_or_guardian",
                   "subscriber_name": "Abcd",
                   "subscriber_phone": "76854-56443",
-                  "subscriber_dob": "1997-12-12"
+                  "subscriber_dob": "1997-12-12",
+                  "service_providers": {
+                    "ids": [
+                      20
+                    ],
+                    "names": [
+                      "May Dach"
+                    ]
+                  }
                 }
               }
     put:
@@ -3114,7 +3149,6 @@ paths:
                   "last_name": "Staff ",
                   "email": "bcba_test1@yopmail.com",
                   "status": "active",
-                  "service_provider": false,
                   "terminated_on": null,
                   "gender": "male",
                   "supervisor_id": 3
@@ -3598,7 +3632,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/definitions/StaffClinicCreateParameters"
+              $ref: "#/definitions/StaffClinicCreateUpdateParameters"
       responses:
         "200":
           description: "Created staff clinic"
@@ -3606,27 +3640,57 @@ paths:
             application/json:
               example: {
                 "status": "success",
-                "data": [
-                  {
-                    "id": 7,
-                    "clinic_id": 3,
-                    "clinic_name": "clinic1",
-                    "organization_id": 3,
-                    "organization_name": "org1",
-                    "is_home_clinic": false
-                  },
-                  {
-                    "id": 8,
-                    "clinic_id": 4,
-                    "clinic_name": "clinic2",
-                    "organization_id": 3,
-                    "organization_name": "org1",
-                    "is_home_clinic": false
-                  }
-                ]
+                "data": {
+                  "id": 7,
+                  "clinic_id": 3,
+                  "clinic_name": "clinic1",
+                  "organization_id": 3,
+                  "organization_name": "org1",
+                  "is_home_clinic": false
+                },
+                errors: []
               }
 
   /api/staff/{staff_id}/staff_clinics/{id}:
+    get:
+      summary: Staff clinics detail
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "staff_id"
+        description: "Associated staff id"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "staff clinic id"
+        required: true
+      responses:
+        "200":
+          description: "Staff clinics detail"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 6,
+                  "clinic_id": 3,
+                  "clinic_name": "clinic1",
+                  "organization_id": 3,
+                  "organization_name": "org1",
+                  "is_home_clinic": true
+                }
+              }
     put:
       summary: Staff clinic update
       parameters:
@@ -3654,7 +3718,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/definitions/StaffClinicUpdateParameters"
+              $ref: "#/definitions/StaffClinicCreateUpdateParameters"
       responses:
         "200":
           description: "Updated staff clinic"
@@ -3712,6 +3776,804 @@ paths:
                 }
               }
 
+  /api/clients/{client_id}/client_enrollment_services:
+    post:
+      summary: Client enrollment service create
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "Associated client id"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/ClientEnrollmentServiceCreateUpdateParameters"
+      responses:
+        "200":
+          description: "Created client enrollment service"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 1,
+                  "client_enrollment_id": 1,
+                  "funding_source_id": 31,
+                  "funding_source": "aetna",
+                  "service_id": 27,
+                  "service": "caregiver training",
+                  "start_date": "2022-02-17",
+                  "end_date": "2022-02-21",
+                  "units": "6",
+                  "minutes": null,
+                  "service_providers": [
+                    {
+                      "id": 20,
+                      "name": "May Dach"
+                    }
+                  ]
+                },
+                "errors": []
+              }
+
+  /api/clients/{client_id}/client_enrollment_services/{id}:
+    get:
+      summary: Client enrollment service detail
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "Associated client id"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "client enrollment service id"
+        required: true
+      responses:
+        "200":
+          description: "client enrollment service detail"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 1,
+                  "client_enrollment_id": 1,
+                  "funding_source_id": 31,
+                  "funding_source": "aetna",
+                  "service_id": 27,
+                  "service": "caregiver training",
+                  "start_date": "2022-02-17",
+                  "end_date": "2022-02-21",
+                  "units": "6",
+                  "minutes": null,
+                  "service_providers": {
+                    "ids": [
+                      20
+                    ],
+                    "names": [
+                      "May Dach"
+                    ]
+                  }
+                }
+              }
+    put:
+      summary: Client enrollment service update
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "Associated client id"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "client enrollment service id"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/ClientEnrollmentServiceCreateUpdateParameters"
+      responses:
+        "200":
+          description: "Updated client enrollment service"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 1,
+                  "client_enrollment_id": 3,
+                  "funding_source_id": 35,
+                  "funding_source": "cigna",
+                  "service_id": 27,
+                  "service": "caregiver training",
+                  "start_date": "2022-02-17",
+                  "end_date": "2022-02-21",
+                  "units": null,
+                  "minutes": null,
+                  "service_number": null,
+                  "service_providers": [
+                    {
+                      "id": 20,
+                      "name": "May Dach"
+                    },
+                    {
+                      "id": 22,
+                      "name": "Jolyn Mraz"
+                    }
+                  ]
+                },
+                "errors": []
+              }
+    delete:
+      summary: client enrollment service delete
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "Associated client id"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "client enrollment service id"
+        required: true
+      responses:
+        "200":
+          description: "Deleted client enrollment service detail"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 2,
+                  "client_enrollment_id": 1,
+                  "funding_source_id": 31,
+                  "funding_source": "aetna",
+                  "service_id": 27,
+                  "service": "caregiver training",
+                  "start_date": "2022-02-17",
+                  "end_date": "2022-02-21",
+                  "units": null,
+                  "minutes": null,
+                  "service_number": null,
+                  "service_providers": []
+                }
+              }
+
+  /api/clients/{client_id}/meta_data:
+    get:
+      summary: Client meta data selectable options list
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "Associated client id"
+        required: true
+      responses:
+        "200":
+          description: "Client meta data selectable options list"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "services": [
+                    {
+                      "id": 26,
+                      "name": "additional 30 minutes spent performing activities"
+                    },
+                    {
+                      "id": 27,
+                      "name": "supervision"
+                    }
+                  ],
+                  "funding_sources": [
+                    {
+                      "id": 31,
+                      "name": "aetna"
+                    }
+                  ],
+                  "service_providers": [
+                    {
+                      "id": 20,
+                      "name": "May Dach",
+                      "services": [
+                        {
+                          "id": 25
+                        },
+                        {
+                          "id": 32
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+
+  /api/scheduling_meta_data:
+    get:
+      summary: Scheduling meta data selectable options list
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      responses:
+        "200":
+          description: "Scheduling meta data selectable options list"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "clients": [
+                    {
+                      "id": 17,
+                      "name": "Test Client2"
+                    },
+                    {
+                      "id": 18,
+                      "name": "Test Client4"
+                    },
+                    {
+                      "id": 16,
+                      "name": "Test Client3"
+                    }
+                  ],
+                  "staff": [
+                    {
+                      "id": 20,
+                      "name": "May Dach"
+                    },
+                    {
+                      "id": 24,
+                      "name": "Fr. Dinorah"
+                    }
+                  ],
+                  "services": [
+                    {
+                      "id": 26,
+                      "name": "additional 30 minutes spent performing activities"
+                    },
+                    {
+                      "id": 27,
+                      "name": "supervision"
+                    }
+                  ]
+                }
+              }
+
+  /api/schedulings:
+    get:
+      summary: Schedulings list
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "query"
+        name: "search_by"
+        schema:
+          type: "string"
+        description: "Field to search by"
+        required: false
+      - in: "query"
+        name: "search_value"
+        schema:
+          type: "string"
+        description: "value to be searched"
+        required: false
+      responses:
+        "200":
+          description: "Schedulings list"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": [
+                  {
+                    "id": 1,
+                    "client_id": 16,
+                    "client_name": "Test Client3",
+                    "staff_id": 20,
+                    "staff_name": "May Dach",
+                    "service_id": 28,
+                    "service_name": "developmental test administration by physician or",
+                    "status": "scheduled",
+                    "date": "2022-12-23",
+                    "start_time": "2022-02-23T18:27:57+05:30",
+                    "end_time": "2022-02-23T23:27:57+05:30",
+                    "units": "6",
+                    "minutes": "360"
+                  },
+                  {
+                    "id": 2,
+                    "client_id": 17,
+                    "client_name": "Test Client2",
+                    "staff_id": 24,
+                    "staff_name": "Fr. Dinorah",
+                    "service_id": 30,
+                    "service_name": "initial assessment",
+                    "status": "scheduled",
+                    "date": "2022-12-23",
+                    "start_time": "2022-02-23T18:27:57+05:30",
+                    "end_time": "2022-02-23T23:27:57+05:30",
+                    "units": "6",
+                    "minutes": "360"
+                  }
+                ],
+                "total_records": 2,
+                "limit": 30,
+                "page": 1
+              }
+    post:
+      summary: scheduling create
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/SchedulingCreateUpdateParameters"
+      responses:
+        "200":
+          description: "Created scheduling"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 2,
+                  "client_id": 17,
+                  "client_name": "Test Client2",
+                  "staff_id": 24,
+                  "staff_name": "Fr. Dinorah",
+                  "service_id": 30,
+                  "service_name": "initial assessment",
+                  "status": "scheduled",
+                  "date": "2022-12-23",
+                  "start_time": "2022-02-23T18:27:57+05:30",
+                  "end_time": "2022-02-23T23:27:57+05:30",
+                  "units": "6",
+                  "minutes": "360"
+                },
+                "errors": []
+              }
+
+  /api/schedulings/{id}:
+    get:
+      summary: Scheduling detail
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "Scheduling id"
+        required: true
+      responses:
+        "200":
+          description: "Scheduling detail"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 1,
+                  "client_id": 16,
+                  "client_name": "Test Client3",
+                  "staff_id": 20,
+                  "staff_name": "May Dach",
+                  "service_id": 28,
+                  "service_name": "developmental test administration by physician",
+                  "status": "scheduled",
+                  "date": "2022-12-23",
+                  "start_time": null,
+                  "end_time": null,
+                  "units": "6",
+                  "minutes": "360"
+                }
+              }
+    put:
+      summary: scheduling update
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "Scheduling id"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/SchedulingCreateUpdateParameters"
+      responses:
+        "200":
+          description: "Updated scheduling"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 1,
+                  "client_id": 17,
+                  "client_name": "Test Client2",
+                  "staff_id": 24,
+                  "staff_name": "Fr. Dinorah",
+                  "service_id": 30,
+                  "service_name": "initial assessment",
+                  "status": "scheduled",
+                  "date": "2022-12-23",
+                  "start_time": "2022-02-23T18:27:57+05:30",
+                  "end_time": "2022-02-23T23:27:57+05:30",
+                  "units": "6",
+                  "minutes": "360"
+                },
+                "errors": []
+              }
+    delete:
+      summary: scheduling delete
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "scheduling id"
+        required: true
+      responses:
+        "200":
+          description: "Deleted scheduling detail"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 1,
+                  "client_id": 16,
+                  "client_name": "Test Client3",
+                  "staff_id": 20,
+                  "staff_name": "May Dach",
+                  "service_id": 28,
+                  "service_name": "developmental test administration by physician",
+                  "status": "scheduled",
+                  "date": "2022-12-23",
+                  "start_time": null,
+                  "end_time": null,
+                  "units": "6",
+                  "minutes": "360"
+                }
+              }
+
+  /api/schedulings/{scheduling_id}/soap_notes:
+    get:
+      summary: Soap Notes list
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "scheduling_id"
+        description: "Associated scheduling id"
+        required: true
+      responses:
+        "200":
+          description: "Soap notes list"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": [
+                  {
+                    "id": 2,
+                    "scheduling_id": 5,
+                    "note": "test-note-2",
+                    "add_date": "2022-02-27",
+                    "creator_id": 7,
+                    "creator": "Odis Murphy"
+                  },
+                  {
+                    "id": 1,
+                    "scheduling_id": 5,
+                    "note": "test-note",
+                    "add_date": "2022-02-28",
+                    "creator_id": 7,
+                    "creator": "Odis Murphy"
+                  }
+                ]
+              }
+    post:
+      summary: soap note create
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "scheduling_id"
+        description: "Associated Scheduling Id"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/SoapNoteCreateUpdateParameters"
+      responses:
+        "200":
+          description: "Created soap note"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 1,
+                  "scheduling_id": 5,
+                  "note": "test-note",
+                  "add_date": "2022-02-28",
+                  "creator_id": 7,
+                  "creator": "Odis Murphy"
+                },
+                "errors": []
+              }
+
+  /api/schedulings/{scheduling_id}/soap_notes/{id}:
+    get:
+      summary: Soap Note detail
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "scheduling_id"
+        description: "Associated scheduling id"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "Soap note id"
+        required: true
+      responses:
+        "200":
+          description: "Soap note detail"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": [
+                  {
+                    "id": 1,
+                    "scheduling_id": 5,
+                    "note": "test-note",
+                    "add_date": "2022-02-28",
+                    "creator_id": 7,
+                    "creator": "Odis Murphy"
+                  }
+                ]
+              }
+    put:
+      summary: soap note update
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "scheduling_id"
+        description: "associated scheduling id"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "soap_note id"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/SoapNoteCreateUpdateParameters"
+      responses:
+        "200":
+          description: "Updated soap note"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 1,
+                  "scheduling_id": 5,
+                  "note": "note-1",
+                  "add_date": "2022-03-01",
+                  "creator_id": 7,
+                  "creator": "Odis Murphy"
+                },
+                "errors": []
+              }
+    delete:
+      summary: soap note delete
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "scheduling_id"
+        description: "associated scheduling id"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "soap note id"
+        required: true
+      responses:
+        "200":
+          description: "Deleted soap note detail"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 1,
+                  "scheduling_id": 5,
+                  "note": "note-1",
+                  "add_date": "2022-03-01",
+                  "creator_id": 7,
+                  "creator": "Odis Murphy"
+                }
+              }
+
 definitions:
   UserRegistrationParameters:
     type: "object"
@@ -3738,8 +4600,6 @@ definitions:
         enum: [active, inactive]
       terminated_on:
         type: "string"
-      service_provider:
-        type: "boolean"
       phone_numbers_attributes:
         type: "object"
         properties:
@@ -3954,8 +4814,6 @@ definitions:
         type: "string"
       last_name:
         type: "string"
-      clinic_id:
-        type: "integer"
       email:
         type: "string"
       password:
@@ -3964,12 +4822,12 @@ definitions:
         type: "string"
       supervisor_id:
         type: "integer"
+      hired_at:
+        type: "string"
       terminated_on:
         type: "string"
       role_name:
         type: "string"
-      service_provider:
-        type: "boolean"
       phone_numbers_attributes:
         type: "object"
         properties:
@@ -4007,20 +4865,7 @@ definitions:
           start_date:
             type: "string"
           end_date:
-            type: "string" 
-      services_attributes:
-        type: "object"
-        properties:
-          0:
-            type: "object"
-            properties:
-              name:
-                type: "string"
-              status:
-                type: "string"
-                enum: [active, inactive]
-              display_code:
-                type: "integer"
+            type: "string"
 
   ClientCreateParameters:
     type: "object"
@@ -4304,7 +5149,7 @@ definitions:
         type: "string"
       relationship:
         type: "string"
-        enum: [parent_or_guardian, spouse_or_partner]
+        enum: [parent_or_guardian, spouse_or_partner, self]
       subscriber_name:
         type: "string"
       subscriber_phone:
@@ -4467,24 +5312,76 @@ definitions:
         type: "string"
       file_name:
         type: "string"
-
-  StaffClinicCreateParameters:
-    type: "object"
-    properties:
-      clinics:
-        type: "array"
-        items:
-          type: "object"
-          properties:
-            clinic_id:
-              type: "integer"
-            is_home_clinic:
-              type: "boolean"
-
-  StaffClinicUpdateParameters:
+  
+  StaffClinicCreateUpdateParameters:
     type: "object"
     properties:
       clinic_id:
         type: "integer"
       is_home_clinic:
         type: "boolean"
+      staff_clinic_services_attributes:
+        type: "object"
+        properties:
+          service_id:
+            type: "array"
+            items:
+              type: "integer"
+
+  ClientEnrollmentServiceCreateUpdateParameters:
+    type: "object"
+    properties:
+      service_id:
+        type: "integer"
+      start_date:
+        type: "string"
+      end_date:
+        type: "string"
+      units:
+        type: "number"
+      minutes:
+        type: "number"
+      funding_source_id:
+        type: "integer"
+      service_number:
+        type: "string"
+      service_providers_attributes:
+        type: "object"
+        properties:
+          0:
+            type: "object"
+            properties:
+              id:
+                type: "integer"
+              staff_id:
+                type: "integer"
+
+  SchedulingCreateUpdateParameters:
+    type: "object"
+    properties: 
+      client_id: 
+        type: "integer"
+      staff_id:
+        type: "integer"
+      service_id:
+        type: "integer"
+      status:
+        type: "string"
+      date:
+        type: "string"
+      start_time:
+        type: "string"
+      end_time:
+        type: "string"
+      units:
+        type: "string"
+      minutes:
+        type: "string"
+      
+  SoapNoteCreateUpdateParameters:
+    type: "object"
+    properties:
+      note: 
+        type: "string"
+      add_date:
+        type: "string"

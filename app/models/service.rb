@@ -1,7 +1,9 @@
 class Service < ApplicationRecord
   # Associations
-  has_many :user_services, dependent: :destroy
-  has_many :users, through: :user_services
+  has_many :staff_clinic_services, dependent: :destroy
+  has_many :staff_clinics, through: :staff_clinic_services
+  has_many :client_enrollment_services
+  has_one :scheduling
 
   # Enums
   enum status: {active: 0, inactive: 1}

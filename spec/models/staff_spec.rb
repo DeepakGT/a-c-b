@@ -7,6 +7,9 @@ RSpec.describe Staff, type: :model do
   it { should have_many(:phone_numbers).dependent(:destroy)}
   it { should have_many(:staff_clinics) } 
   it { should have_many(:clinics).through(:staff_clinics) }
+  it { should have_many(:client_enrollment_service_providers) } 
+  it { should have_many(:client_enrollment_services).through(:client_enrollment_service_providers) } 
+  it { should have_one(:scheduling)}
   
   it { should belong_to(:supervisor).class_name('User').optional }
 
@@ -15,10 +18,10 @@ RSpec.describe Staff, type: :model do
 
   describe "#validate_role" do
     context "when staff is created" do
-      let(:staff) { build :staff, :with_role, role_name: 'aba_admin' }
-      it "should be rbt,bcba or billing" do
+      let(:staff) { build :staff, :with_role, role_name: 'super_admin' }
+      it "should not be super_admin" do
         staff.validate
-        expect(staff.errors[:role]).to include('For staff, role must be bcba, rbt or billing.')
+        expect(staff.errors[:role]).to include('cannot be super_admin for staff.')
       end
     end
   end

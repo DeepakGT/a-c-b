@@ -148,7 +148,6 @@ RSpec.describe StaffController, type: :controller do
           password: 'Abcd@123',
           supervisor_id: user.id,
           clinic_id: clinic.id,
-          service_provider: false,
           address_attributes: { country: 'India'},
           phone_numbers_attributes: [{ number: '9898767655'}, {number: '8787876565'}],
           rbt_supervision_attributes: { status: 'requires'},
@@ -257,7 +256,6 @@ RSpec.describe StaffController, type: :controller do
 
           put :update, params: {
             id:staff.id,
-            service_provider: true,
             services_attributes: [{name: 'service-1'}]
           }
           response_body = JSON.parse(response.body)
@@ -310,12 +308,12 @@ RSpec.describe StaffController, type: :controller do
       it "should list supervisors successfuly" do
         set_auth_headers(auth_headers)
 
-        get :supervisor_list, params: {clinic_id: clinic.id}
+        get :supervisor_list
         response_body = JSON.parse(response.body)
 
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
-        expect(response_body['data'].count).to eq(staff_list.count)
+        expect(response_body['data'].count).to eq(Staff.all.count)
       end
     end
   end

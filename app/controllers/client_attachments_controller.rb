@@ -1,5 +1,6 @@
 class ClientAttachmentsController < ApplicationController
   before_action :authenticate_user!
+  before_action :authorize_user
   before_action :set_client
   before_action :set_attachment, only: %i[show update destroy]
 
@@ -22,6 +23,10 @@ class ClientAttachmentsController < ApplicationController
   end
 
   private
+
+  def authorize_user
+    authorize Attachment if current_user.role_name != 'super_admin'
+  end
 
   def set_client
     @client = Client.find(params[:client_id])

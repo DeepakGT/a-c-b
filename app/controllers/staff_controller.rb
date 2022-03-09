@@ -2,7 +2,6 @@ require 'will_paginate/array'
 class StaffController < ApplicationController
   before_action :authenticate_user!
   before_action :authorize_user, except: %i[phone_types supervisor_list]
-  before_action :set_clinic, only: :supervisor_list
   before_action :set_staff, only: %i[show update destroy]
 
   def index
@@ -34,24 +33,20 @@ class StaffController < ApplicationController
   end
 
   def supervisor_list
-    @supervisors = @clinic.staff.order(:first_name)
+    @supervisors = Staff.order(:first_name)
   end
 
   private
 
-  def set_clinic
-    @clinic = Clinic.find(params[:clinic_id])
-  end
-
   def staff_params
-    arr = %i[first_name last_name terminated_on email supervisor_id clinic_id]
+    arr = %i[first_name last_name hired_at terminated_on email supervisor_id]
     
-    arr.concat(%i[password service_provider password_confirmation]) if params[:action] == 'create'
+    arr.concat(%i[password password_confirmation]) if params[:action] == 'create'
     
     arr.concat([address_attributes: 
     %i[line1 line2 line3 zipcode city state country addressable_type addressable_id], 
     phone_numbers_attributes: %i[id phone_type number], rbt_supervision_attributes: 
-    %i[status start_date end_date], services_attributes: %i[name status display_code]])
+    %i[status start_date end_date]])
     
     params.permit(arr)
   end
@@ -86,8 +81,7 @@ class StaffController < ApplicationController
         fname, lname = params[:search_value].split
         staff.by_supervisor_name(fname, lname)
       when "location"
-        location = params[:search_value].split.map{|x| "%#{x}%"}
-        staff.joins(:address).by_location(location)
+        staff.joins(:address).by_location(params[:search_value])
       else
         staff
       end
@@ -96,15 +90,15 @@ class StaffController < ApplicationController
     end
   end
 
-  def search_on_all_fields(value)
-    staff = Staff.includes(:role, :address, clinics: :organization).all
-    formated_val = value.split.map{|x| "%#{x}%"}
-    fname, lname = value.split
-    staff.by_first_name(fname).by_last_name(lname)
-         .or(staff.by_organization(value))
-         .or(staff.by_role(value))
+  def search_on_all_fields(query)
+    staff = Staff.left_joins(:role, :address, clinics: :organization).all
+    # formated_val = query.split.map{|x| "%#{x}%"}
+    fname, lname = query.split
+    staff = staff.by_first_name(fname).by_last_name(lname)
+         .or(staff.by_organization(query))#.joins(clinics: :organization)
+         .or(staff.by_role(query))#.joins(:role)
          .or(staff.by_supervisor_name(fname,lname))
-         .or(staff.by_location(formated_val))
+         .or(staff.by_location(query))#.joins(:address)
   end
 
   def authorize_user

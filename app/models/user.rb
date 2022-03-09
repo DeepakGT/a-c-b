@@ -17,12 +17,9 @@ class User < ActiveRecord::Base
   # Associations
   has_one :user_role, dependent: :destroy
   has_one :rbt_supervision, dependent: :destroy
-  has_many :user_services, dependent: :destroy
   
   has_one :role, through: :user_role
-  has_many :services, through: :user_services
 
-  accepts_nested_attributes_for :services, :update_only => true
   accepts_nested_attributes_for :rbt_supervision, :update_only => true
 
   # Enums
@@ -44,7 +41,7 @@ class User < ActiveRecord::Base
   # scopes
   scope :by_first_name, ->(fname){ where('lower(first_name) LIKE ?',"%#{fname.downcase}%") }
   scope :by_last_name, ->(lname){ where('lower(last_name) LIKE ?', "%#{lname&.downcase}%") }
-  scope :by_role, ->(role_name){ where('role.name.downcase': role_name&.downcase)}
+  scope :by_role, ->(title){ where('lower(roles.name) = ?', title&.downcase)}
 
   # delegates
   delegate :name, to: :role, prefix: true, allow_nil: true
@@ -78,10 +75,11 @@ class User < ActiveRecord::Base
   end
 
   def validate_status
-    errors.add(:status, 'For an active user, terminated date must be blank.') if self.active? && self.terminated_on.present?
-    errors.add(:status, 'For an inactive user, terminated date must be present.') if self.inactive? && self.terminated_on.blank?
+    # errors.add(:status, 'For an active user, terminated date must be blank.') if self.active? && self.terminated_on.present?
+    if self.type != 'Client'
+      errors.add(:status, 'For an inactive user, terminated date must be present.') if self.inactive? && self.terminated_on.blank?
+    end
   end
-
   # end of private
-
+  
 end
