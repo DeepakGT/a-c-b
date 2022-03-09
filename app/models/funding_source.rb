@@ -5,7 +5,7 @@ class FundingSource < ApplicationRecord
 
   has_one :phone_number, as: :phoneable, dependent: :destroy
   has_one :address, as: :addressable, dependent: :destroy
-  has_many :client_enrollments, dependent: :destroy
+  has_many :client_enrollments, dependent: :nullify
   has_many :clients, through: :client_enrollments
   belongs_to :clinic
 

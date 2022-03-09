@@ -1,12 +1,12 @@
 require 'rails_helper'
 
 RSpec.describe Clinic, type: :model do
-  it { should have_one(:address) }
-  it { should have_one(:phone_number)}
-  it { should have_many(:staff_clinics) } 
+  it { should have_one(:address).dependent(:destroy) }
+  it { should have_one(:phone_number).dependent(:destroy) }
+  it { should have_many(:staff_clinics).dependent(:destroy) } 
   it { should have_many(:staff).through(:staff_clinics) }
-  it { should have_many(:clients) } 
-  it { should have_many(:funding_sources)}
+  it { should have_many(:clients).dependent(:destroy) } 
+  it { should have_many(:funding_sources).dependent(:destroy) }
 
   it { should belong_to(:organization) }
 

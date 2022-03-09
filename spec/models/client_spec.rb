@@ -2,14 +2,14 @@ require 'rails_helper'
 
 RSpec.describe Client, type: :model do
   it { should have_one(:phone_number).dependent(:destroy) }
-  it { should have_many(:notes).class_name('ClientNote') } 
+  it { should have_many(:notes).class_name('ClientNote').dependent(:nullify) } 
   it { should have_many(:attachments).dependent(:destroy) }
 
   it { should have_many(:contacts).dependent(:destroy) } 
   it { should have_many(:addresses).dependent(:destroy) }
   it { should have_many(:client_enrollments).dependent(:destroy) }
   it { should have_many(:funding_sources).through(:client_enrollments) }  
-  it { should have_one(:scheduling) }
+  it { should have_many(:schedulings).dependent(:destroy) }
 
   it { should belong_to(:clinic) } 
 

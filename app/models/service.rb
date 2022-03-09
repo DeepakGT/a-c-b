@@ -2,8 +2,10 @@ class Service < ApplicationRecord
   # Associations
   has_many :service_qualifications, dependent: :destroy
   has_many :qualifications, through: :service_qualifications
-  has_many :client_enrollment_services
-  has_one :scheduling
+  has_many :client_enrollment_services, dependent: :destroy
+  has_many :schedulings, dependent: :destroy
+  has_many :staff_clinic_services, dependent: :destroy
+  has_many :staff_clinics, through: :staff_clinic_services
 
   accepts_nested_attributes_for :service_qualifications
 

@@ -268,6 +268,15 @@ ActiveRecord::Schema.define(version: 2022_03_09_101629) do
     t.index ["scheduling_id"], name: "index_soap_notes_on_scheduling_id"
   end
 
+  create_table "staff_clinic_services", force: :cascade do |t|
+    t.bigint "service_id", null: false
+    t.bigint "staff_clinic_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["service_id"], name: "index_staff_clinic_services_on_service_id"
+    t.index ["staff_clinic_id"], name: "index_staff_clinic_services_on_staff_clinic_id"
+  end
+
   create_table "staff_clinics", force: :cascade do |t|
     t.bigint "staff_id", null: false
     t.bigint "clinic_id", null: false
@@ -360,6 +369,8 @@ ActiveRecord::Schema.define(version: 2022_03_09_101629) do
   add_foreign_key "service_qualifications", "services"
   add_foreign_key "soap_notes", "schedulings"
   add_foreign_key "soap_notes", "users", column: "creator_id"
+  add_foreign_key "staff_clinic_services", "services"
+  add_foreign_key "staff_clinic_services", "staff_clinics"
   add_foreign_key "staff_clinics", "clinics"
   add_foreign_key "staff_clinics", "users", column: "staff_id"
   add_foreign_key "staff_qualifications", "qualifications", column: "credential_id"

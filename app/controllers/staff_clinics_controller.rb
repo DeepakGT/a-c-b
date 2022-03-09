@@ -16,6 +16,7 @@ class StaffClinicsController < ApplicationController
 
   def update
     StaffClinic.transaction do
+      remove_services if params[:staff_clinic_services_attributes].present?
       @staff_clinic.update(staff_clinic_params)
     end
   end
@@ -39,7 +40,11 @@ class StaffClinicsController < ApplicationController
   end
 
   def staff_clinic_params
-    params.permit(:clinic_id, :is_home_clinic)
+    params.permit(:clinic_id, :is_home_clinic, staff_clinic_services_attributes: %i[service_id])
+  end
+
+  def remove_services
+    @staff_clinic.services.destroy_all
   end
   # end of private
 end

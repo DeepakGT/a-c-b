@@ -5,11 +5,11 @@ RSpec.describe Staff, type: :model do
   it { should have_many(:qualifications).through(:staff_qualifications)}
   it { should have_one(:address).dependent(:destroy)}
   it { should have_many(:phone_numbers).dependent(:destroy)}
-  it { should have_many(:staff_clinics) } 
+  it { should have_many(:staff_clinics).dependent(:destroy) } 
   it { should have_many(:clinics).through(:staff_clinics) }
-  it { should have_many(:client_enrollment_service_providers) } 
+  it { should have_many(:client_enrollment_service_providers).dependent(:destroy) } 
   it { should have_many(:client_enrollment_services).through(:client_enrollment_service_providers) } 
-  it { should have_one(:scheduling)}
+  it { should have_many(:schedulings).dependent(:destroy)}
   
   it { should belong_to(:supervisor).class_name('User').optional }
 

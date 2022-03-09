@@ -6,9 +6,9 @@ RSpec.describe Organization, type: :model do
   it {should belong_to(:admin).class_name('User')}
 
   context 'associations' do
-    it { should have_one(:address) }
-    it { should have_one(:phone_number)}
-    it { should have_many(:clinics)}
+    it { should have_one(:address).dependent(:destroy) }
+    it { should have_one(:phone_number).dependent(:destroy)}
+    it { should have_many(:clinics).dependent(:destroy)}
 
     it { should accept_nested_attributes_for(:address).update_only(true)}
     it { should accept_nested_attributes_for(:phone_number).update_only(true)}
