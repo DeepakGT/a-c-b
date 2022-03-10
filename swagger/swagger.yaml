@@ -5617,6 +5617,14 @@ definitions:
         type: "integer"
       is_home_clinic:
         type: "boolean"
+      staff_clinic_services_attributes:
+        type: "object"
+        properties:
+          0:
+            type: "object"
+            properties:
+              service_id:
+                type: "integer"
 
   ClientEnrollmentServiceCreateUpdateParameters:
     type: "object"

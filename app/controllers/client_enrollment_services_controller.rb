@@ -30,7 +30,11 @@ class ClientEnrollmentServicesController < ApplicationController
 
   def set_client_enrollment
     client = Client.find(params[:client_id])
-    @client_enrollment = client.client_enrollments.find_by(funding_source_id: params[:funding_source_id])
+    if params[:funding_source_id].present?
+      @client_enrollment = client.client_enrollments.find_by(funding_source_id: params[:funding_source_id])
+    else
+      @client_enrollment = client.client_enrollments.find_by(source_of_payment: 'self_pay')
+    end
   end
 
   def set_client_enrollment_service
