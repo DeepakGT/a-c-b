@@ -1953,6 +1953,56 @@ paths:
                 },
                 "errors": []
               }
+    delete:
+      summary: Organization delete
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "Organization id"
+        required: true
+      responses:
+        "200":
+          description: "Deleted Organization"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 4,
+                  "name": "Organization 4",
+                  "aka": "test organization",
+                  "web": "www.org4.com",
+                  "email": "admin@org4.com",
+                  "status": "active",
+                  "phone_number": {
+                    "id": 1,
+                    "phone_type": "mobile",
+                    "number": "9876543212"
+                  },
+                  "address": {
+                    "id": 1,
+                    "line1": "C21 Mall",
+                    "line2": null,
+                    "line3": null,
+                    "zipcode": null,
+                    "city": "Indore",
+                    "state": "Madhya Pradesh",
+                    "country": null
+                  }
+                }
+              }
 
   /api/clients:
     get:

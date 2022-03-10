@@ -18,4 +18,8 @@ class OrganizationPolicy < ApplicationPolicy
 
     false
   end
+
+  def destroy?
+    false
+  end
 end

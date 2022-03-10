@@ -11,7 +11,7 @@ Rails.application.routes.draw do
   scope :api do
     mount_devise_token_auth_for 'User', at: 'auth'
 
-    resources :organizations, only: %i[create update show index] 
+    resources :organizations
     
     resources :clinics do
       resources :funding_sources
