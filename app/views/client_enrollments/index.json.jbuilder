@@ -31,6 +31,7 @@ json.data do
         json.id enrollment_service.id
         json.service_id enrollment_service.service_id
         json.service_name enrollment_service.service&.name
+        json.is_service_provider_required enrollment_service.service&.is_service_provider_required
         json.start_date enrollment_service.start_date
         json.end_date enrollment_service.end_date
         json.units enrollment_service.units

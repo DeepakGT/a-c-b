@@ -5367,6 +5367,8 @@ definitions:
         type: "integer"
       display_code:
         type: "integer"
+      is_service_provider_required:
+        type: "boolean"
       service_qualifications_attributes:
         type: "object"
         properties:

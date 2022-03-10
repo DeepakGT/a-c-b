@@ -6,4 +6,14 @@ class ClientEnrollmentService < ApplicationRecord
   has_many :staff, through: :service_providers
 
   accepts_nested_attributes_for :service_providers
+
+  validate :valdate_service_providers
+
+  private
+
+  def valdate_service_providers
+    return if service.is_service_provider_required.false?
+
+    errors.add(:service_providers, 'must be present.') if self.service_providers.blank?
+  end
 end

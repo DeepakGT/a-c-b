@@ -227,7 +227,7 @@ ActiveRecord::Schema.define(version: 2022_03_09_101629) do
     t.date "date"
     t.string "start_time"
     t.string "end_time"
-    t.string "status"
+    t.string "status", default: "Scheduled"
     t.float "units"
     t.float "minutes"
     t.bigint "staff_id", null: false
@@ -255,6 +255,7 @@ ActiveRecord::Schema.define(version: 2022_03_09_101629) do
     t.string "display_code"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.boolean "is_service_provider_required", default: false
   end
 
   create_table "soap_notes", force: :cascade do |t|

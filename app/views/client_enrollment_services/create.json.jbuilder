@@ -6,6 +6,7 @@ json.data do
   json.funding_source @client_enrollment.funding_source&.name
   json.service_id @enrollment_service.service_id
   json.service @enrollment_service.service&.name
+  json.is_service_provider_required @enrollment_service.service&.is_service_provider_required
   json.start_date @enrollment_service.start_date
   json.end_date @enrollment_service.end_date
   json.units @enrollment_service.units

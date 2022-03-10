@@ -27,7 +27,8 @@ class ServicesController < ApplicationController
   private
 
   def service_params
-    params.permit(:name, :status, :display_code, service_qualifications_attributes: :qualification_id)
+    params.permit( :name, :status, :display_code, :is_service_provider_required,
+                   service_qualifications_attributes: :qualification_id)
   end
 
   def set_service
