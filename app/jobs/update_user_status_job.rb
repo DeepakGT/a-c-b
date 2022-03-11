@@ -13,8 +13,8 @@ class UpdateUserStatusJob < ApplicationJob
   private
 
   def update_staff_status
-    staff = Staff.all
-    staff.each do |staff|
+    staffs = Staff.all
+    staffs.each do |staff|
       if staff.terminated_on.present? && staff.terminated_on <= Time.now.to_date
         staff.status = Staff.statuses['inactive']
         staff.save(validate: false)
@@ -28,7 +28,7 @@ class UpdateUserStatusJob < ApplicationJob
       client_enrollments = client.client_enrollments
       count = 0
       client_enrollments.each do |client_enrollment|
-        if client_enrollment.terminated_on.blank? || staff.terminated_on > Time.now.to_date
+        if client_enrollment.terminated_on.blank? || client_enrollment.terminated_on > Time.now.to_date
           count = 1
           break 
         end
