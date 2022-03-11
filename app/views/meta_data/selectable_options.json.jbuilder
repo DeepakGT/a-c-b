@@ -54,10 +54,4 @@ json.data do
       json.name source_of_payment.first
     end
   end
-  json.relationships do
-    json.array! @selectable_options[:relationships] do |relationship|
-      json.id relationship.last
-      json.name relationship.first
-    end
-  end
 end

@@ -4465,16 +4465,22 @@ paths:
         description: "Request headers"
         required: true
       - in: "query"
-        name: "search_by"
+        name: "staff_ids"
         schema:
           type: "string"
-        description: "Field to search by"
+        description: "Array of staff ids to filter"
         required: false
       - in: "query"
-        name: "search_value"
+        name: "client_ids"
         schema:
           type: "string"
-        description: "value to be searched"
+        description: "Array of client ids to filter"
+        required: false
+      - in: "query"
+        name: "service_ids"
+        schema:
+          type: "string"
+        description: "Array of service ids to filter"
         required: false
       responses:
         "200":
@@ -4911,6 +4917,51 @@ paths:
                   "creator_id": 7,
                   "creator": "Odis Murphy"
                 }
+              }
+
+  /api/clients/{client_id}/service_providers_list:
+    get:
+      summary: service providers list
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "Associated client id"
+        required: true
+      - in: "query"
+        name: "service_id"
+        schema:
+          type: "integer"
+        description: "associated service id"
+        required: true
+      responses:
+        "200":
+          description: "service providers list"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": [
+                  {
+                    "id": 5,
+                    "name": "Chester Waelchi"
+                  },
+                  {
+                    "id": 9,
+                    "name": "Magaret Boehm"
+                  }
+                ]
               }
 
 definitions:

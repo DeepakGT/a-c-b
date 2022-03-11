@@ -6,7 +6,8 @@ class ClientEnrollment < ApplicationRecord
   belongs_to :funding_source, optional: true
   has_many :client_enrollment_services, dependent: :destroy
 
-  enum relationship: { parent_or_guardian: 0, spouse_or_partner: 1, self: 2 }, _prefix: true
+  enum relationship: { self: 0, parent_or_guardian: 1, spouse_or_partner: 2, lci_or_foster_home: 3, 
+                       external_contact: 4, internal_contact: 5 }, _prefix: true
   enum source_of_payment: { self_pay: 0, insurance: 1, single_case_agreement: 2 }
 
   validates_presence_of :terminated_on

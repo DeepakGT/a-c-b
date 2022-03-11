@@ -16,8 +16,7 @@ class MetaDataController < ApplicationController
                            credential_types: Qualification.credential_types,
                            roles: Role.where.not(name: 'super_admin'),
                            phone_types: PhoneNumber.phone_types,
-                           source_of_payments: ClientEnrollment.source_of_payments,
-                           relationships: ClientEnrollment.relationships }
+                           source_of_payments: ClientEnrollment.source_of_payments }
   end
 
   def country_list
