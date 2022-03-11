@@ -4,8 +4,7 @@ class SchedulingsController < ApplicationController
   before_action :set_scheduling, only: %i[show update destroy]
 
   def index
-    schedules = Scheduling.all
-    schedules = do_filter(schedules) if params[:search_value].present?
+    schedules = do_filter
     @schedules = schedules.order(:date).paginate(page: params[:page])
   end
 
@@ -37,35 +36,12 @@ class SchedulingsController < ApplicationController
     @schedule = Scheduling.find(params[:id])
   end
 
-  def do_filter(schedules)
-    if params[:search_by].present?
-      case params[:search_by]
-      when "client_name"
-        fname, lname = params[:search_value].split(' ')
-        schedules = schedules.joins(:client).by_first_name(fname) if fname.present?
-        schedules = schedules.joins(:client).by_last_name(lname) if lname.present?
-        return schedules
-      when "staff_name"
-        fname, lname = params[:search_value].split(' ')
-        schedules = schedules.joins(:staff).by_first_name(fname) if fname.present?
-        schedules = schedules.joins(:staff).by_last_name(lname) if lname.present?
-        return schedules
-      when "service"
-        schedules.joins(:service).by_service(params[:search_value])
-      else
-        schedules
-      end
-    else
-      search_on_all_fields(params[:search_value])
-    end
-  end
-
-  def search_on_all_fields(query)
-    schedules = Scheduling.joins(:staff, :client, :service).all
-    fname, lname = query.split
-    schedules = schedules.joins(:client).by_first_name(fname).by_last_name(lname)
-         .or(schedules.by_first_name(fname).by_last_name(lname))
-         .or(schedules.by_service(query))
+  def do_filter
+    schedules = Scheduling.all
+    schedules = schedules.by_staff_ids(JSON.parse(params[:staff_ids])) if params[:staff_ids].present?
+    schedules = schedules.by_client_ids(JSON.parse(params[:client_ids])) if params[:client_ids].present?
+    schedules = schedules.by_service_ids(JSON.parse(params[:service_ids])) if params[:service_ids].present?
+    schedules
   end
   # end of private
 end
