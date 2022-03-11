@@ -7,7 +7,6 @@ namespace :update_scheduling do
       schedule.save
     end
   end
-
   desc "Update units and minutes"
   task update_units_and_minutes: :environment do
     Scheduling.where(units: nil).or(Scheduling.where(units: '')).each do |schedule|
