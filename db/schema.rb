@@ -231,10 +231,10 @@ ActiveRecord::Schema.define(version: 2022_03_09_101629) do
     t.float "units"
     t.float "minutes"
     t.bigint "staff_id", null: false
-    t.bigint "client_id", null: false
-    t.bigint "service_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.bigint "client_id"
+    t.bigint "service_id"
     t.index ["client_id"], name: "index_schedulings_on_client_id"
     t.index ["service_id"], name: "index_schedulings_on_service_id"
     t.index ["staff_id"], name: "index_schedulings_on_staff_id"

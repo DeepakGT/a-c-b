@@ -237,6 +237,12 @@ paths:
         name: "uid"
         description: "Request headers"
         required: true
+      - in: "query"
+        name: "page"
+        schema:
+          type: "integer"
+        description: "Page number to display"
+        required: false
       responses:
         "200":
           description: "Clinics list"
@@ -523,6 +529,12 @@ paths:
           type: "string"
         description: "value to be searched"
         required: false
+      - in: "query"
+        name: "page"
+        schema:
+          type: "integer"
+        description: "Page number to display"
+        required: false
       responses:
         "200":
           description: "Staff list"
@@ -782,6 +794,12 @@ paths:
         name: "uid"
         description: "Request headers"
         required: true
+      - in: "query"
+        name: "page"
+        schema:
+          type: "integer"
+        description: "Page number to display"
+        required: false
       responses:
         "200":
           description: "qualifications list"
@@ -1004,6 +1022,12 @@ paths:
         name: "uid"
         description: "Request headers"
         required: true
+      - in: "query"
+        name: "page"
+        schema:
+          type: "integer"
+        description: "Page number to display"
+        required: false
       responses:
         "200":
           description: "services list"
@@ -1225,6 +1249,12 @@ paths:
         name: "clinic_id"
         description: "Clinic id"
         required: true
+      - in: "query"
+        name: "page"
+        schema:
+          type: "integer"
+        description: "Page number to display"
+        required: false
       responses:
         "200":
           description: "Funding sources list"
@@ -1750,6 +1780,12 @@ paths:
         name: "uid"
         description: "Request headers"
         required: true
+      - in: "query"
+        name: "page"
+        schema:
+          type: "integer"
+        description: "Page number to display"
+        required: false
       responses:
         "200":
           description: "Organizations List"
@@ -2020,6 +2056,12 @@ paths:
         name: "uid"
         description: "Request headers"
         required: true
+      - in: "query"
+        name: "page"
+        schema:
+          type: "integer"
+        description: "Page number to display"
+        required: false
       responses:
         "200":
           description: "Client list"
@@ -2405,6 +2447,12 @@ paths:
         name: "client_id"
         description: "Associated Client id"
         required: true
+      - in: "query"
+        name: "page"
+        schema:
+          type: "integer"
+        description: "Page number to display"
+        required: false
       responses:
         "200":
           description: "Client enrollments list"
@@ -2698,6 +2746,12 @@ paths:
         name: "client_id"
         description: "Associated Client id"
         required: true
+      - in: "query"
+        name: "page"
+        schema:
+          type: "integer"
+        description: "Page number to display"
+        required: false
       responses:
         "200":
           description: "Client contact list"
@@ -3272,6 +3326,12 @@ paths:
         name: "uid"
         description: "Request headers"
         required: true
+      - in: "query"
+        name: "page"
+        schema:
+          type: "integer"
+        description: "Page number to display"
+        required: false
       responses:
         "200":
           description: "Roles list"
@@ -4488,6 +4548,12 @@ paths:
           type: "string"
         description: "Array of service ids to filter"
         required: false
+      - in: "query"
+        name: "page"
+        schema:
+          type: "integer"
+        description: "Page number to display"
+        required: false
       responses:
         "200":
           description: "Schedulings list"
@@ -4966,6 +5032,73 @@ paths:
                   {
                     "id": 9,
                     "name": "Magaret Boehm"
+                  }
+                ]
+              }
+
+  /api/services_list:
+    get:
+      summary: services list
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "query"
+        name: "client_id"
+        schema:
+          type: "integer"
+        description: "associated client id"
+        required: true
+      - in: "query"
+        name: "date"
+        schema:
+          type: "string"
+        description: "date for appointment"
+        required: true
+      - in: "query"
+        name: "staff_id"
+        schema:
+          type: "integer"
+        description: "associated staff id"
+        required: true
+      responses:
+        "200":
+          description: "services list"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": [
+                  {
+                    "id": 4,
+                    "name": "developmental test administration by physician or",
+                    "status": "active",
+                    "display_code": "80",
+                    "is_service_provider_required": false,
+                    "units": null,
+                    "used_units": 0,
+                    "scheduled_units": 0,
+                    "left_units": 0
+                  },
+                  {
+                    "id": 6,
+                    "name": "initial assessment",
+                    "status": "active",
+                    "display_code": "17",
+                    "is_service_provider_required": false,
+                    "units": null,
+                    "used_units": 0,
+                    "scheduled_units": 0,
+                    "left_units": 0
                   }
                 ]
               }

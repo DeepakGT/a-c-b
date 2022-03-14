@@ -55,6 +55,7 @@ Rails.application.routes.draw do
     get '/clients/:client_id/meta_data', to: 'client_meta_data#selectable_options'
     get '/scheduling_meta_data', to: 'scheduling_meta_data#selectable_options'
     get '/clients/:client_id/service_providers_list', to: 'client_meta_data#service_providers_list'
+    get '/services_list', to: 'scheduling_meta_data#services_list'
 
     resources :schedulings do
       resources :soap_notes

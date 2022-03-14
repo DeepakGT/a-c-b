@@ -44,4 +44,20 @@ RSpec.describe SchedulingMetaDataController, type: :controller do
       end
     end
   end
+
+  describe "GET #services_list" do
+    context "when sign in" do
+      let(:client) { create(:client) }
+      let(:staff) { create(:staff, :with_role, role_name: 'bcba') }
+      it "should list all authorization services list successfully" do
+        set_auth_headers(auth_headers)
+        
+        get :selectable_options, params: { client_id: client.id, staff_id: staff.id, date: Time.now.to_date }
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+      end
+    end
+  end
 end

@@ -5,6 +5,11 @@ class SchedulingMetaDataController < ApplicationController
     @selectable_options = get_selectable_options_data
   end
 
+  def services_list
+    client_enrollment_services = ClientEnrollmentService.by_client(params[:client_id]).by_date(params[:date])
+    @client_enrollment_services = client_enrollment_services.by_staff(params[:staff_id])
+  end
+
   private
 
   def get_selectable_options_data
