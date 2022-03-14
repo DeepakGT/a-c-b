@@ -7,7 +7,6 @@ class Client < User
   has_many :addresses, as: :addressable, dependent: :destroy
   has_many :client_enrollments, dependent: :destroy
   has_many :funding_sources, through: :client_enrollments
-  has_many :schedulings, dependent: :destroy
   
   belongs_to :clinic
 

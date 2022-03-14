@@ -4,6 +4,7 @@ class ClientEnrollmentService < ApplicationRecord
 
   has_many :service_providers, class_name: :ClientEnrollmentServiceProvider, dependent: :destroy
   has_many :staff, through: :service_providers
+  has_many :schedulings, dependent: :destroy
 
   accepts_nested_attributes_for :service_providers
 

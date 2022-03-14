@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_09_101629) do
+ActiveRecord::Schema.define(version: 2022_03_11_110736) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -233,10 +233,8 @@ ActiveRecord::Schema.define(version: 2022_03_09_101629) do
     t.bigint "staff_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.bigint "client_id"
-    t.bigint "service_id"
-    t.index ["client_id"], name: "index_schedulings_on_client_id"
-    t.index ["service_id"], name: "index_schedulings_on_service_id"
+    t.bigint "client_enrollment_service_id"
+    t.index ["client_enrollment_service_id"], name: "index_schedulings_on_client_enrollment_service_id"
     t.index ["staff_id"], name: "index_schedulings_on_staff_id"
   end
 
@@ -363,8 +361,7 @@ ActiveRecord::Schema.define(version: 2022_03_09_101629) do
   add_foreign_key "funding_sources", "clinics"
   add_foreign_key "organizations", "users", column: "admin_id"
   add_foreign_key "rbt_supervisions", "users"
-  add_foreign_key "schedulings", "services"
-  add_foreign_key "schedulings", "users", column: "client_id"
+  add_foreign_key "schedulings", "client_enrollment_services"
   add_foreign_key "schedulings", "users", column: "staff_id"
   add_foreign_key "service_qualifications", "qualifications"
   add_foreign_key "service_qualifications", "services"

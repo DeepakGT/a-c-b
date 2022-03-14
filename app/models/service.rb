@@ -3,7 +3,6 @@ class Service < ApplicationRecord
   has_many :service_qualifications, dependent: :destroy
   has_many :qualifications, through: :service_qualifications
   has_many :client_enrollment_services, dependent: :destroy
-  has_many :schedulings, dependent: :destroy
   has_many :staff_clinic_services, dependent: :destroy
   has_many :staff_clinics, through: :staff_clinic_services
 

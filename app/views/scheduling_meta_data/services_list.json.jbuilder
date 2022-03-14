@@ -7,6 +7,9 @@ json.data do
     scheduled_schedules = schedules.scheduled_scheduling
     used_units = completed_schedules.with_units.pluck(:units).sum
     scheduled_units = scheduled_schedules.with_units.pluck(:units).sum
+    used_minutes = completed_schedules.with_minutes.pluck(:minutes).sum
+    scheduled_minutes = scheduled_schedules.with_minutes.pluck(:minutes).sum
+    json.client_enrollment_service_id client_enrollment_service.id
     json.service_id client_enrollment_service.service.id
     json.name client_enrollment_service.service.name
     json.display_code client_enrollment_service.service.display_code
@@ -18,6 +21,14 @@ json.data do
       json.left_units client_enrollment_service.units - (used_units + scheduled_units) 
     else
       json.left_units 0
+    end
+    json.minutes client_enrollment_service.minutes
+    json.used_minutes used_minutes
+    json.scheduled_minutes scheduled_minutes
+    if client_enrollment_service.minutes.present?
+      json.left_minutes client_enrollment_service.minutes - (used_minutes + scheduled_minutes)
+    else
+      json.left_minutes 0
     end
   end
 end

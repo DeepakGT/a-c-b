@@ -5079,7 +5079,8 @@ paths:
                 "status": "success",
                 "data": [
                   {
-                    "id": 4,
+                    "client_enrollment_service_id": 4,
+                    "service_id": 4,
                     "name": "developmental test administration by physician or",
                     "status": "active",
                     "display_code": "80",
@@ -5087,10 +5088,15 @@ paths:
                     "units": null,
                     "used_units": 0,
                     "scheduled_units": 0,
-                    "left_units": 0
+                    "left_units": 0,
+                    "minutes": 900.0,
+                    "used_minutes": 0,
+                    "scheduled_minutes": 0,
+                    "left_minutes": 900.0
                   },
                   {
-                    "id": 6,
+                    "client_enrollment_service_id": 4,
+                    "service_id": 6,
                     "name": "initial assessment",
                     "status": "active",
                     "display_code": "17",
@@ -5098,7 +5104,11 @@ paths:
                     "units": null,
                     "used_units": 0,
                     "scheduled_units": 0,
-                    "left_units": 0
+                    "left_units": 0,
+                    "minutes": 900.0,
+                    "used_minutes": 0,
+                    "scheduled_minutes": 0,
+                    "left_minutes": 900.0
                   }
                 ]
               }
@@ -5899,11 +5909,9 @@ definitions:
   SchedulingCreateUpdateParameters:
     type: "object"
     properties: 
-      client_id: 
+      client_enrollment_service_id: 
         type: "integer"
       staff_id:
-        type: "integer"
-      service_id:
         type: "integer"
       status:
         type: "string"
