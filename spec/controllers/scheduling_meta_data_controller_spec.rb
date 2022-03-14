@@ -26,6 +26,22 @@ RSpec.describe SchedulingMetaDataController, type: :controller do
         expect(response_body['data']['staff'].count).to eq(Staff.all.count)
         expect(response_body['data']['services'].count).to eq(Service.all.count)
       end
+
+      context "when clinic is present" do
+        let(:clinic) { create(:clinic) }
+        it "should fetch selectable options list according to clinic successfully" do
+          set_auth_headers(auth_headers)
+        
+          get :selectable_options, params: { clinic_id: clinic.id }
+          response_body = JSON.parse(response.body)
+
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data']['clients'].count).to eq(Client.all.count)
+          expect(response_body['data']['staff'].count).to eq(Staff.all.count)
+          expect(response_body['data']['services'].count).to eq(Service.all.count)
+        end
+      end
     end
   end
 end

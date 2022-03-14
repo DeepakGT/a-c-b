@@ -2,7 +2,7 @@ class ClientNotesController < ApplicationController
   before_action :authenticate_user!
   before_action :authorize_user
   before_action :set_client
-  before_action :set_client_note, only: [:show, :update, :destroy]
+  before_action :set_client_note, only: %i[show update destroy]
 
   def index
     @client_notes = @client.notes.order(:created_at)

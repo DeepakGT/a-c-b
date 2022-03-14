@@ -8,8 +8,16 @@ class SchedulingMetaDataController < ApplicationController
   private
 
   def get_selectable_options_data
-    selectable_options = { clients: Client.order(:first_name),
-                           staff: Staff.order(:first_name),
+    if params[:clinic_id].present?
+      clinic = Clinic.find(params[:clinic_id])
+      client = clinic.clients
+      staff = clinic.staff
+    else
+      client = Client.all
+      staff = Staff.all
+    end
+    selectable_options = { clients: client.order(:first_name),
+                           staff: staff.order(:first_name),
                            services: Service.order(:name) }
   end
   # end of private

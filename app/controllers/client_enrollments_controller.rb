@@ -11,7 +11,7 @@ class ClientEnrollmentsController < ApplicationController
   def create
     ActiveRecord::Base.transaction do
       @client_enrollment = @client.client_enrollments.new(enrollment_params)
-      # note : reset_primary must be called after initialize, we are overriding is_primary value.
+      # NOTE : reset_primary must be called after initialize, we are overriding is_primary value.
       reset_primary
       @client_enrollment.save
     end
@@ -52,9 +52,7 @@ class ClientEnrollmentsController < ApplicationController
 
   def reset_primary
     if is_any_other_primary?
-      if params[:is_primary].to_bool.true?
-        other_primary_objects.update_all(is_primary: false)
-      end
+      other_primary_objects.update_all(is_primary: false) if params[:is_primary].to_bool.true?
     else
       @client_enrollment.is_primary = true
     end

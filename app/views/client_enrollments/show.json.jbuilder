@@ -4,9 +4,7 @@ json.data do
   json.client_id @client_enrollment.client_id
   json.source_of_payment @client_enrollment.source_of_payment
   json.funding_source_id @client_enrollment.funding_source_id
-  if @client_enrollment.funding_source.present?
-    json.funding_source @client_enrollment.funding_source.name 
-  end
+  json.funding_source @client_enrollment.funding_source&.name
   json.terminated_on @client_enrollment.terminated_on
   json.primary @client_enrollment.is_primary
   json.insurance_id @client_enrollment.insurance_id
