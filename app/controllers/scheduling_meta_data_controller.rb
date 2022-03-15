@@ -7,7 +7,9 @@ class SchedulingMetaDataController < ApplicationController
 
   def services_list
     client_enrollment_services = ClientEnrollmentService.by_client(params[:client_id]).by_date(params[:date])
-    @client_enrollment_services = client_enrollment_services.by_staff(params[:staff_id])
+    # @client_enrollment_services = client_enrollment_services.by_staff(params[:staff_id])
+    staff = Staff.find(params[:staff_id])
+    @client_enrollment_services = client_enrollment_services.joins(service: :service_qualifications).where('service_qualifications.qualification_id': staff.qualifications.pluck(:credential_id))
   end
 
   private
