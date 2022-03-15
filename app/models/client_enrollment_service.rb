@@ -13,6 +13,7 @@ class ClientEnrollmentService < ApplicationRecord
   scope :by_client, ->(client_id){ joins(:client_enrollment).where('client_enrollments.client_id = ?',client_id) }
   scope :by_date, ->(date){ where('start_date <= ? AND end_date >= ?', date, date) }
   scope :by_staff, ->(staff_id){ joins(:service_providers).where('client_enrollment_service_providers.staff_id': staff_id) }
+  scope :by_service, ->(service_ids){ where(service_id: service_ids) }
 
   private
 
