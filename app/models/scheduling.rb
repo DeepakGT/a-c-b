@@ -4,8 +4,8 @@ class Scheduling < ApplicationRecord
   has_many :soap_notes, dependent: :destroy
 
   validates_presence_of :date, :start_time, :end_time, :status
-  validates_presence_of :units, message: "or minutes, any one must be present.", if: proc { |obj| obj.minutes.blank? }
-  validates_absence_of :units, message: "or minutes, only one must be present.", if: proc { |obj| obj.minutes.present? }
+  # validates_presence_of :units, message: "or minutes, any one must be present.", if: proc { |obj| obj.minutes.blank? }
+  # validates_absence_of :units, message: "or minutes, only one must be present.", if: proc { |obj| obj.minutes.present? }
 
   validate :validate_time
 

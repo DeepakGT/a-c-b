@@ -10,7 +10,7 @@ class ClientMetaDataController < ApplicationController
   def service_providers_list
     staff = @client.clinic.staff
     staff = check_qualification(staff)
-    @staff = staff&.sort_by(&:id)
+    @staff = staff&.uniq.sort_by(&:id)
   end
 
   private
@@ -33,9 +33,10 @@ class ClientMetaDataController < ApplicationController
     service_qualification_ids = @service.service_qualifications.pluck(:qualification_id)
     return staff if service_qualification_ids.empty?
     
-    staff = staff.map{|s| s if service_qualification_ids.difference(s.staff_qualifications.pluck(:credential_id)).empty? }
-    staff.delete(nil)
-    staff
+    # staff = staff.map{|s| s if service_qualification_ids.difference(s.staff_qualifications.pluck(:credential_id)).empty? }
+    # staff.delete(nil)
+    staff = staff.joins(:staff_qualifications).where('staff_qualifications.credential_id': service_qualification_ids)
+    # staff
   end
   # end of private
 end

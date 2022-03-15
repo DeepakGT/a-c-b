@@ -62,7 +62,7 @@ RSpec.describe ServicesController, type: :controller do
         post :create, params: {
           name: service_name,
           display_code: 9485,
-          service_qualifications_attributes: [ {qualification_id: qualification.id} ]
+          service_qualifications_attributes: [{qualification_id: qualification.id}]
         }
         response_body = JSON.parse(response.body)
 

@@ -46,8 +46,7 @@ class ApplicationController < ActionController::API
   end
 
   def string_to_array(value)
-    value = "["+value+"]" if value[0]!='['
-    value = JSON.parse(value)
+    value = value.gsub(/\[|\]/, '').split(',')
   end
   # end of private
 end

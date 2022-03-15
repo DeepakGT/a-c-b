@@ -4,7 +4,6 @@ RSpec.describe Service, type: :model do
   it { should have_many(:service_qualifications).dependent(:destroy) }
   it { should have_many(:qualifications).through(:service_qualifications) }  
   it { should have_many(:client_enrollment_services).dependent(:destroy) } 
-  it { should have_many(:schedulings).dependent(:destroy) }
   it { should have_many(:staff_clinic_services).dependent(:destroy) }
   it { should have_many(:staff_clinics).through(:staff_clinic_services) }  
 

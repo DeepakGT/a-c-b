@@ -5,5 +5,6 @@ FactoryBot.define do
     is_primary { false }
     insurance_id { 'UXY56773' }
     source_of_payment { 'insurance' }
+    terminated_on { '2033-04-30' }
   end
 end

@@ -16,6 +16,8 @@ RSpec.describe SchedulingsController, type: :controller do
   let!(:clinic) { create(:clinic, name: 'clinic1', organization_id: organization.id) }
   let!(:client) { create(:client, clinic_id: clinic.id, first_name: 'test') }
   let!(:service) { create(:service) }
+  let!(:client_enrollment) { create(:client_enrollment, client_id: client.id) }
+  let!(:client_enrollment_service) { create(:client_enrollment_service, client_enrollment_id: client_enrollment.id) }
   let!(:staff) { create(:staff, :with_role, role_name: 'bcba', first_name: 'abcd') }
   
   describe "GET #index" do
@@ -54,37 +56,37 @@ RSpec.describe SchedulingsController, type: :controller do
         expect(response_body['page']).to eq("2")
       end
 
-      it "should staff filter by client name successfully" do
+      it "should staff filter by client ids successfully" do
         set_auth_headers(auth_headers)
         
-        get :index, params: { search_by:"client_name", search_value: client.first_name }
+        get :index, params: { client_ids: client.id }
         response_body = JSON.parse(response.body)
         
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
-        expect(response_body['data'].count).to eq(Scheduling.joins(:client).by_first_name(client.first_name).count)
+        expect(response_body['data'].count).to eq(Scheduling.by_client_ids(client.id).count)
       end
 
-      it "should staff filter by staff name successfully" do
+      it "should staff filter by staff ids successfully" do
         set_auth_headers(auth_headers)
         
-        get :index, params: { search_by:"staff_name", search_value: staff.first_name }
+        get :index, params: { staff_ids: staff.id }
         response_body = JSON.parse(response.body)
         
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
-        expect(response_body['data'].count).to eq(Scheduling.joins(:staff).by_first_name(staff.first_name).count)
+        expect(response_body['data'].count).to eq(Scheduling.by_staff_ids(staff.id).count)
       end
 
-      it "should list staff filtered by service successfully" do
+      it "should list staff filtered by service ids successfully" do
         set_auth_headers(auth_headers)
 
-        get :index, params: { search_by:"service", search_value: service.name}
+        get :index, params: { service_ids: service.id }
         response_body = JSON.parse(response.body)
 
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
-        expect(response_body['data'].count).to eq(Scheduling.joins(:service).by_service(service.name).count)
+        expect(response_body['data'].count).to eq(Scheduling.by_service_ids(service.id).count)
       end
     end
   end
@@ -95,9 +97,8 @@ RSpec.describe SchedulingsController, type: :controller do
         set_auth_headers(auth_headers)
         
         post :create, params: {
-          client_id: client.id,
+          client_enrollment_service_id: client_enrollment_service.id,
           staff_id: staff.id,
-          service_id: service.id,
           date: Time.now.to_date,
           start_time: '16:00',
           end_time: '17:00',
@@ -108,9 +109,8 @@ RSpec.describe SchedulingsController, type: :controller do
         
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
-        expect(response_body['data']['client_id']).to eq(client.id)
+        expect(response_body['data']['client_enrollment_service_id']).to eq(client_enrollment_service.id)
         expect(response_body['data']['staff_id']).to eq(staff.id)
-        expect(response_body['data']['service_id']).to eq(service.id)
         expect(response_body['data']['date']).to eq(Time.now.to_date.to_s)
         expect(response_body['data']['start_time']).to eq('16:00')
         expect(response_body['data']['end_time']).to eq('17:00')
@@ -122,8 +122,7 @@ RSpec.describe SchedulingsController, type: :controller do
 
   describe "GET #show" do
     context "when sign in" do
-      let(:scheduling) { create(:scheduling, client_id: client.id, staff_id: staff.id, service_id: service.id,
-        date: '2022-02-28', start_time: '9:00', end_time: '10:00', units: '2') }
+      let(:scheduling) { create(:scheduling, client_enrollment_service_id: client_enrollment_service.id, staff_id: staff.id, date: '2022-02-28', start_time: '9:00', end_time: '10:00', units: '2') }
       it "should fetch scheduling detail successfully" do
         set_auth_headers(auth_headers)
         
@@ -133,17 +132,15 @@ RSpec.describe SchedulingsController, type: :controller do
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
         expect(response_body['data']['id']).to eq(scheduling.id)
-        expect(response_body['data']['client_id']).to eq(client.id)
+        expect(response_body['data']['client_enrollment_service_id']).to eq(client_enrollment_service.id)
         expect(response_body['data']['staff_id']).to eq(staff.id)
-        expect(response_body['data']['service_id']).to eq(service.id)
       end
     end
   end
 
   describe "PUT #update" do
     context "when sign in" do
-      let(:scheduling) { create(:scheduling, client_id: client.id, staff_id: staff.id, service_id: service.id,
-        start_time: '12:00', end_time: '13:00', units: '2') }
+      let(:scheduling) { create(:scheduling, client_enrollment_service_id: client_enrollment_service.id, staff_id: staff.id, start_time: '12:00', end_time: '13:00', units: '2') }
       it "should update scheduling successfully" do
         set_auth_headers(auth_headers)
 
@@ -171,30 +168,17 @@ RSpec.describe SchedulingsController, type: :controller do
           expect(response_body['data']['staff_id']).to eq(staff.id)
         end
 
-        let(:client) { create(:client, clinic_id: clinic.id) }
+        let(:client_enrollment_service) { create(:client_enrollment_service) }
         it "should update associated client successfully" do
           set_auth_headers(auth_headers)
 
-          put :update, params: { id: scheduling.id, client_id: client.id }
+          put :update, params: { id: scheduling.id, client_enrollment_service_id: client_enrollment_service.id }
           response_body = JSON.parse(response.body)
 
           expect(response.status).to eq(200)
           expect(response_body['status']).to eq('success')
           expect(response_body['data']['id']).to eq(scheduling.id)
-          expect(response_body['data']['client_id']).to eq(client.id)
-        end
-
-        let(:service) { create(:service) }
-        it "should update associated service successfully" do
-          set_auth_headers(auth_headers)
-
-          put :update, params: { id: scheduling.id, service_id: service.id }
-          response_body = JSON.parse(response.body)
-
-          expect(response.status).to eq(200)
-          expect(response_body['status']).to eq('success')
-          expect(response_body['data']['id']).to eq(scheduling.id)
-          expect(response_body['data']['service_id']).to eq(service.id)
+          expect(response_body['data']['client_enrollment_service_id']).to eq(client_enrollment_service.id)
         end
       end
     end
@@ -202,8 +186,7 @@ RSpec.describe SchedulingsController, type: :controller do
 
   describe "DELETE #destroy" do
     context "when sign in" do
-      let(:scheduling) { create(:scheduling, client_id: client.id, staff_id: staff.id, service_id: service.id,
-        start_time: '17:00', end_time: '18:00', units: '2') }
+      let(:scheduling) { create(:scheduling, client_enrollment_service_id: client_enrollment_service.id, staff_id: staff.id, start_time: '17:00', end_time: '18:00', units: '2') }
       it "should delete scheduling detail successfully" do
         set_auth_headers(auth_headers)
 

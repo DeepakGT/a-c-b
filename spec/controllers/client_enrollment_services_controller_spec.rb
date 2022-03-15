@@ -93,8 +93,7 @@ RSpec.describe ClientEnrollmentServicesController, type: :controller do
 
   describe "DELETE #destroy" do
     context "when sign in" do
-      let(:enrollment_service) { create(:client_enrollment_service, 
-        client_enrollment_id: client_enrollment.id, service_id: service.id) }
+      let(:enrollment_service) { create(:client_enrollment_service, client_enrollment_id: client_enrollment.id, service_id: service.id) }
       it "should delete client enrollment service detail successfully" do
         set_auth_headers(auth_headers)
 
