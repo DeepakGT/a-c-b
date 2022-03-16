@@ -12,6 +12,7 @@ RSpec.describe ServicesController, type: :controller do
   let!(:role) { create(:role, name: 'aba_admin', permissions: ['service_view', 'service_update'])}
   let!(:user) { create(:user, :with_role, role_name: role.name) }
   let!(:auth_headers) { user.create_new_auth_token }
+  let!(:qualification) { create(:qualification) }
   
   describe "GET #index" do
     before do
@@ -58,12 +59,19 @@ RSpec.describe ServicesController, type: :controller do
       let!(:service_name) {'test-service-1'}
       it "should create service successfully" do
         set_auth_headers(auth_headers)
-        post :create, params: {name: service_name}
+        post :create, params: {
+          name: service_name,
+          display_code: 9485,
+          service_qualifications_attributes: [{qualification_id: qualification.id}]
+        }
         response_body = JSON.parse(response.body)
 
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
         expect(response_body['data']['name']).to eq(service_name)
+        expect(response_body['data']['display_code']).to eq("9485")
+        expect(response_body['data']['qualification_ids'].count).to eq(1)
+        expect(response_body['data']['qualification_ids'].first).to eq(qualification.id)
       end
     end
   end
@@ -74,12 +82,28 @@ RSpec.describe ServicesController, type: :controller do
       let!(:updated_service_name) {'service-1-updated'}
       it "should update service successfully" do
         set_auth_headers(auth_headers)
+
         put :update, params: {id: service.id, name: updated_service_name}
         response_body = JSON.parse(response.body)
 
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
         expect(response_body['data']['name']).to eq(updated_service_name)
+      end
+
+      context "and update associated data" do
+        it "should update service qualifications successfully" do
+          set_auth_headers(auth_headers)
+        
+          put :update, params: {id: service.id, service_qualifications_attributes: [{qualification_id: qualification.id}] }
+          response_body = JSON.parse(response.body)
+
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data']['id']).to eq(service.id)
+          expect(response_body['data']['qualification_ids'].count).to eq(1)
+          expect(response_body['data']['qualification_ids'].first).to eq(qualification.id)
+        end
       end
     end
   end
@@ -97,6 +121,25 @@ RSpec.describe ServicesController, type: :controller do
         expect(response_body['status']).to eq('success')
         expect(response_body['data']['id']).to eq(service.id)
         expect(response_body['data']['name']).to eq(service_name)
+      end
+    end
+  end
+
+  describe "DELETE #destroy" do
+    context "when sign in" do
+      let(:user) { create(:user, :with_role, role_name: 'super_admin') }
+      let(:auth_headers) { user.create_new_auth_token }
+      let(:service) {create(:service, name: 'service1')}
+      it "should delete service successfully" do
+        set_auth_headers(auth_headers)
+
+        delete :destroy, params: { id: service.id }
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data']['id']).to eq(service.id)
+        expect(Service.find_by_id(service.id)).to eq(nil)
       end
     end
   end

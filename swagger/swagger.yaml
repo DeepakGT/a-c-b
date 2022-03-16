@@ -237,6 +237,12 @@ paths:
         name: "uid"
         description: "Request headers"
         required: true
+      - in: "query"
+        name: "page"
+        schema:
+          type: "integer"
+        description: "Page number to display"
+        required: false
       responses:
         "200":
           description: "Clinics list"
@@ -442,6 +448,58 @@ paths:
                 },
                 "errors": []
               }
+    delete:
+      summary: clinic delete
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "clinic id"
+        required: true
+      responses:
+        "200":
+          description: "Clinic deleted"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 3,
+                  "name": "clinic3",
+                  "aka": "Test Clinic ",
+                  "web": "www.clinic3.com",
+                  "email": "admin@clinic3.com",
+                  "status": "inactive",
+                  "organization_id": 4,
+                  "organization_name": "Organization 4",
+                  "phone_number": {
+                    "id": 3,
+                    "phone_type": "work",
+                    "number": "7890123457"
+                  },
+                  "address": {
+                    "id": 3,
+                    "line1": "Princess Business Skypark",
+                    "line2": null,
+                    "line3": null,
+                    "zipcode": null,
+                    "city": "Indore",
+                    "state": null,
+                    "country": null
+                  }
+                }
+              }
   
   /api/staff:
     get:
@@ -470,6 +528,12 @@ paths:
         schema:
           type: "string"
         description: "value to be searched"
+        required: false
+      - in: "query"
+        name: "page"
+        schema:
+          type: "integer"
+        description: "Page number to display"
         required: false
       responses:
         "200":
@@ -716,7 +780,7 @@ paths:
 
   /api/credentials:
     get:
-      summary: List of credentials
+      summary: List of qualifications
       parameters:
       - in: "header"
         name: "access-token"
@@ -730,9 +794,15 @@ paths:
         name: "uid"
         description: "Request headers"
         required: true
+      - in: "query"
+        name: "page"
+        schema:
+          type: "integer"
+        description: "Page number to display"
+        required: false
       responses:
         "200":
-          description: "Credentials list"
+          description: "qualifications list"
           content:
             application/json:
               example: {
@@ -755,7 +825,7 @@ paths:
                           ]
                         }
     post:
-      summary: Credential create
+      summary: qualification create
       parameters:
       - in: "header"
         name: "access-token"
@@ -773,10 +843,10 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/definitions/CredentialCreateParameters"
+              $ref: "#/definitions/QualificationCreateParameters"
       responses:
         "200":
-          description: "Credentials list"
+          description: "qualifications list"
           content:
             application/json:
               example: {
@@ -792,7 +862,7 @@ paths:
 
   /api/credentials/{id}:
     put:
-      summary: credential update
+      summary: qualification update
       parameters:
       - in: "header"
         name: "access-token"
@@ -808,16 +878,16 @@ paths:
         required: true
       - in: "path"
         name: "id"
-        description: "Credential id"
+        description: "qualification id"
         required: true
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/definitions/CredentialUpdateParameters"
+              $ref: "#/definitions/QualificationUpdateParameters"
       responses:
         "200":
-          description: "Updated Credential"
+          description: "Updated qualification"
           content:
             application/json:
               example: {
@@ -831,7 +901,7 @@ paths:
                           }
                         }
     get:
-      summary: credential show
+      summary: qualification show
       parameters:
       - in: "header"
         name: "access-token"
@@ -847,11 +917,11 @@ paths:
         required: true
       - in: "path"
         name: "id"
-        description: "Credential id"
+        description: "qualification id"
         required: true
       responses:
         "200":
-          description: "Credential detail"
+          description: "qualification detail"
           content:
             application/json:
               example: {
@@ -864,6 +934,40 @@ paths:
                               "lifetime": false
                           }
                         }
+    delete:
+      summary: qualification delete
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "qualification id"
+        required: true
+      responses:
+        "200":
+          description: "qualification deleted"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                    "id": 1,
+                    "type": "education",
+                    "name": "name",
+                    "description": "some description",
+                    "lifetime": false
+                }
+              }
 
   /api/supervisor_list:
     get:
@@ -918,6 +1022,12 @@ paths:
         name: "uid"
         description: "Request headers"
         required: true
+      - in: "query"
+        name: "page"
+        schema:
+          type: "integer"
+        description: "Page number to display"
+        required: false
       responses:
         "200":
           description: "services list"
@@ -927,16 +1037,22 @@ paths:
                 "status": "success",
                 "data": [
                     {
-                        "id": 2,
-                        "name": "additional 30 minutes spent performing activities",
-                        "display_code": null,
-                        "category": null
+                      "id": 2,
+                      "name": "additional 30 minutes spent performing activities",
+                      "display_code": null,
+                      "qualification_ids": [
+                        4,
+                        8
+                      ],
+                      "qualification_names": [
+                        "Associate's Degree",
+                        "Auto Insurance"
+                      ]
                     },
                     {
-                        "id": 3,
-                        "name": "caregiver training",
-                        "display_code": null,
-                        "category": null
+                      "id": 3,
+                      "name": "caregiver training",
+                      "display_code": null
                     }
                   ]
                 }
@@ -971,7 +1087,15 @@ paths:
                           "id": 9,
                           "name": "test-service-name",
                           "status": "active",
-                          "display_code": null
+                          "display_code": 0,
+                          "qualification_ids": [
+                            4,
+                            8
+                          ],
+                          "qualification_names": [
+                            "Associate's Degree",
+                            "Auto Insurance"
+                          ]
                         }
                       }
 
@@ -1008,10 +1132,18 @@ paths:
               example: {
                 "status": "success",
                 "data": {
-                    "id": 1,
-                    "name": "test-service-name-updated",
-                    "status": "active",
-                    "display_code": null
+                  "id": 1,
+                  "name": "test-service-name-updated",
+                  "status": "active",
+                  "display_code": null,
+                  "qualification_ids": [
+                    4,
+                    8
+                  ],
+                  "qualification_names": [
+                    "Associate's Degree",
+                    "Auto Insurance"
+                  ]
                 }
               }
     get:
@@ -1041,10 +1173,59 @@ paths:
               example: {
                 "status": "success",
                 "data": {
-                    "id": 27,
-                    "name": "test-service-name-up-2",
-                    "status": "active",
-                    "display_code": 21
+                  "id": 27,
+                  "name": "test-service-name-up-2",
+                  "status": "active",
+                  "display_code": 21,
+                  "qualification_ids": [
+                    4,
+                    8
+                  ],
+                  "qualification_names": [
+                    "Associate's Degree",
+                    "Auto Insurance"
+                  ]
+                }
+              }
+    delete:
+      summary: Service delete
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "Service id"
+        required: true
+      responses:
+        "200":
+          description: "deleted service"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 27,
+                  "name": "test-service-name-up-2",
+                  "status": "active",
+                  "display_code": 21,
+                  "qualification_ids": [
+                    4,
+                    8
+                  ],
+                  "qualification_names": [
+                    "Associate's Degree",
+                    "Auto Insurance"
+                  ]
                 }
               }
 
@@ -1068,6 +1249,12 @@ paths:
         name: "clinic_id"
         description: "Clinic id"
         required: true
+      - in: "query"
+        name: "page"
+        schema:
+          type: "integer"
+        description: "Page number to display"
+        required: false
       responses:
         "200":
           description: "Funding sources list"
@@ -1315,10 +1502,67 @@ paths:
                 },
                 "errors": []
               }
+    delete:
+      summary: Funding source delete
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "clinic_id"
+        description: "Associated Clinic id"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "Funding source id to delete"
+        required: true
+      responses:
+        "200":
+          description: "Deleted funding source"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                    "id": 11,
+                    "name": "fs1",
+                    "plan_name": "abc",
+                    "payor_type": "commercial",
+                    "network_status": "in_network",
+                    "status": "active",
+                    "email": "contact@fs1.com",
+                    "notes": "good",
+                    "clinic_id": 1,
+                    "address": {
+                      "id": 1,
+                      "line1": "Princess Business Skypark",
+                      "line2": null,
+                      "line3": null,
+                      "zipcode": null,
+                      "city": "Indore",
+                      "state": null,
+                      "country": null
+                    },
+                    "phone_number": {
+                      "id": 2,
+                      "phone_type": "work",
+                      "number": "8989898988"
+                    }
+                }
+              }
 
   /api/staff/{staff_id}/staff_credentials:
     get:
-      summary: staff credential listing
+      summary: staff qualification listing
       parameters:
       - in: "header"
         name: "access-token"
@@ -1338,7 +1582,7 @@ paths:
         required: true
       responses:
         "200":
-          description: "Staff Credendentials list"
+          description: "Staff qualifications list"
           content:
             application/json:
               example: {
@@ -1356,7 +1600,7 @@ paths:
                 ]
               }
     post:
-      summary: staff credential create
+      summary: staff qualification create
       parameters:
       - in: "header"
         name: "access-token"
@@ -1378,10 +1622,10 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/definitions/StaffCredentialCreateUpdateParameters"
+              $ref: "#/definitions/StaffQualificationCreateUpdateParameters"
       responses:
         "200":
-          description: "Created staff credential"
+          description: "Created staff qualification"
           content:
             application/json:
               example: {
@@ -1397,7 +1641,7 @@ paths:
               }
   /api/staff/{staff_id}/staff_credentials/{id}:
     get:
-      summary: staff credential show
+      summary: staff qualification show
       parameters:
       - in: "header"
         name: "access-token"
@@ -1417,11 +1661,11 @@ paths:
         required: true
       - in: "path"
         name: "id"
-        description: "staff_credential id"
+        description: "staff_qualification id"
         required: true
       responses:
         "200":
-          description: "Staff credential detail"
+          description: "Staff qualification detail"
           content:
             application/json:
               example: {
@@ -1437,7 +1681,7 @@ paths:
                 }
               }
     put:
-      summary: staff credential update
+      summary: staff qualification update
       parameters:
       - in: "header"
         name: "access-token"
@@ -1457,16 +1701,16 @@ paths:
         required: true
       - in: "path"
         name: "id"
-        description: "Staff credential id"
+        description: "Staff qualification id"
         required: true
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/definitions/StaffCredentialCreateUpdateParameters"
+              $ref: "#/definitions/StaffQualificationCreateUpdateParameters"
       responses:
         "200":
-          description: "Updated staff credential"
+          description: "Updated staff qualification"
           content:
             application/json:
               example: {
@@ -1481,7 +1725,7 @@ paths:
                 }
               }
     delete:
-      summary: staff credential delete
+      summary: staff qualification delete
       parameters:
       - in: "header"
         name: "access-token"
@@ -1501,11 +1745,11 @@ paths:
         required: true
       - in: "path"
         name: "id"
-        description: "staff_credential id"
+        description: "staff_qualification id"
         required: true
       responses:
         "200":
-          description: "Deleted Staff credential detail"
+          description: "Deleted Staff qualification detail"
           content:
             application/json:
               example: {
@@ -1536,6 +1780,12 @@ paths:
         name: "uid"
         description: "Request headers"
         required: true
+      - in: "query"
+        name: "page"
+        schema:
+          type: "integer"
+        description: "Page number to display"
+        required: false
       responses:
         "200":
           description: "Organizations List"
@@ -1739,6 +1989,56 @@ paths:
                 },
                 "errors": []
               }
+    delete:
+      summary: Organization delete
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "Organization id"
+        required: true
+      responses:
+        "200":
+          description: "Deleted Organization"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 4,
+                  "name": "Organization 4",
+                  "aka": "test organization",
+                  "web": "www.org4.com",
+                  "email": "admin@org4.com",
+                  "status": "active",
+                  "phone_number": {
+                    "id": 1,
+                    "phone_type": "mobile",
+                    "number": "9876543212"
+                  },
+                  "address": {
+                    "id": 1,
+                    "line1": "C21 Mall",
+                    "line2": null,
+                    "line3": null,
+                    "zipcode": null,
+                    "city": "Indore",
+                    "state": "Madhya Pradesh",
+                    "country": null
+                  }
+                }
+              }
 
   /api/clients:
     get:
@@ -1756,6 +2056,12 @@ paths:
         name: "uid"
         description: "Request headers"
         required: true
+      - in: "query"
+        name: "page"
+        schema:
+          type: "integer"
+        description: "Page number to display"
+        required: false
       responses:
         "200":
           description: "Client list"
@@ -2077,6 +2383,49 @@ paths:
                 },
                 "errors": []
               }
+    delete:
+      summary: Client delete
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "Client id"
+        required: true
+      responses:
+        "200":
+          description: "Deleted client"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 11,
+                  "first_name": "Test",
+                  "last_name": "Client1",
+                  "email": "testc1@gmail.com",
+                  "dob": "2012-12-12",
+                  "gender": "male",
+                  "status": "active",
+                  "preferred_language": "english",
+                  "disqualified": false,
+                  "phone_number": {
+                    "id": 4,
+                    "phone_type": "mobile",
+                    "number": "9988998888543"
+                  }
+                }
+              }
 
   /api/clients/{client_id}/client_enrollments:
     get:
@@ -2098,6 +2447,12 @@ paths:
         name: "client_id"
         description: "Associated Client id"
         required: true
+      - in: "query"
+        name: "page"
+        schema:
+          type: "integer"
+        description: "Page number to display"
+        required: false
       responses:
         "200":
           description: "Client enrollments list"
@@ -2391,6 +2746,12 @@ paths:
         name: "client_id"
         description: "Associated Client id"
         required: true
+      - in: "query"
+        name: "page"
+        schema:
+          type: "integer"
+        description: "Page number to display"
+        required: false
       responses:
         "200":
           description: "Client contact list"
@@ -2965,6 +3326,12 @@ paths:
         name: "uid"
         description: "Request headers"
         required: true
+      - in: "query"
+        name: "page"
+        schema:
+          type: "integer"
+        description: "Page number to display"
+        required: false
       responses:
         "200":
           description: "Roles list"
@@ -3114,6 +3481,38 @@ paths:
                   "permissions": "[]"
                 },
                 "errors": []
+              }
+    delete:
+      summary: role delete
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "Role id"
+        required: true
+      responses:
+        "200":
+          description: "deleted role"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 7,
+                  "name": "abcd",
+                  "permissions": "[]"
+                }
               }
 
   /api/staff/{id}:
@@ -4064,6 +4463,12 @@ paths:
         name: "uid"
         description: "Request headers"
         required: true
+      - in: "query"
+        name: "clinic_id"
+        schema:
+          type: "integer"
+        description: "Associated clinic id to filter"
+        required: false
       responses:
         "200":
           description: "Scheduling meta data selectable options list"
@@ -4126,16 +4531,28 @@ paths:
         description: "Request headers"
         required: true
       - in: "query"
-        name: "search_by"
+        name: "staff_ids"
         schema:
           type: "string"
-        description: "Field to search by"
+        description: "Array of staff ids to filter"
         required: false
       - in: "query"
-        name: "search_value"
+        name: "client_ids"
         schema:
           type: "string"
-        description: "value to be searched"
+        description: "Array of client ids to filter"
+        required: false
+      - in: "query"
+        name: "service_ids"
+        schema:
+          type: "string"
+        description: "Array of service ids to filter"
+        required: false
+      - in: "query"
+        name: "page"
+        schema:
+          type: "integer"
+        description: "Page number to display"
         required: false
       responses:
         "200":
@@ -4574,6 +4991,128 @@ paths:
                 }
               }
 
+  /api/clients/{client_id}/service_providers_list:
+    get:
+      summary: service providers list
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "Associated client id"
+        required: true
+      - in: "query"
+        name: "service_id"
+        schema:
+          type: "integer"
+        description: "associated service id"
+        required: true
+      responses:
+        "200":
+          description: "service providers list"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": [
+                  {
+                    "id": 5,
+                    "name": "Chester Waelchi"
+                  },
+                  {
+                    "id": 9,
+                    "name": "Magaret Boehm"
+                  }
+                ]
+              }
+
+  /api/services_list:
+    get:
+      summary: services list
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "query"
+        name: "client_id"
+        schema:
+          type: "integer"
+        description: "associated client id"
+        required: true
+      - in: "query"
+        name: "date"
+        schema:
+          type: "string"
+        description: "date for appointment"
+        required: true
+      - in: "query"
+        name: "staff_id"
+        schema:
+          type: "integer"
+        description: "associated staff id"
+        required: true
+      responses:
+        "200":
+          description: "services list"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": [
+                  {
+                    "client_enrollment_service_id": 4,
+                    "service_id": 4,
+                    "name": "developmental test administration by physician or",
+                    "status": "active",
+                    "display_code": "80",
+                    "is_service_provider_required": false,
+                    "units": null,
+                    "used_units": 0,
+                    "scheduled_units": 0,
+                    "left_units": 0,
+                    "minutes": 900.0,
+                    "used_minutes": 0,
+                    "scheduled_minutes": 0,
+                    "left_minutes": 900.0
+                  },
+                  {
+                    "client_enrollment_service_id": 4,
+                    "service_id": 6,
+                    "name": "initial assessment",
+                    "status": "active",
+                    "display_code": "17",
+                    "is_service_provider_required": false,
+                    "units": null,
+                    "used_units": 0,
+                    "scheduled_units": 0,
+                    "left_units": 0,
+                    "minutes": 900.0,
+                    "used_minutes": 0,
+                    "scheduled_minutes": 0,
+                    "left_minutes": 900.0
+                  }
+                ]
+              }
+
 definitions:
   UserRegistrationParameters:
     type: "object"
@@ -4995,7 +5534,7 @@ definitions:
                 type: "string"
                 enum: [office, insurance_address, service_address]
 
-  CredentialCreateParameters:
+  QualificationCreateParameters:
     type: "object"
     properties:
       name:
@@ -5007,7 +5546,7 @@ definitions:
       credential_type:
         type: integer
 
-  CredentialUpdateParameters:
+  QualificationUpdateParameters:
     type: "object"
     properties:
       name:
@@ -5028,6 +5567,16 @@ definitions:
         type: "integer"
       display_code:
         type: "integer"
+      is_service_provider_required:
+        type: "boolean"
+      service_qualifications_attributes:
+        type: "object"
+        properties:
+          0:
+            type: "object"
+            properties:
+              qualification_id:
+                type: "integer"
 
   FundingSourceCreateUpdateParameters:
     type: "object"
@@ -5075,7 +5624,7 @@ definitions:
           country:
             type: "string"
 
-  StaffCredentialCreateUpdateParameters:
+  StaffQualificationCreateUpdateParameters:
     type: "object"
     properties:
       credential_id:
@@ -5323,10 +5872,11 @@ definitions:
       staff_clinic_services_attributes:
         type: "object"
         properties:
-          service_id:
-            type: "array"
-            items:
-              type: "integer"
+          0:
+            type: "object"
+            properties:
+              service_id:
+                type: "integer"
 
   ClientEnrollmentServiceCreateUpdateParameters:
     type: "object"
@@ -5359,11 +5909,9 @@ definitions:
   SchedulingCreateUpdateParameters:
     type: "object"
     properties: 
-      client_id: 
+      client_enrollment_service_id: 
         type: "integer"
       staff_id:
-        type: "integer"
-      service_id:
         type: "integer"
       status:
         type: "string"

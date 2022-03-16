@@ -14,4 +14,8 @@ class RolePolicy < ApplicationPolicy
   def update?
     false
   end
+
+  def destroy?
+    false
+  end
 end

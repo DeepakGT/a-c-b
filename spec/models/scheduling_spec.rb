@@ -3,8 +3,7 @@ require 'rails_helper'
 RSpec.describe Scheduling, type: :model do
   describe 'associations' do
     it { should belong_to(:staff) }
-    it { should belong_to(:client) }
-    it { should belong_to(:service) }
+    it { should belong_to(:client_enrollment_service) }
     it { should have_many(:soap_notes).dependent(:destroy) } 
   end
 
@@ -27,13 +26,11 @@ RSpec.describe Scheduling, type: :model do
 
   describe "#validate_time" do
     let!(:clinic) { create(:clinic, name: 'clinic1') }
-    let!(:client) { create(:client, clinic_id: clinic.id) }
     let!(:service) { create(:service) }
+    let!(:client_enrollment_service) { create(:client_enrollment_service, service_id: service.id) }
     let!(:staff) { create(:staff, :with_role, role_name: 'bcba') }
-    let!(:scheduling1) { create(:scheduling, staff_id: staff.id, client_id: client.id, 
-      service_id: service.id, start_time: '16:00', end_time: '17:00', date: '2022-02-28', units: '2')}
-    let(:scheduling) { build :scheduling, staff_id: staff.id, client_id: client.id, 
-      service_id: service.id, start_time: '16:00', end_time: '17:00', date: '2022-02-28', units: '2' }
+    let!(:scheduling1) { create(:scheduling, staff_id: staff.id, client_enrollment_service_id: client_enrollment_service.id, start_time: '16:00', end_time: '17:00', date: '2022-02-28', units: '2')}
+    let(:scheduling) { build :scheduling, staff_id: staff.id, client_enrollment_service_id: client_enrollment_service.id, start_time: '16:00', end_time: '17:00', date: '2022-02-28', units: '2' }
     
     context "when scheduling with same staff,client, service at same time is present" do
       it "should give an error" do

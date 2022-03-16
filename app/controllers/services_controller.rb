@@ -1,7 +1,7 @@
 class ServicesController < ApplicationController
   before_action :authenticate_user!
   before_action :authorize_user
-  before_action :set_service, only: %i[update show]
+  before_action :set_service, only: %i[update show destroy]
 
   def index
     @services = Service.order(:name).paginate(page: params[:page])
@@ -14,13 +14,21 @@ class ServicesController < ApplicationController
   def show; end
 
   def update
-    @service.update(service_params)
+    Service.transaction do
+      remove_qualifications if params[:service_qualifications_attributes].present?
+      @service.update(service_params)
+    end
+  end
+
+  def destroy
+    @service.destroy
   end
 
   private
 
   def service_params
-    params.permit(:name, :status, :display_code)
+    params.permit(:name, :status, :display_code, :is_service_provider_required,
+                  service_qualifications_attributes: :qualification_id)
   end
 
   def set_service
@@ -29,6 +37,10 @@ class ServicesController < ApplicationController
 
   def authorize_user
     authorize Service if current_user.role_name!='super_admin'
+  end
+
+  def remove_qualifications
+    @service.qualifications.destroy_all
   end
   # end of private
 

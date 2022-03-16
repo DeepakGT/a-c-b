@@ -2,7 +2,7 @@ class StaffClinic < ApplicationRecord
   belongs_to :staff
   belongs_to :clinic
 
-  has_many :staff_clinic_services
+  has_many :staff_clinic_services, dependent: :destroy
   has_many :services, through: :staff_clinic_services
 
   accepts_nested_attributes_for :staff_clinic_services

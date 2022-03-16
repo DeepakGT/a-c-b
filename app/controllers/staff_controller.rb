@@ -61,6 +61,7 @@ class StaffController < ApplicationController
 
   def set_password
     return if params[:password].blank? || params[:password_confirmation].blank?
+    
     @staff.password = params[:password]
     @staff.password_confirmation = params[:password_confirmation]
   end
@@ -95,10 +96,10 @@ class StaffController < ApplicationController
     # formated_val = query.split.map{|x| "%#{x}%"}
     fname, lname = query.split
     staff = staff.by_first_name(fname).by_last_name(lname)
-         .or(staff.by_organization(query))#.joins(clinics: :organization)
-         .or(staff.by_role(query))#.joins(:role)
-         .or(staff.by_supervisor_name(fname,lname))
-         .or(staff.by_location(query))#.joins(:address)
+                 .or(staff.by_organization(query))
+                 .or(staff.by_role(query))
+                 .or(staff.by_supervisor_name(fname,lname))
+                 .or(staff.by_location(query))
   end
 
   def authorize_user

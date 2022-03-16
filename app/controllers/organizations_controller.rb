@@ -1,7 +1,7 @@
 class OrganizationsController < ApplicationController
   before_action :authenticate_user!
   before_action :authorize_user
-  before_action :set_organization, only: %i[update show]
+  before_action :set_organization, only: %i[update show destroy]
 
   def index
     @organizations = Organization.order(:name).paginate(page: params[:page])
@@ -17,6 +17,10 @@ class OrganizationsController < ApplicationController
 
   def update
     @organization.update(organization_params)
+  end
+
+  def destroy
+    @organization.destroy
   end
 
   private

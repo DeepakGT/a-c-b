@@ -2,21 +2,22 @@ class SchedulingsController < ApplicationController
   before_action :authenticate_user!
   before_action :authorize_user
   before_action :set_scheduling, only: %i[show update destroy]
+  before_action :set_client_enrollment_service, only: :create
 
   def index
-    schedules = Scheduling.all
-    schedules = do_filter(schedules) if params[:search_value].present?
+    schedules = do_filter
     @schedules = schedules.order(:date).paginate(page: params[:page])
   end
 
   def show; end
 
   def create
-    @schedule = Scheduling.create(scheduling_params)
+    @schedule = @client_enrollment_service.schedulings.create(scheduling_params)
   end
 
   def update
     @schedule.update(scheduling_params)
+    update_client_enrollment_service if params[:client_enrollment_service_id].present?
   end
 
   def destroy
@@ -30,42 +31,28 @@ class SchedulingsController < ApplicationController
   end
 
   def scheduling_params
-    params.permit(:staff_id, :client_id, :service_id, :status, :date, :start_time, :end_time, :units, :minutes)
+    params.permit(:staff_id, :status, :date, :start_time, :end_time, :units, :minutes, :client_enrollment_service_id)
   end
 
   def set_scheduling
     @schedule = Scheduling.find(params[:id])
   end
 
-  def do_filter(schedules)
-    if params[:search_by].present?
-      case params[:search_by]
-      when "client_name"
-        fname, lname = params[:search_value].split(' ')
-        schedules = schedules.joins(:client).by_first_name(fname) if fname.present?
-        schedules = schedules.joins(:client).by_last_name(lname) if lname.present?
-        return schedules
-      when "staff_name"
-        fname, lname = params[:search_value].split(' ')
-        schedules = schedules.joins(:staff).by_first_name(fname) if fname.present?
-        schedules = schedules.joins(:staff).by_last_name(lname) if lname.present?
-        return schedules
-      when "service"
-        schedules.joins(:service).by_service(params[:search_value])
-      else
-        schedules
-      end
-    else
-      search_on_all_fields(params[:search_value])
-    end
+  def do_filter
+    schedules = Scheduling.all
+    schedules = schedules.by_staff_ids(string_to_array(params[:staff_ids])) if params[:staff_ids].present?
+    schedules = schedules.by_client_ids(string_to_array(params[:client_ids])) if params[:client_ids].present?
+    schedules = schedules.by_service_ids(string_to_array(params[:service_ids])) if params[:service_ids].present?
+    schedules
   end
 
-  def search_on_all_fields(query)
-    schedules = Scheduling.joins(:staff, :client, :service).all
-    fname, lname = query.split
-    schedules = schedules.joins(:client).by_first_name(fname).by_last_name(lname)
-         .or(schedules.by_first_name(fname).by_last_name(lname))
-         .or(schedules.by_service(query))
+  def set_client_enrollment_service
+    @client_enrollment_service = ClientEnrollmentService.find(params[:client_enrollment_service_id])
+  end
+
+  def update_client_enrollment_service
+    @schedule.client_enrollment_service = ClientEnrollmentService.find(params[:client_enrollment_service_id])
+    @schedule.save
   end
   # end of private
 end

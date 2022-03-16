@@ -1,13 +1,13 @@
 class Staff < User
-  has_many :staff_credentials, dependent: :destroy, foreign_key: :staff_id
-  has_many :credentials, through: :staff_credentials
+  has_many :staff_qualifications, dependent: :destroy, foreign_key: :staff_id
+  has_many :qualifications, through: :staff_qualifications
   has_one :address, as: :addressable, dependent: :destroy
   has_many :phone_numbers, as: :phoneable, dependent: :destroy
-  has_many :staff_clinics
+  has_many :staff_clinics, dependent: :destroy
   has_many :clinics, through: :staff_clinics
-  has_many :client_enrollment_service_providers
+  has_many :client_enrollment_service_providers, dependent: :destroy
   has_many :client_enrollment_services, through: :client_enrollment_service_providers
-  has_one :scheduling
+  has_many :schedulings, dependent: :destroy
 
   belongs_to :supervisor, class_name: :User, optional: true
 

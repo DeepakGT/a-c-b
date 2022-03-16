@@ -1,10 +1,10 @@
 class Clinic < ApplicationRecord
-  has_one :address, as: :addressable
-  has_one :phone_number, as: :phoneable
-  has_many :staff_clinics
+  has_one :address, as: :addressable, dependent: :destroy
+  has_one :phone_number, as: :phoneable, dependent: :destroy
+  has_many :staff_clinics, dependent: :destroy
   has_many :staff, through: :staff_clinics
-  has_many :clients
-  has_many :funding_sources
+  has_many :clients, dependent: :destroy
+  has_many :funding_sources, dependent: :destroy
 
   belongs_to :organization
 

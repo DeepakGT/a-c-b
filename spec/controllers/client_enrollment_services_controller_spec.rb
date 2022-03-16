@@ -47,8 +47,7 @@ RSpec.describe ClientEnrollmentServicesController, type: :controller do
 
   describe "GET #show" do
     context "when sign in" do
-      let(:enrollment_service) { create(:client_enrollment_service, 
-        client_enrollment_id: client_enrollment.id, service_id: service.id) }
+      let(:enrollment_service) { create(:client_enrollment_service, client_enrollment_id: client_enrollment.id, service_id: service.id) }
       it "should fetch client enrollment service detail successfully" do
         set_auth_headers(auth_headers)
 
@@ -66,11 +65,10 @@ RSpec.describe ClientEnrollmentServicesController, type: :controller do
 
   describe "PUT #update" do
     context "when sign in" do
-      let(:enrollment_service) { create(:client_enrollment_service, 
-        client_enrollment_id: client_enrollment.id, service_id: service.id) }
+      let(:enrollment_service) { create(:client_enrollment_service, client_enrollment_id: client_enrollment.id, service_id: service.id) }
       let(:service) { create(:service) }
-      let(:funding_source) {create(:funding_source, clinic_id: clinic.id)}
-      let(:client_enrollment) { create(:client_enrollment, client_id: client.id, funding_source_id: funding_source.id)}
+      let(:funding_source) { create(:funding_source, clinic_id: clinic.id) }
+      let(:client_enrollment) { create(:client_enrollment, client_id: client.id, funding_source_id: funding_source.id) }
       it "should update client enrollment service successfully" do
         set_auth_headers(auth_headers)
         
@@ -95,8 +93,7 @@ RSpec.describe ClientEnrollmentServicesController, type: :controller do
 
   describe "DELETE #destroy" do
     context "when sign in" do
-      let(:enrollment_service) { create(:client_enrollment_service, 
-        client_enrollment_id: client_enrollment.id, service_id: service.id) }
+      let(:enrollment_service) { create(:client_enrollment_service, client_enrollment_id: client_enrollment.id, service_id: service.id) }
       it "should delete client enrollment service detail successfully" do
         set_auth_headers(auth_headers)
 

@@ -64,7 +64,8 @@ RSpec.describe ClientEnrollmentsController, type: :controller do
           client_id: client.id, 
           funding_source_id: funding_source.id,
           insurance_id: 'xd64758',
-          source_of_payment: 'insurance'
+          source_of_payment: 'insurance',
+          terminated_on: '2033-04-30'
         }
         response_body = JSON.parse(response.body)
 

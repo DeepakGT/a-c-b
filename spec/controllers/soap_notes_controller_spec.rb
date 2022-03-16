@@ -15,9 +15,11 @@ RSpec.describe SoapNotesController, type: :controller do
   let!(:organization) { create(:organization, name: 'org1', admin_id: user.id) }
   let!(:clinic) { create(:clinic, name: 'clinic1', organization_id: organization.id) }
   let!(:client) { create(:client, clinic_id: clinic.id) }
+  let!(:client_enrollment) { create(:client_enrollment, client_id: client.id) }
   let!(:service) { create(:service) }
+  let!(:client_enrollment_service) { create(:client_enrollment_service, client_enrollment_id: client_enrollment.id, service_id: service.id) }
   let!(:staff) { create(:staff, :with_role, role_name: 'bcba') }
-  let!(:scheduling) { create(:scheduling, client_id: client.id, staff_id: staff.id, service_id: service.id, units: '2') }
+  let!(:scheduling) { create(:scheduling, client_enrollment_service_id: client_enrollment_service.id, staff_id: staff.id, units: '2') }
 
   describe "GET #index" do
     context "when sign in" do

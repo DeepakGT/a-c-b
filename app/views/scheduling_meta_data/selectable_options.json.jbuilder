@@ -16,6 +16,8 @@ json.data do
     json.array! @selectable_options[:services] do |service|
       json.id service.id
       json.name service.name
+      json.display_code service.display_code
+      json.is_service_provider_required service.is_service_provider_required
     end
   end
 end

@@ -13,11 +13,10 @@ class MetaDataController < ApplicationController
                            dq_reasons: Client.dq_reasons, 
                            relation_types: Contact.relation_types,
                            relations: Contact.relations,
-                           credential_types: Credential.credential_types,
+                           credential_types: Qualification.credential_types,
                            roles: Role.where.not(name: 'super_admin'),
                            phone_types: PhoneNumber.phone_types,
-                           source_of_payments: ClientEnrollment.source_of_payments,
-                           relationships: ClientEnrollment.relationships }
+                           source_of_payments: ClientEnrollment.source_of_payments }
   end
 
   def country_list

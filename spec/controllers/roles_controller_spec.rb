@@ -120,4 +120,23 @@ RSpec.describe RolesController, type: :controller do
       end
     end
   end
+
+  describe "DELETE #destroy" do
+    context "when sign in" do
+      let(:user) { create(:user, :with_role, role_name: 'super_admin') }
+      let(:auth_headers) { user.create_new_auth_token }
+      let(:role) { create(:role, name: 'abcd')}
+      it "should delete role successfully" do
+        set_auth_headers(auth_headers)
+
+        delete :destroy, params: { id: role.id }
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data']['id']).to eq(role.id)
+        expect(Role.find_by_id(role.id)).to eq(nil)
+      end
+    end
+  end
 end

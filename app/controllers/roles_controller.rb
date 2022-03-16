@@ -1,7 +1,7 @@
 class RolesController < ApplicationController
   before_action :authenticate_user!
   before_action :authorize_user, except: :roles_list
-  before_action :set_role, only: %i[show update]
+  before_action :set_role, only: %i[show update destroy]
 
   def index
     @roles = Role.order(:name).paginate(page: params[:page])
@@ -17,6 +17,10 @@ class RolesController < ApplicationController
     params_to_update = {permissions: params[:permissions]}
     params_to_update.merge!(name: params[:name]) if params[:change_role_name].to_bool.true?
     @role.update(params_to_update)
+  end
+
+  def destroy
+    @role.destroy
   end
 
   def roles_list

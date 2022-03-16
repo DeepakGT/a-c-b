@@ -44,5 +44,9 @@ class ApplicationController < ActionController::API
   def not_authorized
     render json: {status: :failure, errors: ['you are not authorized to perform this action.']}, status: 401
   end
+
+  def string_to_array(value)
+    value = value.gsub(/\[|\]/, '').split(',')
+  end
   # end of private
 end

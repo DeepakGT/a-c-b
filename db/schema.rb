@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_07_082348) do
+ActiveRecord::Schema.define(version: 2022_03_15_082306) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -161,15 +161,6 @@ ActiveRecord::Schema.define(version: 2022_03_07_082348) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "credentials", force: :cascade do |t|
-    t.integer "credential_type"
-    t.string "name"
-    t.text "description"
-    t.boolean "lifetime", default: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-  end
-
   create_table "funding_sources", force: :cascade do |t|
     t.string "name"
     t.string "plan_name"
@@ -206,6 +197,15 @@ ActiveRecord::Schema.define(version: 2022_03_07_082348) do
     t.index ["phoneable_type", "phoneable_id"], name: "index_phone_numbers_on_phoneable"
   end
 
+  create_table "qualifications", force: :cascade do |t|
+    t.integer "credential_type"
+    t.string "name"
+    t.text "description"
+    t.boolean "lifetime", default: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "rbt_supervisions", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.integer "status"
@@ -227,25 +227,33 @@ ActiveRecord::Schema.define(version: 2022_03_07_082348) do
     t.date "date"
     t.string "start_time"
     t.string "end_time"
-    t.string "status"
+    t.string "status", default: "Scheduled"
     t.float "units"
     t.float "minutes"
     t.bigint "staff_id", null: false
-    t.bigint "client_id", null: false
-    t.bigint "service_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["client_id"], name: "index_schedulings_on_client_id"
-    t.index ["service_id"], name: "index_schedulings_on_service_id"
+    t.bigint "client_enrollment_service_id"
+    t.index ["client_enrollment_service_id"], name: "index_schedulings_on_client_enrollment_service_id"
     t.index ["staff_id"], name: "index_schedulings_on_staff_id"
+  end
+
+  create_table "service_qualifications", force: :cascade do |t|
+    t.bigint "service_id", null: false
+    t.bigint "qualification_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["qualification_id"], name: "index_service_qualifications_on_qualification_id"
+    t.index ["service_id"], name: "index_service_qualifications_on_service_id"
   end
 
   create_table "services", force: :cascade do |t|
     t.string "name"
     t.integer "status", default: 0
-    t.integer "display_code"
+    t.string "display_code"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.boolean "is_service_provider_required", default: false
   end
 
   create_table "soap_notes", force: :cascade do |t|
@@ -261,9 +269,9 @@ ActiveRecord::Schema.define(version: 2022_03_07_082348) do
 
   create_table "staff_clinic_services", force: :cascade do |t|
     t.bigint "service_id", null: false
+    t.bigint "staff_clinic_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.bigint "staff_clinic_id"
     t.index ["service_id"], name: "index_staff_clinic_services_on_service_id"
     t.index ["staff_clinic_id"], name: "index_staff_clinic_services_on_staff_clinic_id"
   end
@@ -278,7 +286,7 @@ ActiveRecord::Schema.define(version: 2022_03_07_082348) do
     t.index ["staff_id"], name: "index_staff_clinics_on_staff_id"
   end
 
-  create_table "staff_credentials", force: :cascade do |t|
+  create_table "staff_qualifications", force: :cascade do |t|
     t.bigint "staff_id", null: false
     t.bigint "credential_id", null: false
     t.date "issued_at"
@@ -287,8 +295,8 @@ ActiveRecord::Schema.define(version: 2022_03_07_082348) do
     t.text "documentation_notes"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["credential_id"], name: "index_staff_credentials_on_credential_id"
-    t.index ["staff_id"], name: "index_staff_credentials_on_staff_id"
+    t.index ["credential_id"], name: "index_staff_qualifications_on_credential_id"
+    t.index ["staff_id"], name: "index_staff_qualifications_on_staff_id"
   end
 
   create_table "user_roles", force: :cascade do |t|
@@ -353,17 +361,18 @@ ActiveRecord::Schema.define(version: 2022_03_07_082348) do
   add_foreign_key "funding_sources", "clinics"
   add_foreign_key "organizations", "users", column: "admin_id"
   add_foreign_key "rbt_supervisions", "users"
-  add_foreign_key "schedulings", "services"
-  add_foreign_key "schedulings", "users", column: "client_id"
+  add_foreign_key "schedulings", "client_enrollment_services"
   add_foreign_key "schedulings", "users", column: "staff_id"
+  add_foreign_key "service_qualifications", "qualifications"
+  add_foreign_key "service_qualifications", "services"
   add_foreign_key "soap_notes", "schedulings"
   add_foreign_key "soap_notes", "users", column: "creator_id"
   add_foreign_key "staff_clinic_services", "services"
   add_foreign_key "staff_clinic_services", "staff_clinics"
   add_foreign_key "staff_clinics", "clinics"
   add_foreign_key "staff_clinics", "users", column: "staff_id"
-  add_foreign_key "staff_credentials", "credentials"
-  add_foreign_key "staff_credentials", "users", column: "staff_id"
+  add_foreign_key "staff_qualifications", "qualifications", column: "credential_id"
+  add_foreign_key "staff_qualifications", "users", column: "staff_id"
   add_foreign_key "user_roles", "roles"
   add_foreign_key "user_roles", "users"
   add_foreign_key "users", "users", column: "supervisor_id"

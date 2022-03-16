@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ApplicationPolicy
-  attr_reader :user, :record, :permissions
+  attr_reader :user, :permissions
 
   def initialize(user, record)
     @user = user

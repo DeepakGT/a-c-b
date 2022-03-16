@@ -99,12 +99,13 @@ RSpec.describe OrganizationsController, type: :controller do
   end
 
   describe "PUT #update" do
-    let!(:organization) {create(:organization, name: 'organization1', admin_id: admin.id)}
+    let!(:organization) {create(:organization, name: 'organization1', admin_id: user.id)}
 
     context "when sign in" do
       let!(:updated_organization_name) {'organization-1-updated'}
       it "should update organization successfully" do
         set_auth_headers(auth_headers)
+        
         put :update, params: {id: organization.id, name: updated_organization_name}
         response_body = JSON.parse(response.body)
 
@@ -136,6 +137,25 @@ RSpec.describe OrganizationsController, type: :controller do
           expect(response_body['status']).to eq('success')
           expect(response_body['data']['phone_number']['number']).to eq(updated_phone_number)
         end
+      end
+    end
+  end
+
+  describe "DELETE #destroy" do
+    context "when sign in" do
+      let(:user) { create(:user, :with_role, role_name: 'super_admin') }
+      let(:auth_headers) { user.create_new_auth_token }
+      let(:organization) {create(:organization, name: 'organization1', admin_id: user.id)}
+      it "should delete organization successfully" do
+        set_auth_headers(auth_headers)
+
+        delete :destroy, params: { id: organization.id }
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data']['id']).to eq(organization.id)
+        expect(Organization.find_by_id(organization.id)).to eq(nil)
       end
     end
   end

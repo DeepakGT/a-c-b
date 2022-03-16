@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe FundingSource, type: :model do
   it { should have_one(:phone_number).dependent(:destroy)}
   it { should have_one(:address).dependent(:destroy)}
-  it { should have_many(:client_enrollments).dependent(:destroy) }
+  it { should have_many(:client_enrollments).dependent(:nullify) }
   it { should have_many(:clients).through(:client_enrollments) }  
   it { should belong_to(:clinic) }
 
