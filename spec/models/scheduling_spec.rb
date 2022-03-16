@@ -13,15 +13,15 @@ RSpec.describe Scheduling, type: :model do
     it { should validate_presence_of(:end_time) }
     it { should validate_presence_of(:status) }
 
-    context "when both units and minutes are absent" do
-      subject { build :scheduling } 
-      it { should validate_presence_of(:units).with_message('or minutes, any one must be present.') }
-    end
+    # context "when both units and minutes are absent" do
+    #   subject { build :scheduling } 
+    #   it { should validate_presence_of(:units).with_message('or minutes, any one must be present.') }
+    # end
 
-    context "when both units and minutes are present" do
-      subject { build :scheduling, units: '6', minutes: '300' }
-      it { should validate_absence_of(:units).with_message('or minutes, only one must be present.') }
-    end
+    # context "when both units and minutes are present" do
+    #   subject { build :scheduling, units: '6', minutes: '300' }
+    #   it { should validate_absence_of(:units).with_message('or minutes, only one must be present.') }
+    # end
   end
 
   describe "#validate_time" do

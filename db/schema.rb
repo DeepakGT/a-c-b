@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_15_082306) do
+ActiveRecord::Schema.define(version: 2022_03_16_075156) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -234,8 +234,12 @@ ActiveRecord::Schema.define(version: 2022_03_15_082306) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "client_enrollment_service_id"
+    t.bigint "creator_id"
+    t.bigint "updator_id"
     t.index ["client_enrollment_service_id"], name: "index_schedulings_on_client_enrollment_service_id"
+    t.index ["creator_id"], name: "index_schedulings_on_creator_id"
     t.index ["staff_id"], name: "index_schedulings_on_staff_id"
+    t.index ["updator_id"], name: "index_schedulings_on_updator_id"
   end
 
   create_table "service_qualifications", force: :cascade do |t|
@@ -362,7 +366,9 @@ ActiveRecord::Schema.define(version: 2022_03_15_082306) do
   add_foreign_key "organizations", "users", column: "admin_id"
   add_foreign_key "rbt_supervisions", "users"
   add_foreign_key "schedulings", "client_enrollment_services"
+  add_foreign_key "schedulings", "users", column: "creator_id"
   add_foreign_key "schedulings", "users", column: "staff_id"
+  add_foreign_key "schedulings", "users", column: "updator_id"
   add_foreign_key "service_qualifications", "qualifications"
   add_foreign_key "service_qualifications", "services"
   add_foreign_key "soap_notes", "schedulings"

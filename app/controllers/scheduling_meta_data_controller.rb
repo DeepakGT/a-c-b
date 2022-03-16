@@ -6,10 +6,8 @@ class SchedulingMetaDataController < ApplicationController
   end
 
   def services_list
-    client_enrollment_services = ClientEnrollmentService.by_client(params[:client_id]).by_date(params[:date])
-    # @client_enrollment_services = client_enrollment_services.by_staff(params[:staff_id])
     staff = Staff.find(params[:staff_id])
-    @client_enrollment_services = client_enrollment_services.joins(service: :service_qualifications).where('service_qualifications.qualification_id': staff.qualifications.pluck(:credential_id))
+    @client_enrollment_services = check_qualifications(params[:client_id], params[:date], staff)
   end
 
   private
@@ -26,6 +24,13 @@ class SchedulingMetaDataController < ApplicationController
     selectable_options = { clients: client.order(:first_name),
                            staff: staff.order(:first_name),
                            services: Service.order(:name) }
+  end
+
+  def check_qualifications(client_id, date, staff)
+    client_enrollment_services = ClientEnrollmentService.left_outer_joins(service: :service_qualifications).by_client(params[:client_id]).by_date(params[:date])
+    staff_qualification_ids = staff.qualifications.pluck(:credential_id)
+    client_enrollment_services = client_enrollment_services.by_service_with_no_qualification
+                                                           .or(client_enrollment_services.by_staff_qualifications(staff_qualification_ids))
   end
   # end of private
 

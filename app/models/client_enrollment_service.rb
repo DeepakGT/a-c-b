@@ -14,12 +14,13 @@ class ClientEnrollmentService < ApplicationRecord
   scope :by_date, ->(date){ where('start_date <= ? AND end_date >= ?', date, date) }
   scope :by_staff, ->(staff_id){ joins(:service_providers).where('client_enrollment_service_providers.staff_id': staff_id) }
   scope :by_service, ->(service_ids){ where(service_id: service_ids) }
+  scope :by_staff_qualifications, ->(staff_qualification_ids) { where('service_qualifications.qualification_id': staff_qualification_ids) }
+  scope :by_service_with_no_qualification, ->{select("client_enrollment_services.*").group("client_enrollment_services.id").having("count(service_qualifications.*) = ?",0)}
 
   private
 
   def validate_service_providers
-    return if service.is_service_provider_required.false?
-
-    errors.add(:service_providers, 'must be present.') if self.service_providers.blank?
+    errors.add(:service_providers, 'must be absent.') if service.is_service_provider_required.false? && self.service_providers.present?
+    errors.add(:service_providers, 'must be present.') if service.is_service_provider_required.true? && self.service_providers.blank?
   end
 end

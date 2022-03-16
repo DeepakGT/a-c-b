@@ -12,12 +12,16 @@ class SchedulingsController < ApplicationController
   def show; end
 
   def create
-    @schedule = @client_enrollment_service.schedulings.create(scheduling_params)
+    @schedule = @client_enrollment_service.schedulings.new(scheduling_params)
+    @schedule.creator_id = current_user.id
+    @schedule.save
   end
 
   def update
     @schedule.update(scheduling_params)
+    @schedule.updator_id = current_user.id
     update_client_enrollment_service if params[:client_enrollment_service_id].present?
+    @schedule.save
   end
 
   def destroy
