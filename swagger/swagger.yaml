@@ -5113,6 +5113,138 @@ paths:
                 ]
               }
 
+  /api/clients_list:
+    get:
+      summary: clients list for staff
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      responses:
+        "200":
+          description: "clients list for staff"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": [
+                  {
+                    "id": 10,
+                    "name": "Test Client4"
+                  },
+                  {
+                    "id": 12,
+                    "name": "Test Client1"
+                  },
+                  {
+                    "id": 13,
+                    "name": " "
+                  }
+                ]
+              }
+
+  /api/clients/{client_id}/client_data:
+    get:
+      summary: client data detail
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "associated client id"
+        required: true
+      responses:
+        "200":
+          description: "client data detail"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 12,
+                  "first_name": "Test",
+                  "last_name": "Client1",
+                  "email": "testc1@gmail.com",
+                  "clinic_id": 1,
+                  "clinic_name": "clinic1",
+                  "dob": "2012-12-12",
+                  "gender": "male",
+                  "status": "active",
+                  "preferred_language": "english",
+                  "disqualified": false,
+                  "payor_status": null,
+                  "schedules": [
+                    {
+                      "id": 9,
+                      "client_enrollment_service_id": 4,
+                      "staff_id": 8,
+                      "staff_name": "Lyndon Boehm",
+                      "service_id": 4,
+                      "service_name": "developmental test administration by physician or",
+                      "service_display_code": "80",
+                      "status": "Scheduled",
+                      "date": "2022-03-19",
+                      "start_time": "18:00",
+                      "end_time": "19:00",
+                      "units": 6.0,
+                      "minutes": null
+                    },
+                    {
+                      "id": 10,
+                      "client_enrollment_service_id": 4,
+                      "staff_id": 8,
+                      "staff_name": "Lyndon Boehm",
+                      "service_id": 4,
+                      "service_name": "developmental test administration by physician or",
+                      "service_display_code": "80",
+                      "status": "Scheduled",
+                      "date": "2022-03-19",
+                      "start_time": "12:00",
+                      "end_time": "13:00",
+                      "units": 6.0,
+                      "minutes": null
+                    }
+                  ],
+                  "soap_notes": [
+                    {
+                      "id": 2,
+                      "scheduling_id": 8,
+                      "note": "test-note-3",
+                      "add_date": null,
+                      "creator_id": 1,
+                      "creator": "Jamel Casper"
+                    },
+                    {
+                      "id": 1,
+                      "scheduling_id": 8,
+                      "note": "test-note-2",
+                      "add_date": "2022-02-27",
+                      "creator_id": 1,
+                      "creator": "Jamel Casper"
+                    }
+                  ]
+                }
+              }
+
 definitions:
   UserRegistrationParameters:
     type: "object"
