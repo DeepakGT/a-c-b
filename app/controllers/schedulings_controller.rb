@@ -14,10 +14,12 @@ class SchedulingsController < ApplicationController
   def create
     @schedule = @client_enrollment_service.schedulings.new(scheduling_params)
     @schedule.creator_id = current_user.id
+    @schedule.user = current_user
     @schedule.save
   end
 
   def update
+    @schedule.user = current_user
     @schedule.update(scheduling_params)
     @schedule.updator_id = current_user.id
     update_client_enrollment_service if params[:client_enrollment_service_id].present?
