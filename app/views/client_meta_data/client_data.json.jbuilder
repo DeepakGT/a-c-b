@@ -64,6 +64,47 @@ json.data do
       end
     end
   end
+  if @client_enrollment_services.present?
+    json.client_enrollment_services do
+      json.array! @client_enrollment_services do |client_enrollment_service|
+        schedules = Scheduling.by_client_and_service(@client_id, client_enrollment_service.service_id)
+        schedules = schedules.by_status
+        completed_schedules = schedules.completed_scheduling
+        scheduled_schedules = schedules.scheduled_scheduling
+        used_units = completed_schedules.with_units.pluck(:units).sum
+        scheduled_units = scheduled_schedules.with_units.pluck(:units).sum
+        used_minutes = completed_schedules.with_minutes.pluck(:minutes).sum
+        scheduled_minutes = scheduled_schedules.with_minutes.pluck(:minutes).sum
+        json.id client_enrollment_service.id
+        json.service_id client_enrollment_service.service_id
+        json.service_name client_enrollment_service.service&.name
+        json.is_service_provider_required client_enrollment_service.service&.is_service_provider_required
+        json.start_date client_enrollment_service.start_date
+        json.end_date client_enrollment_service.end_date
+        json.units client_enrollment_service.units
+        json.used_units used_units
+        json.scheduled_units scheduled_units
+        if client_enrollment_service.units.present?
+          json.left_units client_enrollment_service.units - (used_units + scheduled_units) 
+        else
+          json.left_units 0
+        end
+        json.minutes client_enrollment_service.minutes
+        json.used_minutes used_minutes
+        json.scheduled_minutes scheduled_minutes
+        if client_enrollment_service.minutes.present?
+          json.left_minutes client_enrollment_service.minutes - (used_minutes + scheduled_minutes)
+        else
+          json.left_minutes 0
+        end
+        json.service_number client_enrollment_service.service_number
+        json.service_providers do
+          json.ids client_enrollment_service.service_providers.pluck(:staff_id)
+          json.names client_enrollment_service.staff&.map{|staff| "#{staff.first_name} #{staff.last_name}"}
+        end
+      end
+    end
+  end
   if @soap_notes.present?
     json.soap_notes do
       json.array! @soap_notes do |soap_note|
