@@ -169,7 +169,7 @@ RSpec.describe SchedulingsController, type: :controller do
         end
 
         let(:client_enrollment_service) { create(:client_enrollment_service) }
-        it "should update associated client successfully" do
+        it "should update associated client enrollment service successfully" do
           set_auth_headers(auth_headers)
 
           put :update, params: { id: scheduling.id, client_enrollment_service_id: client_enrollment_service.id }
