@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_16_075156) do
+ActiveRecord::Schema.define(version: 2022_03_21_075928) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -236,6 +236,7 @@ ActiveRecord::Schema.define(version: 2022_03_16_075156) do
     t.bigint "client_enrollment_service_id"
     t.bigint "creator_id"
     t.bigint "updator_id"
+    t.boolean "is_rendered", default: false
     t.index ["client_enrollment_service_id"], name: "index_schedulings_on_client_enrollment_service_id"
     t.index ["creator_id"], name: "index_schedulings_on_creator_id"
     t.index ["staff_id"], name: "index_schedulings_on_staff_id"

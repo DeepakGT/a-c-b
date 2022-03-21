@@ -7,5 +7,6 @@ FactoryBot.define do
     start_time { (DateTime.now+0.1).strftime('%H:%M') }
     end_time { (DateTime.now+0.3).strftime('%H:%M') }
     user { create(:user, :with_role, role_name: 'super_admin') }
+    is_rendered { false }
   end
 end

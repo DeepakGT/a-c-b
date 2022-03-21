@@ -37,7 +37,8 @@ class SchedulingsController < ApplicationController
   end
 
   def scheduling_params
-    params.permit(:staff_id, :status, :date, :start_time, :end_time, :units, :minutes, :client_enrollment_service_id)
+    params.permit(:staff_id, :status, :date, :start_time, :end_time, :units, :minutes, 
+                  :client_enrollment_service_id, :is_rendered)
   end
 
   def set_scheduling
