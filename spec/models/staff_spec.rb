@@ -13,6 +13,8 @@ RSpec.describe Staff, type: :model do
   
   it { should belong_to(:supervisor).class_name('User').optional }
 
+  it { is_expected.to callback(:set_status).before(:validation) }
+
   it { should accept_nested_attributes_for(:address).update_only(true) }
   it { should accept_nested_attributes_for(:phone_numbers).update_only(true) }
 

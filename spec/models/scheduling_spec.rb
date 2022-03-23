@@ -13,6 +13,28 @@ RSpec.describe Scheduling, type: :model do
     it { should belong_to(:client_enrollment_service) }
     it { should have_many(:soap_notes).dependent(:destroy) } 
   end
+  
+  describe "#attr_accessor" do
+    let(:scheduling){build :scheduling}
+    RSpec::Matchers.define :have_attr_accessor do |user|
+      match do |scheduling|
+        scheduling.respond_to?(user) &&
+          scheduling.respond_to?("#{user}=")
+      end
+    
+      failure_message_for_should do |scheduling|
+        "expected attr_accessor for #{user} on #{scheduling}"
+      end
+    
+      failure_message_for_should_not do |scheduling|
+        "expected attr_accessor for #{user} not to be defined on #{scheduling}"
+      end
+    
+      description do
+        "checks to see if there is an attr accessor on the supplied object"
+      end
+    end
+  end
 
   describe "validations" do
     it { should validate_presence_of(:date) }

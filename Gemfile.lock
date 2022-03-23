@@ -255,6 +255,8 @@ GEM
     rubocop-ast (1.13.0)
       parser (>= 3.0.1.1)
     ruby-progressbar (1.11.0)
+    shoulda-callback-matchers (1.1.4)
+      activesupport (>= 3)
     shoulda-matchers (5.0.0)
       activesupport (>= 5.2.0)
     sidekiq (6.4.1)
@@ -311,6 +313,7 @@ DEPENDENCIES
   rswag
   rswag-specs
   rubocop (~> 1.22)
+  shoulda-callback-matchers (~> 1.1.1)
   shoulda-matchers (~> 5.0)
   sidekiq
   spring

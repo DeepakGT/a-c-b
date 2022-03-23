@@ -50,6 +50,20 @@ RSpec.describe ClientsController, type: :controller do
         expect(response_body['status']).to eq('success')
         expect(response_body['page']).to eq("2")
       end
+
+      context "when no client is present in database" do
+        it "should display empty list" do
+          Client.destroy_all
+          set_auth_headers(auth_headers)
+
+          get :index
+          response_body = JSON.parse(response.body)
+
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data'].count).to eq(0)
+        end
+      end
     end
   end
 
@@ -65,6 +79,17 @@ RSpec.describe ClientsController, type: :controller do
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
         expect(response_body['data']['id']).to eq(client.id)
+      end
+
+      context "when id is not present" do
+        it "should raise error" do
+          set_auth_headers(auth_headers)
+
+          get :show, params: { id: 0}
+          response_body = JSON.parse(response.body)
+          
+          expect(response_body['errors']).to include("record not found")
+        end
       end
     end
   end
@@ -114,6 +139,17 @@ RSpec.describe ClientsController, type: :controller do
         expect(response_body['status']).to eq('success')
         expect(response_body['data']['id']).to eq(client.id)
         expect(response_body['data']['first_name']).to eq(updated_first_name)
+      end
+
+      context "when id is not present" do
+        it "should raise error" do
+          set_auth_headers(auth_headers)
+
+          get :show, params: { id: 0}
+          response_body = JSON.parse(response.body)
+          
+          expect(response_body['errors']).to include("record not found")
+        end
       end
 
       context "and update associated data" do
@@ -173,6 +209,17 @@ RSpec.describe ClientsController, type: :controller do
         expect(response_body['status']).to eq('success')
         expect(response_body['data']['id']).to eq(client.id)
         expect(Client.find_by_id(client.id)).to eq(nil)
+      end
+
+      context "when id is not present" do
+        it "should raise error" do
+          set_auth_headers(auth_headers)
+
+          get :show, params: { id: 0}
+          response_body = JSON.parse(response.body)
+          
+          expect(response_body['errors']).to include("record not found")
+        end
       end
     end
   end

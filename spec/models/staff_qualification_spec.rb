@@ -9,6 +9,8 @@ RSpec.describe StaffQualification, type: :model do
   
   describe 'associations' do
     it { should belong_to(:staff).class_name('User')} 
+    # it { should belong_to(:qualification).with_foreign_key('credential_id') }
+    it { StaffQualification.reflect_on_association(:qualification).macro.should  eq(:belongs_to) } 
   end
 
   describe 'validations' do

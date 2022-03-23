@@ -42,6 +42,17 @@ RSpec.describe ClientEnrollmentServicesController, type: :controller do
         expect(response_body['data']['start_date']).to eq(Date.today.to_s)
         expect(response_body['data']['end_date']).to eq(Date.tomorrow.to_s)
       end
+
+      context "when client_id is not present" do
+        it "should raise error" do
+          set_auth_headers(auth_headers)
+
+          post :create, params: { client_id: 0}
+          response_body = JSON.parse(response.body)
+          
+          expect(response_body['errors']).to include("record not found")
+        end
+      end
     end
   end
 
@@ -60,6 +71,28 @@ RSpec.describe ClientEnrollmentServicesController, type: :controller do
         expect(response_body['data']['client_enrollment_id']).to eq(client_enrollment.id) 
         expect(response_body['data']['service_id']).to eq(service.id)
       end
+
+      context "when client_id is not present" do
+        it "should raise error" do
+          set_auth_headers(auth_headers)
+
+          get :show, params: { client_id: 0, id: 0}
+          response_body = JSON.parse(response.body)
+          
+          expect(response_body['errors']).to include("record not found")
+        end
+      end
+
+      context "when id is not present" do
+        it "should raise error" do
+          set_auth_headers(auth_headers)
+
+          get :show, params: { client_id: client.id, id: 0}
+          response_body = JSON.parse(response.body)
+          
+          expect(response_body['errors']).to include("record not found")
+        end
+      end
     end
   end
 
@@ -75,7 +108,6 @@ RSpec.describe ClientEnrollmentServicesController, type: :controller do
         put :update, params: {
           client_id: client.id,
           id: enrollment_service.id,
-          funding_source_id: funding_source.id,
           service_id: service.id,
           start_date: Date.yesterday
         }
@@ -84,9 +116,48 @@ RSpec.describe ClientEnrollmentServicesController, type: :controller do
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
         expect(response_body['data']['id']).to eq(enrollment_service.id) 
-        expect(response_body['data']['client_enrollment_id']).to eq(client_enrollment.id) 
         expect(response_body['data']['service_id']).to eq(service.id)
         expect(response_body['data']['start_date']).to eq(Date.yesterday.to_s)
+      end
+
+      context "when client_id is not present" do
+        it "should raise error" do
+          set_auth_headers(auth_headers)
+
+          put :update, params: { client_id: 0, id: 0}
+          response_body = JSON.parse(response.body)
+          
+          expect(response_body['errors']).to include("record not found")
+        end
+      end
+
+      context "when id is not present" do
+        it "should raise error" do
+          set_auth_headers(auth_headers)
+
+          put :update, params: { client_id: client.id, id: 0}
+          response_body = JSON.parse(response.body)
+          
+          expect(response_body['errors']).to include("record not found")
+        end
+      end
+
+      context "and update associated data" do
+        it "should update client_enrollment_id successfully" do
+          set_auth_headers(auth_headers)
+        
+          put :update, params: {
+            client_id: client.id,
+            id: enrollment_service.id,
+            funding_source_id: funding_source.id
+          }
+          response_body = JSON.parse(response.body)
+  
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data']['id']).to eq(enrollment_service.id) 
+          expect(response_body['data']['client_enrollment_id']).to eq(client_enrollment.id)
+        end
       end
     end
   end
@@ -104,6 +175,28 @@ RSpec.describe ClientEnrollmentServicesController, type: :controller do
         expect(response_body['status']).to eq('success')
         expect(response_body['data']['id']).to eq(enrollment_service.id)
         expect(ClientEnrollmentService.find_by_id(enrollment_service.id)).to eq(nil)
+      end
+
+      context "when client_id is not present" do
+        it "should raise error" do
+          set_auth_headers(auth_headers)
+
+          delete :destroy, params: { client_id: 0, id: 0}
+          response_body = JSON.parse(response.body)
+          
+          expect(response_body['errors']).to include("record not found")
+        end
+      end
+
+      context "when id is not present" do
+        it "should raise error" do
+          set_auth_headers(auth_headers)
+
+          delete :destroy, params: { client_id: client.id, id: 0}
+          response_body = JSON.parse(response.body)
+          
+          expect(response_body['errors']).to include("record not found")
+        end
       end
     end
   end

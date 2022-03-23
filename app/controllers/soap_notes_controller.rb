@@ -51,14 +51,23 @@ class SoapNotesController < ApplicationController
     if params[:rbt_sign].to_bool.true?
       @soap_note.rbt_sign_name = "#{current_user.first_name} #{current_user.last_name}"
       @soap_note.rbt_sign_date = Time.now.to_date
+    elsif params[:rbt_sign].present?
+      @soap_note.rbt_sign_name = nil
+      @soap_note.rbt_sign_date = nil
     end
     if params[:bcba_sign].to_bool.true?
       @soap_note.bcba_sign_name = "#{current_user.first_name} #{current_user.last_name}"
       @soap_note.bcba_sign_date = Time.now.to_date
+    elsif params[:bcba_sign].present?
+      @soap_note.bcba_sign_name = nil
+      @soap_note.bcba_sign_date = nil
     end
     if params[:clinical_director_sign].to_bool.true?
       @soap_note.clinical_director_sign_name = "#{current_user.first_name} #{current_user.last_name}"
       @soap_note.clinical_director_sign_date = Time.now.to_date
+    elsif params[:clinical_director_sign].present?
+      @soap_note.clinical_director_sign_name = nil
+      @soap_note.clinical_director_sign_date = nil
     end
   end
   # end of private

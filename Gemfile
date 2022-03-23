@@ -37,7 +37,7 @@ gem 'rack-cors'
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 
 # for jobs
-gem "sidekiq"
+gem 'sidekiq'
 
 gem 'rspec-rails'
 
@@ -65,6 +65,7 @@ group :test do
   gem 'factory_bot_rails'
   gem 'rails-controller-testing'
   gem 'shoulda-matchers', '~> 5.0'
+  gem 'shoulda-callback-matchers', '~> 1.1.1'
 end
 
 group :development do
