@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_21_075928) do
+ActiveRecord::Schema.define(version: 2022_03_23_064421) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -268,6 +268,15 @@ ActiveRecord::Schema.define(version: 2022_03_21_075928) do
     t.bigint "creator_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.boolean "rbt_sign"
+    t.string "rbt_sign_name"
+    t.date "rbt_sign_date"
+    t.boolean "bcba_sign"
+    t.string "bcba_sign_name"
+    t.date "bcba_sign_date"
+    t.boolean "clinical_director_sign"
+    t.string "clinical_director_sign_name"
+    t.date "clinical_director_sign_date"
     t.index ["creator_id"], name: "index_soap_notes_on_creator_id"
     t.index ["scheduling_id"], name: "index_soap_notes_on_scheduling_id"
   end

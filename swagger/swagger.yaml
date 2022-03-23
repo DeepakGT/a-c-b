@@ -4815,6 +4815,9 @@ paths:
                     "scheduling_id": 5,
                     "note": "test-note-2",
                     "add_date": "2022-02-27",
+                    "rbt_sign": null,
+                    "bcba_sign": null,
+                    "clinical_director_sign": null,
                     "creator_id": 7,
                     "creator": "Odis Murphy"
                   },
@@ -4823,6 +4826,9 @@ paths:
                     "scheduling_id": 5,
                     "note": "test-note",
                     "add_date": "2022-02-28",
+                    "rbt_sign": null,
+                    "bcba_sign": null,
+                    "clinical_director_sign": null,
                     "creator_id": 7,
                     "creator": "Odis Murphy"
                   }
@@ -4864,6 +4870,9 @@ paths:
                   "scheduling_id": 5,
                   "note": "test-note",
                   "add_date": "2022-02-28",
+                  "rbt_sign": null,
+                  "bcba_sign": null,
+                  "clinical_director_sign": null,
                   "creator_id": 7,
                   "creator": "Odis Murphy"
                 },
@@ -4907,6 +4916,9 @@ paths:
                     "scheduling_id": 5,
                     "note": "test-note",
                     "add_date": "2022-02-28",
+                    "rbt_sign": null,
+                    "bcba_sign": null,
+                    "clinical_director_sign": null,
                     "creator_id": 7,
                     "creator": "Odis Murphy"
                   }
@@ -4952,6 +4964,9 @@ paths:
                   "scheduling_id": 5,
                   "note": "note-1",
                   "add_date": "2022-03-01",
+                  "rbt_sign": null,
+                  "bcba_sign": null,
+                  "clinical_director_sign": null,
                   "creator_id": 7,
                   "creator": "Odis Murphy"
                 },
@@ -4992,6 +5007,9 @@ paths:
                   "scheduling_id": 5,
                   "note": "note-1",
                   "add_date": "2022-03-01",
+                  "rbt_sign": null,
+                  "bcba_sign": null,
+                  "clinical_director_sign": null,
                   "creator_id": 7,
                   "creator": "Odis Murphy"
                 }
@@ -6073,3 +6091,11 @@ definitions:
         type: "string"
       add_date:
         type: "string"
+      rbt_sign:
+        type: "boolean"
+      bcba_sign:
+        type: "boolean"
+      clinical_director_sign:
+        type: "boolean"
+      caregiver_sign:
+        type: string

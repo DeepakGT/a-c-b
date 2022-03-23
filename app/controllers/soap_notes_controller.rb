@@ -12,12 +12,17 @@ class SoapNotesController < ApplicationController
 
   def create 
     @soap_note = @scheduling.soap_notes.new(soap_note_params)
+    set_sign
+    # @soap_note.caregiver_sign.attach(params[:caregiver_sign])
     @soap_note.creator_id = current_user.id
     @soap_note.save
   end
 
   def update
     @soap_note.update(soap_note_params)
+    set_sign
+    # @soap_note.caregiver_sign.attach(params[:caregiver_sign])
+    @soap_note.save
   end
 
   def destroy
@@ -39,7 +44,22 @@ class SoapNotesController < ApplicationController
   end
 
   def soap_note_params
-    params.permit(:note, :add_date)
+    params.permit(:note, :add_date, :rbt_sign, :bcba_sign, :clinical_director_sign, :caregiver_sign)
+  end
+
+  def set_sign
+    if params[:rbt_sign].to_bool.true?
+      @soap_note.rbt_sign_name = "#{current_user.first_name} #{current_user.last_name}"
+      @soap_note.rbt_sign_date = Time.now.to_date
+    end
+    if params[:bcba_sign].to_bool.true?
+      @soap_note.bcba_sign_name = "#{current_user.first_name} #{current_user.last_name}"
+      @soap_note.bcba_sign_date = Time.now.to_date
+    end
+    if params[:clinical_director_sign].to_bool.true?
+      @soap_note.clinical_director_sign_name = "#{current_user.first_name} #{current_user.last_name}"
+      @soap_note.clinical_director_sign_date = Time.now.to_date
+    end
   end
   # end of private
 end
