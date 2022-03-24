@@ -11,16 +11,21 @@ class SoapNotesController < ApplicationController
   def show; end
 
   def create 
-    @soap_note = @scheduling.soap_notes.new(soap_note_params)
-    set_signature
-    @soap_note.creator_id = current_user.id
-    @soap_note.save
+    SoapNote.transaction do
+      @soap_note = @scheduling.soap_notes.new(soap_note_params)
+      set_signature
+      @soap_note.user = current_user
+      @soap_note.creator_id = current_user.id
+      @soap_note.save
+    end
   end
 
   def update
-    @soap_note.update(soap_note_params)
-    set_signature
-    @soap_note.save
+    SoapNote.transaction do
+      set_signature
+      @soap_note.user = current_user
+      @soap_note.update(soap_note_params)
+    end
   end
 
   def destroy

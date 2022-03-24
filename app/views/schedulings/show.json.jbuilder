@@ -32,6 +32,7 @@ json.data do
   json.client_name "#{client.first_name} #{client.last_name}" if client.present?
   json.staff_id @schedule.staff_id
   json.staff_name "#{@schedule.staff.first_name} #{@schedule.staff.last_name}" if @schedule.staff.present?
+  json.staff_role @schedule.staff.role_name if @schedule.staff.present?
   json.service_id service&.id
   json.service_name service&.name
   json.service_display_code service&.display_code 
@@ -42,6 +43,15 @@ json.data do
   json.is_rendered @schedule.is_rendered
   json.units @schedule.units
   json.minutes @schedule.minutes
+  if @schedule.client_enrollment_service.present? && @schedule.client_enrollment_service.staff.present?
+    json.service_providers do
+      json.array! @schedule.client_enrollment_service.staff do |staff|
+        json.id staff.id
+        json.name "#{staff.first_name} #{staff.last_name}"
+        json.role staff.role_name
+      end
+    end
+  end
   if @schedule.creator_id.present?
     creator = User.find(@schedule.creator_id)
     json.creator_id @schedule.creator_id

@@ -1,4 +1,4 @@
-json.status @soap_note.errors.any? ? 'failure' : 'success'
+json.status @soap_note.reload.errors.any? ? 'failure' : 'success'
 json.data do
   user = User.find(@soap_note.creator_id)
   json.id @soap_note.id

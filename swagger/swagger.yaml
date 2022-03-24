@@ -5269,6 +5269,53 @@ paths:
                 }
               }
 
+  /api/clinics_list:
+    get:
+      summary: clinics list
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      responses:
+        "200":
+          description: "clinics list"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": [
+                  {
+                    "id": 1,
+                    "name": "clinic1",
+                    "aka": null,
+                    "web": null,
+                    "email": null,
+                    "status": "active",
+                    "organization_id": 1,
+                    "organization_name": "org1"
+                  },
+                  {
+                    "id": 4,
+                    "name": "clinic2",
+                    "aka": null,
+                    "web": null,
+                    "email": null,
+                    "status": "active",
+                    "organization_id": 1,
+                    "organization_name": "org1"
+                  }
+                ]
+              }
+
 definitions:
   UserRegistrationParameters:
     type: "object"
