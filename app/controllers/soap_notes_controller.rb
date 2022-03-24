@@ -12,16 +12,14 @@ class SoapNotesController < ApplicationController
 
   def create 
     @soap_note = @scheduling.soap_notes.new(soap_note_params)
-    set_sign
-    # @soap_note.caregiver_sign.attach(params[:caregiver_sign])
+    set_signature
     @soap_note.creator_id = current_user.id
     @soap_note.save
   end
 
   def update
     @soap_note.update(soap_note_params)
-    set_sign
-    # @soap_note.caregiver_sign.attach(params[:caregiver_sign])
+    set_signature
     @soap_note.save
   end
 
@@ -44,30 +42,33 @@ class SoapNotesController < ApplicationController
   end
 
   def soap_note_params
-    params.permit(:note, :add_date, :rbt_sign, :bcba_sign, :clinical_director_sign, :caregiver_sign)
+    params.permit(:note, :add_date, :rbt_signature, :bcba_signature, :clinical_director_signature, :caregiver_signature)
   end
 
-  def set_sign
-    if params[:rbt_sign].to_bool.true?
-      @soap_note.rbt_sign_name = "#{current_user.first_name} #{current_user.last_name}"
-      @soap_note.rbt_sign_date = Time.now.to_date
-    elsif params[:rbt_sign].present?
-      @soap_note.rbt_sign_name = nil
-      @soap_note.rbt_sign_date = nil
+  def set_signature
+    if params[:rbt_signature].to_bool.true?
+      @soap_note.rbt_signature_author_name = "#{current_user.first_name} #{current_user.last_name}"
+      @soap_note.rbt_signature_date = Time.now.to_date
+    elsif params[:rbt_signature].present?
+      @soap_note.rbt_signature_author_name = nil
+      @soap_note.rbt_signature_date = nil
     end
-    if params[:bcba_sign].to_bool.true?
-      @soap_note.bcba_sign_name = "#{current_user.first_name} #{current_user.last_name}"
-      @soap_note.bcba_sign_date = Time.now.to_date
-    elsif params[:bcba_sign].present?
-      @soap_note.bcba_sign_name = nil
-      @soap_note.bcba_sign_date = nil
+    if params[:bcba_signature].to_bool.true?
+      @soap_note.bcba_signature_author_name = "#{current_user.first_name} #{current_user.last_name}"
+      @soap_note.bcba_signature_date = Time.now.to_date
+    elsif params[:bcba_signature].present?
+      @soap_note.bcba_signature_author_name = nil
+      @soap_note.bcba_signature_date = nil
     end
-    if params[:clinical_director_sign].to_bool.true?
-      @soap_note.clinical_director_sign_name = "#{current_user.first_name} #{current_user.last_name}"
-      @soap_note.clinical_director_sign_date = Time.now.to_date
-    elsif params[:clinical_director_sign].present?
-      @soap_note.clinical_director_sign_name = nil
-      @soap_note.clinical_director_sign_date = nil
+    if params[:clinical_director_signature].to_bool.true?
+      @soap_note.clinical_director_signature_author_name = "#{current_user.first_name} #{current_user.last_name}"
+      @soap_note.clinical_director_signature_date = Time.now.to_date
+    elsif params[:clinical_director_signature].present?
+      @soap_note.clinical_director_signature_author_name = nil
+      @soap_note.clinical_director_signature_date = nil
+    end
+    if params[:caregiver_signature].present?
+      @soap_note.caregiver_signature_datetime = DateTime.now
     end
   end
   # end of private

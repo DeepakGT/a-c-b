@@ -1,5 +1,5 @@
 class SoapNote < ApplicationRecord
-  attr_accessor :caregiver_sign
+  attr_accessor :caregiver_signature
 
   belongs_to :scheduling
   has_one_attached :signature_file
@@ -12,9 +12,9 @@ class SoapNote < ApplicationRecord
   private
 
   def set_signature_file
-    return if self.caregiver_sign.blank?
+    return if self.caregiver_signature.blank?
 
-    decoded_data = Base64.decode64(self.caregiver_sign.split(',')[1])
+    decoded_data = Base64.decode64(self.caregiver_signature.split(',')[1])
     self.signature_file = {
       io: StringIO.new(decoded_data),
       filename: 'signature'

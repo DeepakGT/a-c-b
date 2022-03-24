@@ -268,15 +268,16 @@ ActiveRecord::Schema.define(version: 2022_03_23_064421) do
     t.bigint "creator_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.boolean "rbt_sign"
-    t.string "rbt_sign_name"
-    t.date "rbt_sign_date"
-    t.boolean "bcba_sign"
-    t.string "bcba_sign_name"
-    t.date "bcba_sign_date"
-    t.boolean "clinical_director_sign"
-    t.string "clinical_director_sign_name"
-    t.date "clinical_director_sign_date"
+    t.boolean "rbt_signature"
+    t.string "rbt_signature_author_name"
+    t.date "rbt_signature_date"
+    t.boolean "bcba_signature"
+    t.string "bcba_signature_author_name"
+    t.date "bcba_signature_date"
+    t.boolean "clinical_director_signature"
+    t.string "clinical_director_signature_author_name"
+    t.date "clinical_director_signature_date"
+    t.datetime "caregiver_signature_datetime"
     t.index ["creator_id"], name: "index_soap_notes_on_creator_id"
     t.index ["scheduling_id"], name: "index_soap_notes_on_scheduling_id"
   end

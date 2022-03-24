@@ -6091,11 +6091,11 @@ definitions:
         type: "string"
       add_date:
         type: "string"
-      rbt_sign:
+      rbt_signature:
         type: "boolean"
-      bcba_sign:
+      bcba_signature:
         type: "boolean"
-      clinical_director_sign:
+      clinical_director_signature:
         type: "boolean"
-      caregiver_sign:
+      caregiver_signature:
         type: string
