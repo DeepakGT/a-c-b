@@ -1,5 +1,5 @@
 require 'sidekiq/web'
-# require 'sidekiq/cron/web' 
+require 'sidekiq/cron/web' 
 
 # Configure Sidekiq-specific session middleware
 Sidekiq::Web.use ActionDispatch::Cookies

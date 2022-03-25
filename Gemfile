@@ -38,6 +38,7 @@ gem 'rack-cors'
 
 # for jobs
 gem 'sidekiq'
+gem 'sidekiq-cron'
 
 gem 'rspec-rails'
 
