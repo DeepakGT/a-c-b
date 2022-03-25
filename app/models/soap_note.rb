@@ -29,7 +29,7 @@ class SoapNote < ApplicationRecord
     return if Rails.env.development? || Rails.env.production? || Rails.env.test? 
 
     # larger that 5mb file would be upload on s3
-    if file.blob.byte_size > 5_000_000
+    if signature_file.blob.byte_size > 5_000_000
       Rails.application.config.active_storage.service = :amazon
     else
       Rails.application.config.active_storage.service = :local
