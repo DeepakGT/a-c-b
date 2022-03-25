@@ -1,10 +1,10 @@
 class OrganizationPolicy < ApplicationPolicy
   def index?
-    show? || update?
+    show? || update? || destroy?
   end
 
   def show?
-    return true if permissions.include?('organization_view') || update?
+    return true if permissions.include?('organization_view') || update? || destroy?
 
     false
   end
@@ -20,6 +20,8 @@ class OrganizationPolicy < ApplicationPolicy
   end
 
   def destroy?
+    return true if permissions.include?('organization_delete')
+
     false
   end
 end

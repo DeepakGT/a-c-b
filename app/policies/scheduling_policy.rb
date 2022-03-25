@@ -4,7 +4,7 @@ class SchedulingPolicy < ApplicationPolicy
   end
 
   def show?
-    return true if permissions.include?('scheduling_view') || update? || destroy?
+    return true if permissions.include?('schedule_view') || update? || destroy?
     
     false
   end
@@ -14,13 +14,13 @@ class SchedulingPolicy < ApplicationPolicy
   end
 
   def update?
-    return true if permissions.include?('scheduling_update')
+    return true if permissions.include?('schedule_update')
 
     false
   end
 
   def destroy?
-    return true if permissions.include?('scheduling_delete')
+    return true if permissions.include?('schedule_delete')
 
     false
   end

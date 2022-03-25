@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe StaffClinicPolicy, type: :policy do
   let!(:role1) { create(:role, name: 'aba_admin') }
   let!(:user1) { create(:user, :with_role, role_name: role1.name)}
-  let!(:role2) { create(:role, name: 'administrator', permissions: ['staff_locations_view', 'staff_locations_update', 'staff_locations_delete']) }
+  let!(:role2) { create(:role, name: 'administrator', permissions: ['staff_location_view', 'staff_location_update', 'staff_location_delete']) }
   let!(:user2) { create(:user, :with_role, role_name: role2.name)}
   subject { described_class }
 

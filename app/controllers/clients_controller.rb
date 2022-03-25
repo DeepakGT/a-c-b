@@ -4,7 +4,9 @@ class ClientsController < ApplicationController
   before_action :set_client, only: %i[show update destroy]
 
   def index
-    @clients = Client.order(:first_name).paginate(page: params[:page])
+    clients = Client.all
+    clients = filter_by_location(clients) if params[:default_location_id].present?
+    @clients = clients.order(:first_name).paginate(page: params[:page])
   end
 
   def show; end
@@ -44,6 +46,11 @@ class ClientsController < ApplicationController
 
   def authorize_user
     authorize Client if current_user.role_name!='super_admin'
+  end
+
+  def filter_by_location(clients)
+    location_id = params[:default_location_id]
+    clients = clients.by_clinic(location_id)
   end
   # end of private
 

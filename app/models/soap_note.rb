@@ -1,5 +1,5 @@
 class SoapNote < ApplicationRecord
-  attr_accessor :caregiver_signature
+  attr_accessor :caregiver_sign
   attr_accessor :user
 
   belongs_to :scheduling
@@ -15,9 +15,9 @@ class SoapNote < ApplicationRecord
   private
 
   def set_signature_file
-    return if self.caregiver_signature.blank?
+    return if self.caregiver_sign.blank?
 
-    decoded_data = Base64.decode64(self.caregiver_signature.split(',')[1])
+    decoded_data = Base64.decode64(self.caregiver_sign.split(',')[1])
     self.signature_file = {
       io: StringIO.new(decoded_data),
       filename: 'signature'
@@ -47,13 +47,15 @@ class SoapNote < ApplicationRecord
     elsif scheduling.staff.role_name=='rbt'
       if user.role_name=='rbt' && self.rbt_signature==true && self.rbt_signature_author_name=="#{user.first_name} #{user.last_name}"
         errors.add(:rbt_signature, 'cannot be done by rbt that is not in appointment. Please update appointment to let another rbt sign.') if self.scheduling.staff!=user
+      elsif user.role_name=='bcba' && self.rbt_signature==true && self.rbt_signature_author_name=="#{user.first_name} #{user.last_name}"
+        errors.add(:rbt_signature, 'cannot be done by bcba.')
       end
     end
-    if user.role_name!='super_admin' && user.role_name!='aba_admin'
-      if self.rbt_signature==false || self.bcba_signature==false || self.clinical_director_signature==false
-        errors.add(:signatures, 'You are not authorized to undo the signatures.')
-      end
-    end
+    # if user.role_name!='super_admin' && user.role_name!='aba_admin'
+    #   if self.rbt_signature==false || self.bcba_signature==false || self.clinical_director_signature==false
+    #     errors.add(:signatures, 'You are not authorized to undo the signatures.')
+    #   end
+    # end
   end
   # end of private
 end

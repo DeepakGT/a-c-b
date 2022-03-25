@@ -23,6 +23,8 @@ class Scheduling < ApplicationRecord
   scope :by_client_ids, ->(client_ids){ joins(client_enrollment_service: :client_enrollment).where('client_enrollments.client_id': client_ids) }
   scope :by_staff_ids, ->(staff_ids){ where(staff_id: staff_ids) }
   scope :by_service_ids, ->(service_ids){ joins(:client_enrollment_service).where('client_enrollment_service.service_id': service_ids) }
+  scope :by_client_clinic, ->(location_id) { joins(client_enrollment_service: {client_enrollment: :client}).where('users.clinic_id = ?', location_id) }
+  scope :by_staff_clinic, ->(location_id) { where('staff_clinics.clinic_id': location_id) }
 
   private
 

@@ -1,10 +1,10 @@
 class ClinicPolicy < ApplicationPolicy
   def index?
-    show? || update?
+    show? || update? || destroy?
   end
 
   def show?
-    return true if permissions.include?('location_view') || update?
+    return true if permissions.include?('location_view') || update? || destroy?
 
     false
   end
@@ -20,6 +20,8 @@ class ClinicPolicy < ApplicationPolicy
   end
 
   def destroy?
+    return true if permissions.include?('location_delete')
+
     false
   end
 end

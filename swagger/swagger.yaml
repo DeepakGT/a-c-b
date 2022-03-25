@@ -535,6 +535,12 @@ paths:
           type: "integer"
         description: "Page number to display"
         required: false
+      - in: "query"
+        name: "default_location_id"
+        schema:
+          type: "integer"
+        description: "clinic_id to filter records"
+        required: false
       responses:
         "200":
           description: "Staff list"
@@ -2061,6 +2067,12 @@ paths:
         schema:
           type: "integer"
         description: "Page number to display"
+        required: false
+      - in: "query"
+        name: "default_location_id"
+        schema:
+          type: "integer"
+        description: "clinic_id to filter records"
         required: false
       responses:
         "200":
@@ -4549,6 +4561,12 @@ paths:
         description: "Array of service ids to filter"
         required: false
       - in: "query"
+        name: "default_location_id"
+        schema:
+          type: "integer"
+        description: "clinic_id to filter records"
+        required: false
+      - in: "query"
         name: "page"
         schema:
           type: "integer"
@@ -5153,6 +5171,12 @@ paths:
         name: "uid"
         description: "Request headers"
         required: true
+      - in: "query"
+        name: "default_location_id"
+        schema:
+          type: "integer"
+        description: "clinic_id to filter records"
+        required: false
       responses:
         "200":
           description: "clients list for staff"
@@ -6138,11 +6162,11 @@ definitions:
         type: "string"
       add_date:
         type: "string"
-      rbt_signature:
+      rbt_sign:
         type: "boolean"
-      bcba_signature:
+      bcba_sign:
         type: "boolean"
-      clinical_director_signature:
+      clinical_director_sign:
         type: "boolean"
-      caregiver_signature:
+      caregiver_sign:
         type: string

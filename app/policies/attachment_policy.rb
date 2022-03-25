@@ -4,7 +4,7 @@ class AttachmentPolicy < ApplicationPolicy
   end
 
   def show?
-    return true if permissions.include?('client_attachments_view') || update? || destroy?
+    return true if permissions.include?('client_files_view') || update? || destroy?
 
     false
   end
@@ -14,13 +14,13 @@ class AttachmentPolicy < ApplicationPolicy
   end
 
   def update?
-    return true if permissions.include?('client_attachments_update')
+    return true if permissions.include?('client_files_update')
 
     false
   end
 
   def destroy?
-    return true if permissions.include?('client_attachments_delete')
+    return true if permissions.include?('client_files_delete')
 
     false
   end

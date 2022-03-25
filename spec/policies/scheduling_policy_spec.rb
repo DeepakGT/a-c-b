@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe SchedulingPolicy, type: :policy do
   let!(:role1) { create(:role, name: 'aba_admin') }
   let!(:user1) { create(:user, :with_role, role_name: role1.name)}
-  let!(:role2) { create(:role, name: 'administrator', permissions: ['scheduling_view', 'scheduling_update', 'scheduling_delete']) }
+  let!(:role2) { create(:role, name: 'administrator', permissions: ['schedule_view', 'schedule_update', 'schedule_delete']) }
   let!(:user2) { create(:user, :with_role, role_name: role2.name)}
   subject { described_class }
 

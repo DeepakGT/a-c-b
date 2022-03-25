@@ -4,7 +4,7 @@ class ClientEnrollmentPolicy < ApplicationPolicy
   end
 
   def show?
-    return true if permissions.include?('client_source_of_payments_view') || update? || destroy?
+    return true if permissions.include?('client_source_of_payment_view') || update? || destroy?
 
     false
   end
@@ -14,13 +14,13 @@ class ClientEnrollmentPolicy < ApplicationPolicy
   end
 
   def update?
-    return true if permissions.include?('client_source_of_payments_update')
+    return true if permissions.include?('client_source_of_payment_update')
 
     false
   end
 
   def destroy?
-    return true if permissions.include?('client_source_of_payments_delete')
+    return true if permissions.include?('client_source_of_payment_delete')
 
     false
   end

@@ -4,7 +4,7 @@ class ClientEnrollmentServicePolicy < ApplicationPolicy
   end
 
   def show?
-    return true if permissions.include?('client_authorizations_view') || update? || destroy?
+    return true if permissions.include?('client_authorization_view') || update? || destroy?
 
     false
   end
@@ -14,13 +14,13 @@ class ClientEnrollmentServicePolicy < ApplicationPolicy
   end
 
   def update?
-    return true if permissions.include?('client_authorizations_update')
+    return true if permissions.include?('client_authorization_update')
 
     false
   end
 
   def destroy?
-    return true if permissions.include?('client_authorizations_delete')
+    return true if permissions.include?('client_authorization_delete')
 
     false
   end
