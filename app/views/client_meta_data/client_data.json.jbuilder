@@ -82,11 +82,21 @@ json.data do
         json.is_service_provider_required client_enrollment_service.service&.is_service_provider_required
         json.start_date client_enrollment_service.start_date
         json.end_date client_enrollment_service.end_date
+        if client_enrollment_service.end_date > (Time.now.to_date + 9)
+          json.about_to_expire false
+        else
+          json.about_to_expire true
+        end
         json.units client_enrollment_service.units
         json.used_units used_units
         json.scheduled_units scheduled_units
         if client_enrollment_service.units.present?
           json.left_units client_enrollment_service.units - (used_units + scheduled_units) 
+          if (used_units + scheduled_units)>=(0.9 * client_enrollment_service.units)
+            json.is_exhausted true
+          else
+            json.is_exhausted false
+          end
         else
           json.left_units 0
         end
@@ -95,6 +105,11 @@ json.data do
         json.scheduled_minutes scheduled_minutes
         if client_enrollment_service.minutes.present?
           json.left_minutes client_enrollment_service.minutes - (used_minutes + scheduled_minutes)
+          if (used_minutes + scheduled_minutes)>=(0.9 * client_enrollment_service.minutes)
+            json.is_exhausted true
+          else
+            json.is_exhausted false
+          end
         else
           json.left_minutes 0
         end
@@ -114,17 +129,17 @@ json.data do
         json.scheduling_id soap_note.scheduling_id
         json.note soap_note.note
         json.add_date soap_note.add_date
-        json.rbt_sign @soap_note.rbt_signature
-        json.rbt_sign_name @soap_note.rbt_signature_author_name
-        json.rbt_sign_date @soap_note.rbt_signature_date
-        json.bcba_sign @soap_note.bcba_signature
-        json.bcba_sign_name @soap_note.bcba_signature_author_name
-        json.bcba_sign_date @soap_note.bcba_signature_date
-        json.clinical_director_sign @soap_note.clinical_director_signature
-        json.clinical_director_sign_name @soap_note.clinical_director_signature_author_name
-        json.clinical_director_sign_date @soap_note.clinical_director_signature_date
-        json.caregiver_sign @soap_note.signature_file&.blob&.service_url
-        json.caregiver_sign_date @soap_note.caregiver_signature_datetime
+        json.rbt_sign soap_note.rbt_signature
+        json.rbt_sign_name soap_note.rbt_signature_author_name
+        json.rbt_sign_date soap_note.rbt_signature_date
+        json.bcba_sign soap_note.bcba_signature
+        json.bcba_sign_name soap_note.bcba_signature_author_name
+        json.bcba_sign_date soap_note.bcba_signature_date
+        json.clinical_director_sign soap_note.clinical_director_signature
+        json.clinical_director_sign_name soap_note.clinical_director_signature_author_name
+        json.clinical_director_sign_date soap_note.clinical_director_signature_date
+        json.caregiver_sign soap_note.signature_file&.blob&.service_url
+        json.caregiver_sign_date soap_note.caregiver_signature_datetime
         json.creator_id user&.id
         json.creator "#{user&.first_name} #{user&.last_name}"
       end

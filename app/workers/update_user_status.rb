@@ -7,8 +7,8 @@ class UpdateUserStatus
     puts "Hello world!!!!!!!!!!!"
     puts "#{DateTime.now}"
     puts "UpdateUserStatusJob is started"
-    # update_staff_status
-    # update_client_status
+    update_staff_status
+    update_client_status
     puts "UpdateUserStatusJob is completed"
     puts ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"               
   end
