@@ -5,6 +5,8 @@ class Address < ApplicationRecord
 
   validates_length_of :zipcode, is: 5, if: :is_country_usa?
 
+  scope :by_service_address, ->{where(address_type: 'service_address')}
+
   private
 
   def is_country_usa?

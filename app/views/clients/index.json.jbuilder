@@ -35,6 +35,7 @@ json.data do
           json.city address.city
           json.state address.state
           json.country address.country
+          json.is_default address.is_default if address.address_type=='service_address'
         end
       end
     end

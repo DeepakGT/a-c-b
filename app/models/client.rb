@@ -10,6 +10,8 @@ class Client < User
   
   belongs_to :clinic
 
+  after_save :set_default_service_address
+
   accepts_nested_attributes_for :addresses, update_only: true
   accepts_nested_attributes_for :phone_number, update_only: true
 
@@ -32,5 +34,14 @@ class Client < User
     self.update(client_params)
   rescue Exception => e
     errors.add(:address_type, "already present.") if e.is_a? ActiveRecord::RecordNotUnique
+  end
+
+  private
+
+  def set_default_service_address
+    client_service_address = self.addresses.by_service_address&.order(:created_at)
+    if client_service_address.present? && client_service_address.where(is_default: true).blank?
+      client_service_address.first.update(is_default: true)
+    end
   end
 end
