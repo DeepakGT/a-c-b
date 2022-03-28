@@ -41,7 +41,7 @@ Rails.application.routes.draw do
       get '/meta_data', to: 'client_meta_data#selectable_options'
       get '/service_providers_list', to: 'client_meta_data#service_providers_list'
       get '/client_data', to: 'client_meta_data#client_data'
-      resources :service_addresses, controller: 'client_service_addresses', only: %i[index]
+      resources :service_addresses, controller: 'client_service_addresses', only: %i[index create]
     end
     
     resources :credentials, controller: 'qualifications' do

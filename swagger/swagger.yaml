@@ -5394,6 +5394,51 @@ paths:
                   }
                 ]
               }
+    post:
+      summary: Client service address create
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "Associated client id"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/ClientServiceAddressCreateParameters"
+      responses:
+        "200":
+          description: "Created client service address"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 14,
+                  "type": "service_address",
+                  "line1": "A.B. Road",
+                  "line2": null,
+                  "line3": null,
+                  "zipcode": "584964",
+                  "city": "Bombay",
+                  "state": "Maharashtra",
+                  "country": "India",
+                  "is_default": false
+                },
+                "errors": []
+              }
 
 definitions:
   UserRegistrationParameters:
@@ -6287,3 +6332,23 @@ definitions:
         type: "boolean"
       caregiver_sign:
         type: string
+
+  ClientServiceAddressCreateParameters:
+    type: "object"
+    properties:
+      line1:
+        type: "string"
+      line2:
+        type: "string"
+      line3:
+        type: "string"
+      zipcode:
+        type: "string"
+      city:
+        type: "string"
+      state:
+        type: "string"
+      country:
+        type: "string"
+      is_default:
+        type: "boolean"
