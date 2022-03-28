@@ -20,6 +20,8 @@ class Client < User
   validates :dq_reason, presence: true, if: ->{ self.disqualified? }
   validates :dq_reason, absence: true, if: ->{ !self.disqualified? }
 
+  scope :by_clinic, ->(clinic_id){ where(clinic_id: clinic_id) }
+
   def save_with_exception_handler
     self.save
   rescue Exception => e

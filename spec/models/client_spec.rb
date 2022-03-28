@@ -27,4 +27,24 @@ RSpec.describe Client, type: :model do
     before { allow(subject).to receive(:disqualified?).and_return(false) }
     it { should validate_absence_of(:dq_reason) }
   end
+
+  describe "#save_with_exception_handler" do
+    let(:client) { build :client, addresses_attributes: [{address_type: 'insurance_address', city: 'Indore'}, {address_type: 'insurance_address', city: 'Delhi'}] }
+    context "when creating address for client with same address_type" do
+      it "should generate error" do
+        expect(client.save_with_exception_handler.attribute).to eq(:address_type)
+        expect(client.save_with_exception_handler.type).to eq('already present.')
+      end
+    end
+  end
+
+  describe "#update_with_exception_handler" do
+    let(:client) { create(:client, addresses_attributes: [{address_type: 'insurance_address', city: 'Indore'}, {address_type: 'service_address', city: 'Delhi'}]) }
+    context "when creating address for client with same address_type" do
+      it "should generate error" do
+        expect(client.update_with_exception_handler({addresses_attributes: {id: client.addresses.last.id, address_type: 'insurance_address'}}).attribute).to eq(:address_type)
+        expect(client.update_with_exception_handler({addresses_attributes: {id: client.addresses.last.id, address_type: 'insurance_address'}}).type).to eq('already present.')
+      end
+    end
+  end
 end

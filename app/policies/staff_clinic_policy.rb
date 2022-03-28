@@ -4,7 +4,7 @@ class StaffClinicPolicy < ApplicationPolicy
   end
 
   def show?
-    return true if permissions.include?('staff_locations_view') || update? || destroy?
+    return true if permissions.include?('staff_location_view') || update? || destroy?
 
     false
   end
@@ -14,13 +14,13 @@ class StaffClinicPolicy < ApplicationPolicy
   end
 
   def update?
-    return true if permissions.include?('staff_locations_update')
+    return true if permissions.include?('staff_location_update')
 
     false
   end
 
   def destroy?
-    return true if permissions.include?('staff_locations_delete')
+    return true if permissions.include?('staff_location_delete')
 
     false
   end

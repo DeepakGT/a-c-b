@@ -24,6 +24,7 @@ RSpec.describe AddressesController, type: :controller do
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
         expect(response_body['data'].count).to eq(1+countries.count)
+        expect(response_body['data'].first['name']).to eq('United States of America')
       end
     end
   end

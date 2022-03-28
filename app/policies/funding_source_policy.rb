@@ -1,10 +1,10 @@
 class FundingSourcePolicy < ApplicationPolicy
   def index?
-    show? || update?
+    show? || update? || destroy?
   end
 
   def show?
-    return true if permissions.include?('funding_source_view') || update?
+    return true if permissions.include?('funding_source_view') || update? || destroy?
 
     false
   end
@@ -20,6 +20,8 @@ class FundingSourcePolicy < ApplicationPolicy
   end
 
   def destroy?
+    return true if permissions.include?('funding_source_delete')
+
     false
   end
 end

@@ -535,6 +535,12 @@ paths:
           type: "integer"
         description: "Page number to display"
         required: false
+      - in: "query"
+        name: "default_location_id"
+        schema:
+          type: "integer"
+        description: "clinic_id to filter records"
+        required: false
       responses:
         "200":
           description: "Staff list"
@@ -2061,6 +2067,12 @@ paths:
         schema:
           type: "integer"
         description: "Page number to display"
+        required: false
+      - in: "query"
+        name: "default_location_id"
+        schema:
+          type: "integer"
+        description: "clinic_id to filter records"
         required: false
       responses:
         "200":
@@ -4549,6 +4561,12 @@ paths:
         description: "Array of service ids to filter"
         required: false
       - in: "query"
+        name: "default_location_id"
+        schema:
+          type: "integer"
+        description: "clinic_id to filter records"
+        required: false
+      - in: "query"
         name: "page"
         schema:
           type: "integer"
@@ -4574,6 +4592,7 @@ paths:
                     "date": "2022-12-23",
                     "start_time": "2022-02-23T18:27:57+05:30",
                     "end_time": "2022-02-23T23:27:57+05:30",
+                    "is_rendered": false,
                     "units": "6",
                     "minutes": "360"
                   },
@@ -4589,6 +4608,7 @@ paths:
                     "date": "2022-12-23",
                     "start_time": "2022-02-23T18:27:57+05:30",
                     "end_time": "2022-02-23T23:27:57+05:30",
+                    "is_rendered": false,
                     "units": "6",
                     "minutes": "360"
                   }
@@ -4636,6 +4656,7 @@ paths:
                   "date": "2022-12-23",
                   "start_time": "2022-02-23T18:27:57+05:30",
                   "end_time": "2022-02-23T23:27:57+05:30",
+                  "is_rendered": false,
                   "units": "6",
                   "minutes": "360"
                 },
@@ -4681,6 +4702,7 @@ paths:
                   "date": "2022-12-23",
                   "start_time": null,
                   "end_time": null,
+                  "is_rendered": false,
                   "units": "6",
                   "minutes": "360"
                 }
@@ -4728,6 +4750,7 @@ paths:
                   "date": "2022-12-23",
                   "start_time": "2022-02-23T18:27:57+05:30",
                   "end_time": "2022-02-23T23:27:57+05:30",
+                  "is_rendered": false,
                   "units": "6",
                   "minutes": "360"
                 },
@@ -4771,6 +4794,7 @@ paths:
                   "date": "2022-12-23",
                   "start_time": null,
                   "end_time": null,
+                  "is_rendered": false,
                   "units": "6",
                   "minutes": "360"
                 }
@@ -4809,6 +4833,9 @@ paths:
                     "scheduling_id": 5,
                     "note": "test-note-2",
                     "add_date": "2022-02-27",
+                    "rbt_sign": null,
+                    "bcba_sign": null,
+                    "clinical_director_sign": null,
                     "creator_id": 7,
                     "creator": "Odis Murphy"
                   },
@@ -4817,6 +4844,9 @@ paths:
                     "scheduling_id": 5,
                     "note": "test-note",
                     "add_date": "2022-02-28",
+                    "rbt_sign": null,
+                    "bcba_sign": null,
+                    "clinical_director_sign": null,
                     "creator_id": 7,
                     "creator": "Odis Murphy"
                   }
@@ -4858,6 +4888,9 @@ paths:
                   "scheduling_id": 5,
                   "note": "test-note",
                   "add_date": "2022-02-28",
+                  "rbt_sign": null,
+                  "bcba_sign": null,
+                  "clinical_director_sign": null,
                   "creator_id": 7,
                   "creator": "Odis Murphy"
                 },
@@ -4901,6 +4934,9 @@ paths:
                     "scheduling_id": 5,
                     "note": "test-note",
                     "add_date": "2022-02-28",
+                    "rbt_sign": null,
+                    "bcba_sign": null,
+                    "clinical_director_sign": null,
                     "creator_id": 7,
                     "creator": "Odis Murphy"
                   }
@@ -4946,6 +4982,9 @@ paths:
                   "scheduling_id": 5,
                   "note": "note-1",
                   "add_date": "2022-03-01",
+                  "rbt_sign": null,
+                  "bcba_sign": null,
+                  "clinical_director_sign": null,
                   "creator_id": 7,
                   "creator": "Odis Murphy"
                 },
@@ -4986,6 +5025,9 @@ paths:
                   "scheduling_id": 5,
                   "note": "note-1",
                   "add_date": "2022-03-01",
+                  "rbt_sign": null,
+                  "bcba_sign": null,
+                  "clinical_director_sign": null,
                   "creator_id": 7,
                   "creator": "Odis Murphy"
                 }
@@ -5109,6 +5151,191 @@ paths:
                     "used_minutes": 0,
                     "scheduled_minutes": 0,
                     "left_minutes": 900.0
+                  }
+                ]
+              }
+
+  /api/clients_list:
+    get:
+      summary: clients list for staff
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "query"
+        name: "default_location_id"
+        schema:
+          type: "integer"
+        description: "clinic_id to filter records"
+        required: false
+      responses:
+        "200":
+          description: "clients list for staff"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": [
+                  {
+                    "id": 10,
+                    "name": "Test Client4"
+                  },
+                  {
+                    "id": 12,
+                    "name": "Test Client1"
+                  },
+                  {
+                    "id": 13,
+                    "name": " "
+                  }
+                ]
+              }
+
+  /api/clients/{client_id}/client_data:
+    get:
+      summary: client data detail
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "associated client id"
+        required: true
+      responses:
+        "200":
+          description: "client data detail"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 12,
+                  "first_name": "Test",
+                  "last_name": "Client1",
+                  "email": "testc1@gmail.com",
+                  "clinic_id": 1,
+                  "clinic_name": "clinic1",
+                  "dob": "2012-12-12",
+                  "gender": "male",
+                  "status": "active",
+                  "preferred_language": "english",
+                  "disqualified": false,
+                  "payor_status": null,
+                  "schedules": [
+                    {
+                      "id": 9,
+                      "client_enrollment_service_id": 4,
+                      "staff_id": 8,
+                      "staff_name": "Lyndon Boehm",
+                      "service_id": 4,
+                      "service_name": "developmental test administration by physician or",
+                      "service_display_code": "80",
+                      "status": "Scheduled",
+                      "date": "2022-03-19",
+                      "start_time": "18:00",
+                      "end_time": "19:00",
+                      "units": 6.0,
+                      "minutes": null
+                    },
+                    {
+                      "id": 10,
+                      "client_enrollment_service_id": 4,
+                      "staff_id": 8,
+                      "staff_name": "Lyndon Boehm",
+                      "service_id": 4,
+                      "service_name": "developmental test administration by physician or",
+                      "service_display_code": "80",
+                      "status": "Scheduled",
+                      "date": "2022-03-19",
+                      "start_time": "12:00",
+                      "end_time": "13:00",
+                      "units": 6.0,
+                      "minutes": null
+                    }
+                  ],
+                  "soap_notes": [
+                    {
+                      "id": 2,
+                      "scheduling_id": 8,
+                      "note": "test-note-3",
+                      "add_date": null,
+                      "creator_id": 1,
+                      "creator": "Jamel Casper"
+                    },
+                    {
+                      "id": 1,
+                      "scheduling_id": 8,
+                      "note": "test-note-2",
+                      "add_date": "2022-02-27",
+                      "creator_id": 1,
+                      "creator": "Jamel Casper"
+                    }
+                  ]
+                }
+              }
+
+  /api/clinics_list:
+    get:
+      summary: clinics list
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      responses:
+        "200":
+          description: "clinics list"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": [
+                  {
+                    "id": 1,
+                    "name": "clinic1",
+                    "aka": null,
+                    "web": null,
+                    "email": null,
+                    "status": "active",
+                    "organization_id": 1,
+                    "organization_name": "org1"
+                  },
+                  {
+                    "id": 4,
+                    "name": "clinic2",
+                    "aka": null,
+                    "web": null,
+                    "email": null,
+                    "status": "active",
+                    "organization_id": 1,
+                    "organization_name": "org1"
                   }
                 ]
               }
@@ -5925,6 +6152,8 @@ definitions:
         type: "string"
       minutes:
         type: "string"
+      is_rendered:
+        type: "boolean"
       
   SoapNoteCreateUpdateParameters:
     type: "object"
@@ -5933,3 +6162,11 @@ definitions:
         type: "string"
       add_date:
         type: "string"
+      rbt_sign:
+        type: "boolean"
+      bcba_sign:
+        type: "boolean"
+      clinical_director_sign:
+        type: "boolean"
+      caregiver_sign:
+        type: string

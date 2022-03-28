@@ -1,10 +1,10 @@
 class QualificationPolicy < ApplicationPolicy
   def index?
-    show? || update?
+    show? || update? || destroy?
   end
 
   def show?
-    return true if permissions.include?('qualification_view') || update?
+    return true if permissions.include?('qualification_view') || update? || destroy?
 
     false
   end
@@ -20,6 +20,8 @@ class QualificationPolicy < ApplicationPolicy
   end
 
   def destroy?
+    return true if permissions.include?('qualification_delete')
+
     false
   end
 end

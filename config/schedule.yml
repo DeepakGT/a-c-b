@@ -1,0 +1,3 @@
+update_user_status:
+  cron: '1 0 * * *'
+  class: "UpdateUserStatus"

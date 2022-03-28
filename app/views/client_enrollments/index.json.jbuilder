@@ -32,11 +32,21 @@ json.data do
         json.is_service_provider_required enrollment_service.service&.is_service_provider_required
         json.start_date enrollment_service.start_date
         json.end_date enrollment_service.end_date
+        if enrollment_service.end_date > (Time.now.to_date + 9)
+          json.about_to_expire false
+        else
+          json.about_to_expire true
+        end
         json.units enrollment_service.units
         json.used_units used_units
         json.scheduled_units scheduled_units
         if enrollment_service.units.present?
           json.left_units enrollment_service.units - (used_units + scheduled_units) 
+          if (used_units + scheduled_units)>=(0.9 * enrollment_service.units)
+            json.is_exhausted true
+          else
+            json.is_exhausted false
+          end
         else
           json.left_units 0
         end
@@ -45,6 +55,11 @@ json.data do
         json.scheduled_minutes scheduled_minutes
         if enrollment_service.minutes.present?
           json.left_minutes enrollment_service.minutes - (used_minutes + scheduled_minutes)
+          if (used_minutes + scheduled_minutes)>=(0.9 * enrollment_service.minutes)
+            json.is_exhausted true
+          else
+            json.is_exhausted false
+          end
         else
           json.left_minutes 0
         end

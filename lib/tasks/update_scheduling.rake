@@ -19,4 +19,9 @@ namespace :update_scheduling do
       schedule.save(validate: false)
     end
   end
+
+  desc "Update creator_id"
+  task update_creator: :environment do
+    Scheduling.where(creator_id: nil).update_all(creator_id: User.joins(:role).by_role('super_admin').first.id)
+  end
 end

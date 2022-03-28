@@ -1,4 +1,5 @@
 require 'sidekiq/web'
+require 'sidekiq/cron/web' 
 
 # Configure Sidekiq-specific session middleware
 Sidekiq::Web.use ActionDispatch::Cookies
@@ -37,6 +38,9 @@ Rails.application.routes.draw do
       resources :contacts
       resources :notes, controller: 'client_notes'
       resources :attachments, controller: 'client_attachments'
+      get '/meta_data', to: 'client_meta_data#selectable_options'
+      get '/service_providers_list', to: 'client_meta_data#service_providers_list'
+      get '/client_data', to: 'client_meta_data#client_data'
     end
     
     resources :credentials, controller: 'qualifications' do
@@ -52,10 +56,10 @@ Rails.application.routes.draw do
     get '/addresses/country_list', to: 'addresses#country_list'
     get '/roles_list', to: 'roles#roles_list'
     get '/phone_types', to: 'staff#phone_types'
-    get '/clients/:client_id/meta_data', to: 'client_meta_data#selectable_options'
     get '/scheduling_meta_data', to: 'scheduling_meta_data#selectable_options'
-    get '/clients/:client_id/service_providers_list', to: 'client_meta_data#service_providers_list'
     get '/services_list', to: 'scheduling_meta_data#services_list'
+    get '/clients_list', to: 'staff_meta_data#clients_list'
+    get '/clinics_list',to: 'meta_data#clinics_list'
 
     resources :schedulings do
       resources :soap_notes

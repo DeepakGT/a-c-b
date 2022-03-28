@@ -15,6 +15,33 @@ RSpec.describe User, type: :model do
     it { should define_enum_for(:gender)}
   end
 
+  describe 'callbacks' do
+    it { is_expected.to callback(:assign_role).before(:validation).on(:create) }
+  end
+
+  describe "#attr_accessor" do
+    let(:user){build :user, :with_role, role_name: 'aba_admin'}
+    RSpec::Matchers.define :have_attr_accessor do |role_id|
+      match do |user|
+        user.respond_to?(role_id) &&
+          user.respond_to?("#{role_id}=")
+      end
+    
+      failure_message_for_should do |user|
+        "expected attr_accessor for #{role_id} on #{user}"
+      end
+    
+      failure_message_for_should_not do |user|
+        "expected attr_accessor for #{role_id} not to be defined on #{user}"
+      end
+    
+      description do
+        "checks to see if there is an attr accessor on the supplied object"
+      end
+    end
+  end
+
+
   describe 'validations' do
     it { should validate_presence_of(:email) }
     it { should validate_presence_of(:password).on(:create) }

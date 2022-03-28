@@ -40,8 +40,25 @@ json.data do
     json.date schedule.date
     json.start_time schedule.start_time
     json.end_time schedule.end_time
+    json.is_rendered schedule.is_rendered
     json.units schedule.units
     json.minutes schedule.minutes
+    if schedule.creator_id.present?
+      creator = User.find(schedule.creator_id)
+      json.creator_id schedule.creator_id
+      json.creator_name "#{creator&.first_name} #{creator&.last_name}"
+    else
+      json.creator_id nil
+      json.creator_name nil
+    end
+    if schedule.updator_id.present?
+      updator = User.find(schedule.updator_id)
+      json.updator_id schedule.updator_id
+      json.updator_name "#{updator&.first_name} #{updator&.last_name}"
+    else
+      json.updator_id nil
+      json.updator_name nil
+    end
   end
 end
 json.total_records @schedules.total_entries

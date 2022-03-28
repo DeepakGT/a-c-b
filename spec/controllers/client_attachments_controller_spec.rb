@@ -29,6 +29,31 @@ RSpec.describe ClientAttachmentsController, type: :controller do
         expect(response_body['status']).to eq('success')
         expect(response_body['data'].count).to eq(client_attachments.count)
       end
+
+      context "when client_id is not present" do
+        it "should raise error" do
+          set_auth_headers(auth_headers)
+
+          get :index, params: { client_id: 0}
+          response_body = JSON.parse(response.body)
+          
+          expect(response_body['errors']).to include("record not found")
+        end
+      end
+
+      context "when no attachment for client is present in database" do
+        let(:client1) { create(:client) }
+        it "should display empty list" do
+          set_auth_headers(auth_headers)
+
+          get :index, params: { client_id: client1.id}
+          response_body = JSON.parse(response.body)
+
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data'].count).to eq(0)
+        end
+      end
     end
   end
   
@@ -51,6 +76,17 @@ RSpec.describe ClientAttachmentsController, type: :controller do
         expect(response_body['data']['category']).to eq('image')
         expect(response_body['data']['url']).not_to eq(nil)
       end
+
+      context "when client_id is not present" do
+        it "should raise error" do
+          set_auth_headers(auth_headers)
+
+          post :create, params: { client_id: 0}
+          response_body = JSON.parse(response.body)
+          
+          expect(response_body['errors']).to include("record not found")
+        end
+      end
     end
   end
 
@@ -67,6 +103,28 @@ RSpec.describe ClientAttachmentsController, type: :controller do
         expect(response_body['status']).to eq('success')
         expect(response_body['data']['client_id']).to eq(client.id) 
         expect(response_body['data']['id']).to eq(client_attachment.id) 
+      end
+
+      context "when client_id is not present" do
+        it "should raise error" do
+          set_auth_headers(auth_headers)
+
+          get :show, params: { client_id: 0, id: 0}
+          response_body = JSON.parse(response.body)
+          
+          expect(response_body['errors']).to include("record not found")
+        end
+      end
+
+      context "when id is not present" do
+        it "should raise error" do
+          set_auth_headers(auth_headers)
+
+          get :show, params: { client_id: client.id, id: 0}
+          response_body = JSON.parse(response.body)
+          
+          expect(response_body['errors']).to include("record not found")
+        end
       end
     end
   end
@@ -86,6 +144,28 @@ RSpec.describe ClientAttachmentsController, type: :controller do
         expect(response_body['data']['id']).to eq(client_attachment.id)
         expect(response_body['data']['category']).to eq(updated_category)       
       end
+
+      context "when client_id is not present" do
+        it "should raise error" do
+          set_auth_headers(auth_headers)
+
+          put :update, params: { client_id: 0, id: 0}
+          response_body = JSON.parse(response.body)
+          
+          expect(response_body['errors']).to include("record not found")
+        end
+      end
+
+      context "when id is not present" do
+        it "should raise error" do
+          set_auth_headers(auth_headers)
+
+          put :update, params: { client_id: client.id, id: 0}
+          response_body = JSON.parse(response.body)
+          
+          expect(response_body['errors']).to include("record not found")
+        end
+      end
     end
   end
 
@@ -101,6 +181,28 @@ RSpec.describe ClientAttachmentsController, type: :controller do
         expect(response_body['status']).to eq('success')
         expect(response_body['data']['id']).to eq(client_attachment.id)
         expect(ClientNote.find_by_id(client_attachment.id)).to eq(nil)
+      end
+
+      context "when client_id is not present" do
+        it "should raise error" do
+          set_auth_headers(auth_headers)
+
+          delete :destroy, params: { client_id: 0, id: 0}
+          response_body = JSON.parse(response.body)
+          
+          expect(response_body['errors']).to include("record not found")
+        end
+      end
+
+      context "when id is not present" do
+        it "should raise error" do
+          set_auth_headers(auth_headers)
+
+          delete :destroy, params: { client_id: client.id, id: 0}
+          response_body = JSON.parse(response.body)
+          
+          expect(response_body['errors']).to include("record not found")
+        end
       end
     end
   end

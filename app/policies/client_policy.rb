@@ -1,10 +1,10 @@
 class ClientPolicy < ApplicationPolicy
   def index?
-    show? || update?
+    show? || update? || destroy?
   end
 
   def show?
-    return true if permissions.include?('clients_view') || update?
+    return true if permissions.include?('clients_view') || update? || destroy?
 
     false
   end
@@ -20,6 +20,8 @@ class ClientPolicy < ApplicationPolicy
   end
 
   def destroy?
+    return true if permissions.include?('clients_delete')
+
     false
   end
 end

@@ -32,7 +32,6 @@ RSpec.describe ClientMetaDataController, type: :controller do
     end
   end
 
-  #let(:service_providers) { clinic.staff.joins(:role).where('role.name': ['bcba', 'rbt']) }
   describe "GET #service_providers_list" do
     context "when sign in" do
       let(:service) { create(:service) }
@@ -46,6 +45,21 @@ RSpec.describe ClientMetaDataController, type: :controller do
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
         expect(response_body['data'].count).to eq(service_providers.count)
+      end
+    end
+  end
+
+  describe "GET #client_data" do
+    context "when sign in" do
+      it "should fetch client data detail successfully" do
+        set_auth_headers(auth_headers)
+
+        get :client_data, params: { client_id: client.id }
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data']['id']).to eq(client.id)
       end
     end
   end

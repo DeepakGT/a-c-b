@@ -7,6 +7,7 @@ class StaffController < ApplicationController
   def index
     staff = Staff.all
     staff = do_filter(staff) if params[:search_value].present?
+    staff = filter_by_location(staff) if params[:default_location_id].present?
     @staff = staff.uniq.sort_by(&:first_name).paginate(page: params[:page])
   end
 
@@ -104,6 +105,11 @@ class StaffController < ApplicationController
 
   def authorize_user
     authorize Staff if current_user.role_name!='super_admin'
+  end
+
+  def filter_by_location(staff)
+    location_id = params[:default_location_id]
+    staff = staff.by_clinic(location_id)
   end
   # end of private
 end

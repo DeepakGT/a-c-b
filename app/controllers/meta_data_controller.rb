@@ -5,6 +5,16 @@ class MetaDataController < ApplicationController
     @selectable_options = get_selectable_options_data
   end
 
+  def clinics_list
+    if current_user.role_name=='super_admin'
+      @clinics = Clinic.all 
+    elsif current_user.type=="Staff"
+      @clinics = current_user.clinics
+    else
+      @clinics = Clinic.where(id: current_user.clinic_id)
+    end
+  end
+
   private
 
   def get_selectable_options_data
