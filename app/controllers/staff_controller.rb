@@ -23,6 +23,7 @@ class StaffController < ApplicationController
     @staff = Staff.new(staff_params)
     set_role
     @staff.save
+    set_home_clinic
   end
 
   def destroy
@@ -65,6 +66,12 @@ class StaffController < ApplicationController
     
     @staff.password = params[:password]
     @staff.password_confirmation = params[:password_confirmation]
+  end
+
+  def set_home_clinic
+    return if params[:staff_location_id].blank?
+
+    @staff.staff_clinics.create(clinic_id: params[:staff_location_id], is_home_clinic: true)
   end
 
   def do_filter(staff)

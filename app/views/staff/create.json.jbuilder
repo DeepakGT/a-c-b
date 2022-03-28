@@ -34,5 +34,13 @@ json.data do
       json.status @staff.rbt_supervision.status
     end
   end
+  if @staff.staff_clinics.present?
+    json.staff_clinics do
+      json.array! @staff.staff_clinics do |staff_clinic|
+        json.clinic_id staff_clinic.clinic_id
+        json.clinic_name staff_clinic.clinic.name
+      end
+    end
+  end
 end
 json.errors @staff.errors.full_messages

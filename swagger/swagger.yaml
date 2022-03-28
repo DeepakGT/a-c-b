@@ -614,7 +614,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/definitions/StaffCreateUpdateByAdminParameters"
+              $ref: "#/definitions/StaffCreateByAdminParameters"
       responses:
         "200":
           description: "Staff created"
@@ -770,7 +770,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/definitions/StaffCreateUpdateByAdminParameters"
+              $ref: "#/definitions/StaffUpdateByAdminParameters"
       responses:
         "200":
           description: "Staff Updated"
@@ -5573,7 +5573,69 @@ definitions:
           country:
             type: "string"
 
-  StaffCreateUpdateByAdminParameters:
+  StaffCreateByAdminParameters:
+    type: "object"
+    properties:
+      first_name:
+        type: "string"
+      last_name:
+        type: "string"
+      email:
+        type: "string"
+      password:
+        type: "string"
+      password_confirmation:
+        type: "string"
+      supervisor_id:
+        type: "integer"
+      hired_at:
+        type: "string"
+      terminated_on:
+        type: "string"
+      role_name:
+        type: "string"
+      staff_location_id:
+        type: "integer"
+      phone_numbers_attributes:
+        type: "object"
+        properties:
+          0:
+            type: "object"
+            properties:
+              phone_type:
+                type: "string"
+                enum: [fax, home, mobile, pager, work, other]
+              number:
+                type: string
+      address_attributes:
+        type: "object"
+        properties:
+          line1:
+            type: "string"
+          line2:
+            type: "string"
+          line3:
+            type: "string"
+          zipcode:
+            type: "string"
+          city:
+            type: "string"
+          state:
+            type: "string"
+          country:
+            type: "string"
+      rbt_supervision_attributes:
+        type: "object"
+        properties:
+          status:
+            type: "string"
+            enum: [requires, provides, n_a]
+          start_date:
+            type: "string"
+          end_date:
+            type: "string"
+
+  StaffUpdateByAdminParameters:
     type: "object"
     properties:
       first_name:
