@@ -1,10 +1,10 @@
 class Client < User
-  has_one :phone_number, as: :phoneable, dependent: :destroy
+  has_one :phone_number, as: :phoneable, dependent: :destroy, inverse_of: :phoneable
   has_many :notes, class_name: :ClientNote, dependent: :nullify
   has_many :attachments, as: :attachable, dependent: :destroy
 
   has_many :contacts, dependent: :destroy
-  has_many :addresses, as: :addressable, dependent: :destroy
+  has_many :addresses, as: :addressable, dependent: :destroy, inverse_of: :addressable
   has_many :client_enrollments, dependent: :destroy
   has_many :funding_sources, through: :client_enrollments
   

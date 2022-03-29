@@ -3,8 +3,8 @@ class Contact < ApplicationRecord
   # associations
   belongs_to :client
 
-  has_one :address, as: :addressable, dependent: :destroy
-  has_many :phone_numbers, as: :phoneable, dependent: :destroy
+  has_one :address, as: :addressable, dependent: :destroy, inverse_of: :addressable
+  has_many :phone_numbers, as: :phoneable, dependent: :destroy, inverse_of: :phoneable
 
   accepts_nested_attributes_for :address, update_only: true
   accepts_nested_attributes_for :phone_numbers, update_only: true

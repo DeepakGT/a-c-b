@@ -56,7 +56,7 @@ ActiveRecord::Schema.define(version: 2022_03_28_124856) do
     t.bigint "addressable_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.boolean "is_default"
+    t.boolean "is_default", default: false
     t.index ["addressable_id", "addressable_type", "address_type"], name: "index_on_address", unique: true, where: "((address_type = 0) OR (address_type = 1))"
     t.index ["addressable_type", "addressable_id"], name: "index_addresses_on_addressable"
   end

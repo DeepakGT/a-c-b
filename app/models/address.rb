@@ -1,5 +1,5 @@
 class Address < ApplicationRecord
-  belongs_to :addressable, polymorphic: true, inverse_of: :addressable
+  belongs_to :addressable, polymorphic: true
 
   enum address_type: { general: 0, insurance_address: 1, service_address: 2}
 

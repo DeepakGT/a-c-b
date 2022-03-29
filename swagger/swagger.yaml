@@ -5417,7 +5417,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/definitions/ClientServiceAddressCreateParameters"
+              $ref: "#/definitions/ClientServiceAddressCreateUpdateParameters"
       responses:
         "200":
           description: "Created client service address"
@@ -5436,6 +5436,57 @@ paths:
                   "state": "Maharashtra",
                   "country": "India",
                   "is_default": false
+                },
+                "errors": []
+              }
+
+  /api/clients/{client_id}/service_addresses/{id}:
+    put:
+      summary: Client service address update
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "Associated Client id"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "Client service address id"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/ClientServiceAddressCreateUpdateParameters"
+      responses:
+        "200":
+          description: "Updated client service address"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 13,
+                  "type": "service_address",
+                  "line1": "Princess Business Skypark ",
+                  "line2": "Opp. C21 Mall",
+                  "line3": "AB road",
+                  "zipcode": "450210",
+                  "city": "Indore",
+                  "state": "Madhya Pradesh",
+                  "country": "India",
+                  "is_default": true
                 },
                 "errors": []
               }
@@ -6333,7 +6384,7 @@ definitions:
       caregiver_sign:
         type: string
 
-  ClientServiceAddressCreateParameters:
+  ClientServiceAddressCreateUpdateParameters:
     type: "object"
     properties:
       line1:

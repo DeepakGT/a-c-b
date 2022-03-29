@@ -1,5 +1,5 @@
 class PhoneNumber < ApplicationRecord
-  belongs_to :phoneable, polymorphic: true, inverse_of: :phoneable
+  belongs_to :phoneable, polymorphic: true
   
   enum phone_type: {mobile: 0, home: 1, work: 2, other: 3}
 
