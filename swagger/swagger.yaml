@@ -5441,6 +5441,49 @@ paths:
               }
 
   /api/clients/{client_id}/service_addresses/{id}:
+    get:
+      summary: Client service address detail
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "Associated Client id"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "Client service address id"
+        required: true
+      responses:
+        "200":
+          description: "client service address detail"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 13,
+                  "type": "service_address",
+                  "line1": "Princess Business Skypark ",
+                  "line2": "Opp. C21 Mall",
+                  "line3": "AB road",
+                  "zipcode": "450210",
+                  "city": "Indore",
+                  "state": "Madhya Pradesh",
+                  "country": "India",
+                  "is_default": true
+                }
+              }
     put:
       summary: Client service address update
       parameters:
@@ -5489,6 +5532,49 @@ paths:
                   "is_default": true
                 },
                 "errors": []
+              }
+    delete:
+      summary: Client service address delete
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "Associated Client id"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "Client service address id"
+        required: true
+      responses:
+        "200":
+          description: "Deleted client service address"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 13,
+                  "type": "service_address",
+                  "line1": "Princess Business Skypark ",
+                  "line2": "Opp. C21 Mall",
+                  "line3": "AB road",
+                  "zipcode": "450210",
+                  "city": "Indore",
+                  "state": "Madhya Pradesh",
+                  "country": "India",
+                  "is_default": true
+                }
               }
 
 definitions:

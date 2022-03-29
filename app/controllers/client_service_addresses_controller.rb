@@ -1,7 +1,7 @@
 class ClientServiceAddressesController < ApplicationController
   before_action :authenticate_user!
   before_action :set_client
-  before_action :set_service_address, only: :update
+  before_action :set_service_address, only: %i[show update destroy]
 
   def index
     @service_addresses = @client.addresses.by_service_address.order(is_default: :desc)
@@ -14,9 +14,15 @@ class ClientServiceAddressesController < ApplicationController
     @service_address.save
   end
 
+  def show; end
+
   def update
     set_default
     @service_address.update(service_address_params)
+  end
+
+  def destroy
+    @service_address.destroy
   end
 
   private

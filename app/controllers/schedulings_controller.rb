@@ -53,7 +53,8 @@ class SchedulingsController < ApplicationController
     schedules = schedules.by_service_ids(string_to_array(params[:service_ids])) if params[:service_ids].present?
     if params[:default_location_id].present?
       location_id = params[:default_location_id]
-      schedules = schedules.by_client_clinic(location_id).or(schedules.by_staff_clinic(location_id)).joins(staff: :staff_clinics)
+      schedules = schedules.left_outer_joins(client_enrollment_service: {client_enrollment: :client}).by_client_clinic(location_id)
+                           .or(schedules.by_staff_clinic(location_id)).left_outer_joins(staff: :staff_clinics)
     end
     schedules
   end
