@@ -4488,10 +4488,16 @@ paths:
         description: "Request headers"
         required: true
       - in: "query"
-        name: "clinic_id"
+        name: "location_id"
         schema:
           type: "integer"
         description: "Associated clinic id to filter"
+        required: false
+      - in: "query"
+        name: "cross_site_allowed"
+        schema:
+          type: "boolean"
+        description: "cross_site_allowed to filter staff"
         required: false
       responses:
         "200":
@@ -4596,6 +4602,18 @@ paths:
                     "id": 1,
                     "client_id": 16,
                     "client_name": "Test Client3",
+                    "service_address_id": 16,
+                    "service_address": {
+                      "line1": "PBS",
+                      "line2": null,
+                      "line3": null,
+                      "zipcode": null,
+                      "city": "Indore",
+                      "state": null,
+                      "country": null,
+                      "is_default": true,
+                      "address_name": null
+                    },
                     "staff_id": 20,
                     "staff_name": "May Dach",
                     "service_id": 28,
@@ -4609,20 +4627,47 @@ paths:
                     "minutes": "360"
                   },
                   {
-                    "id": 2,
-                    "client_id": 17,
-                    "client_name": "Test Client2",
-                    "staff_id": 24,
-                    "staff_name": "Fr. Dinorah",
-                    "service_id": 30,
+                    "id": 6,
+                    "client_enrollment_service_id": 3,
+                    "total_units": null,
+                    "used_units": 6.0,
+                    "scheduled_units": 0,
+                    "left_units": 0,
+                    "total_minutes": 900.0,
+                    "used_minutes": 0,
+                    "scheduled_minutes": 0,
+                    "left_minutes": 900.0,
+                    "cross_site_allowed": false,
+                    "client_id": 12,
+                    "client_name": "Test Client1",
+                    "service_address_id": 16,
+                    "service_address": {
+                      "line1": "PBS",
+                      "line2": null,
+                      "line3": null,
+                      "zipcode": null,
+                      "city": "Indore",
+                      "state": null,
+                      "country": null,
+                      "is_default": true,
+                      "address_name": null
+                    },
+                    "staff_id": 6,
+                    "staff_name": "Gov. Moon",
+                    "service_id": 6,
                     "service_name": "initial assessment",
-                    "status": "scheduled",
-                    "date": "2022-12-23",
-                    "start_time": "2022-02-23T18:27:57+05:30",
-                    "end_time": "2022-02-23T23:27:57+05:30",
+                    "service_display_code": "17",
+                    "status": "Scheduled",
+                    "date": "2022-03-17",
+                    "start_time": "14:00",
+                    "end_time": "15:00",
                     "is_rendered": false,
-                    "units": "6",
-                    "minutes": "360"
+                    "units": 2.0,
+                    "minutes": null,
+                    "creator_id": 1,
+                    "creator_name": "Jamel Casper",
+                    "updator_id": null,
+                    "updator_name": null
                   }
                 ],
                 "total_records": 2,
@@ -4657,20 +4702,47 @@ paths:
               example: {
                 "status": "success",
                 "data": {
-                  "id": 2,
-                  "client_id": 17,
-                  "client_name": "Test Client2",
-                  "staff_id": 24,
-                  "staff_name": "Fr. Dinorah",
-                  "service_id": 30,
+                  "id": 6,
+                  "client_enrollment_service_id": 3,
+                  "total_units": null,
+                  "used_units": 6.0,
+                  "scheduled_units": 0,
+                  "left_units": 0,
+                  "total_minutes": 900.0,
+                  "used_minutes": 0,
+                  "scheduled_minutes": 0,
+                  "left_minutes": 900.0,
+                  "cross_site_allowed": false,
+                  "client_id": 12,
+                  "client_name": "Test Client1",
+                  "service_address_id": 16,
+                  "service_address": {
+                    "line1": "PBS",
+                    "line2": null,
+                    "line3": null,
+                    "zipcode": null,
+                    "city": "Indore",
+                    "state": null,
+                    "country": null,
+                    "is_default": true,
+                    "address_name": null
+                  },
+                  "staff_id": 6,
+                  "staff_name": "Gov. Moon",
+                  "service_id": 6,
                   "service_name": "initial assessment",
-                  "status": "scheduled",
-                  "date": "2022-12-23",
-                  "start_time": "2022-02-23T18:27:57+05:30",
-                  "end_time": "2022-02-23T23:27:57+05:30",
+                  "service_display_code": "17",
+                  "status": "Scheduled",
+                  "date": "2022-03-17",
+                  "start_time": "14:00",
+                  "end_time": "15:00",
                   "is_rendered": false,
-                  "units": "6",
-                  "minutes": "360"
+                  "units": 2.0,
+                  "minutes": null,
+                  "creator_id": 1,
+                  "creator_name": "Jamel Casper",
+                  "updator_id": null,
+                  "updator_name": null
                 },
                 "errors": []
               }
@@ -4703,20 +4775,47 @@ paths:
               example: {
                 "status": "success",
                 "data": {
-                  "id": 1,
-                  "client_id": 16,
-                  "client_name": "Test Client3",
-                  "staff_id": 20,
-                  "staff_name": "May Dach",
-                  "service_id": 28,
-                  "service_name": "developmental test administration by physician",
-                  "status": "scheduled",
-                  "date": "2022-12-23",
-                  "start_time": null,
-                  "end_time": null,
+                  "id": 6,
+                  "client_enrollment_service_id": 3,
+                  "total_units": null,
+                  "used_units": 6.0,
+                  "scheduled_units": 0,
+                  "left_units": 0,
+                  "total_minutes": 900.0,
+                  "used_minutes": 0,
+                  "scheduled_minutes": 0,
+                  "left_minutes": 900.0,
+                  "cross_site_allowed": false,
+                  "client_id": 12,
+                  "client_name": "Test Client1",
+                  "service_address_id": 16,
+                  "service_address": {
+                    "line1": "PBS",
+                    "line2": null,
+                    "line3": null,
+                    "zipcode": null,
+                    "city": "Indore",
+                    "state": null,
+                    "country": null,
+                    "is_default": true,
+                    "address_name": null
+                  },
+                  "staff_id": 6,
+                  "staff_name": "Gov. Moon",
+                  "service_id": 6,
+                  "service_name": "initial assessment",
+                  "service_display_code": "17",
+                  "status": "Scheduled",
+                  "date": "2022-03-17",
+                  "start_time": "14:00",
+                  "end_time": "15:00",
                   "is_rendered": false,
-                  "units": "6",
-                  "minutes": "360"
+                  "units": 2.0,
+                  "minutes": null,
+                  "creator_id": 1,
+                  "creator_name": "Jamel Casper",
+                  "updator_id": null,
+                  "updator_name": null
                 }
               }
     put:
@@ -4751,20 +4850,47 @@ paths:
               example: {
                 "status": "success",
                 "data": {
-                  "id": 1,
-                  "client_id": 17,
-                  "client_name": "Test Client2",
-                  "staff_id": 24,
-                  "staff_name": "Fr. Dinorah",
-                  "service_id": 30,
+                  "id": 6,
+                  "client_enrollment_service_id": 3,
+                  "total_units": null,
+                  "used_units": 6.0,
+                  "scheduled_units": 0,
+                  "left_units": 0,
+                  "total_minutes": 900.0,
+                  "used_minutes": 0,
+                  "scheduled_minutes": 0,
+                  "left_minutes": 900.0,
+                  "cross_site_allowed": false,
+                  "client_id": 12,
+                  "client_name": "Test Client1",
+                  "service_address_id": 16,
+                  "service_address": {
+                    "line1": "PBS",
+                    "line2": null,
+                    "line3": null,
+                    "zipcode": null,
+                    "city": "Indore",
+                    "state": null,
+                    "country": null,
+                    "is_default": true,
+                    "address_name": null
+                  },
+                  "staff_id": 6,
+                  "staff_name": "Gov. Moon",
+                  "service_id": 6,
                   "service_name": "initial assessment",
-                  "status": "scheduled",
-                  "date": "2022-12-23",
-                  "start_time": "2022-02-23T18:27:57+05:30",
-                  "end_time": "2022-02-23T23:27:57+05:30",
+                  "service_display_code": "17",
+                  "status": "Scheduled",
+                  "date": "2022-03-17",
+                  "start_time": "14:00",
+                  "end_time": "15:00",
                   "is_rendered": false,
-                  "units": "6",
-                  "minutes": "360"
+                  "units": 2.0,
+                  "minutes": null,
+                  "creator_id": 1,
+                  "creator_name": "Jamel Casper",
+                  "updator_id": null,
+                  "updator_name": null
                 },
                 "errors": []
               }
@@ -4795,20 +4921,47 @@ paths:
               example: {
                 "status": "success",
                 "data": {
-                  "id": 1,
-                  "client_id": 16,
-                  "client_name": "Test Client3",
-                  "staff_id": 20,
-                  "staff_name": "May Dach",
-                  "service_id": 28,
-                  "service_name": "developmental test administration by physician",
-                  "status": "scheduled",
-                  "date": "2022-12-23",
-                  "start_time": null,
-                  "end_time": null,
+                  "id": 6,
+                  "client_enrollment_service_id": 3,
+                  "total_units": null,
+                  "used_units": 6.0,
+                  "scheduled_units": 0,
+                  "left_units": 0,
+                  "total_minutes": 900.0,
+                  "used_minutes": 0,
+                  "scheduled_minutes": 0,
+                  "left_minutes": 900.0,
+                  "cross_site_allowed": false,
+                  "client_id": 12,
+                  "client_name": "Test Client1",
+                  "service_address_id": 16,
+                  "service_address": {
+                    "line1": "PBS",
+                    "line2": null,
+                    "line3": null,
+                    "zipcode": null,
+                    "city": "Indore",
+                    "state": null,
+                    "country": null,
+                    "is_default": true,
+                    "address_name": null
+                  },
+                  "staff_id": 6,
+                  "staff_name": "Gov. Moon",
+                  "service_id": 6,
+                  "service_name": "initial assessment",
+                  "service_display_code": "17",
+                  "status": "Scheduled",
+                  "date": "2022-03-17",
+                  "start_time": "14:00",
+                  "end_time": "15:00",
                   "is_rendered": false,
-                  "units": "6",
-                  "minutes": "360"
+                  "units": 2.0,
+                  "minutes": null,
+                  "creator_id": 1,
+                  "creator_name": "Jamel Casper",
+                  "updator_id": null,
+                  "updator_name": null
                 }
               }
 
@@ -6540,6 +6693,10 @@ definitions:
         type: "string"
       is_rendered:
         type: "boolean"
+      cross_site_allowed:
+        type: "boolean"
+      service_address_id:
+        type: "integer"
       
   SoapNoteCreateUpdateParameters:
     type: "object"

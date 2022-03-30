@@ -9,7 +9,7 @@ RSpec.describe SchedulingsController, type: :controller do
     @request.env["devise.mapping"] = Devise.mappings[:user]
   end
 
-  let!(:role) { create(:role, name: 'aba_admin', permissions: ['scheduling_view', 'scheduling_update', 'scheduling_delete'])}
+  let!(:role) { create(:role, name: 'aba_admin', permissions: ['schedule_view', 'schedule_update', 'schedule_delete'])}
   let!(:user) { create(:user, :with_role, role_name: role.name) }
   let!(:auth_headers) { user.create_new_auth_token }
   let!(:organization) { create(:organization, name: 'org1') }

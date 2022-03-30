@@ -13,10 +13,11 @@ class SchedulingMetaDataController < ApplicationController
   private
 
   def get_selectable_options_data
-    if params[:clinic_id].present?
-      clinic = Clinic.find(params[:clinic_id])
+    if params[:location_id].present?
+      clinic = Clinic.find(params[:location_id])
       client = clinic.clients
-      staff = clinic.staff
+      staff = clinic.staff if !(params[:cross_site_allowed].to_bool.true?)
+      staff = Staff.all if params[:cross_site_allowed].to_bool.true?
     else
       client = Client.all
       staff = Staff.all
