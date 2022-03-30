@@ -5378,7 +5378,8 @@ paths:
                     "city": "Delhi",
                     "state": null,
                     "country": null,
-                    "is_default": true
+                    "is_default": true,
+                    "address_name": "home"
                   },
                   {
                     "id": 13,
@@ -5390,7 +5391,8 @@ paths:
                     "city": "Indore",
                     "state": null,
                     "country": null,
-                    "is_default": false
+                    "is_default": false,
+                    "address_name": "home"
                   }
                 ]
               }
@@ -5435,7 +5437,8 @@ paths:
                   "city": "Bombay",
                   "state": "Maharashtra",
                   "country": "India",
-                  "is_default": false
+                  "is_default": false,
+                  "address_name": "home"
                 },
                 "errors": []
               }
@@ -5481,7 +5484,8 @@ paths:
                   "city": "Indore",
                   "state": "Madhya Pradesh",
                   "country": "India",
-                  "is_default": true
+                  "is_default": true,
+                  "address_name": "home"
                 }
               }
     put:
@@ -5529,7 +5533,8 @@ paths:
                   "city": "Indore",
                   "state": "Madhya Pradesh",
                   "country": "India",
-                  "is_default": true
+                  "is_default": true,
+                  "address_name": "home"
                 },
                 "errors": []
               }
@@ -5573,7 +5578,8 @@ paths:
                   "city": "Indore",
                   "state": "Madhya Pradesh",
                   "country": "India",
-                  "is_default": true
+                  "is_default": true,
+                  "address_name": "home"
                 }
               }
 
@@ -6489,3 +6495,5 @@ definitions:
         type: "string"
       is_default:
         type: "boolean"
+      address_name:
+        type: "string"

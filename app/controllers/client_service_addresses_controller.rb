@@ -32,7 +32,7 @@ class ClientServiceAddressesController < ApplicationController
   end
 
   def service_address_params
-    params.permit(:line1, :line2, :line3, :zipcode, :city, :state, :country, :is_default)
+    params.permit(:line1, :line2, :line3, :zipcode, :city, :state, :country, :is_default, :address_name)
   end
 
   def set_default
@@ -40,7 +40,6 @@ class ClientServiceAddressesController < ApplicationController
       @service_address.is_default = false 
     else
       @client.addresses.by_service_address.where(is_default: true).update(is_default: false)
-      # @service_address.is_default = true 
     end
   end
 

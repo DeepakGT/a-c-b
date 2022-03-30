@@ -12,5 +12,6 @@ json.data do
     json.state address.state
     json.country address.country
     json.is_default address.is_default
+    json.address_name address.address_name
   end
 end

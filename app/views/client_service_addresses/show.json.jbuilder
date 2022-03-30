@@ -11,4 +11,5 @@ json.data do
   json.state @service_address.state
   json.country @service_address.country
   json.is_default @service_address.is_default
+  json.address_name @service_address.address_name
 end
