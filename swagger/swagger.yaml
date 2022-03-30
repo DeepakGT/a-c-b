@@ -2089,6 +2089,8 @@ paths:
                     "email": "client7@yopmail.com",
                     "clinic_id": 1,
                     "clinic_name": "clinic1",
+                    "bcba_id": 4,
+                    "bcba_name": "The Hon.",
                     "email": "testc7@gmail.com",
                     "dob": "2012-12-12",
                     "gender": "male",
@@ -2104,6 +2106,8 @@ paths:
                     "email": "client1@yopmail.com",
                     "clinic_id": 1,
                     "clinic_name": "clinic1",
+                    "bcba_id": 4,
+                    "bcba_name": "The Hon.",
                     "email": "testc1@gmail.com",
                     "dob": "2012-12-12",
                     "gender": "male",
@@ -2176,6 +2180,8 @@ paths:
                   "id": 10,
                   "first_name": "Test",
                   "last_name": "Client1",
+                  "bcba_id": 4,
+                  "bcba_name": "The Hon.",
                   "email": "testc1@gmail.com",
                   "dob": "2012-12-12",
                   "gender": "male",
@@ -2257,6 +2263,8 @@ paths:
                   "email": "client5@yopmail.com",
                   "clinic_id": 1,
                   "clinic_name": "clinic1",
+                  "bcba_id": 4,
+                  "bcba_name": "The Hon.",
                   "contact": {
                     "id": 2,
                     "first_name": "test",
@@ -2349,6 +2357,8 @@ paths:
                   "id": 10,
                   "first_name": "Test",
                   "last_name": "Client1",
+                  "bcba_id": 4,
+                  "bcba_name": "The Hon.",
                   "email": "testc1@gmail.com",
                   "dob": "2012-12-12",
                   "gender": "male",
@@ -2425,6 +2435,8 @@ paths:
                   "id": 11,
                   "first_name": "Test",
                   "last_name": "Client1",
+                  "bcba_id": 4,
+                  "bcba_name": "The Hon.",
                   "email": "testc1@gmail.com",
                   "dob": "2012-12-12",
                   "gender": "male",
@@ -5583,6 +5595,71 @@ paths:
                 }
               }
 
+  /api/bcba_list:
+    get:
+      summary: bcba list
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "query"
+        name: "location_id"
+        schema:
+          type: "integer"
+        description: "Clinic id to filter bcba"
+        required: false
+      responses:
+        "200":
+          description: "bcba list"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": [
+                  {
+                    "id": 5,
+                    "first_name": "Chester",
+                    "last_name": "Waelchi",
+                    "email": "bcba_staff2@yopmail.com",
+                    "status": "inactive",
+                    "hired_at": null,
+                    "terminated_on": "2022-03-08",
+                    "title": "bcba",
+                    "gender": "male",
+                    "organization_id": 1,
+                    "organization_name": "org1",
+                    "clinic_id": 1,
+                    "clinic_name": "clinic1",
+                    "phone_numbers": []
+                  },
+                  {
+                    "id": 15,
+                    "first_name": "Test",
+                    "last_name": "Staff ",
+                    "email": "bcba_test3456@yopmail.com",
+                    "status": "active",
+                    "hired_at": "2022-03-01",
+                    "terminated_on": "2055-03-23",
+                    "title": "bcba",
+                    "gender": "male",
+                    "organization_id": 1,
+                    "organization_name": "org1",
+                    "clinic_id": 1,
+                    "clinic_name": "clinic1",
+                    "phone_numbers": []
+                  }
+                ]
+              }
+
 definitions:
   UserRegistrationParameters:
     type: "object"
@@ -5971,6 +6048,8 @@ definitions:
         type: "string"
       dob:
         type: "string"
+      bcba_id:
+        type: "integer"
       phone_number_attributes:
         type: "object"
         properties:
@@ -6032,6 +6111,8 @@ definitions:
         type: "string"
       dob:
         type: "string"
+      bcba_id:
+        type: "integer"
       phone_number_attributes:
         type: "object"
         properties:

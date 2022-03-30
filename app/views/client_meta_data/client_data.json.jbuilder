@@ -7,6 +7,8 @@ json.data do
   json.email @client.email
   json.clinic_id @client.clinic_id
   json.clinic_name @client.clinic.name
+  json.bcba_id @client.bcba_id
+  json.bcba_name "#{@client.bcba&.first_name} #{@client.bcba&.last_name}"
   json.email @client.email
   json.dob @client.dob
   json.gender @client.gender

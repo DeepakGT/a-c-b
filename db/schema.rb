@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_28_124856) do
+ActiveRecord::Schema.define(version: 2022_03_30_071907) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -355,6 +355,8 @@ ActiveRecord::Schema.define(version: 2022_03_28_124856) do
     t.datetime "updated_at", precision: 6, null: false
     t.string "payor_status"
     t.date "hired_at"
+    t.bigint "bcba_id"
+    t.index ["bcba_id"], name: "index_users_on_bcba_id"
     t.index ["clinic_id"], name: "index_users_on_clinic_id"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
@@ -394,5 +396,6 @@ ActiveRecord::Schema.define(version: 2022_03_28_124856) do
   add_foreign_key "staff_qualifications", "users", column: "staff_id"
   add_foreign_key "user_roles", "roles"
   add_foreign_key "user_roles", "users"
+  add_foreign_key "users", "users", column: "bcba_id"
   add_foreign_key "users", "users", column: "supervisor_id"
 end

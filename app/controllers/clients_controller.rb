@@ -29,7 +29,7 @@ class ClientsController < ApplicationController
 
   def client_params
     arr = %i[ first_name last_name status gender email dob clinic_id payor_status preferred_language 
-              disqualified dq_reason ]
+              disqualified dq_reason bcba_id]
 
     arr.concat(%i[password password_confirmation]) if params['action']=='create'
 

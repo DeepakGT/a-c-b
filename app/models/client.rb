@@ -9,6 +9,7 @@ class Client < User
   has_many :funding_sources, through: :client_enrollments
   
   belongs_to :clinic
+  belongs_to :bcba, class_name: :User, optional: true
 
   after_save :set_default_service_address
 
