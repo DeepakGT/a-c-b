@@ -53,7 +53,7 @@ class SchedulingsController < ApplicationController
     schedules = schedules.by_service_ids(string_to_array(params[:service_ids])) if params[:service_ids].present?
     if params[:staff_ids].blank? && params[:client_ids].blank? && params[:service_ids].blank?
       if current_user.role_name=='bcba'
-        schedules = schedules.where(staff_id: current_user.id).or(schedules.where(bcba_id: current_user.id))
+        schedules = schedules.joins(client_enrollment_service: {client_enrollment: :client}).where('users.bcba_id': current_user.id).or(schedules.where(staff_id: current_user.id))
       elsif current_user.role_name=='rbt'
         schedules = schedules.where(staff_id: current_user.id)
       end

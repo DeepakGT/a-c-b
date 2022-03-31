@@ -17,12 +17,12 @@ RSpec.describe SchedulingsController, type: :controller do
   let!(:client) { create(:client, clinic_id: clinic.id, first_name: 'test') }
   let!(:service) { create(:service) }
   let!(:client_enrollment) { create(:client_enrollment, client_id: client.id) }
-  let!(:client_enrollment_service) { create(:client_enrollment_service, client_enrollment_id: client_enrollment.id) }
-  let!(:staff) { create(:staff, :with_role, role_name: 'bcba', first_name: 'abcd') }
+  let!(:client_enrollment_service) { create(:client_enrollment_service, client_enrollment_id: client_enrollment.id, service_id: service.id) }
+  let!(:staff) { create(:staff, :with_role, role_name: 'administrator', first_name: 'abcd') }
   
   describe "GET #index" do
     context "when sign in" do
-      let!(:schedulings) {create_list(:scheduling, 5, units: '2')}
+      let!(:schedulings) {create_list(:scheduling, 5, units: '2', staff_id: staff.id)}
       it "should list schedulings successfully" do
         set_auth_headers(auth_headers)
         
@@ -31,7 +31,7 @@ RSpec.describe SchedulingsController, type: :controller do
         
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
-        expect(response_body['total_records']).to eq(schedulings.count)
+        expect(response_body['total_records']).to eq(Scheduling.all.count)
       end
 
       it "should fetch the first page record by default" do
@@ -56,37 +56,98 @@ RSpec.describe SchedulingsController, type: :controller do
         expect(response_body['page']).to eq("2")
       end
 
-      it "should staff filter by client ids successfully" do
-        set_auth_headers(auth_headers)
-        
-        get :index, params: { client_ids: client.id }
-        response_body = JSON.parse(response.body)
-        
-        expect(response.status).to eq(200)
-        expect(response_body['status']).to eq('success')
-        expect(response_body['data'].count).to eq(Scheduling.by_client_ids(client.id).count)
+      let!(:scheduling1){ create(:scheduling, staff_id: staff.id) }
+      let!(:scheduling2){ create(:scheduling, client_enrollment_service_id: client_enrollment_service.id) }
+      let!(:scheduling3){ create(:scheduling, staff_id: staff.id, client_enrollment_service_id: client_enrollment_service.id) }
+      context "when client_ids is present" do
+        it "should staff filter by client ids successfully" do
+          set_auth_headers(auth_headers)
+          
+          get :index, params: { client_ids: client.id }
+          response_body = JSON.parse(response.body)
+          
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data'].count).to eq(Scheduling.by_client_ids(client.id).count)
+        end
       end
 
-      it "should staff filter by staff ids successfully" do
-        set_auth_headers(auth_headers)
-        
-        get :index, params: { staff_ids: staff.id }
-        response_body = JSON.parse(response.body)
-        
-        expect(response.status).to eq(200)
-        expect(response_body['status']).to eq('success')
-        expect(response_body['data'].count).to eq(Scheduling.by_staff_ids(staff.id).count)
+      context "when staff_ids is present" do
+        it "should staff filter by staff ids successfully" do
+          set_auth_headers(auth_headers)
+          
+          get :index, params: { staff_ids: staff.id }
+          response_body = JSON.parse(response.body)
+          
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data'].count).to eq(Scheduling.by_staff_ids(staff.id).count)
+        end
       end
 
-      it "should list staff filtered by service ids successfully" do
-        set_auth_headers(auth_headers)
+      context "when service_ids is present" do
+        it "should list staff filtered by service ids successfully" do
+          set_auth_headers(auth_headers)
+          
+          get :index, params: { service_ids: service.id }
+          response_body = JSON.parse(response.body)
 
-        get :index, params: { service_ids: service.id }
-        response_body = JSON.parse(response.body)
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data'].count).to eq(Scheduling.by_service_ids(service.id).count)
+        end
+      end
 
-        expect(response.status).to eq(200)
-        expect(response_body['status']).to eq('success')
-        expect(response_body['data'].count).to eq(Scheduling.by_service_ids(service.id).count)
+      context "when staff_ids, client_ids, service_ids and default_location_id is present" do
+        it "should list staff filtered by all filters successfully" do
+          set_auth_headers(auth_headers)
+          
+          get :index, params: { service_ids: service.id, staff_ids: staff.id, client_ids: client.id, default_location_id: clinic.id }
+          response_body = JSON.parse(response.body)
+
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data'].count).to eq(1)
+        end
+      end
+
+      context "when no filters are present" do
+        let!(:role1) { create(:role, name: 'rbt', permissions: ['schedule_view', 'schedule_update', 'schedule_delete'])}
+        let!(:staff1) {create(:staff, :with_role, role_name: role1.name)}
+        let!(:role2) { create(:role, name: 'bcba', permissions: ['schedule_view', 'schedule_update', 'schedule_delete'])}
+        let!(:staff2) {create(:staff, :with_role, role_name: role2.name)}
+        let!(:staff1_auth_headers){ staff1.create_new_auth_token}
+        let!(:staff2_auth_headers){ staff2.create_new_auth_token}
+        let!(:client1) { create(:client, clinic_id: clinic.id, bcba_id: staff2.id) }
+        let!(:client_enrollment1) { create(:client_enrollment, client_id: client1.id) }
+        let!(:client_enrollment_service1) { create(:client_enrollment_service, client_enrollment_id: client_enrollment1.id) }
+        let!(:rbt_scheduling){create(:scheduling, staff_id: staff1.id, client_enrollment_service_id: client_enrollment_service1.id)}
+        let!(:bcba_scheduling){create(:scheduling, staff_id: staff2.id, client_enrollment_service_id: client_enrollment_service.id)}
+        context "and logged in user is rbt" do
+          it "should show schedules created for rbt" do
+            set_auth_headers(staff1_auth_headers)
+
+            get :index
+            response_body = JSON.parse(response.body)
+
+            expect(response.status).to eq(200)
+            expect(response_body['status']).to eq('success')
+            expect(response_body['data'].count).to eq(1)
+          end
+        end
+
+        context "and logged in user is bcba" do
+          it "should show schedules created for bcba and schedules for client with bcba_id equal to bcba" do
+            set_auth_headers(staff2_auth_headers)
+
+            get :index
+            response_body = JSON.parse(response.body)
+
+            expect(response.status).to eq(200)
+            expect(response_body['status']).to eq('success')
+            expect(response_body['data'].count).to eq(2)
+          end
+        end
       end
     end
   end
@@ -155,7 +216,7 @@ RSpec.describe SchedulingsController, type: :controller do
       end
 
       context "and update associated data" do
-        let(:staff) { create(:staff, :with_role, role_name: 'rbt') }
+        let(:staff) { create(:staff, :with_role, role_name: 'client_care_coordinator') }
         it "should update associated staff successfully" do
           set_auth_headers(auth_headers)
 

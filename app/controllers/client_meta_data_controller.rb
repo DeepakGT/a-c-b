@@ -16,7 +16,6 @@ class ClientMetaDataController < ApplicationController
   def client_data
     @schedules = Scheduling.by_client_ids(@client.id).scheduled_scheduling.order(:date).first(10)
     @client_enrollment_services = ClientEnrollmentService.by_client(@client.id).first(10)
-    # @client_enrollment_services = ClientEnrollmentService.where(id: @schedules.pluck(:client_enrollment_service_id).uniq).first(10)
     @soap_notes = SoapNote.by_client(@client.id).order(add_date: :desc, created_at: :desc).first(10)
     @notes = ClientNote.where(client_id: @client.id).first(10)
     @attachments = Attachment.where(attachable_type: 'User', attachable_id: @client.id).first(10)

@@ -11,6 +11,7 @@ RSpec.describe Client, type: :model do
   it { should have_many(:funding_sources).through(:client_enrollments) }  
 
   it { should belong_to(:clinic) } 
+  it { should belong_to(:bcba).class_name('User').optional }
 
   it { should accept_nested_attributes_for(:addresses).update_only(true)}
   it { should accept_nested_attributes_for(:phone_number).update_only(true)}

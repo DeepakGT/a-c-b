@@ -10,6 +10,14 @@ class SchedulingMetaDataController < ApplicationController
     @client_enrollment_services = check_qualifications(params[:client_id], params[:date], staff)
   end
 
+  def rbt_appointments
+    if current_user.role_name=='rbt'
+      rbt_schedules = Scheduling.by_staff_ids(current_user.id)
+      @upcoming_schedules = rbt_schedules.scheduled_scheduling.order(:date)
+      @past_schedules = rbt_schedules.completed_scheduling.where(is_rendered: false).order(date: :desc)
+    end
+  end
+
   private
 
   def get_selectable_options_data

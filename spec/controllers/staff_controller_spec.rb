@@ -58,63 +58,101 @@ RSpec.describe StaffController, type: :controller do
         expect(response_body['page']).to eq("2")
       end
 
-      it "should staff filter by name successfully" do
-        set_auth_headers(auth_headers)
-        
-        get :index, params: { search_by:"name", search_value: "test1"}
-        response_body = JSON.parse(response.body)
-        
-        expect(response.status).to eq(200)
-        expect(response_body['status']).to eq('success')
-        expect(response_body['data'].count).to eq(1)
-        expect(response_body['data'].first['first_name'].downcase).to eq('test1')  
+      context "when search_by is name" do
+        it "should staff filter by name successfully" do
+          set_auth_headers(auth_headers)
+          
+          get :index, params: { search_by:"name", search_value: "test1"}
+          response_body = JSON.parse(response.body)
+          
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data'].count).to eq(1)
+          expect(response_body['data'].first['first_name'].downcase).to eq('test1')  
+        end
       end
 
-      it "should list staff filtered by role successfully" do
-        set_auth_headers(auth_headers)
+      context "when search_by is title" do
+        it "should list staff filtered by role successfully" do
+          set_auth_headers(auth_headers)
 
-        get :index, params: { search_by:"title", search_value: "billing"}
-        response_body = JSON.parse(response.body)
+          get :index, params: { search_by:"title", search_value: "billing"}
+          response_body = JSON.parse(response.body)
 
-        expect(response.status).to eq(200)
-        expect(response_body['status']).to eq('success')
-        expect(response_body['data'].count).to eq(2)
-        expect(response_body['data'].first['title']).to eq('billing')  
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data'].count).to eq(2)
+          expect(response_body['data'].first['title']).to eq('billing')  
+        end
       end
 
-      it "should list staff filtered by organization successfully" do
-        set_auth_headers(auth_headers)
+      context "when search_by is organization" do
+        it "should list staff filtered by organization successfully" do
+          set_auth_headers(auth_headers)
 
-        get :index, params: { search_by:"organization", search_value: organization.name}
-        response_body = JSON.parse(response.body)
+          get :index, params: { search_by:"organization", search_value: organization.name}
+          response_body = JSON.parse(response.body)
 
-        expect(response.status).to eq(200)
-        expect(response_body['status']).to eq('success')
-        expect(response_body['data'].count).to eq(Staff.joins(clinics: :organization).by_organization(organization.name).count)
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data'].count).to eq(Staff.joins(clinics: :organization).by_organization(organization.name).count)
+        end
       end
 
-      it "should list staff filtered by location successfully" do
-        set_auth_headers(auth_headers)
-        
-        get :index, params: { search_by:"location", search_value: 'Indore'}
-        response_body = JSON.parse(response.body)
-        
-        expect(response.status).to eq(200)
-        expect(response_body['status']).to eq('success')
-        expect(response_body['data'].count).to eq(2)
-        expect(response_body['page']).to eq(1)
+      context "when search_by is location" do
+        it "should list staff filtered by location successfully" do
+          set_auth_headers(auth_headers)
+          
+          get :index, params: { search_by:"location", search_value: 'Indore'}
+          response_body = JSON.parse(response.body)
+          
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data'].count).to eq(2)
+          expect(response_body['page']).to eq(1)
+        end
       end
 
-      it "should list staff filtered by supervisor successfully" do
-        set_auth_headers(auth_headers)
-        
-        get :index, params: { search_by:"immediate_supervisor", search_value: 'admin user'}
-        response_body = JSON.parse(response.body)
-        
-        expect(response.status).to eq(200)
-        expect(response_body['status']).to eq('success')
-        expect(response_body['data'].count).to eq(2)
-        expect(response_body['data'].first['supervisor_id']).to eq(user.id)
+      context "when search_by is immediate_supervisor" do
+        it "should list staff filtered by supervisor successfully" do
+          set_auth_headers(auth_headers)
+          
+          get :index, params: { search_by:"immediate_supervisor", search_value: 'admin user'}
+          response_body = JSON.parse(response.body)
+          
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data'].count).to eq(2)
+          expect(response_body['data'].first['supervisor_id']).to eq(user.id)
+        end
+      end
+
+      context "when search_by is absent but search_value is present" do
+        it "should list staff filtered by name, role, location, organization, supervisor successfully" do
+          set_auth_headers(auth_headers)
+          
+          get :index, params: { search_value: 'admin user'}
+          response_body = JSON.parse(response.body)
+          
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data'].count).to eq(2)
+        end
+      end
+
+      context "when default_location_id is present" do
+        let!(:staff_clinic1) { create(:staff_clinic, staff_id: Staff.first.id, clinic_id: clinic.id) }
+        let!(:staff_clinic2) { create(:staff_clinic, staff_id: Staff.last.id, clinic_id: clinic.id) }
+        it "should list staff filtered by location successfully" do
+          set_auth_headers(auth_headers)
+          
+          get :index, params: { default_location_id: clinic.id}
+          response_body = JSON.parse(response.body)
+          
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data'].count).to eq(2)
+        end
       end
     end
   end

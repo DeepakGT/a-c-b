@@ -1,6 +1,6 @@
 json.status 'success' 
 json.data do
-  primary_client_enrollment = @client.client_enrollments.active.order(is_primary: :desc).first
+  primary_client_enrollment = @client.client_enrollments.active&.order(is_primary: :desc)&.first
   json.id @client.id
   json.first_name @client.first_name
   json.last_name @client.last_name
@@ -152,7 +152,7 @@ json.data do
   if @notes.present?
     json.notes do
       json.array! @notes do |note|
-        user = User.find(note.creator_id)
+        user = User.where(id: note.creator_id)&.first
         json.id note.id
         json.note note.note
         json.add_date note.add_date

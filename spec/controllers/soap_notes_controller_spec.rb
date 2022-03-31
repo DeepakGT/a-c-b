@@ -23,7 +23,7 @@ RSpec.describe SoapNotesController, type: :controller do
 
   describe "GET #index" do
     context "when sign in" do
-      let!(:soap_notes) { create_list(:soap_note, 5, scheduling_id: scheduling.id)}
+      let!(:soap_notes) { create_list(:soap_note, 5, scheduling_id: scheduling.id, user: user)}
       it "should fetch soap notes list successfully" do
         set_auth_headers(auth_headers)
         
@@ -39,7 +39,7 @@ RSpec.describe SoapNotesController, type: :controller do
 
   describe "GET #show" do
     context "when sign in" do
-      let(:soap_note) { create(:soap_note, scheduling_id: scheduling.id, note: 'test-note', add_date: '2022-02-28') }
+      let(:soap_note) { create(:soap_note, scheduling_id: scheduling.id, note: 'test-note', add_date: '2022-02-28', user: user) }
       it "should fetch soap note detail successfully" do
         set_auth_headers(auth_headers)
 
@@ -77,7 +77,7 @@ RSpec.describe SoapNotesController, type: :controller do
 
   describe "PUT #update" do
     context "when sign in" do
-      let(:soap_note) { create(:soap_note, scheduling_id: scheduling.id, note: 'test-note-1', add_date: '2022-02-28') }
+      let(:soap_note) { create(:soap_note, scheduling_id: scheduling.id, note: 'test-note-1', add_date: '2022-02-28', user: user) }
       it "should fetch soap note detail successfully" do
         set_auth_headers(auth_headers)
 
@@ -96,7 +96,7 @@ RSpec.describe SoapNotesController, type: :controller do
 
   describe "DELETE #destroy" do
     context "when sign in" do
-      let(:soap_note) { create(:soap_note, scheduling_id: scheduling.id, note: 'test-note', add_date: '2022-02-28') }
+      let(:soap_note) { create(:soap_note, scheduling_id: scheduling.id, note: 'test-note', add_date: '2022-02-28', user: user) }
       it "should fetch soap note detail successfully" do
         set_auth_headers(auth_headers)
 

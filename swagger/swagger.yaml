@@ -5813,6 +5813,79 @@ paths:
                 ]
               }
 
+  /api/rbt_appointments:
+    get:
+      summary: rbt appointments list
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      responses:
+        "200":
+          description: "rbt appointments list"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "upcoming_schedules": [
+                    {
+                      "id": 17,
+                      "client_enrollment_service_id": 3,
+                      "cross_site_allowed": false,
+                      "client_id": 12,
+                      "client_name": "Test Client1",
+                      "service_address_id": null,
+                      "staff_id": 7,
+                      "staff_name": "Alethea Treutel",
+                      "staff_role": "rbt",
+                      "service_id": 6,
+                      "service_name": "initial assessment",
+                      "service_display_code": "17",
+                      "status": "Scheduled",
+                      "date": "2022-05-31",
+                      "start_time": "12:00",
+                      "end_time": "13:00",
+                      "is_rendered": false,
+                      "units": null,
+                      "minutes": null
+                    }
+                  ],
+                  "past_schedules": [
+                    {
+                      "id": 8,
+                      "client_enrollment_service_id": 3,
+                      "cross_site_allowed": false,
+                      "client_id": 12,
+                      "client_name": "Test Client1",
+                      "service_address_id": null,
+                      "staff_id": 7,
+                      "staff_name": "Alethea Treutel",
+                      "staff_role": "rbt",
+                      "service_id": 6,
+                      "service_name": "initial assessment",
+                      "service_display_code": "17",
+                      "status": "Scheduled",
+                      "date": "2022-03-17",
+                      "start_time": "14:00",
+                      "end_time": "15:00",
+                      "is_rendered": false,
+                      "units": 2.0,
+                      "minutes": null
+                    }
+                  ]
+                }
+              }
+
 definitions:
   UserRegistrationParameters:
     type: "object"

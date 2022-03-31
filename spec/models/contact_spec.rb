@@ -32,14 +32,15 @@ RSpec.describe Contact, type: :model do
     end
   end
 
-  # describe "#validate_address" do
-  #   context "when is_address_same_as_client is true, contact address" do
-  #     let!(:client) { create(:client, addresses_attributes: [{address_type: 'insurance_address', city: 'Indore'}]) }
-  #     let(:contact) { build :contact, client_id: client.id, is_address_same_as_client: true, address_attributes: {city: 'Delhi'} }
-  #     it "must be absent" do
-  #       contact.validate
-  #       expect(contact.errors[:address]).to include('must be absent when contact have same address as client.')
-  #     end
-  #   end
+  describe "#validate_address" do
+    context "when is_address_same_as_client is true, contact address" do
+      let(:client) { create(:client, addresses_attributes: [{address_type: 'insurance_address', city: 'Indore'}]) }
+      let(:contact) { build :contact, client_id: client.id, is_address_same_as_client: true, address_attributes: {city: 'Delhi'} }
+      it "must be absent" do
+        Contact.skip_callback(:validation, :before, :set_address)
+        contact.validate
+        expect(contact.errors[:address]).to include('must be absent when contact have same address as client.')
+      end
+    end
   end
 end

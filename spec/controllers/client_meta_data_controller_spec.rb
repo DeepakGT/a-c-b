@@ -51,15 +51,26 @@ RSpec.describe ClientMetaDataController, type: :controller do
 
   describe "GET #client_data" do
     context "when sign in" do
+      let!(:client_enrollment){ create(:client_enrollment, client_id: client.id) }
+      let!(:client_enrollment_service){ create(:client_enrollment_service, client_enrollment_id: client_enrollment.id) }
+      let!(:scheduling){ create(:scheduling, client_enrollment_service_id: client_enrollment_service.id) }
+      let!(:soap_notes){ create_list(:soap_note, 5, scheduling_id: scheduling.id, user: user)}
+      let!(:notes) { create_list(:client_note, 5, client_id: client.id)}
+      let!(:attachments){ create_list(:attachment, 5, attachable_id: client.id, attachable_type: 'User')}
       it "should fetch client data detail successfully" do
         set_auth_headers(auth_headers)
-
+        
         get :client_data, params: { client_id: client.id }
         response_body = JSON.parse(response.body)
-
+        
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
         expect(response_body['data']['id']).to eq(client.id)
+        expect(response_body['data']['schedules'].count).to eq(1)
+        expect(response_body['data']['client_enrollment_services'].count).to eq(1)
+        expect(response_body['data']['soap_notes'].count).to eq(soap_notes.first(10).count)
+        expect(response_body['data']['notes'].count).to eq(notes.first(10).count)
+        expect(response_body['data']['attachments'].count).to eq(attachments.first(10).count)
       end
     end
   end

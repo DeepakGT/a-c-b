@@ -9,7 +9,7 @@ RSpec.describe ClientAttachmentsController, type: :controller do
     @request.env["devise.mapping"] = Devise.mappings[:user]
   end
   
-  let!(:role) { create(:role, name: 'aba_admin', permissions: ['client_attachments_view', 'client_attachments_update', 'client_attachments_delete'])}
+  let!(:role) { create(:role, name: 'aba_admin', permissions: ['client_files_view', 'client_files_update', 'client_files_delete'])}
   let!(:user) { create(:user, :with_role, role_name: role.name) }
   let!(:auth_headers) { user.create_new_auth_token }
   let!(:organization) {create(:organization, name: 'test-organization', admin_id: user.id)}

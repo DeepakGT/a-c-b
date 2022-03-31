@@ -62,6 +62,7 @@ Rails.application.routes.draw do
     get '/clients_list', to: 'staff_meta_data#clients_list'
     get '/clinics_list',to: 'meta_data#clinics_list'
     get '/bcba_list',to: 'meta_data#bcba_list'
+    get '/rbt_appointments', to: 'scheduling_meta_data#rbt_appointments'
 
     resources :schedulings do
       resources :soap_notes

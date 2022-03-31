@@ -40,16 +40,50 @@ RSpec.describe MetaDataController, type: :controller do
   describe "GET #clinics_list" do
     context "when sign in" do
       let!(:clinics) { create_list(:clinic, 5) }
-      it "should fetch clinics_list successfully" do
-        set_auth_headers(auth_headers)
-        
-        get :clinics_list
-        response_body = JSON.parse(response.body)
-        
-        expect(response.status).to eq(200)
-        expect(response_body['status']).to eq('success')
-        expect(response_body['data'].count).to eq(clinics.count)
-      end 
+      context "when logged in user is super_admin" do
+        it "should fetch all clinics successfully" do
+          set_auth_headers(auth_headers)
+          
+          get :clinics_list
+          response_body = JSON.parse(response.body)
+          
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data'].count).to eq(clinics.count)
+        end 
+      end
+
+      context "when logged in user is staff" do
+        let(:staff){ create(:staff, :with_role, role_name: 'bcba') }
+        let(:staff_auth_headers) { staff.create_new_auth_token }
+        let(:staff_clinic1){ create(:staff_clinic, clinic_id: clinics.last.id, staff_id: staff.id) }
+        let(:staff_clinic2){ create(:staff_clinic, clinic_id: clinics.first.id, staff_id: staff.id) }
+        it "should fetch clinics of that staff successfully" do
+          set_auth_headers(staff_auth_headers)
+          
+          get :clinics_list
+          response_body = JSON.parse(response.body)
+          
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data'].count).to eq(StaffClinic.where(staff_id: staff.id).count)
+        end 
+      end
+
+      context "when logged in user is other than staff and super_admin" do
+        let(:user1) { create(:user, :with_role, role_name: 'administrator', clinic_id: clinics.last.id) }
+        let(:user_auth_headers) { user1.create_new_auth_token }
+        it "should fetch clinic of that user successfully" do
+          set_auth_headers(user_auth_headers)
+          
+          get :clinics_list
+          response_body = JSON.parse(response.body)
+          
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data'].count).to eq(1)
+        end 
+      end
     end
   end
 
