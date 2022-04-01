@@ -18,6 +18,16 @@ class SchedulingMetaDataController < ApplicationController
     end
   end
 
+  def bcba_appointments
+    if current_user.role_name=='bcba'
+      bcba_schedules = Scheduling.by_staff_ids(current_user.id)
+      @upcoming_schedules = bcba_schedules.scheduled_scheduling.order(:date)
+      @past_schedules = bcba_schedules.completed_scheduling.where(is_rendered: false).order(date: :desc)
+      @client_enrollment_services = ClientEnrollmentService.joins(client_enrollment: :client).where('users.bcba_id': current_user.id)
+                                                           .where('end_date>=? AND end_date<=?', Time.now.to_date, (Time.now.to_date+9))
+    end
+  end
+
   private
 
   def get_selectable_options_data

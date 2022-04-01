@@ -53,11 +53,6 @@ class SoapNote < ApplicationRecord
         errors.add(:rbt_signature, 'cannot be done by bcba.')
       end
     end
-    # if user.role_name!='super_admin' && user.role_name!='aba_admin'
-    #   if self.rbt_signature==false || self.bcba_signature==false || self.clinical_director_signature==false
-    #     errors.add(:signatures, 'You are not authorized to undo the signatures.')
-    #   end
-    # end
   end
   # end of private
 end

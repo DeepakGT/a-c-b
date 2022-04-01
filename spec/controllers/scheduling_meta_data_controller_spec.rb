@@ -88,4 +88,28 @@ RSpec.describe SchedulingMetaDataController, type: :controller do
       end
     end
   end
+
+  describe "GET #bcba_appointments" do
+    context "when sign in" do
+      let!(:staff2){ create(:staff, :with_role, role_name: 'bcba') }
+      let!(:staff2_auth_headers){ staff2.create_new_auth_token }
+      let!(:scheduling1){create(:scheduling, staff_id: staff2.id, date: '2022-02-21')}
+      let!(:scheduling2){create(:scheduling, staff_id: staff2.id, date: '2022-06-21')}
+      let!(:client){ create(:client, bcba_id: staff2.id) }
+      let!(:client_enrollment){ create(:client_enrollment, client_id: client.id) }
+      let!(:client_enrollment_service){ create(:client_enrollment_service, client_enrollment_id: client_enrollment.id, start_date: Time.now.to_date-2, end_date: Time.now.to_date+5) }
+      it "should fetch bcba appointment list successfully" do
+        set_auth_headers(staff2_auth_headers)
+        
+        get :bcba_appointments
+        response_body = JSON.parse(response.body)
+        
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data']['upcoming_schedules'].count).to eq(1)
+        expect(response_body['data']['past_schedules'].count).to eq(1)
+        expect(response_body['data']['client_enrollment_services'].count).to eq(1)
+      end
+    end
+  end
 end
