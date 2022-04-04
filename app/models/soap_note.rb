@@ -53,6 +53,15 @@ class SoapNote < ApplicationRecord
         errors.add(:rbt_signature, 'cannot be done by bcba.')
       end
     end
+    if self.bcba_signature==true && self.bcba_signature_author_name=="#{user.first_name} #{user.last_name}" && !(user.role.permissions.include?('bcba_signature')) && user.role_name!='bcba'
+      errors.add(:bcba_signature, 'You are not authorized to sign as a bcba.')
+    end
+    if self.rbt_signature==true && self.rbt_signature_author_name=="#{user.first_name} #{user.last_name}" && !(user.role.permissions.include?('rbt_signature')) && user.role_name!='rbt'
+      errors.add(:rbt_signature, 'You are not authorized to sign as a rbt.')
+    end
+    if self.clinical_director_signature==true && self.clinical_director_signature_author_name=="#{user.first_name} #{user.last_name}" && !(user.role.permissions.include?('clinical_director_signature')) && user.role_name!='clinical_director'
+      errors.add(:clinical_director_signature, 'You are not authorized to sign as a clinical director.')
+    end
   end
   # end of private
 end
