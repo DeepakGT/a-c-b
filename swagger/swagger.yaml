@@ -6003,6 +6003,129 @@ paths:
                 }
               }
 
+  /api/aba_admin_appointments:
+    get:
+      summary: aba_admin appointments list
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "query"
+        name: "default_location_id"
+        schema:
+          type: "integer"
+        description: "Location to display appointments"
+        required: true
+      responses:
+        "200":
+          description: "aba_admin appointments list"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "upcoming_schedules": [
+                    {
+                      "id": 16,
+                      "client_enrollment_service_id": 4,
+                      "cross_site_allowed": false,
+                      "client_id": 12,
+                      "client_name": "Test Client1",
+                      "service_address_id": 16,
+                      "service_address": {
+                        "line1": "PBS",
+                        "line2": null,
+                        "line3": null,
+                        "zipcode": null,
+                        "city": "Indore",
+                        "state": null,
+                        "country": null,
+                        "is_default": true,
+                        "address_name": null
+                      },
+                      "staff_id": 4,
+                      "staff_name": "The Hon.",
+                      "staff_role": "bcba",
+                      "service_id": 4,
+                      "service_name": "developmental test administration by physician or",
+                      "service_display_code": "80",
+                      "status": "Scheduled",
+                      "date": "2022-04-30",
+                      "start_time": "12:00",
+                      "end_time": "13:00",
+                      "is_rendered": false,
+                      "units": 6.0,
+                      "minutes": null
+                    }
+                  ],
+                  "past_schedules": [
+                    {
+                      "id": 18,
+                      "client_enrollment_service_id": 4,
+                      "cross_site_allowed": false,
+                      "client_id": 12,
+                      "client_name": "Test Client1",
+                      "service_address_id": null,
+                      "staff_id": 4,
+                      "staff_name": "The Hon.",
+                      "staff_role": "bcba",
+                      "service_id": 4,
+                      "service_name": "developmental test administration by physician or",
+                      "service_display_code": "80",
+                      "status": "Scheduled",
+                      "date": "2022-03-29",
+                      "start_time": "17:00",
+                      "end_time": "17:30",
+                      "is_rendered": false,
+                      "units": 2.0,
+                      "minutes": null
+                    }
+                  ],
+                  "client_enrollment_services": [
+                    {
+                      "id": 6,
+                      "client_enrollment_id": 2,
+                      "funding_source_id": null,
+                      "funding_source": null,
+                      "service_id": 1,
+                      "service": "state service name\tdisplay code\tcategory default pay code",
+                      "is_service_provider_required": true,
+                      "start_date": "2022-03-01",
+                      "end_date": "2022-04-01",
+                      "units": 4.0,
+                      "used_units": 0,
+                      "scheduled_units": 0,
+                      "left_units": 4.0,
+                      "minutes": null,
+                      "used_minutes": 0,
+                      "scheduled_minutes": 0,
+                      "left_minutes": 0,
+                      "service_number": null,
+                      "service_providers": {
+                        "ids": [
+                          9
+                        ],
+                        "staff_ids": [
+                          5
+                        ],
+                        "names": [
+                          "Chester Waelchi"
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+
 definitions:
   UserRegistrationParameters:
     type: "object"
