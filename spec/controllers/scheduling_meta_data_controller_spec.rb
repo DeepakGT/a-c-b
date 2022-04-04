@@ -123,7 +123,7 @@ RSpec.describe SchedulingMetaDataController, type: :controller do
       let!(:client_enrollment_service){ create(:client_enrollment_service, client_enrollment_id: client_enrollment.id, start_date: Time.now.to_date-2, end_date: Time.now.to_date+5) }
       let!(:client_enrollment_service1){ create(:client_enrollment_service, client_enrollment_id: client_enrollment.id, start_date: Time.now.to_date-30, end_date: Time.now.to_date+30) }
       let!(:scheduling1){create(:scheduling, date: Time.now.to_date-2, client_enrollment_service_id: client_enrollment_service1.id)}
-      let!(:scheduling2){create(:scheduling, date: Time.now.to_date+2, client_enrollment_service_id: client_enrollment_service1.id)}
+      let!(:scheduling2){create(:scheduling, date: Time.now.to_date, client_enrollment_service_id: client_enrollment_service1.id)}
       it "should fetch aba_admin appointment list successfully" do
         set_auth_headers(user_auth_headers)
         
@@ -132,7 +132,7 @@ RSpec.describe SchedulingMetaDataController, type: :controller do
         
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
-        expect(response_body['data']['upcoming_schedules'].count).to eq(1)
+        expect(response_body['data']['todays_schedules'].count).to eq(1)
         expect(response_body['data']['past_schedules'].count).to eq(1)
         expect(response_body['data']['client_enrollment_services'].count).to eq(1)
       end

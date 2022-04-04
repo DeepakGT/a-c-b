@@ -32,7 +32,7 @@ class SchedulingMetaDataController < ApplicationController
     if current_user.role_name=='aba_admin'
       client_ids = Clinic.find(params[:default_location_id]).clients.pluck(:id)
       schedules = Scheduling.by_client_ids(client_ids)
-      @upcoming_schedules = schedules.scheduled_scheduling.order(:date)
+      @todays_appointments = schedules.where('date = ?',Time.now.to_date)
       @past_schedules = schedules.completed_scheduling.where(is_rendered: false).order(date: :desc)
       @client_enrollment_services = ClientEnrollmentService.joins(:client_enrollment).where('client_enrollments.client_id': client_ids)
                                                            .where('end_date>=? AND end_date<=?', Time.now.to_date, (Time.now.to_date+9))

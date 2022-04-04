@@ -6033,7 +6033,7 @@ paths:
               example: {
                 "status": "success",
                 "data": {
-                  "upcoming_schedules": [
+                  "todays_schedules": [
                     {
                       "id": 16,
                       "client_enrollment_service_id": 4,

@@ -94,6 +94,7 @@ json.data do
       json.funding_source client_enrollment_service.client_enrollment.funding_source&.name
       json.service_id client_enrollment_service.service_id
       json.service client_enrollment_service.service&.name
+      json.service_display_code client_enrollment_service.service&.display_code
       json.is_service_provider_required client_enrollment_service.service&.is_service_provider_required
       json.start_date client_enrollment_service.start_date
       json.end_date client_enrollment_service.end_date
