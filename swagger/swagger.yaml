@@ -6126,6 +6126,104 @@ paths:
                 }
               }
 
+  /api/schedulings/{scheduling_id}/change_requests:
+    post:
+      summary: scheduling change request create
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "scheduling_id"
+        description: "Associated Scheduling Id"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/SchedulingChangerequestCreateParameters"
+      responses:
+        "200":
+          description: "Created scheduling change request"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 2,
+                  "date": null,
+                  "start_time": null,
+                  "end_time": "17:35",
+                  "status": "CLIENT NO SHOW",
+                  "scheduling_id": 17,
+                  "scheduling_date": null,
+                  "scheduling_start_time": null,
+                  "scheduling_end_time": "17:35",
+                  "scheduling_status": "CLIENT NO SHOW"
+                },
+                "errors": []
+              }
+
+  /api/schedulings/{scheduling_id}/change_requests/{id}:
+    post:
+      summary: scheduling change request update
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "scheduling_id"
+        description: "Associated Scheduling Id"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "Scheduling change request Id"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/SchedulingChangerequestUpdateParameters"
+      responses:
+        "200":
+          description: "Updated scheduling change request"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 2,
+                  "date": null,
+                  "start_time": null,
+                  "end_time": "17:35",
+                  "status": null,
+                  "scheduling_id": 17,
+                  "scheduling_date": "2022-05-31",
+                  "scheduling_start_time": "17:00",
+                  "scheduling_end_time": "17:35",
+                  "scheduling_status": "Scheduled"
+                },
+                "errors": []
+              }
+
 definitions:
   UserRegistrationParameters:
     type: "object"
@@ -7047,4 +7145,22 @@ definitions:
       is_default:
         type: "boolean"
       address_name:
+        type: "string"
+
+  SchedulingChangerequestCreateParameters:
+    type: "object"
+    properties:
+      date:
+        type: "string"
+      start_time:
+        type: "string"
+      end_time:
+        type: "string"
+      status:
+        type: "string"
+
+  SchedulingChangerequestUpdateParameters:
+    type: "object"
+    properties:
+      approved_status:
         type: "string"

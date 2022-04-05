@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_30_105652) do
+ActiveRecord::Schema.define(version: 2022_04_05_095001) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -225,6 +225,18 @@ ActiveRecord::Schema.define(version: 2022_03_30_105652) do
     t.json "permissions", default: []
   end
 
+  create_table "scheduling_change_requests", force: :cascade do |t|
+    t.bigint "scheduling_id", null: false
+    t.date "date"
+    t.string "start_time"
+    t.string "end_time"
+    t.string "status"
+    t.integer "approved_status"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["scheduling_id"], name: "index_scheduling_change_requests_on_scheduling_id"
+  end
+
   create_table "schedulings", force: :cascade do |t|
     t.date "date"
     t.string "start_time"
@@ -382,6 +394,7 @@ ActiveRecord::Schema.define(version: 2022_03_30_105652) do
   add_foreign_key "funding_sources", "clinics"
   add_foreign_key "organizations", "users", column: "admin_id"
   add_foreign_key "rbt_supervisions", "users"
+  add_foreign_key "scheduling_change_requests", "schedulings"
   add_foreign_key "schedulings", "client_enrollment_services"
   add_foreign_key "schedulings", "users", column: "creator_id"
   add_foreign_key "schedulings", "users", column: "staff_id"

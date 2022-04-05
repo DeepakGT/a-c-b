@@ -2,6 +2,7 @@ class Scheduling < ApplicationRecord
   belongs_to :staff
   belongs_to :client_enrollment_service
   has_many :soap_notes, dependent: :destroy
+  has_many :scheduling_change_requests, dependent: :destroy
 
   attr_accessor :user
 

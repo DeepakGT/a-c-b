@@ -68,6 +68,7 @@ Rails.application.routes.draw do
 
     resources :schedulings do
       resources :soap_notes
+      resources :change_requests, controller: 'scheduling_change_requests', only: %i[create update]
     end
   end
 end
