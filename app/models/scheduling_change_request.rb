@@ -1,9 +1,11 @@
 class SchedulingChangeRequest < ApplicationRecord
   belongs_to :scheduling
 
-  enum approved_status: {approved: 0, declined: 1}
+  enum approval_status: {approved: 0, declined: 1}
 
   validate :validate_status
+
+  scope :by_approval_status, ->{ where(approval_status: nil) }
 
   private
 

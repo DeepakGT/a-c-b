@@ -6,7 +6,7 @@ class CreateSchedulingChangeRequests < ActiveRecord::Migration[6.1]
       t.string :start_time
       t.string :end_time
       t.string :status
-      t.integer :approved_status, null: true
+      t.integer :approval_status, null: true
 
       t.timestamps
     end

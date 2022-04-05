@@ -231,7 +231,7 @@ ActiveRecord::Schema.define(version: 2022_04_05_095001) do
     t.string "start_time"
     t.string "end_time"
     t.string "status"
-    t.integer "approved_status"
+    t.integer "approval_status"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["scheduling_id"], name: "index_scheduling_change_requests_on_scheduling_id"

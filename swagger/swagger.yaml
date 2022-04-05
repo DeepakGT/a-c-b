@@ -5999,6 +5999,29 @@ paths:
                         ]
                       }
                     }
+                  ],
+                  "change_requests": [
+                    {
+                      "id": 1,
+                      "date": null,
+                      "start_time": null,
+                      "end_time": null,
+                      "status": "client Cancel greater than 24 h",
+                      "approval_status": null,
+                      "scheduling_id": 6,
+                      "scheduling_date": "2022-03-17",
+                      "scheduling_start_time": "14:00",
+                      "scheduling_end_time": "15:00",
+                      "scheduling_status": "Scheduled",
+                      "staff_id": 6,
+                      "staff_name": "Gov. Moon",
+                      "staff_role": "rbt",
+                      "client_id": 12,
+                      "client_name": "Test Client1",
+                      "service_id": 6,
+                      "service_name": "initial assessment",
+                      "service_display_code": "17"
+                    }
                   ]
                 }
               }
@@ -6121,6 +6144,29 @@ paths:
                           "Chester Waelchi"
                         ]
                       }
+                    }
+                  ],
+                  "change_requests": [
+                    {
+                      "id": 1,
+                      "date": null,
+                      "start_time": null,
+                      "end_time": null,
+                      "status": "client Cancel greater than 24 h",
+                      "approval_status": null,
+                      "scheduling_id": 6,
+                      "scheduling_date": "2022-03-17",
+                      "scheduling_start_time": "14:00",
+                      "scheduling_end_time": "15:00",
+                      "scheduling_status": "Scheduled",
+                      "staff_id": 6,
+                      "staff_name": "Gov. Moon",
+                      "staff_role": "rbt",
+                      "client_id": 12,
+                      "client_name": "Test Client1",
+                      "service_id": 6,
+                      "service_name": "initial assessment",
+                      "service_display_code": "17"
                     }
                   ]
                 }
@@ -7162,5 +7208,5 @@ definitions:
   SchedulingChangerequestUpdateParameters:
     type: "object"
     properties:
-      approved_status:
+      approval_status:
         type: "string"

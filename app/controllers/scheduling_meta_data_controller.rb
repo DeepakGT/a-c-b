@@ -25,6 +25,10 @@ class SchedulingMetaDataController < ApplicationController
       @past_schedules = bcba_schedules.completed_scheduling.where(is_rendered: false).order(date: :desc)
       @client_enrollment_services = ClientEnrollmentService.joins(client_enrollment: :client).where('users.bcba_id': current_user.id)
                                                            .where('end_date>=? AND end_date<=?', Time.now.to_date, (Time.now.to_date+9))
+      change_requests = SchedulingChangeRequest.by_approval_status
+      @change_requests = change_requests.joins(scheduling: {client_enrollment_service: {client_enrollment: :client}}).where('users.bcba_id': current_user.id)
+                                        .or(change_requests.where('schedulings.staff_id': current_user.id)).joins(:scheduling)
+                                                
     end
   end
 
@@ -36,6 +40,8 @@ class SchedulingMetaDataController < ApplicationController
       @past_schedules = schedules.completed_scheduling.where(is_rendered: false).order(date: :desc)
       @client_enrollment_services = ClientEnrollmentService.joins(:client_enrollment).where('client_enrollments.client_id': client_ids)
                                                            .where('end_date>=? AND end_date<=?', Time.now.to_date, (Time.now.to_date+9))
+      change_requests = SchedulingChangeRequest.by_approval_status
+      @change_requests = change_requests.joins(scheduling: {client_enrollment_service: :client_enrollment}).where('client_enrollments.client_id': client_ids)
     end
   end
 

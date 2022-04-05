@@ -122,4 +122,29 @@ json.data do
       end
     end
   end
+  json.change_requests do
+    json.array! @change_requests do |change_request|
+      service = change_request.scheduling&.client_enrollment_service&.service
+      client = change_request.scheduling&.client_enrollment_service&.client_enrollment&.client
+      json.id change_request.id
+      json.date change_request.date
+      json.start_time change_request.start_time
+      json.end_time change_request.end_time
+      json.status change_request.status
+      json.approval_status change_request.approval_status
+      json.scheduling_id change_request.scheduling_id
+      json.scheduling_date change_request.scheduling.date
+      json.scheduling_start_time change_request.scheduling.start_time
+      json.scheduling_end_time change_request.scheduling.end_time
+      json.scheduling_status change_request.scheduling.status
+      json.staff_id change_request.scheduling.staff_id
+      json.staff_name "#{change_request.scheduling.staff.first_name} #{change_request.scheduling.staff.last_name}" if change_request.scheduling.staff.present?
+      json.staff_role change_request.scheduling.staff.role_name if change_request.scheduling.staff.present?
+      json.client_id client&.id
+      json.client_name "#{client.first_name} #{client.last_name}" if client.present?
+      json.service_id service&.id
+      json.service_name service&.name
+      json.service_display_code service&.display_code
+    end
+  end
 end
