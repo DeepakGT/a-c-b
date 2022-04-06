@@ -6,7 +6,7 @@ class SchedulingChangeRequestPolicy < ApplicationPolicy
   end
 
   def update?
-    return true if user.role_name=='bcba' || user.role_name=='aba_admin' || user.role_name=='ed'
+    return true if user.role_name=='bcba' || user.role_name=='aba_admin' || user.role_name=='ed' || user.role_name=='client_care_coordinator'
 
     false
   end

@@ -33,7 +33,7 @@ class SchedulingMetaDataController < ApplicationController
   end
 
   def aba_admin_appointments
-    if current_user.role_name=='aba_admin'
+    if current_user.role_name=='aba_admin' || current_user.role_name=='client_care_coordinator'
       client_ids = Clinic.find(params[:default_location_id]).clients.pluck(:id)
       schedules = Scheduling.by_client_ids(client_ids)
       @todays_appointments = schedules.where('date = ?',Time.now.to_date)
