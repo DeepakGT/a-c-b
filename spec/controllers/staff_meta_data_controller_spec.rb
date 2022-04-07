@@ -27,6 +27,22 @@ RSpec.describe StaffMetaDataController, type: :controller do
           expect(response_body['status']).to eq('success')
           expect(response_body['data'].count).to eq(clients.count)
         end 
+
+        context "when default_location_id is present" do
+          let!(:clinic2){ create(:clinic) }
+          let!(:staff_clinic2) { create(:staff_clinic, staff_id: staff.id, clinic_id: clinic2.id) }
+          let!(:client_list){ create_list(:client, 6, clinic_id: clinic2.id) }
+          it "should fetch client_list of that clinic successfully" do
+            set_auth_headers(auth_headers)
+          
+            get :clients_list, params: { default_location_id: clinic2.id }
+            response_body = JSON.parse(response.body)
+
+            expect(response.status).to eq(200)
+            expect(response_body['status']).to eq('success')
+            expect(response_body['data'].count).to eq(client_list.count)
+          end
+        end
       end
 
       context "when logged in user is bcba" do
@@ -47,6 +63,22 @@ RSpec.describe StaffMetaDataController, type: :controller do
           expect(response_body['status']).to eq('success')
           expect(response_body['data'].count).to eq(client_list1.count + client_list2.count)
         end 
+
+        context "when default_location_id is present" do
+          let!(:clinic3){ create(:clinic) }
+          let!(:staff_clinic3) { create(:staff_clinic, staff_id: staff.id, clinic_id: clinic3.id) }
+          let!(:client_list){ create_list(:client, 6, clinic_id: clinic3.id) }
+          it "should fetch client_list of that clinic successfully" do
+            set_auth_headers(auth_headers)
+          
+            get :clients_list, params: { default_location_id: clinic3.id }
+            response_body = JSON.parse(response.body)
+
+            expect(response.status).to eq(200)
+            expect(response_body['status']).to eq('success')
+            expect(response_body['data'].count).to eq(client_list.count)
+          end
+        end
       end
     end
   end

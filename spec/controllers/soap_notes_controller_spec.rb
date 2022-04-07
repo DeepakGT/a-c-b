@@ -78,7 +78,7 @@ RSpec.describe SoapNotesController, type: :controller do
   describe "PUT #update" do
     context "when sign in" do
       let(:soap_note) { create(:soap_note, scheduling_id: scheduling.id, note: 'test-note-1', add_date: '2022-02-28', user: user) }
-      it "should fetch soap note detail successfully" do
+      it "should update soap note detail successfully" do
         set_auth_headers(auth_headers)
 
         put :update, params: { scheduling_id: scheduling.id, id: soap_note.id, note: 'test-note', add_date: '2022-03-02' }
@@ -90,6 +90,25 @@ RSpec.describe SoapNotesController, type: :controller do
         expect(response_body['data']['scheduling_id']).to eq(scheduling.id)
         expect(response_body['data']['note']).to eq('test-note')
         expect(response_body['data']['add_date']).to eq('2022-03-02')
+      end
+
+      context "when user tries to update signature" do
+        let(:rbt_role){ create(:role, name: 'rbt', permissions: ['soap_notes_update'])}
+        let(:staff){ create(:staff, :with_role, role_name: rbt_role.name)}
+        let(:staff_auth_headers){ staff.create_new_auth_token }
+        it "should update signatures successfully" do
+          set_auth_headers(staff_auth_headers)
+  
+          put :update, params: { scheduling_id: scheduling.id, rbt_sign: true, id: soap_note.id }
+          response_body = JSON.parse(response.body)
+          
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data']['id']).to eq(soap_note.id)
+          expect(response_body['data']['scheduling_id']).to eq(scheduling.id)
+          expect(response_body['data']['rbt_sign']).to eq(true)
+          expect(response_body['data']['rbt_sign_name']).to eq("#{user.first_name} #{user.last_name}")
+        end
       end
     end
   end

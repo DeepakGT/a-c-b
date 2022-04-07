@@ -7,9 +7,12 @@ class SchedulingChangeRequestsController < ApplicationController
   def create
     @change_request = @schedule.scheduling_change_requests.create(change_request_params)
     if params[:status]=='Client_No_Show'
-      set_approval_status('approved')
-      @schedule.user = current_user
-      update_scheduling
+      if @schedule.scheduling_change_requests.where(status: 'Client_No_Show').count<=1
+        @schedule.scheduling_change_requests.by_approval_status.update(approval_status: 'declined')
+        set_approval_status('approved')
+        @schedule.user = current_user
+        update_scheduling
+      end
     end
   end
 

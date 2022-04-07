@@ -87,17 +87,17 @@ class SoapNotesController < ApplicationController
     if current_user.role_name=='super_admin' || current_user.role_name=='aba_admin'
       set_signature
     else
-      if params[:rbt_sign].to_bool.true? && @soap_note.rbt_signature==false
+      if params[:rbt_sign].to_bool.true? && @soap_note.rbt_signature.to_bool.false?
         @soap_note.rbt_signature = true
         @soap_note.rbt_signature_author_name = "#{current_user.first_name} #{current_user.last_name}"
         @soap_note.rbt_signature_date = Time.now.to_date
       end
-      if params[:bcba_sign].to_bool.true? && @soap_note.bcba_signature==false
+      if params[:bcba_sign].to_bool.true? && @soap_note.bcba_signature.to_bool.false?
         @soap_note.bcba_signature = true
         @soap_note.bcba_signature_author_name = "#{current_user.first_name} #{current_user.last_name}"
         @soap_note.bcba_signature_date = Time.now.to_date
       end
-      if params[:clinical_director_sign].to_bool.true? && @soap_note.clinical_director_signature==false
+      if params[:clinical_director_sign].to_bool.true? && @soap_note.clinical_director_signature.to_bool.false?
         @soap_note.clinical_director_signature = true
         @soap_note.clinical_director_signature_author_name = "#{current_user.first_name} #{current_user.last_name}"
         @soap_note.clinical_director_signature_date = Time.now.to_date

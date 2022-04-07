@@ -13,6 +13,8 @@ RSpec.describe Client, type: :model do
   it { should belong_to(:clinic) } 
   it { should belong_to(:bcba).class_name('User').optional }
 
+  it { is_expected.to callback(:set_default_service_address).after(:save) }
+
   it { should accept_nested_attributes_for(:addresses).update_only(true)}
   it { should accept_nested_attributes_for(:phone_number).update_only(true)}
 

@@ -37,6 +37,9 @@ json.data do
       json.is_rendered schedule.is_rendered
       json.units schedule.units
       json.minutes schedule.minutes
+      if schedule.scheduling_change_requests.by_approval_status.any?
+        json.request_raised 1
+      end
     end
   end
   json.past_schedules do
