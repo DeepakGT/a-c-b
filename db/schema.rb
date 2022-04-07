@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_06_072257) do
+ActiveRecord::Schema.define(version: 2022_04_07_071858) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -70,6 +70,25 @@ ActiveRecord::Schema.define(version: 2022_04_06_072257) do
     t.datetime "updated_at", precision: 6, null: false
     t.string "file_name"
     t.index ["attachable_type", "attachable_id"], name: "index_attachments_on_attachable"
+  end
+
+  create_table "catalyst_data", force: :cascade do |t|
+    t.string "catalyst_soap_note_id"
+    t.string "client_first_name"
+    t.string "client_last_name"
+    t.string "staff_first_name"
+    t.string "staff_last_name"
+    t.date "date"
+    t.string "start_time"
+    t.string "end_time"
+    t.text "note"
+    t.text "bcba_signature"
+    t.text "clinical_director_signature"
+    t.json "response"
+    t.bigint "system_scheduling_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["system_scheduling_id"], name: "index_catalyst_data_on_system_scheduling_id"
   end
 
   create_table "client_enrollment_service_providers", force: :cascade do |t|
@@ -382,6 +401,7 @@ ActiveRecord::Schema.define(version: 2022_04_06_072257) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "catalyst_data", "schedulings", column: "system_scheduling_id"
   add_foreign_key "client_enrollment_service_providers", "client_enrollment_services"
   add_foreign_key "client_enrollment_service_providers", "users", column: "staff_id"
   add_foreign_key "client_enrollment_services", "client_enrollments"

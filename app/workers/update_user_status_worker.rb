@@ -1,10 +1,9 @@
 require 'sidekiq'
 require 'sidekiq-cron'
-class UpdateUserStatus                        
+class UpdateUserStatusWorker                       
   include Sidekiq::Worker
                                         
   def perform
-    puts "Hello world!!!!!!!!!!!"
     puts "#{DateTime.now}"
     puts "UpdateUserStatusJob is started"
     update_staff_status

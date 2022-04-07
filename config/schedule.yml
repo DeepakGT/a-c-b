@@ -1,3 +1,23 @@
-update_user_status:
+update_user_status_worker:
   cron: '1 0 * * *'
-  class: "UpdateUserStatus"
+  class: "UpdateUserStatusWorker"
+
+render_service_worker:
+  cron: '1 0 * * *'
+  class: "RenderServiceWorker"
+
+sync_with_catalyst_worker_at_11_am:
+  cron: '0 11 * * *'
+  class: "SyncWithCatalystWorker"
+
+sync_with_catalyst_worker_at_3_pm:
+  cron: '0 15 * * *'
+  class: "SyncWithCatalystWorker"
+
+sync_with_catalyst_worker_at_6_pm:
+  cron: '0 18 * * *'
+  class: "SyncWithCatalystWorker"
+
+sync_with_catalyst_worker_at_9_pm:
+  cron: '0 21 * * *'
+  class: "SyncWithCatalystWorker"

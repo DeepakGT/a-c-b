@@ -17,8 +17,8 @@ class ClientMetaDataController < ApplicationController
     @schedules = Scheduling.by_client_ids(@client.id).scheduled_scheduling.order(:date).first(10)
     @client_enrollment_services = ClientEnrollmentService.by_client(@client.id).first(10)
     @soap_notes = SoapNote.by_client(@client.id).order(add_date: :desc, created_at: :desc).first(10)
-    @notes = ClientNote.where(client_id: @client.id).first(10)
-    @attachments = Attachment.where(attachable_type: 'User', attachable_id: @client.id).first(10)
+    @notes = ClientNote.by_client_id(@client.id).first(10)
+    @attachments = Attachment.by_client_id(@client.id).first(10)
   end
 
   private
@@ -43,7 +43,7 @@ class ClientMetaDataController < ApplicationController
     
     # staff = staff.map{|s| s if service_qualification_ids.difference(s.staff_qualifications.pluck(:credential_id)).empty? }
     # staff.delete(nil)
-    staff = staff.joins(:staff_qualifications).where('staff_qualifications.credential_id': service_qualification_ids)
+    staff = staff.by_service_qualifications(service_qualification_ids)
     # staff
   end
   # end of private

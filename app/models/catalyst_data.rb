@@ -1,0 +1,2 @@
+class CatalystData < ApplicationRecord
+end

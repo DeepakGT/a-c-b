@@ -10,6 +10,8 @@ class Attachment < ApplicationRecord
   before_save :set_file
   before_save :set_storage
 
+  scope :by_client_id, ->(client_id){ where(attachable_type: 'User', attachable_id: client_id) }
+
   private
 
   def set_file

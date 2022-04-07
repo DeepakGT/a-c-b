@@ -24,6 +24,7 @@ class SchedulingsController < ApplicationController
     @schedule.user = current_user
     @schedule.update(scheduling_params)
     @schedule.updator_id = current_user.id
+    update_render_service if params[:is_rendered].present?
     update_client_enrollment_service if params[:client_enrollment_service_id].present?
     @schedule.save
   end
@@ -40,7 +41,7 @@ class SchedulingsController < ApplicationController
 
   def scheduling_params
     params.permit(:staff_id, :status, :date, :start_time, :end_time, :units, :minutes, 
-                  :client_enrollment_service_id, :is_rendered, :cross_site_allowed, :service_address_id)
+                  :client_enrollment_service_id, :cross_site_allowed, :service_address_id)
   end
 
   def set_scheduling
@@ -74,6 +75,43 @@ class SchedulingsController < ApplicationController
   def update_client_enrollment_service
     @schedule.client_enrollment_service = ClientEnrollmentService.find(params[:client_enrollment_service_id])
     @schedule.save
+  end
+
+  def update_render_service
+    if params[:is_rendered].to_bool.true?
+      if schedule.date<Time.now.to_date
+        schedule.unrendered_reason = ''
+        if schedule.soap_notes.any?
+          soap_notes.each do |soap_note|
+            if soap_note.bcba_signature==false 
+              schedule.unrendered_reason += ' bcba_signature_absent'
+              schedule.save(validate: false)
+            end
+            if soap_note.clinical_director_signature==false 
+              schedule.unrendered_reason += ' clinical_director_signature_absent'
+              schedule.save(validate: false)
+            end
+            if soap_note.rbt_signature==false 
+              schedule.unrendered_reason += ' rbt_signature_absent'
+              schedule.save(validate: false)
+            end
+            if !soap_note.signature_file.attached?
+              schedule.unrendered_reason += ' caregiver_signature_absent'
+              schedule.save(validate: false)
+            end
+            if schedule.unrendered_reason.blank?
+              schedule.is_rendered = true
+              schedule.unrendered_reason = ''
+              schedule.save(validate: false)
+              break
+            end
+          end
+        else
+          schedule.unrendered_reason = 'soap_note_absent'
+          schedule.save(validate: false)
+        end
+      end
+    end
   end
   # end of private
 end

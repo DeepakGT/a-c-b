@@ -24,6 +24,7 @@ class Staff < User
   scope :by_supervisor_name, ->(fname,lname){ where(supervisor_id: User.by_first_name(fname&.downcase).by_last_name(lname&.downcase)) }
   scope :by_clinic, ->(clinic_id){ joins(:staff_clinics).where('staff_clinics.clinic_id = ?', clinic_id) }
   scope :by_roles, ->(role_names){ joins(:role).where('role.name': role_names) }
+  scope :by_service_qualifications, ->(service_qualification_ids){ joins(:staff_qualifications).where('staff_qualifications.credential_id': service_qualification_ids) }
 
   def self.by_location(query) 
     staff = self
