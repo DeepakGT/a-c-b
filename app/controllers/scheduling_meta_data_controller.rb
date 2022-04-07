@@ -11,38 +11,32 @@ class SchedulingMetaDataController < ApplicationController
   end
 
   def rbt_appointments
-    if current_user.role_name=='rbt'
-      rbt_schedules = Scheduling.by_staff_ids(current_user.id)
-      @upcoming_schedules = rbt_schedules.scheduled_scheduling.order(:date)
-      @past_schedules = rbt_schedules.completed_scheduling.where(is_rendered: false).order(date: :desc)
-    end
+    authorize :appointment, :rbt_appointments?
+    rbt_schedules = Scheduling.by_staff_ids(current_user.id)
+    @upcoming_schedules = rbt_schedules.scheduled_scheduling.order(:date)
+    @past_schedules = rbt_schedules.completed_scheduling.where(is_rendered: false).order(date: :desc)
   end
 
   def bcba_appointments
-    if current_user.role_name=='bcba'
-      bcba_schedules = Scheduling.by_staff_ids(current_user.id)
-      @upcoming_schedules = bcba_schedules.scheduled_scheduling.order(:date)
-      @past_schedules = bcba_schedules.completed_scheduling.where(is_rendered: false).order(date: :desc)
-      @client_enrollment_services = ClientEnrollmentService.joins(client_enrollment: :client).where('users.bcba_id': current_user.id)
-                                                           .where('end_date>=? AND end_date<=?', Time.now.to_date, (Time.now.to_date+9))
-      change_requests = SchedulingChangeRequest.by_approval_status
-      @change_requests = change_requests.joins(scheduling: {client_enrollment_service: {client_enrollment: :client}}).where('users.bcba_id': current_user.id)
-                                        .or(change_requests.where('schedulings.staff_id': current_user.id)).joins(:scheduling)
-                                                
-    end
+    authorize :appointment, :bcba_appointments?
+    bcba_schedules = Scheduling.by_staff_ids(current_user.id)
+    @upcoming_schedules = bcba_schedules.scheduled_scheduling.order(:date)
+    @past_schedules = bcba_schedules.completed_scheduling.unrendered_schedulings.order(date: :desc)
+    @client_enrollment_services = ClientEnrollmentService.by_bcba_ids(current_user.id).about_to_expire
+    change_requests = SchedulingChangeRequest.by_approval_status
+    @change_requests = change_requests.by_bcba_ids(current_user.id)
+                                      .or(change_requests.by_staff_ids(current_user.id)).left_outer_joins(:scheduling)
   end
 
   def aba_admin_appointments
-    if current_user.role_name=='aba_admin' || current_user.role_name=='client_care_coordinator'
-      client_ids = Clinic.find(params[:default_location_id]).clients.pluck(:id)
-      schedules = Scheduling.by_client_ids(client_ids)
-      @todays_appointments = schedules.where('date = ?',Time.now.to_date)
-      @past_schedules = schedules.completed_scheduling.where(is_rendered: false).order(date: :desc)
-      @client_enrollment_services = ClientEnrollmentService.joins(:client_enrollment).where('client_enrollments.client_id': client_ids)
-                                                           .where('end_date>=? AND end_date<=?', Time.now.to_date, (Time.now.to_date+9))
-      change_requests = SchedulingChangeRequest.by_approval_status
-      @change_requests = change_requests.joins(scheduling: {client_enrollment_service: :client_enrollment}).where('client_enrollments.client_id': client_ids)
-    end
+    authorize :appointment, :aba_admin_appointments?
+    client_ids = Clinic.find(params[:default_location_id]).clients.pluck(:id)
+    schedules = Scheduling.by_client_ids(client_ids)
+    @todays_appointments = schedules.todays_schedulings
+    @past_schedules = schedules.completed_scheduling.unrendered_schedulings.order(date: :desc)
+    @client_enrollment_services = ClientEnrollmentService.by_client(client_ids).about_to_expire
+    change_requests = SchedulingChangeRequest.by_approval_status
+    @change_requests = change_requests.by_client_ids(client_ids)
   end
 
   private

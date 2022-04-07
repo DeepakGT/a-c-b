@@ -17,7 +17,9 @@ class Scheduling < ApplicationRecord
   #scopes
   scope :by_status, ->{ where('lower(status) = ?','scheduled') }
   scope :completed_scheduling, ->{ where('date < ?',Time.now.to_date) }
+  scope :todays_schedulings, ->{ where('date = ?',Time.now.to_date) }
   scope :scheduled_scheduling, ->{ where('date >= ?',Time.now.to_date) }
+  scope :unrendered_schedulings, ->{ where(is_rendered: false) }
   scope :with_units, ->{ where.not(units: nil) }
   scope :with_minutes, ->{ where.not(minutes: nil) }
   scope :by_client_and_service, ->(client_id, service_id){ joins(client_enrollment_service: :client_enrollment).where('client_enrollments.client_id': client_id, 'client_enrollment_service.service_id': service_id)}
