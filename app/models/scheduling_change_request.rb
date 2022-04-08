@@ -4,7 +4,7 @@ class SchedulingChangeRequest < ApplicationRecord
   enum approval_status: {approved: 0, declined: 1}
 
   validate :validate_status
-  validate :validate_change_request
+  validate :validate_change_request, on: :create
 
   scope :by_approval_status, ->{ where(approval_status: nil) }
   scope :by_bcba_ids, ->(bcba_ids){ left_outer_joins(scheduling: {client_enrollment_service: {client_enrollment: :client}}).where('users.bcba_id': bcba_ids) }

@@ -6220,7 +6220,7 @@ paths:
               }
 
   /api/schedulings/{scheduling_id}/change_requests/{id}:
-    post:
+    put:
       summary: scheduling change request update
       parameters:
       - in: "header"
