@@ -33,7 +33,11 @@ class SchedulingMetaDataController < ApplicationController
     client_ids = Clinic.find(params[:default_location_id]).clients.pluck(:id)
     schedules = Scheduling.by_client_ids(client_ids)
     @todays_appointments = schedules.todays_schedulings
-    @past_schedules = schedules.completed_scheduling.unrendered_schedulings.order(date: :desc)
+    if current_user.role_name=='aba_admin' || current_user.role_name=='client_care_coordinator'
+      @past_schedules = schedules.exceeded_24_h_scheduling.unrendered_schedulings.order(date: :desc)
+    elsif current_user.role_name=='super_admin' || current_user.role_name=='administrator'
+      @past_schedules = schedules.exceeded_3_days_scheduling.unrendered_schedulings.order(date: :desc)
+    end
     @client_enrollment_services = ClientEnrollmentService.by_client(client_ids).about_to_expire
     change_requests = SchedulingChangeRequest.by_approval_status
     @change_requests = change_requests.by_client_ids(client_ids)

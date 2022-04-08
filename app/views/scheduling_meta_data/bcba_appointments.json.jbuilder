@@ -77,6 +77,21 @@ json.data do
       json.unrendered_reason schedule.unrendered_reason
       json.units schedule.units
       json.minutes schedule.minutes
+      if schedule.date<(Time.now.to_date-1) || (schedule.date==(Time.now.to_date-1) && schedule.end_time<Time.now.strftime('%H:%M'))
+        json.exceeded_24_h true
+      else
+        json.exceeded_24_h false
+      end
+      if schedule.date<(Time.now.to_date-3) || (schedule.date==(Time.now.to_date-3) && schedule.end_time<Time.now.strftime('%H:%M'))
+        json.exceeded_3_days true
+      else
+        json.exceeded_3_days false
+      end
+      if schedule.date<(Time.now.to_date-5) || (schedule.date==(Time.now.to_date-5) && schedule.end_time<Time.now.strftime('%H:%M'))
+        json.exceeded_5_days true
+      else
+        json.exceeded_5_days false
+      end
     end
   end
   json.client_enrollment_services do

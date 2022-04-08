@@ -13,6 +13,7 @@ class Scheduling < ApplicationRecord
   validate :validate_time
   validate :validate_past_appointments
   validate :validate_units
+  validate :validate_staff, on: :create
 
   #scopes
   scope :by_status, ->{ where('lower(status) = ?','scheduled') }
@@ -28,6 +29,9 @@ class Scheduling < ApplicationRecord
   scope :by_service_ids, ->(service_ids){ joins(:client_enrollment_service).where('client_enrollment_service.service_id': service_ids) }
   scope :by_client_clinic, ->(location_id) { where('users.clinic_id = ?', location_id) }
   scope :by_staff_clinic, ->(location_id) { where('staff_clinics.clinic_id': location_id) }
+  scope :exceeded_24_h_scheduling, ->{ where('date < ? OR (date = ? AND end_time < ?)', Time.now.to_date-1, Time.now.to_date-1, Time.now.strftime('%H:%M')) }
+  scope :exceeded_3_days_scheduling, ->{ where('date < ? OR (date = ? AND end_time < ?)', Time.now.to_date-3, Time.now.to_date-3, Time.now.strftime('%H:%M')) }
+  scope :exceeded_5_days_scheduling, ->{ where('date < ? OR (date = ? AND end_time < ?)', Time.now.to_date-5, Time.now.to_date-5, Time.now.strftime('%H:%M')) }
 
   private
 
@@ -72,6 +76,13 @@ class Scheduling < ApplicationRecord
     end
     if self.minutes.present? && self.client_enrollment_service.minutes.present?
       errors.add(:minutes, "There are not enough minutes left to create this appointment.") if self.minutes > (self.client_enrollment_service.minutes - (used_minutes + scheduled_minutes))
+    end
+  end
+
+  def validate_staff
+    schedules = self.staff&.schedulings&.unrendered_schedulings&.exceeded_5_days_scheduling
+    if schedules.any?
+      errors.add(:staff, 'No further appointments can be created for given staff unless exceeded 5 days past appointments are rendered.')
     end
   end
   # end of private
