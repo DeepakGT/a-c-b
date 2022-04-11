@@ -22,11 +22,14 @@ class SchedulingsController < ApplicationController
 
   def update
     @schedule.user = current_user
-    @schedule.update(scheduling_params)
-    @schedule.updator_id = current_user.id
-    update_render_service if params[:is_rendered].present?
-    update_client_enrollment_service if params[:client_enrollment_service_id].present?
-    @schedule.save
+    update_scheduling if current_user.role_name=='super_admin' || current_user.role_name=='administrator' || current_user.role_name=='executive_director'
+    if current_user.role_name=='bcba' 
+      if @schedule.date>=Time.now.to_date
+        update_scheduling
+      else
+        @schedule.update(status: params[:status]) if params[:status].present?
+      end
+    end
   end
 
   def destroy
@@ -112,6 +115,14 @@ class SchedulingsController < ApplicationController
         end
       end
     end
+  end
+
+  def update_scheduling
+    @schedule.update(scheduling_params)
+    @schedule.updator_id = current_user.id
+    update_render_service if params[:is_rendered].present?
+    update_client_enrollment_service if params[:client_enrollment_service_id].present?
+    @schedule.save
   end
   # end of private
 end
