@@ -9,7 +9,7 @@ RSpec.describe StaffQualificationsController, type: :controller do
     @request.env["devise.mapping"] = Devise.mappings[:user]
   end
   
-  let!(:role) { create(:role, name: 'aba_admin', permissions: ['staff_qualification_view', 'staff_qualification_update', 'staff_qualification_delete'])}
+  let!(:role) { create(:role, name: 'executive_director', permissions: ['staff_qualification_view', 'staff_qualification_update', 'staff_qualification_delete'])}
   let!(:user) { create(:user, :with_role, role_name: role.name) }
   let!(:auth_headers) { user.create_new_auth_token }
 

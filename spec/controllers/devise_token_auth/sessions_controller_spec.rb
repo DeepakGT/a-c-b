@@ -21,7 +21,7 @@ RSpec.describe DeviseTokenAuth::SessionsController, type: :controller do
     context "when input valid credentials" do
       let(:valid_email) { 'valid_user@yopmail.com' }
       let(:valid_password) { 'Abcd@123' }
-      let!(:user) { create(:user, :with_role, email: valid_email, password: valid_password, role_name: 'aba_admin') }
+      let!(:user) { create(:user, :with_role, email: valid_email, password: valid_password, role_name: 'executive_director') }
       it "should login successfully" do
         post :create, params: { 
           email: valid_email,
@@ -35,7 +35,7 @@ RSpec.describe DeviseTokenAuth::SessionsController, type: :controller do
   end
 
   describe "DELETE #destroy" do
-    let!(:user) { create(:user, :with_role, role_name: 'aba_admin') }
+    let!(:user) { create(:user, :with_role, role_name: 'executive_director') }
     let!(:auth_headers) { user.create_new_auth_token }
 
     context "when sign out" do

@@ -52,13 +52,13 @@ class User < ActiveRecord::Base
                .select { |key| key.in?(['email', 'uid', 'first_name', 'last_name']) }
                .merge({role: Role.find_by(name: self.role_name)})
 
-    response.merge!({organization_id: self.organization&.id}) if self.role_name=='aba_admin'
+    response.merge!({organization_id: self.organization&.id}) if self.role_name=='executive_director'
     response
   end
 
   def organization
     return nil if self.role_name=='administrator' || self.role_name=='super_admin'
-    return Organization.find_by(admin_id: self.id) if self.role_name=='aba_admin'
+    return Organization.find_by(admin_id: self.id) if self.role_name=='executive_director'
 
     self.clinic.organization
   end

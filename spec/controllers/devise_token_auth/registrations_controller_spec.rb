@@ -10,7 +10,7 @@ RSpec.describe DeviseTokenAuth::RegistrationsController, type: :controller do
   describe "POST #create" do
     context "when input valid values" do
       let(:password) { 'Abcd@123' }
-      let(:role) { create(:role, name: 'aba_admin') }
+      let(:role) { create(:role, name: 'executive_director') }
       let(:clinic) { create(:clinic, name: 'clinic1') }
 
       it "should create a user" do

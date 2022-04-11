@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe AppointmentPolicy, type: :policy do
-  let!(:role1) { create(:role, name: 'aba_admin') }
+  let!(:role1) { create(:role, name: 'executive_director') }
   let!(:user1) { create(:user, :with_role, role_name: role1.name)}
   let!(:role2) { create(:role, name: 'bcba') }
   let!(:user2) { create(:user, :with_role, role_name: role2.name)}
@@ -31,7 +31,7 @@ RSpec.describe AppointmentPolicy, type: :policy do
     end
   end
 
-  permissions :aba_admin_appointments? do
+  permissions :executive_director_appointments? do
     it "denies access if permission is not included" do
       expect(subject).not_to permit(user2)
       expect(subject).not_to permit(user3)

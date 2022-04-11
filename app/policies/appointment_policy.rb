@@ -11,8 +11,8 @@ class AppointmentPolicy < ApplicationPolicy
     false
   end
 
-  def aba_admin_appointments?
-    return true if ['super_admin', 'aba_admin', 'administrator', 'client_care_coordinator'].include?(user.role_name)
+  def executive_director_appointments?
+    return true if ['super_admin', 'executive_director', 'administrator', 'client_care_coordinator'].include?(user.role_name)
 
     false
   end

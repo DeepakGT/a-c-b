@@ -29,7 +29,7 @@ class DeviseTokenAuthCreateUsers < ActiveRecord::Migration[6.1]
       # t.datetime :locked_at
 
       ## User Info
-      t.references :clinic, null: true # can be niull for admininstrator and aba_admin
+      t.references :clinic, null: true # can be niull for admininstrator and executive_director
       t.string :first_name
       t.string :last_name
       t.string :email

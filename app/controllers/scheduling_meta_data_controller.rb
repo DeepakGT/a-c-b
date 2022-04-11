@@ -28,12 +28,12 @@ class SchedulingMetaDataController < ApplicationController
                                       .or(change_requests.by_staff_ids(current_user.id)).left_outer_joins(:scheduling)
   end
 
-  def aba_admin_appointments
-    authorize :appointment, :aba_admin_appointments?
+  def executive_director_appointments
+    authorize :appointment, :executive_director_appointments?
     client_ids = Clinic.find(params[:default_location_id]).clients.pluck(:id)
     schedules = Scheduling.by_client_ids(client_ids)
     @todays_appointments = schedules.todays_schedulings
-    if current_user.role_name=='aba_admin' || current_user.role_name=='client_care_coordinator'
+    if current_user.role_name=='executive_director' || current_user.role_name=='client_care_coordinator'
       @past_schedules = schedules.exceeded_24_h_scheduling.unrendered_schedulings.order(date: :desc)
     elsif current_user.role_name=='super_admin' || current_user.role_name=='administrator'
       @past_schedules = schedules.exceeded_3_days_scheduling.unrendered_schedulings.order(date: :desc)

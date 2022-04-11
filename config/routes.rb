@@ -64,7 +64,7 @@ Rails.application.routes.draw do
     get '/bcba_list',to: 'meta_data#bcba_list'
     get '/rbt_appointments', to: 'scheduling_meta_data#rbt_appointments'
     get '/bcba_appointments', to: 'scheduling_meta_data#bcba_appointments'
-    get '/aba_admin_appointments', to: 'scheduling_meta_data#aba_admin_appointments'
+    get '/executive_director_appointments', to: 'scheduling_meta_data#executive_director_appointments'
     get '/catalyst_sync', to: 'catalyst#sync_with_catalyst'
 
     resources :schedulings do

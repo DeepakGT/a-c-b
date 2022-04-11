@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Scheduling, type: :model do
-  let!(:role) { create(:role, name: 'aba_admin', permissions: ['scheduling_update'])}
+  let!(:role) { create(:role, name: 'executive_director', permissions: ['scheduling_update'])}
   let!(:user) { create(:user, :with_role, role_name: role.name) }
   let(:service) { create(:service) }
   let!(:client_enrollment_service) { create(:client_enrollment_service, service_id: service.id, units: 7) }
@@ -68,7 +68,7 @@ RSpec.describe Scheduling, type: :model do
   end
 
   describe "#validate_past_appointments" do
-    context "when user is aba_admin" do
+    context "when user is executive_director" do
       let(:scheduling) { build :scheduling, staff_id: staff.id, client_enrollment_service_id: client_enrollment_service.id, start_time: '16:00', end_time: '17:00', date: '2022-02-28', units: '2' }
       it "cannot add appointment in past 3 days ago" do
         scheduling.user = user
@@ -77,7 +77,7 @@ RSpec.describe Scheduling, type: :model do
       end
     end
 
-    context "when user is not super_admin or aba_admin" do
+    context "when user is not super_admin or executive_director" do
       let(:role) { create(:role, name: 'administrator', permissions: ['scheduling_update'])}
       let(:user) { create(:user, :with_role, role_name: role.name) }
       let(:scheduling) { build :scheduling, staff_id: staff.id, client_enrollment_service_id: client_enrollment_service.id, start_time: '16:00', end_time: '17:00', date: '2022-02-28', units: '2' }

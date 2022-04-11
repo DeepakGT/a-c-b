@@ -9,7 +9,7 @@ RSpec.describe ClientMetaDataController, type: :controller do
     @request.env["devise.mapping"] = Devise.mappings[:user]
   end
 
-  let!(:user) { create(:user, :with_role, role_name: 'aba_admin') }
+  let!(:user) { create(:user, :with_role, role_name: 'executive_director') }
   let!(:auth_headers) { user.create_new_auth_token }
   let!(:organization) {create(:organization, name: 'test-organization', admin_id: user.id)}
   let!(:clinic) {create(:clinic, name: 'test-clinic', organization_id: organization.id)}

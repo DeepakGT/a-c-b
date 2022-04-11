@@ -84,7 +84,7 @@ class SoapNotesController < ApplicationController
   end
 
   def update_signature
-    if current_user.role_name=='super_admin' || current_user.role_name=='aba_admin'
+    if current_user.role_name=='super_admin' || current_user.role_name=='executive_director'
       set_signature
     else
       if params[:rbt_sign].to_bool.true? && @soap_note.rbt_signature.to_bool.false?

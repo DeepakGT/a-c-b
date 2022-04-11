@@ -113,9 +113,9 @@ RSpec.describe SchedulingMetaDataController, type: :controller do
     end
   end
 
-  describe "GET #aba_admin_appointments" do
+  describe "GET #executive_director_appointments" do
     context "when sign in" do
-      let!(:user){ create(:staff, :with_role, role_name: 'aba_admin') }
+      let!(:user){ create(:staff, :with_role, role_name: 'executive_director') }
       let!(:user_auth_headers){ user.create_new_auth_token }
       let(:clinic){ create(:clinic) }
       let!(:client){ create(:client, clinic_id: clinic.id) }
@@ -124,10 +124,10 @@ RSpec.describe SchedulingMetaDataController, type: :controller do
       let!(:client_enrollment_service1){ create(:client_enrollment_service, client_enrollment_id: client_enrollment.id, start_date: Time.now.to_date-30, end_date: Time.now.to_date+30) }
       let!(:scheduling1){create(:scheduling, date: Time.now.to_date-2, client_enrollment_service_id: client_enrollment_service1.id)}
       let!(:scheduling2){create(:scheduling, date: Time.now.to_date, client_enrollment_service_id: client_enrollment_service1.id)}
-      it "should fetch aba_admin appointment list successfully" do
+      it "should fetch executive_director appointment list successfully" do
         set_auth_headers(user_auth_headers)
         
-        get :aba_admin_appointments, params: { default_location_id: clinic.id }
+        get :executive_director_appointments, params: { default_location_id: clinic.id }
         response_body = JSON.parse(response.body)
         
         expect(response.status).to eq(200)

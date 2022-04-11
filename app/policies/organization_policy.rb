@@ -14,7 +14,7 @@ class OrganizationPolicy < ApplicationPolicy
   end
 
   def update?
-    return true if permissions.include?('organization_update') || user.role_name=='aba_admin'
+    return true if permissions.include?('organization_update') || user.role_name=='executive_director'
 
     false
   end

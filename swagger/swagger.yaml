@@ -110,8 +110,8 @@ paths:
             application/json:
               example:
                 data:
-                  email: "aba_admin_user1@yopmail.com"
-                  uid: "aba_admin_user1@yopmail.com"
+                  email: "executive_director_user1@yopmail.com"
+                  uid: "executive_director_user1@yopmail.com"
                   first_name: "Cortez"
                   last_name: "Hermiston"
                   role: "ABA Admin"
@@ -207,8 +207,8 @@ paths:
               example:
                 success: true
                 data:
-                  email: "aba_admin_user1@yopmail.com"
-                  uid: "aba_admin_user1@yopmail.com"
+                  email: "executive_director_user1@yopmail.com"
+                  uid: "executive_director_user1@yopmail.com"
                   first_name: "Cortez"
                   last_name: "Hermiston"
                   role: "ABA Admin"
@@ -3157,7 +3157,7 @@ paths:
               example: [
                 {
                     "id": 1,
-                    "name": "aba_admin"
+                    "name": "executive_director"
                 },
                 {
                     "id": 2,
@@ -3371,7 +3371,7 @@ paths:
                   },
                   {
                     "id": 14,
-                    "name": "aba_admin",
+                    "name": "executive_director",
                     "permissions": []
                   },
                   {
@@ -3464,7 +3464,7 @@ paths:
                 "status": "success",
                 "data": {
                   "id": 2,
-                  "name": "aba_admin",
+                  "name": "executive_director",
                   "permissions": []
                 }
               }
@@ -6026,9 +6026,9 @@ paths:
                 }
               }
 
-  /api/aba_admin_appointments:
+  /api/executive_director_appointments:
     get:
-      summary: aba_admin appointments list
+      summary: executive_director appointments list
       parameters:
       - in: "header"
         name: "access-token"
@@ -6050,7 +6050,7 @@ paths:
         required: true
       responses:
         "200":
-          description: "aba_admin appointments list"
+          description: "executive_director appointments list"
           content:
             application/json:
               example: {

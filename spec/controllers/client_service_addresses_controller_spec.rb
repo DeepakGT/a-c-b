@@ -9,7 +9,7 @@ RSpec.describe ClientServiceAddressesController, type: :controller do
     @request.env["devise.mapping"] = Devise.mappings[:user]
   end
   
-  let!(:role) { create(:role, name: 'aba_admin', permissions: ['client_service_address_view', 'client_service_address_update', 'client_service_address_delete'])}
+  let!(:role) { create(:role, name: 'executive_director', permissions: ['client_service_address_view', 'client_service_address_update', 'client_service_address_delete'])}
   let!(:user) { create(:user, :with_role, role_name: role.name) }
   let!(:auth_headers) { user.create_new_auth_token }
   let!(:organization) {create(:organization, name: 'test-organization', admin_id: user.id)}
