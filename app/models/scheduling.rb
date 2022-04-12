@@ -11,7 +11,7 @@ class Scheduling < ApplicationRecord
   # validates_absence_of :units, message: "or minutes, only one must be present.", if: proc { |obj| obj.minutes.present? }
 
   validate :validate_time
-  validate :validate_past_appointments
+  validate :validate_past_appointments, on: :create
   validate :validate_units
   validate :validate_staff, on: :create
 
@@ -29,6 +29,7 @@ class Scheduling < ApplicationRecord
   scope :by_service_ids, ->(service_ids){ joins(:client_enrollment_service).where('client_enrollment_service.service_id': service_ids) }
   scope :by_client_clinic, ->(location_id) { where('users.clinic_id = ?', location_id) }
   scope :by_staff_clinic, ->(location_id) { where('staff_clinics.clinic_id': location_id) }
+  scope :on_date, ->(date){ where(date: date) }
   scope :exceeded_24_h_scheduling, ->{ where('date < ? OR (date = ? AND end_time < ?)', Time.now.to_date-1, Time.now.to_date-1, Time.now.strftime('%H:%M')) }
   scope :exceeded_3_days_scheduling, ->{ where('date < ? OR (date = ? AND end_time < ?)', Time.now.to_date-3, Time.now.to_date-3, Time.now.strftime('%H:%M')) }
   scope :exceeded_5_days_scheduling, ->{ where('date < ? OR (date = ? AND end_time < ?)', Time.now.to_date-5, Time.now.to_date-5, Time.now.strftime('%H:%M')) }

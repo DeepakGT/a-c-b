@@ -95,6 +95,23 @@ json.data do
       else
         json.exceeded_5_days false
       end
+      if schedule.catalyst_data_ids.present?
+        catalyst_datas = CatalystData.where(id: schedule.catalyst_data_ids).where(system_scheduling_id: [schedule.id, nil])
+        if catalyst_datas.present?
+          json.catalyst_data do
+            json.array! @catalyst_datas do |catalyst_data|
+              json.id catalyst_data.id
+              json.client_name "#{catalyst_data.client_first_name} #{catalyst_data.client_last_name}"
+              json.staff_name "#{catalyst_data.staff_first_name} #{catalyst_data.staff_last_name}"
+              json.date "#{catalyst_data.date}"
+              json.start_time "#{catalyst_data.start_time}"
+              json.end_time "#{catalyst_data.end_time}"
+              json.units "#{catalyst_data.units}"
+              json.minutes "#{catalyst_data.minutes}"
+            end
+          end
+        end
+      end
     end
   end
 end

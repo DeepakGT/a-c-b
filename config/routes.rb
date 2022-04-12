@@ -66,6 +66,7 @@ Rails.application.routes.draw do
     get '/bcba_appointments', to: 'scheduling_meta_data#bcba_appointments'
     get '/executive_director_appointments', to: 'scheduling_meta_data#executive_director_appointments'
     get '/catalyst_sync', to: 'catalyst#sync_with_catalyst'
+    put '/unmatched_units', to: 'catalyst#unmatched_units'
 
     resources :schedulings do
       resources :soap_notes

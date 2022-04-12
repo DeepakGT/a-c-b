@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_07_071858) do
+ActiveRecord::Schema.define(version: 2022_04_11_092245) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -88,6 +88,10 @@ ActiveRecord::Schema.define(version: 2022_04_07_071858) do
     t.bigint "system_scheduling_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.text "caregiver_signature"
+    t.text "provider_signature"
+    t.float "units"
+    t.float "minutes"
     t.index ["system_scheduling_id"], name: "index_catalyst_data_on_system_scheduling_id"
   end
 
@@ -272,7 +276,8 @@ ActiveRecord::Schema.define(version: 2022_04_07_071858) do
     t.boolean "is_rendered", default: false
     t.boolean "cross_site_allowed", default: false
     t.integer "service_address_id"
-    t.text "unrendered_reason"
+    t.string "unrendered_reason", default: [], array: true
+    t.string "catalyst_data_ids", default: [], array: true
     t.index ["client_enrollment_service_id"], name: "index_schedulings_on_client_enrollment_service_id"
     t.index ["creator_id"], name: "index_schedulings_on_creator_id"
     t.index ["staff_id"], name: "index_schedulings_on_staff_id"
@@ -314,6 +319,7 @@ ActiveRecord::Schema.define(version: 2022_04_07_071858) do
     t.string "clinical_director_signature_author_name"
     t.date "clinical_director_signature_date"
     t.datetime "caregiver_signature_datetime"
+    t.boolean "caregiver_signature", default: false
     t.index ["creator_id"], name: "index_soap_notes_on_creator_id"
     t.index ["scheduling_id"], name: "index_soap_notes_on_scheduling_id"
   end
