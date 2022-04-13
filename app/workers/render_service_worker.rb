@@ -17,6 +17,8 @@ class RenderServiceWorker
     Scheduling.completed_scheduling.where(is_rendered: false).where(catalyst_data_ids: []).each do |schedule|
       if schedule.soap_notes.any?
         schedule.soap_notes.each do |soap_note|
+          schedule.unrendered_reason = []
+          schedule.save(validate: false)
           if soap_note.bcba_signature.to_bool.false?
             schedule.unrendered_reason.push('bcba_signature_absent')
             schedule.unrendered_reason = schedule.unrendered_reason.uniq

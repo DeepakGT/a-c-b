@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_11_092245) do
+ActiveRecord::Schema.define(version: 2022_04_13_062841) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -92,6 +92,8 @@ ActiveRecord::Schema.define(version: 2022_04_11_092245) do
     t.text "provider_signature"
     t.float "units"
     t.float "minutes"
+    t.boolean "is_appointment_found"
+    t.string "multiple_schedulings_ids", default: [], array: true
     t.index ["system_scheduling_id"], name: "index_catalyst_data_on_system_scheduling_id"
   end
 

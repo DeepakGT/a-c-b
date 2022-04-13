@@ -17,6 +17,8 @@ module Catalyst
                 soap_notes = schedule.soap_notes
                 if soap_notes.any?
                   soap_notes.each do |soap_note|
+                    schedule.unrendered_reason = []
+                    schedule.save(validate: false)
                     if soap_note.bcba_signature.to_bool.false?
                       schedule.unrendered_reason.push('bcba_signature_absent')
                       schedule.unrendered_reason = schedule.unrendered_reason.uniq

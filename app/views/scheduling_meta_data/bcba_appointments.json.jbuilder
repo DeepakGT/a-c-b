@@ -93,10 +93,10 @@ json.data do
         json.exceeded_5_days false
       end
       if schedule.catalyst_data_ids.present?
-        catalyst_datas = CatalystData.where(id: schedule.catalyst_data_ids).where(system_scheduling_id: [schedule.id, nil])
+        catalyst_datas = CatalystData.where(id: schedule.catalyst_data_ids).where(system_scheduling_id: schedule.id)
         if catalyst_data.present?
           json.catalyst_datas do
-            json.array! @catalyst_datas do |catalyst_data|
+            json.array! catalyst_datas do |catalyst_data|
               json.id catalyst_data.id
               json.client_name "#{catalyst_data.client_first_name} #{catalyst_data.client_last_name}"
               json.staff_name "#{catalyst_data.staff_first_name} #{catalyst_data.staff_last_name}"
@@ -178,6 +178,18 @@ json.data do
       json.service_id service&.id
       json.service_name service&.name
       json.service_display_code service&.display_code
+    end
+  end
+  json.no_appointment_catalyst_data do
+    json.array! @catalyst_data do |catalyst_data|
+      json.id catalyst_data.id
+      json.client_name "#{catalyst_data.client_first_name} #{catalyst_data.client_last_name}"
+      json.staff_name "#{catalyst_data.staff_first_name} #{catalyst_data.staff_last_name}"
+      json.date "#{catalyst_data.date}"
+      json.start_time "#{catalyst_data.start_time}"
+      json.end_time "#{catalyst_data.end_time}"
+      json.units "#{catalyst_data.units}"
+      json.minutes "#{catalyst_data.minutes}"
     end
   end
 end

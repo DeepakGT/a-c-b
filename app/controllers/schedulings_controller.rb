@@ -84,7 +84,9 @@ class SchedulingsController < ApplicationController
     if params[:is_rendered].to_bool.true?
       if schedule.date<Time.now.to_date
         if schedule.soap_notes.any?
-          soap_notes.each do |soap_note|
+          schedule.soap_notes.each do |soap_note|
+            schedule.unrendered_reason = []
+            schedule.save(validate: false)
             if soap_note.bcba_signature.to_bool.false?
               schedule.unrendered_reason.push('bcba_signature_absent')
               schedule.unrendered_reason = schedule.unrendered_reason.uniq
