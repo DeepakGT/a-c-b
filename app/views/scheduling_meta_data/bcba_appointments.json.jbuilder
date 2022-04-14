@@ -74,7 +74,7 @@ json.data do
       json.start_time schedule.start_time
       json.end_time schedule.end_time
       json.is_rendered schedule.is_rendered
-      json.unrendered_reason schedule.unrendered_reason
+      json.unrendered_reasons schedule.unrendered_reason
       json.units schedule.units
       json.minutes schedule.minutes
       if schedule.date<(Time.now.to_date-1) || (schedule.date==(Time.now.to_date-1) && schedule.end_time<Time.now.strftime('%H:%M'))
@@ -108,6 +108,9 @@ json.data do
             end
           end
         end
+      end
+      if !(schedule.unrendered_reason.include?('units_does_not_match')) && !(schedule.unrendered_reason.include?('soap_note_absent'))
+        json.soap_note_id schedule.soap_notes.last.id if schedule.soap_notes.present?
       end
     end
   end
