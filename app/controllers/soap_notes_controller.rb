@@ -17,7 +17,7 @@ class SoapNotesController < ApplicationController
       @soap_note.user = current_user
       @soap_note.creator_id = current_user.id
       @soap_note.save
-      render_service
+      RenderService::RenderBySoapNote.call(@soap_note.id) if @scheduling.date<Time.now.to_date
     end
   end
 
@@ -26,7 +26,7 @@ class SoapNotesController < ApplicationController
       update_signature
       @soap_note.user = current_user
       @soap_note.update(soap_note_params)
-      render_service
+      RenderService::RenderBySoapNote.call(@soap_note.id) if @scheduling.date<Time.now.to_date
     end
   end
 
@@ -106,37 +106,6 @@ class SoapNotesController < ApplicationController
       end
       if params[:caregiver_sign].present? && !@soap_note.signature_file.attached?
         @soap_note.caregiver_signature_datetime = DateTime.now
-      end
-    end
-  end
-
-  def render_service
-    if @scheduling.date<Time.now.to_date
-      @scheduling.unrendered_reason = []
-      @scheduling.save(validate: false)
-      if @soap_note.bcba_signature.to_bool.false?
-        @scheduling.unrendered_reason.push('bcba_signature_absent')
-        @scheduling.unrendered_reason = @scheduling.unrendered_reason.uniq
-        @scheduling.save(validate: false)
-      end
-      if @soap_note.clinical_director_signature.to_bool.false? 
-        @scheduling.unrendered_reason.push('clinical_director_signature_absent')
-        @scheduling.unrendered_reason = @scheduling.unrendered_reason.uniq
-        @scheduling.save(validate: false)
-      end
-      if @soap_note.rbt_signature.to_bool.false?  && @scheduling.staff.role_name=='rbt'
-        @scheduling.unrendered_reason.push('rbt_signature_absent')
-        @scheduling.unrendered_reason = @scheduling.unrendered_reason.uniq
-        @scheduling.save(validate: false)
-      end
-      if !@soap_note.signature_file.attached? && @soap_note.caregiver_signature!=true
-        @scheduling.unrendered_reason.push('caregiver_signature_absent')
-        @scheduling.unrendered_reason = @scheduling.unrendered_reason.uniq
-        @scheduling.save(validate: false)
-      end
-      if @scheduling.unrendered_reason.blank?
-        @scheduling.is_rendered = true
-        @scheduling.save(validate: false)
       end
     end
   end

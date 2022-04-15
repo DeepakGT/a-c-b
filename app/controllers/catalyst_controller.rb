@@ -13,7 +13,7 @@ class CatalystController < ApplicationController
     use_abac_units if params[:use_abac_units].to_bool.true?
     use_custom_units if params[:use_custom_units].to_bool.true?
     create_soap_note
-    update_render_service
+    RenderService::RenderSchedule.call(@schedule.id) if @schedule.date<Time.now.to_date
   end
 
   def create_appointment
@@ -28,7 +28,7 @@ class CatalystController < ApplicationController
     @schedule.save(validate: false)
     @catalyst_data.update(is_appointment_found: true, system_scheduling_id: @schedule.id, multiple_schedulings_ids: [])
     create_soap_note
-    update_render_service
+    RenderService::RenderSchedule.call(@schedule.id) if @schedule.date<Time.now.to_date
   end
 
   def assign_catalyst_note
@@ -43,7 +43,7 @@ class CatalystController < ApplicationController
     check_units if @catalyst_data.id == @schedule.catalyst_data_ids.max.to_i
     if (!(@schedule.unrendered_reason.include?('units_does_not_match')) &&  @checked_units==false && temp_var==0) || temp_var==1
       create_soap_note
-      update_render_service
+      RenderService::RenderSchedule.call(@schedule.id) if @schedule.date<Time.now.to_date
     end
   end
 
@@ -92,46 +92,6 @@ class CatalystController < ApplicationController
       soap_note.bcba_signature = true
     end
     soap_note.save(validate: false)
-  end
-
-  def update_render_service
-    if @schedule.date<Time.now.to_date
-      if @schedule.soap_notes.any?
-        @schedule.soap_notes.each do |soap_note|
-          @schedule.unrendered_reason = []
-          @schedule.save(validate: false)
-          if soap_note.bcba_signature.to_bool.false?
-            @schedule.unrendered_reason.push('bcba_signature_absent')
-            @schedule.unrendered_reason = @schedule.unrendered_reason.uniq
-            @schedule.save(validate: false)
-          end
-          if soap_note.clinical_director_signature.to_bool.false? 
-            @schedule.unrendered_reason.push('clinical_director_signature_absent')
-            @schedule.unrendered_reason = @schedule.unrendered_reason.uniq
-            @schedule.save(validate: false)
-          end
-          if soap_note.rbt_signature.to_bool.false?  && @schedule.staff.role_name=='rbt'
-            @schedule.unrendered_reason.push('rbt_signature_absent')
-            @schedule.unrendered_reason = @schedule.unrendered_reason.uniq
-            @schedule.save(validate: false)
-          end
-          if !soap_note.signature_file.attached? && soap_note.caregiver_signature!=true
-            @schedule.unrendered_reason.push('caregiver_signature_absent')
-            @schedule.unrendered_reason = @schedule.unrendered_reason.uniq
-            @schedule.save(validate: false)
-          end
-          if @schedule.unrendered_reason.blank?
-            @schedule.is_rendered = true
-            @schedule.save(validate: false)
-            break
-          end
-        end
-      else
-        @schedule.unrendered_reason.push('soap_note_absent')
-        @schedule.unrendered_reason = @schedule.unrendered_reason.uniq
-        @schedule.save(validate: false)
-      end
-    end
   end
 
   def check_units
