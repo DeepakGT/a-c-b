@@ -108,6 +108,7 @@ json.data do
               json.end_time "#{catalyst_data.end_time}"
               json.units "#{catalyst_data.units}"
               json.minutes "#{catalyst_data.minutes}"
+              json.note catalyst_data.note
             end
           end
         end
@@ -128,6 +129,20 @@ json.data do
       json.end_time "#{catalyst_data.end_time}"
       json.units "#{catalyst_data.units}"
       json.minutes "#{catalyst_data.minutes}"
+      json.note catalyst_data.note
+    end
+  end
+  json.multiple_catalyst_notes do
+    json.array! @multiple_catalyst_notes do |catalyst_data|
+      json.id catalyst_data.id
+      json.client_name "#{catalyst_data.client_first_name} #{catalyst_data.client_last_name}"
+      json.staff_name "#{catalyst_data.staff_first_name} #{catalyst_data.staff_last_name}"
+      json.date "#{catalyst_data.date}"
+      json.start_time "#{catalyst_data.start_time}"
+      json.end_time "#{catalyst_data.end_time}"
+      json.units "#{catalyst_data.units}"
+      json.minutes "#{catalyst_data.minutes}"
+      json.note catalyst_data.note
     end
   end
 end

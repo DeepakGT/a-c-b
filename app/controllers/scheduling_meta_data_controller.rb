@@ -16,6 +16,7 @@ class SchedulingMetaDataController < ApplicationController
     @upcoming_schedules = rbt_schedules.scheduled_scheduling.order(:date)
     @past_schedules = rbt_schedules.completed_scheduling.where(is_rendered: false).order(date: :desc)
     @catalyst_data = CatalystData.with_no_appointments
+    @multiple_catalyst_notes = CatalystData.where.not(multiple_schedulings_ids: [])
   end
 
   def bcba_appointments
@@ -28,6 +29,7 @@ class SchedulingMetaDataController < ApplicationController
     @change_requests = change_requests.by_bcba_ids(current_user.id)
                                       .or(change_requests.by_staff_ids(current_user.id)).left_outer_joins(:scheduling)
     @catalyst_data = CatalystData.with_no_appointments
+    @multiple_catalyst_notes = CatalystData.where.not(multiple_schedulings_ids: [])
   end
 
   def executive_director_appointments

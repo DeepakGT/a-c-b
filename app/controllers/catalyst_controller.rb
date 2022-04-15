@@ -47,6 +47,11 @@ class CatalystController < ApplicationController
     end
   end
 
+  def catalyst_data_with_multiple_appointments
+    @catalyst_data = CatalystData.find(params[:id])
+    @schedules = Scheduling.where(id: @catalyst_data.multiple_schedulings_ids)
+  end
+
   private
 
   def authorize_user

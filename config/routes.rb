@@ -69,6 +69,7 @@ Rails.application.routes.draw do
     put '/catalyst/update_appointment_units', to: 'catalyst#update_appointment_units'
     post '/catalyst/create_appointment', to: 'catalyst#create_appointment' 
     put '/catalyst/assign_catalyst_note', to: 'catalyst#assign_catalyst_note'
+    get '/catalyst/catalyst_data/:id', to: 'catalyst#catalyst_data_with_multiple_appointments'
 
     resources :schedulings do
       resources :soap_notes
