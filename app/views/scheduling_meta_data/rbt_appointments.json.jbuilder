@@ -123,7 +123,9 @@ json.data do
     json.array! @catalyst_data do |catalyst_data|
       json.id catalyst_data.id
       json.client_name "#{catalyst_data.client_first_name} #{catalyst_data.client_last_name}"
+      json.client_id Client.find_by(first_name: catalyst_data.client_first_name, last_name: catalyst_data.client_last_name)&.id
       json.staff_name "#{catalyst_data.staff_first_name} #{catalyst_data.staff_last_name}"
+      json.staff_id Staff.find_by(first_name: catalyst_data.staff_first_name, last_name: catalyst_data.staff_last_name)&.id
       json.date "#{catalyst_data.date}"
       json.start_time "#{catalyst_data.start_time}"
       json.end_time "#{catalyst_data.end_time}"

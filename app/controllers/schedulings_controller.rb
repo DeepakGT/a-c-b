@@ -17,7 +17,11 @@ class SchedulingsController < ApplicationController
     @schedule = @client_enrollment_service.schedulings.new(scheduling_params)
     @schedule.creator_id = current_user.id
     @schedule.user = current_user
-    @schedule.save
+    if is_create_request_via_catalyst_data
+      update_data 
+    else
+      @schedule.save
+    end
   end
 
   def update
@@ -94,6 +98,22 @@ class SchedulingsController < ApplicationController
     update_render_service if params[:is_rendered].present?
     update_client_enrollment_service if params[:client_enrollment_service_id].present?
     @schedule.save
+  end
+
+  def is_create_request_via_catalyst_data
+    return true if params[:catalyst_data_id].present?
+
+    false
+  end
+
+  def update_data
+    catalyst_data = CatalystData.find(params[:catalyst_data_id])
+    @schedule.start_time = catalyst_data.start_time
+    @schedule.end_time = catalyst_data.end_time
+    @schedule.units = catalyst_data.units if catalyst_data.units.present?
+    @schedule.minutes = catalyst_data.minutes if catalyst_data.minutes.present?
+    @schedule.date = catalyst_data.date
+    @schedule.save(validate: false)
   end
   # end of private
 end
