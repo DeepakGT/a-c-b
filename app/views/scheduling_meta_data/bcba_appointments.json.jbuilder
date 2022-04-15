@@ -111,6 +111,7 @@ json.data do
       end
       if !(schedule.unrendered_reason.include?('units_does_not_match')) && !(schedule.unrendered_reason.include?('soap_note_absent'))
         json.soap_note_id schedule.soap_notes.last.id if schedule.soap_notes.present?
+        json.synced_with_catalyst schedule.soap_notes.last.synced_with_catalyst if schedule.soap_notes.present?
       end
     end
   end

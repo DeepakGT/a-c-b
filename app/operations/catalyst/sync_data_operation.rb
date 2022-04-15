@@ -109,7 +109,7 @@ module Catalyst
                   schedule.minutes = catalyst_data.minutes if schedule.minutes.present?
                   schedule.catalyst_data_ids.push(catalyst_data.id)
                   schedule.save(validate: false)
-                  soap_note = schedule.soap_notes.new(add_date: catalyst_data.date, note: catalyst_data.note, creator_id: schedule.staff_id)
+                  soap_note = schedule.soap_notes.new(add_date: catalyst_data.date, note: catalyst_data.note, creator_id: schedule.staff_id, synced_with_catalyst: true)
                   soap_note.bcba_signature = true if catalyst_data.bcba_signature.present?
                   soap_note.clinical_director_signature = true if catalyst_data.clinical_director_signature.present?
                   soap_note.caregiver_signature = true if catalyst_data.caregiver_signature.present?

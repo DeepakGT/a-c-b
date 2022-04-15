@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_13_062841) do
+ActiveRecord::Schema.define(version: 2022_04_15_055150) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -322,6 +322,7 @@ ActiveRecord::Schema.define(version: 2022_04_13_062841) do
     t.date "clinical_director_signature_date"
     t.datetime "caregiver_signature_datetime"
     t.boolean "caregiver_signature", default: false
+    t.boolean "synced_with_catalyst", default: false
     t.index ["creator_id"], name: "index_soap_notes_on_creator_id"
     t.index ["scheduling_id"], name: "index_soap_notes_on_scheduling_id"
   end

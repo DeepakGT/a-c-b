@@ -7,11 +7,11 @@ class MetaDataController < ApplicationController
 
   def clinics_list
     if current_user.role_name=='super_admin'
-      @clinics = Clinic.all 
+      @clinics = Clinic.order(:name)
     elsif current_user.type=="Staff"
-      @clinics = current_user.clinics
+      @clinics = current_user.clinics&.order(:name)
     else
-      @clinics = Clinic.where(id: current_user.clinic_id)
+      @clinics = Clinic.where(id: current_user.clinic_id)&.order(:name)
     end
   end
 
