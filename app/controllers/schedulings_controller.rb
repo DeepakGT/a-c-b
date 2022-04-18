@@ -37,6 +37,12 @@ class SchedulingsController < ApplicationController
   end
 
   def destroy
+    CatalystData.where(system_scheduling_id: @schedule.id).update_all(system_scheduling_id: nil)
+    catalyst_data =  CatalystData.where('multiple_schedulings_ids @> ?', "{#{@schedule.id}}")
+    catalyst_data.each do |catalyst_datum| 
+      catalyst_datum.multiple_schedulings_ids.delete("#{@schedule.id}")
+      catalyst_datum.save
+    end
     @schedule.destroy
   end
 
@@ -115,6 +121,7 @@ class SchedulingsController < ApplicationController
     @schedule.date = catalyst_data.date
     @schedule.catalyst_data_ids.push(catalyst_data.id)
     @schedule.save(validate: false)
+    catalyst_data.update(system_scheduling_id: @schedule.id, is_appointment_found: true, multiple_schedulings_ids: [])
   end
   # end of private
 end

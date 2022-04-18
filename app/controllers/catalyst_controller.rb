@@ -52,6 +52,13 @@ class CatalystController < ApplicationController
     @schedules = Scheduling.where(id: @catalyst_data.multiple_schedulings_ids)
   end
 
+  def appointments_list
+    @catalyst_data = CatalystData.find(params[:catalyst_data_id])
+    schedules = Scheduling.on_date(@catalyst_data.date)
+    schedules = schedules.joins(client_enrollment_service: {client_enrollment: :client}).by_client_clinic(params[:location_id]) if params[:location_id].present?
+    @schedules = schedules.order(:start_time)
+  end
+
   private
 
   def authorize_user
