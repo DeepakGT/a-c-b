@@ -15,6 +15,8 @@ class Scheduling < ApplicationRecord
   validate :validate_units
   validate :validate_staff, on: :create
 
+  serialize :unrendered_reason, Array
+
   #scopes
   scope :by_status, ->{ where('lower(status) = ?','scheduled') }
   scope :completed_scheduling, ->{ where('date < ?',Time.now.to_date) }

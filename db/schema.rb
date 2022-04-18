@@ -278,7 +278,7 @@ ActiveRecord::Schema.define(version: 2022_04_15_055150) do
     t.boolean "is_rendered", default: false
     t.boolean "cross_site_allowed", default: false
     t.integer "service_address_id"
-    t.string "unrendered_reason", default: [], array: true
+    t.string "unrendered_reason"
     t.string "catalyst_data_ids", default: [], array: true
     t.index ["client_enrollment_service_id"], name: "index_schedulings_on_client_enrollment_service_id"
     t.index ["creator_id"], name: "index_schedulings_on_creator_id"
