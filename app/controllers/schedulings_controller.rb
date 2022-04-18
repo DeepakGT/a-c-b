@@ -113,6 +113,7 @@ class SchedulingsController < ApplicationController
     @schedule.units = catalyst_data.units if catalyst_data.units.present?
     @schedule.minutes = catalyst_data.minutes if catalyst_data.minutes.present?
     @schedule.date = catalyst_data.date
+    @schedule.catalyst_data_ids.push(catalyst_data.id)
     @schedule.save(validate: false)
   end
   # end of private
