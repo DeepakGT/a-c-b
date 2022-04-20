@@ -34,6 +34,7 @@ module RenderService
         end
         if schedule.unrendered_reason.blank?
           schedule.is_rendered = true
+          schedule.rendered_at = DateTime.now
           schedule.save(validate: false)
         end
       end

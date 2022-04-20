@@ -74,6 +74,7 @@ json.data do
       json.start_time schedule.start_time
       json.end_time schedule.end_time
       json.is_rendered schedule.is_rendered
+      json.rendered_at schedule.rendered_at
       json.unrendered_reasons schedule.unrendered_reason
       json.units schedule.units
       json.minutes schedule.minutes
@@ -94,7 +95,7 @@ json.data do
       end
       if schedule.catalyst_data_ids.present?
         catalyst_datas = CatalystData.where(id: schedule.catalyst_data_ids).where(system_scheduling_id: schedule.id)
-        if catalyst_data.present?
+        if catalyst_datas.present?
           json.catalyst_datas do
             json.array! catalyst_datas do |catalyst_data|
               json.id catalyst_data.id

@@ -74,6 +74,7 @@ json.data do
       json.start_time schedule.start_time
       json.end_time schedule.end_time
       json.is_rendered schedule.is_rendered
+      json.rendered_at schedule.rendered_at
       json.unrendered_reasons schedule.unrendered_reason
       json.units schedule.units
       json.minutes schedule.minutes
