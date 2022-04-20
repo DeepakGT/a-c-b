@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_20_072157) do
+ActiveRecord::Schema.define(version: 2022_04_20_125525) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -124,7 +124,6 @@ ActiveRecord::Schema.define(version: 2022_04_20_072157) do
     t.date "enrollment_date"
     t.date "terminated_on"
     t.text "notes"
-    t.bigint "client_id", null: false
     t.bigint "funding_source_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -138,19 +137,20 @@ ActiveRecord::Schema.define(version: 2022_04_20_072157) do
     t.string "subscriber_phone"
     t.date "subscriber_dob"
     t.integer "source_of_payment", default: 0
-    t.index ["client_id"], name: "index_client_enrollments_on_client_id"
+    t.bigint "new_client_id"
     t.index ["funding_source_id"], name: "index_client_enrollments_on_funding_source_id"
+    t.index ["new_client_id"], name: "index_client_enrollments_on_new_client_id"
   end
 
   create_table "client_notes", force: :cascade do |t|
-    t.bigint "client_id"
     t.text "note"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.date "add_date"
     t.bigint "creator_id"
-    t.index ["client_id"], name: "index_client_notes_on_client_id"
+    t.bigint "new_client_id"
     t.index ["creator_id"], name: "index_client_notes_on_creator_id"
+    t.index ["new_client_id"], name: "index_client_notes_on_new_client_id"
   end
 
   create_table "clinics", force: :cascade do |t|
@@ -175,11 +175,11 @@ ActiveRecord::Schema.define(version: 2022_04_20_072157) do
     t.boolean "resides_with_client", default: false, null: false
     t.boolean "guarantor", default: false, null: false
     t.boolean "parent_portal_access", default: false, null: false
-    t.bigint "client_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.boolean "is_address_same_as_client", default: false
-    t.index ["client_id"], name: "index_contacts_on_client_id"
+    t.bigint "new_client_id"
+    t.index ["new_client_id"], name: "index_contacts_on_new_client_id"
   end
 
   create_table "countries", force: :cascade do |t|
@@ -200,6 +200,25 @@ ActiveRecord::Schema.define(version: 2022_04_20_072157) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["clinic_id"], name: "index_funding_sources_on_clinic_id"
+  end
+
+  create_table "new_clients", force: :cascade do |t|
+    t.string "first_name"
+    t.string "last_name"
+    t.string "email"
+    t.integer "gender", default: 0
+    t.boolean "disqualified", default: false
+    t.integer "dq_reason"
+    t.integer "preferred_language", default: 0
+    t.date "dob"
+    t.integer "status", default: 0
+    t.string "payor_status"
+    t.bigint "clinic_id", null: false
+    t.bigint "bcba_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["bcba_id"], name: "index_new_clients_on_bcba_id"
+    t.index ["clinic_id"], name: "index_new_clients_on_clinic_id"
   end
 
   create_table "organizations", force: :cascade do |t|
@@ -417,12 +436,10 @@ ActiveRecord::Schema.define(version: 2022_04_20_072157) do
   add_foreign_key "client_enrollment_services", "client_enrollments"
   add_foreign_key "client_enrollment_services", "services"
   add_foreign_key "client_enrollments", "funding_sources"
-  add_foreign_key "client_enrollments", "users", column: "client_id"
-  add_foreign_key "client_notes", "users", column: "client_id"
   add_foreign_key "client_notes", "users", column: "creator_id"
   add_foreign_key "clinics", "organizations"
-  add_foreign_key "contacts", "users", column: "client_id"
   add_foreign_key "funding_sources", "clinics"
+  add_foreign_key "new_clients", "users", column: "bcba_id"
   add_foreign_key "organizations", "users", column: "admin_id"
   add_foreign_key "rbt_supervisions", "users"
   add_foreign_key "scheduling_change_requests", "schedulings"
