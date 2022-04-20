@@ -54,9 +54,4 @@ namespace :update_new_client do
     PhoneNumber.where(phoneable_type: 'NewClient')&.update_all(phoneable_type: 'Client')
     Attachment.where(attachable_type: 'NewClient')&.update_all(attachable_type: 'Client')
   end
-
-  desc "Delete all users that have Client as type"
-  task delete_client_users: :environment do
-    User.where(type: 'Client').destroy_all
-  end
 end

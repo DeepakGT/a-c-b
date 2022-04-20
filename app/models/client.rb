@@ -1,4 +1,4 @@
-class Client < User
+class Client < ApplicationRecord
   has_one :phone_number, as: :phoneable, dependent: :destroy, inverse_of: :phoneable
   has_many :notes, class_name: :ClientNote, dependent: :nullify
   has_many :attachments, as: :attachable, dependent: :destroy
@@ -16,6 +16,8 @@ class Client < User
   accepts_nested_attributes_for :addresses, update_only: true
   accepts_nested_attributes_for :phone_number, update_only: true
 
+  enum status: {active: 0, inactive: 1}
+  enum gender: {male: 0, female: 1}
   enum preferred_language: {english: 0, spanish: 1}
   enum dq_reason: { lost_contact: 0, not_clinically_appropriate: 1, insurance_denial: 2, no_longer_interested: 3, 
                     competitor: 4, not_ready_to_move_forward: 5, other: 6}
