@@ -32,6 +32,7 @@ class SchedulingsController < ApplicationController
         update_scheduling
       else
         @schedule.update(status: params[:status]) if params[:status].present?
+        update_render_service if params[:status]=='Rendered'
       end
     end
   end
@@ -67,7 +68,7 @@ class SchedulingsController < ApplicationController
     schedules = schedules.by_service_ids(string_to_array(params[:service_ids])) if params[:service_ids].present?
     if params[:staff_ids].blank? && params[:client_ids].blank? && params[:service_ids].blank?
       if current_user.role_name=='bcba'
-        schedules = schedules.joins(client_enrollment_service: {client_enrollment: :client}).where('users.bcba_id': current_user.id).or(schedules.where(staff_id: current_user.id))
+        schedules = schedules.joins(client_enrollment_service: {client_enrollment: :client}).where('clients.bcba_id': current_user.id).or(schedules.where(staff_id: current_user.id))
       elsif current_user.role_name=='rbt'
         schedules = schedules.where(staff_id: current_user.id)
       end
@@ -91,8 +92,8 @@ class SchedulingsController < ApplicationController
   end
 
   def update_render_service
-    if params[:is_rendered].to_bool.true?
-      if schedule.date<Time.now.to_date
+    if params[:is_rendered].to_bool.true? || params[:status]=='Rendered'
+      if @schedule.date<Time.now.to_date
         RenderService::RenderSchedule.call(@schedule.id)
       end
     end
@@ -101,7 +102,7 @@ class SchedulingsController < ApplicationController
   def update_scheduling
     @schedule.update(scheduling_params)
     @schedule.updator_id = current_user.id
-    update_render_service if params[:is_rendered].present?
+    update_render_service if params[:is_rendered].present? || params[:status]=='Rendered'
     update_client_enrollment_service if params[:client_enrollment_service_id].present?
     @schedule.save
   end
