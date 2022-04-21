@@ -182,6 +182,7 @@ ActiveRecord::Schema.define(version: 2022_04_21_070926) do
     t.bigint "organization_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.text "catalyst_clinic_id"
     t.index ["organization_id"], name: "index_clinics_on_organization_id"
   end
 
@@ -401,14 +402,10 @@ ActiveRecord::Schema.define(version: 2022_04_21_070926) do
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
     t.string "unconfirmed_email"
-    t.bigint "clinic_id"
     t.string "first_name"
     t.string "last_name"
     t.string "email"
     t.integer "gender", default: 0
-    t.boolean "disqualified", default: false
-    t.integer "dq_reason"
-    t.integer "preferred_language", default: 0
     t.date "dob"
     t.string "type"
     t.bigint "supervisor_id"
@@ -417,13 +414,9 @@ ActiveRecord::Schema.define(version: 2022_04_21_070926) do
     t.json "tokens"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.string "payor_status"
     t.date "hired_at"
-    t.bigint "bcba_id"
     t.string "job_type", default: "full_time"
     t.text "catalyst_user_id"
-    t.index ["bcba_id"], name: "index_users_on_bcba_id"
-    t.index ["clinic_id"], name: "index_users_on_clinic_id"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
@@ -462,6 +455,5 @@ ActiveRecord::Schema.define(version: 2022_04_21_070926) do
   add_foreign_key "staff_qualifications", "users", column: "staff_id"
   add_foreign_key "user_roles", "roles"
   add_foreign_key "user_roles", "users"
-  add_foreign_key "users", "users", column: "bcba_id"
   add_foreign_key "users", "users", column: "supervisor_id"
 end
