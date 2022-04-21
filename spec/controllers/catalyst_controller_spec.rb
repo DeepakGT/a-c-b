@@ -12,12 +12,12 @@ RSpec.describe CatalystController, type: :controller do
   let!(:user){ create(:user, :with_role, role_name: 'super_admin') }
   let!(:auth_headers){ user.create_new_auth_token }
 
-  describe "GET #sync_with_catalyst" do
+  describe "GET #sync_data" do
     context "when sign in" do
       it "should show data synced with catalyst successfully" do
         set_auth_headers(auth_headers)
 
-        get :sync_with_catalyst, params: {start_date: '01-01-2022', end_date: '01-02-2022'}
+        get :sync_data, params: {start_date: '01-01-2022', end_date: '01-02-2022'}
         response_body = JSON.parse(response.body)
 
         expect(response.status).to eq(200)

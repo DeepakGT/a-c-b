@@ -13,7 +13,6 @@ class ClientsController < ApplicationController
 
   def create
     @client = Client.new(client_params)
-    @client.password = 'Abcdef_1' if !params[:password].present?
     @client.save_with_exception_handler
   end
 
@@ -28,16 +27,10 @@ class ClientsController < ApplicationController
   private
 
   def client_params
-    arr = %i[ first_name last_name status gender email dob clinic_id payor_status preferred_language 
-              disqualified dq_reason bcba_id]
-
-    arr.concat(%i[password password_confirmation]) if params['action']=='create'
-
-    arr.concat([addresses_attributes: 
-                %i[id line1 line2 line3 zipcode city state country address_type addressable_type addressable_id],
-                phone_number_attributes: %i[phone_type number]])
-
-    params.permit(arr)
+    params.permit(:first_name, :last_name, :status, :gender, :email, :dob, :clinic_id, :payor_status, :preferred_language, 
+      :disqualified, :dq_reason, :bcba_id, addresses_attributes: 
+      %i[id line1 line2 line3 zipcode city state country address_type addressable_type addressable_id],
+      phone_number_attributes: %i[phone_type number])
   end
 
   def set_client

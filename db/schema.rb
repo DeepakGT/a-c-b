@@ -168,6 +168,7 @@ ActiveRecord::Schema.define(version: 2022_04_21_070926) do
     t.bigint "bcba_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.text "catalyst_patient_id"
     t.index ["bcba_id"], name: "index_clients_on_bcba_id"
     t.index ["clinic_id"], name: "index_clients_on_clinic_id"
   end
@@ -420,6 +421,7 @@ ActiveRecord::Schema.define(version: 2022_04_21_070926) do
     t.date "hired_at"
     t.bigint "bcba_id"
     t.string "job_type", default: "full_time"
+    t.text "catalyst_user_id"
     t.index ["bcba_id"], name: "index_users_on_bcba_id"
     t.index ["clinic_id"], name: "index_users_on_clinic_id"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true

@@ -18,8 +18,8 @@ RSpec.describe ClientServiceAddressesController, type: :controller do
 
   describe "GET #index" do
     context "when sign in" do
-      let!(:client_service_addresses) { create_list(:address, 5, addressable_type: 'User', addressable_id: client.id, is_default: false, address_type: 'service_address') }
-      let!(:client_service_address) { create(:address, addressable_type: 'User', addressable_id: client.id, is_default: true, address_type: 'service_address') }
+      let!(:client_service_addresses) { create_list(:address, 5, addressable_type: 'Client', addressable_id: client.id, is_default: false, address_type: 'service_address') }
+      let!(:client_service_address) { create(:address, addressable_type: 'Client', addressable_id: client.id, is_default: true, address_type: 'service_address') }
       it "should fetch client service addresses list successfully" do
         set_auth_headers(auth_headers)
         
@@ -92,7 +92,7 @@ RSpec.describe ClientServiceAddressesController, type: :controller do
 
   describe "GET #show" do
     context "when sign in" do
-      let(:client_service_address) { create(:address, addressable_type: 'User', addressable_id: client.id, is_default: true, address_type: 'service_address') }
+      let(:client_service_address) { create(:address, addressable_type: 'Client', addressable_id: client.id, is_default: true, address_type: 'service_address') }
       it "should fetch client service address detail successfully" do
         set_auth_headers(auth_headers)
 
@@ -131,7 +131,7 @@ RSpec.describe ClientServiceAddressesController, type: :controller do
 
   describe "PUT #update" do
     context "when sign in" do
-      let(:client_service_address) { create(:address, addressable_type: 'User', addressable_id: client.id, is_default: false, address_type: 'service_address', city: 'Indore') }
+      let(:client_service_address) { create(:address, addressable_type: 'Client', addressable_id: client.id, is_default: false, address_type: 'service_address', city: 'Indore') }
       it "should update client service address successfully" do
         set_auth_headers(auth_headers)
 
@@ -172,7 +172,7 @@ RSpec.describe ClientServiceAddressesController, type: :controller do
 
   describe "DELETE #destroy" do
     context "when sign in" do
-      let(:client_service_address) { create(:address, addressable_type: 'User', addressable_id: client.id, is_default: false, address_type: 'service_address', city: 'Indore') }
+      let(:client_service_address) { create(:address, addressable_type: 'Client', addressable_id: client.id, is_default: false, address_type: 'service_address', city: 'Indore') }
       it "should delete client service address successfully" do
         set_auth_headers(auth_headers)
         delete :destroy, params: {client_id: client.id, id: client_service_address.id} 

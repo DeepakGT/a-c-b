@@ -5,7 +5,6 @@ FactoryBot.define do
       "testclient#{n}@yopmail.com"
     end
 
-    password { 'Abcd@123' }
     payor_status { 'insurance' }
   end
 end

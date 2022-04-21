@@ -2172,7 +2172,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/definitions/ClientCreateParameters"
+              $ref: "#/definitions/ClientCreateUpdateParameters"
       responses:
         "200":
           description: "Created client"
@@ -2349,7 +2349,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/definitions/ClientUpdateParameters"
+              $ref: "#/definitions/ClientCreateUpdateParameters"
       responses:
         "200":
           description: "Updated client"
@@ -6636,74 +6636,7 @@ definitions:
           end_date:
             type: "string"
 
-  ClientCreateParameters:
-    type: "object"
-    properties:
-      first_name:
-        type: "string"
-      last_name:
-        type: "string"
-      disqualified:
-        type: "boolean"
-      dq_reason:
-        type: "string"
-        enum: [lost_contact, not_clinically_appropriate, insurance_denial, no_longer_interested, competitor, not_ready_to_move_forward, other]
-      preferred_language:
-        type: "string"
-        enum: [english, spanish]
-      status:
-        type: "string"
-        enum: [active, inactive]
-      gender:
-        type: "string"
-        enum: [male, female]
-      payor_status:
-        type: "string"
-      clinic_id:
-        type: "integer"
-      email:
-        type: "string"
-      password:
-        type: "string"
-      password_confirmation:
-        type: "string"
-      dob:
-        type: "string"
-      bcba_id:
-        type: "integer"
-      phone_number_attributes:
-        type: "object"
-        properties:
-          phone_type:
-            type: "string"
-            enum: [fax, home, mobile, pager, work, other]
-          number:
-            type: "string"
-      addresses_attributes:
-        type: "object"
-        properties:
-          0:
-            type: "object"
-            properties:
-              line1:
-                type: "string"
-              line2:
-                type: "string"
-              line3:
-                type: "string"
-              zipcode:
-                type: "string"
-              city:
-                type: "string"
-              state:
-                type: "string"
-              country:
-                type: "string"
-              address_type:
-                type: "string"
-                enum: [office, insurance_address, service_address]
-
-  ClientUpdateParameters:
+  ClientCreateUpdateParameters:
     type: "object"
     properties:
       first_name:
@@ -6748,8 +6681,6 @@ definitions:
           0:
             type: "object"
             properties:
-              id:
-                type: "integer"
               line1:
                 type: "string"
               line2:

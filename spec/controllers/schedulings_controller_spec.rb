@@ -12,7 +12,7 @@ RSpec.describe SchedulingsController, type: :controller do
   let!(:role) { create(:role, name: 'executive_director', permissions: ['schedule_view', 'schedule_update', 'schedule_delete'])}
   let!(:user) { create(:user, :with_role, role_name: role.name) }
   let!(:auth_headers) { user.create_new_auth_token }
-  let!(:organization) { create(:organization, name: 'org1') }
+  let!(:organization) { create(:organization, name: 'org1', admin_id: user.id) }
   let!(:clinic) { create(:clinic, name: 'clinic1', organization_id: organization.id) }
   let!(:client) { create(:client, clinic_id: clinic.id, first_name: 'test') }
   let!(:service) { create(:service) }
