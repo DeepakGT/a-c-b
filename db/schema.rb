@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_20_150907) do
+ActiveRecord::Schema.define(version: 2022_04_21_070926) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -419,6 +419,7 @@ ActiveRecord::Schema.define(version: 2022_04_20_150907) do
     t.string "payor_status"
     t.date "hired_at"
     t.bigint "bcba_id"
+    t.string "job_type", default: "full_time"
     t.index ["bcba_id"], name: "index_users_on_bcba_id"
     t.index ["clinic_id"], name: "index_users_on_clinic_id"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true

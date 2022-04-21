@@ -13,7 +13,7 @@ class Scheduling < ApplicationRecord
   validate :validate_time
   validate :validate_past_appointments, on: :create
   validate :validate_units
-  validate :validate_staff, on: :create
+  # validate :validate_staff, on: :create
 
   serialize :unrendered_reason, Array
 
@@ -82,11 +82,11 @@ class Scheduling < ApplicationRecord
     end
   end
 
-  def validate_staff
-    schedules = self.staff&.schedulings&.unrendered_schedulings&.exceeded_5_days_scheduling
-    if schedules.any?
-      errors.add(:staff, 'No further appointments can be created for given staff unless exceeded 5 days past appointments are rendered.')
-    end
-  end
+  # def validate_staff
+  #   schedules = self.staff&.schedulings&.unrendered_schedulings&.exceeded_5_days_scheduling
+  #   if schedules.any?
+  #     errors.add(:staff, 'No further appointments can be created for given staff unless exceeded 5 days past appointments are rendered.')
+  #   end
+  # end
   # end of private
 end

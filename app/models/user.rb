@@ -25,6 +25,7 @@ class User < ActiveRecord::Base
   # Enums
   enum status: {active: 0, inactive: 1}
   enum gender: {male: 0, female: 1}
+  enum job_type: {full_time: 'full_time', part_time: 'part_time'}
 
   # Validation
   validates_associated :role

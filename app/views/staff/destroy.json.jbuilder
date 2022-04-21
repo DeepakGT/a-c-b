@@ -11,6 +11,7 @@ else
     json.status @staff.status
     json.terminated_on @staff.terminated_on
     json.gender @staff.gender
+    json.job_type @staff.job_type
     json.supervisor_id @staff.supervisor_id
   end
 end

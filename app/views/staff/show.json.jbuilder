@@ -9,6 +9,7 @@ json.data do
   json.hired_at @staff.hired_at
   json.terminated_on @staff.terminated_on
   json.title @staff.role_name
+  json.job_type @staff.job_type
   json.gender @staff.gender
   if staff_clinic.present?
     json.organization_id staff_clinic.clinic&.organization_id

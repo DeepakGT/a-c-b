@@ -555,6 +555,7 @@ paths:
                     "last_name": "O'Connell",
                     "email": "bcba_staff1@yopmail.com",
                     "title": "bcba",
+                    "job_type": "full_time",
                     "organization_id": 1,
                     "organization_name": "org1",
                     "clinic_id": 1,
@@ -569,6 +570,7 @@ paths:
                     "last_name": "staff",
                     "email": "bcba_staff1@yopmail.com",
                     "title": "bcba",
+                    "job_type": "full_time",
                     "organization_id": 1,
                     "organization_name": "org1",
                     "clinic_id": 1,
@@ -631,6 +633,7 @@ paths:
                   "status": "active",
                   "terminated_on": null,
                   "gender": "male",
+                  "job_type": "full_time",
                   "supervisor_id": 1,
                   "phone_numbers": [
                     {
@@ -704,6 +707,7 @@ paths:
                   "status": "active",
                   "terminated_on": null,
                   "title": "bcba",
+                  "job_type": "full_time",
                   "gender": "male",
                   "organization_id": 1,
                   "organization_name": "org1",
@@ -3574,6 +3578,7 @@ paths:
                   "status": "active",
                   "terminated_on": null,
                   "gender": "male",
+                  "job_type": "full_time",
                   "supervisor_id": 3
                 }
               }
@@ -6526,6 +6531,9 @@ definitions:
         type: "string"
       staff_location_id:
         type: "integer"
+      job_type:
+        type: "string" 
+        enum: ["full_time", "part_time"]
       phone_numbers_attributes:
         type: "object"
         properties:
@@ -6586,6 +6594,9 @@ definitions:
         type: "string"
       role_name:
         type: "string"
+      job_type:
+        type: "string" 
+        enum: ["full_time", "part_time"]
       phone_numbers_attributes:
         type: "object"
         properties:
