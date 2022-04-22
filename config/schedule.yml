@@ -6,18 +6,26 @@ render_service_worker:
   cron: '1 0 * * *'
   class: "RenderServiceWorker"
 
-sync_with_catalyst_worker_at_11_am:
+sync_soap_notes_with_catalyst_one_month_worker_at_10_pm:
+  cron: '0 22 * * *'
+  class: "SyncWithCatalystOneMonthWorker"
+
+sync_soap_notes_with_catalyst_at_11_am:
   cron: '0 11 * * *'
   class: "SyncWithCatalystWorker"
 
-sync_with_catalyst_worker_at_3_pm:
+sync_soap_notes_with_catalyst_at_3_pm:
   cron: '0 15 * * *'
   class: "SyncWithCatalystWorker"
 
-sync_with_catalyst_worker_at_6_pm:
-  cron: '0 18 * * *'
-  class: "SyncWithCatalystWorker"
-
-sync_with_catalyst_worker_at_9_pm:
+sync_soap_notes_with_catalyst_at_9_pm:
   cron: '0 21 * * *'
   class: "SyncWithCatalystWorker"
+
+sync_staff_and_client_with_catalyst_at_10_am:
+  cron: '0 10 * * *'
+  class: "SyncStaffAndClientWithCatalystWorker"
+
+sync_staff_and_client_with_catalyst_at_7_pm:
+  cron: '0 19 * * *'
+  class: "SyncStaffAndClientWithCatalystWorker"

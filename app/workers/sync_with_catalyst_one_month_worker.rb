@@ -1,12 +1,12 @@
 require 'sidekiq'
 require 'sidekiq-cron'
-class SyncWithCatalystWorker                      
+class SyncWithCatalystOneMonthWorker                      
   include Sidekiq::Worker
                                         
   def perform
     puts "#{DateTime.now}"
     puts "SyncWithCatalystJob is started"
-    sync_data((Time.now.to_date-1).strftime('%m-%d-%Y'), (Time.now.to_date).strftime('%m-%d-%Y'))
+    sync_data((Time.now.to_date-30).strftime('%m-%d-%Y'), (Time.now.to_date).strftime('%m-%d-%Y'))
     puts "SyncWithCatalystJob is completed"
     puts ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"        
   end

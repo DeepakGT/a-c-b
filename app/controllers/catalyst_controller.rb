@@ -89,7 +89,11 @@ class CatalystController < ApplicationController
   end
 
   def create_soap_note
-    soap_note = @schedule.soap_notes.new(add_date: @catalyst_data.date, note: @catalyst_data.note, creator_id: @schedule.staff_id, synced_with_catalyst: true)
+    soap_note = schedule.soap_notes.find_or_initialize_by(catalyst_data_id: catalyst_data.id)
+    soap_note.add_date = catalyst_data.date
+    soap_note.note = catalyst_data.note
+    soap_note.creator_id = schedule.staff_id
+    soap_note.synced_with_catalyst = true
     soap_note.bcba_signature = true if @catalyst_data.bcba_signature.present?
     soap_note.clinical_director_signature = true if @catalyst_data.clinical_director_signature.present?
     soap_note.caregiver_signature = true if @catalyst_data.caregiver_signature.present?

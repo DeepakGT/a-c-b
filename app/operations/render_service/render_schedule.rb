@@ -15,8 +15,7 @@ module RenderService
             break if schedule.is_rendered.to_bool.true?
           end
         else
-          schedule.unrendered_reason = ['soap_note_absent']
-          schedule.unrendered_reason = schedule.unrendered_reason.uniq
+          schedule.unrendered_reason = schedule.unrendered_reason | ['soap_note_absent']
           schedule.save(validate: false)
         end
       end

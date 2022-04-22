@@ -9,8 +9,8 @@ module CompareCatalystDataWithSystemData
 
       def compare_synced_data(catalyst_data)
         response_data_hash = Hash.new
-        staff = Staff.find_by(first_name: catalyst_data.staff_first_name, last_name: catalyst_data.staff_last_name)
-        client = Client.find_by(first_name: catalyst_data.client_first_name, last_name: catalyst_data.client_last_name, dob: data['patientBirthDate'])
+        staff = Staff.find_by(catalyst_user_id: catalyst_data.catalyst_user_id)
+        client = Client.find_by(catalyst_patient_id: catalyst_data.catalyst_patient_id)
         schedules = Scheduling.by_client_ids(client&.id).by_staff_ids(staff&.id).on_date(catalyst_data.date)
 
         if schedules.count==1
@@ -28,7 +28,7 @@ module CompareCatalystDataWithSystemData
             schedule.minutes = catalyst_data.minutes if schedule.minutes.present?
             schedule.catalyst_data_ids.push(catalyst_data.id)
             schedule.save(validate: false)
-            soap_note = schedule.soap_notes.new(add_date: catalyst_data.date, note: catalyst_data.note, creator_id: schedule.staff_id, synced_with_catalyst: true)
+            soap_note = schedule.soap_notes.new(add_date: catalyst_data.date, note: catalyst_data.note, creator_id: schedule.staff_id, synced_with_catalyst: true, catalyst_data_id: catalyst_data.id)
             soap_note.bcba_signature = true if catalyst_data.bcba_signature.present?
             soap_note.clinical_director_signature = true if catalyst_data.clinical_director_signature.present?
             soap_note.caregiver_signature = true if catalyst_data.caregiver_signature.present?
@@ -41,13 +41,11 @@ module CompareCatalystDataWithSystemData
 
             response_data_hash = {}
           else
-            schedule.unrendered_reason.push('units_does_not_match')
-            schedule.unrendered_reason = schedule.unrendered_reason.uniq
-            schedule.catalyst_data_ids.push(catalyst_data.id)
-            schedule.catalyst_data_ids = schedule.catalyst_data_ids.uniq
+            schedule.unrendered_reason = schedule.unrendered_reason | ['units_does_not_match']
+            schedule.catalyst_data_ids = schedule.catalyst_data_ids | ["#{catalyst_data.id}"]
             schedule.save(validate: false)
-            response_data_hash[:system_data] = schedule
-            response_data_hash[:catalyst_data] = catalyst_data
+            response_data_hash[:system_data] = schedule.attributes
+            response_data_hash[:catalyst_data] = catalyst_data.attributes
           end
           catalyst_data.system_scheduling_id = schedule.id
           catalyst_data.is_appointment_found = true
@@ -64,7 +62,7 @@ module CompareCatalystDataWithSystemData
               schedule.minutes = catalyst_data.minutes if schedule.minutes.present?
               schedule.catalyst_data_ids.push(catalyst_data.id)
               schedule.save(validate: false)
-              soap_note = schedule.soap_notes.new(add_date: catalyst_data.date, note: catalyst_data.note, creator_id: schedule.staff_id)
+              soap_note = schedule.soap_notes.new(add_date: catalyst_data.date, note: catalyst_data.note, creator_id: schedule.staff_id, catalyst_data_id: catalyst_data.id, synced_with_catalyst: true)
               soap_note.bcba_signature = true if catalyst_data.bcba_signature.present?
               soap_note.clinical_director_signature = true if catalyst_data.clinical_director_signature.present?
               soap_note.caregiver_signature = true if catalyst_data.caregiver_signature.present?
@@ -81,11 +79,10 @@ module CompareCatalystDataWithSystemData
               catalyst_data.save
               break
             else
-              catalyst_data.multiple_schedulings_ids.push(schedule.id)
-              catalyst_data.multiple_schedulings_ids = catalyst_data.multiple_schedulings_ids.uniq
+              catalyst_data.multiple_schedulings_ids = schedule.multiple_schedulings_ids | ["#{schedule.id}"]
               catalyst_data.save(validate: false)
-              response_data_hash[:system_data] = schedule
-              response_data_hash[:catalyst_data] = catalyst_data
+              response_data_hash[:system_data] = schedule.attributes
+              response_data_hash[:catalyst_data] = catalyst_data.attributes
             end
           end
           catalyst_data.is_appointment_found = true
@@ -93,7 +90,7 @@ module CompareCatalystDataWithSystemData
         else
           catalyst_data.is_appointment_found = false
           catalyst_data.save(validate: false)
-          response_data_hash[:catalyst_data] = catalyst_data
+          response_data_hash[:catalyst_data] = catalyst_data.attributes
         end
         response_data_hash
       end

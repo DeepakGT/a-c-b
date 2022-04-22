@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_21_070926) do
+ActiveRecord::Schema.define(version: 2022_04_22_075456) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -74,10 +74,6 @@ ActiveRecord::Schema.define(version: 2022_04_21_070926) do
 
   create_table "catalyst_data", force: :cascade do |t|
     t.string "catalyst_soap_note_id"
-    t.string "client_first_name"
-    t.string "client_last_name"
-    t.string "staff_first_name"
-    t.string "staff_last_name"
     t.date "date"
     t.string "start_time"
     t.string "end_time"
@@ -94,6 +90,9 @@ ActiveRecord::Schema.define(version: 2022_04_21_070926) do
     t.float "minutes"
     t.boolean "is_appointment_found"
     t.string "multiple_schedulings_ids", default: [], array: true
+    t.datetime "date_revision_made"
+    t.string "catalyst_patient_id"
+    t.string "catalyst_user_id"
     t.index ["system_scheduling_id"], name: "index_catalyst_data_on_system_scheduling_id"
   end
 
@@ -207,6 +206,7 @@ ActiveRecord::Schema.define(version: 2022_04_21_070926) do
     t.string "name"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "code"
   end
 
   create_table "funding_sources", force: :cascade do |t|
@@ -345,6 +345,7 @@ ActiveRecord::Schema.define(version: 2022_04_21_070926) do
     t.datetime "caregiver_signature_datetime"
     t.boolean "caregiver_signature", default: false
     t.boolean "synced_with_catalyst", default: false
+    t.string "catalyst_data_id"
     t.index ["creator_id"], name: "index_soap_notes_on_creator_id"
     t.index ["scheduling_id"], name: "index_soap_notes_on_scheduling_id"
   end
