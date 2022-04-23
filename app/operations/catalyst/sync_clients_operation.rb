@@ -21,13 +21,13 @@ module Catalyst
                 break
               end
             end
-          else
-            client = Client.new(first_name: client_data['firstName'], last_name: client_data['lastName'], dob: client_data['dateOfBirth'], catalyst_patient_id: client_data['patientId'])
-            client.status = 'inactive' if client_data['active'].to_bool.false?
-            client.bcba_id = Staff.find_by(catalyst_user_id: client_data['bcba'])&.id
-            client.clinic_id = Clinic.find_by(catalyst_clinic_id: client_data['siteId'])&.id
-            client.gender = client_data['gender']==2 ? 1 : 0
-            client.save(validate: false)
+          # else
+          #   client = Client.new(first_name: client_data['firstName'], last_name: client_data['lastName'], dob: client_data['dateOfBirth'], catalyst_patient_id: client_data['patientId'])
+          #   client.status = 'inactive' if client_data['active'].to_bool.false?
+          #   client.bcba_id = Staff.find_by(catalyst_user_id: client_data['bcba'])&.id
+          #   client.clinic_id = Clinic.find_by(catalyst_clinic_id: client_data['siteId'])&.id
+          #   client.gender = client_data['gender']==2 ? 1 : 0
+          #   client.save(validate: false)
           end
         end
       end
