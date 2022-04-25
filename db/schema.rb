@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_22_075456) do
+ActiveRecord::Schema.define(version: 2022_04_25_114921) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -93,6 +93,8 @@ ActiveRecord::Schema.define(version: 2022_04_22_075456) do
     t.datetime "date_revision_made"
     t.string "catalyst_patient_id"
     t.string "catalyst_user_id"
+    t.index ["is_appointment_found"], name: "index_catalyst_data_on_is_appointment_found"
+    t.index ["multiple_schedulings_ids"], name: "index_catalyst_data_on_multiple_schedulings_ids"
     t.index ["system_scheduling_id"], name: "index_catalyst_data_on_system_scheduling_id"
   end
 
@@ -280,6 +282,7 @@ ActiveRecord::Schema.define(version: 2022_04_22_075456) do
     t.integer "approval_status"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["approval_status"], name: "index_scheduling_change_requests_on_approval_status"
     t.index ["scheduling_id"], name: "index_scheduling_change_requests_on_scheduling_id"
   end
 
@@ -304,7 +307,10 @@ ActiveRecord::Schema.define(version: 2022_04_22_075456) do
     t.datetime "rendered_at"
     t.index ["client_enrollment_service_id"], name: "index_schedulings_on_client_enrollment_service_id"
     t.index ["creator_id"], name: "index_schedulings_on_creator_id"
+    t.index ["date"], name: "index_schedulings_on_date"
+    t.index ["is_rendered"], name: "index_schedulings_on_is_rendered"
     t.index ["staff_id"], name: "index_schedulings_on_staff_id"
+    t.index ["start_time"], name: "index_schedulings_on_start_time"
     t.index ["updator_id"], name: "index_schedulings_on_updator_id"
   end
 
