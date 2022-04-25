@@ -6274,6 +6274,57 @@ paths:
                 "errors": []
               }
 
+  /api/current_user_detail:
+    get:
+      summary: logged in user detail
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      responses:
+        "200":
+          description: "logged in user detail"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 1,
+                  "first_name": "Jamel",
+                  "last_name": "Casper",
+                  "email": "super_admin_user@yopmail.com",
+                  "status": "active",
+                  "title": "super_admin",
+                  "gender": "male",
+                  "phone_numbers": [
+                    {
+                      "id": 6,
+                      "phone_type": "mobile",
+                      "number": "9988998899"
+                    }
+                  ],
+                  "address": {
+                    "id": 18,
+                    "line1": null,
+                    "line2": null,
+                    "line3": null,
+                    "zipcode": null,
+                    "city": "Indore",
+                    "state": null,
+                    "country": null
+                  }
+                }
+              }
+
 definitions:
   UserRegistrationParameters:
     type: "object"
