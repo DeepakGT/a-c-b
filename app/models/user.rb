@@ -44,9 +44,9 @@ class User < ActiveRecord::Base
   validate :validate_status
 
   # scopes
-  scope :by_first_name, ->(fname){ where('lower(first_name) LIKE ?',"%#{fname.downcase}%") }
-  scope :by_last_name, ->(lname){ where('lower(last_name) LIKE ?', "%#{lname&.downcase}%") }
-  scope :by_role, ->(title){ where('lower(roles.name) = ?', title&.downcase)}
+  scope :by_first_name, ->(fname){ where("first_name ILIKE '%#{fname}%'") }
+  scope :by_last_name, ->(lname){ where("last_name ILIKE '%#{lname}%'") }
+  scope :by_role, ->(title){ where("roles.name ILIKE '%#{title}%'")}
 
   # delegates
   delegate :name, to: :role, prefix: true, allow_nil: true

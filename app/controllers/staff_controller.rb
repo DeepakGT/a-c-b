@@ -84,7 +84,7 @@ class StaffController < ApplicationController
         return staff
       when "organization"
         staff.joins(clinics: :organization).by_organization(params[:search_value])
-      when "title"
+      when "role"
         staff.joins(:role).by_role(params[:search_value])
       when "immediate_supervisor"
         fname, lname = params[:search_value].split
