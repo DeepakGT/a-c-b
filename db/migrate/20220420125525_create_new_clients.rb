@@ -17,13 +17,13 @@ class CreateNewClients < ActiveRecord::Migration[6.1]
       t.timestamps
     end
 
-    Rake::Task['update_new_client:copy_client_data'].invoke
+    # Rake::Task['update_new_client:copy_client_data'].invoke
 
     add_reference :client_enrollments, :new_client, index: true
     add_reference :contacts, :new_client, index: true
     add_reference :client_notes, :new_client, index: true
 
-    Rake::Task['update_new_client:update_new_client_ids'].invoke
+    # Rake::Task['update_new_client:update_new_client_ids'].invoke
 
     remove_reference :contacts, :client, foreign_key: {to_table: :users}
     remove_reference :client_enrollments, :client, foreign_key: {to_table: :users}
@@ -53,7 +53,7 @@ class CreateNewClients < ActiveRecord::Migration[6.1]
     add_reference :client_enrollments, :client, foreign_key: {to_table: :users}
     add_reference :client_notes, :client, foreign_key: {to_table: :users}
 
-    Rake::Task['update_new_client:update_client_ids'].invoke
+    # Rake::Task['update_new_client:update_client_ids'].invoke
 
     remove_reference :client_enrollments, :new_client, index: true
     remove_reference :contacts, :new_client, index: true

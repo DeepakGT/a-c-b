@@ -1,7 +1,7 @@
 class AddColumns < ActiveRecord::Migration[6.1]
   def up
     add_column :countries, :code, :string
-    update_code
+    # update_code
 
     add_column :catalyst_data, :date_revision_made, :datetime
     add_column :soap_notes, :catalyst_data_id, :string
@@ -29,11 +29,11 @@ class AddColumns < ActiveRecord::Migration[6.1]
 
   private
 
-  def update_code
-    ISO3166::Country.all.map(&:alpha3).each_with_index do |code, i|
-      Country.find(i+1).update(code: code)
-    end
-  end
+  # def update_code
+  #   ISO3166::Country.all.map(&:alpha3).each_with_index do |code, i|
+  #     Country.find(i+1).update(code: code)
+  #   end
+  # end
 
   def update_catalyst_data
     CatalystData.all.each do |catalyst_data|
