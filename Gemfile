@@ -47,8 +47,10 @@ gem 'rswag'
 # Static code analyzer and code formatter
 gem 'rubocop', '~> 1.22', require: false
 # snowflake integration
-gem 'ruby-odbc' if ENV['CLOUD_PLATFORM']!='heroku'
-gem 'sequel' if ENV['CLOUD_PLATFORM']!='heroku'
+if ENV['CLOUD_PLATFORM']!='heroku'
+  gem 'ruby-odbc' 
+  gem 'sequel'
+end
 # Rack::Cors provides support for Cross-Origin Resource Sharing (CORS) 
 # for Rack compatible web applications.
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]

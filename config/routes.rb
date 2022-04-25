@@ -20,7 +20,10 @@ Rails.application.routes.draw do
   mount Rswag::Api::Engine => '/api-docs'
   mount Sidekiq::Web => '/sidekiq'
   scope :api do
-    mount_devise_token_auth_for 'User', at: 'auth'
+    # mount_devise_token_auth_for 'User', at: 'auth'
+    mount_devise_token_auth_for 'User', at: 'auth', controllers: {
+      registrations: 'overrides/registrations'
+    }
 
     resources :organizations
     

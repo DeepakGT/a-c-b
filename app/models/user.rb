@@ -16,11 +16,15 @@ class User < ActiveRecord::Base
 
   # Associations
   has_one :user_role, dependent: :destroy
+  has_one :address, as: :addressable, dependent: :destroy, inverse_of: :addressable
+  has_many :phone_numbers, as: :phoneable, dependent: :destroy, inverse_of: :phoneable
   has_one :rbt_supervision, dependent: :destroy
   
   has_one :role, through: :user_role
 
   accepts_nested_attributes_for :rbt_supervision, :update_only => true
+  accepts_nested_attributes_for :address, :update_only => true
+  accepts_nested_attributes_for :phone_numbers, :update_only => true
 
   # Enums
   enum status: {active: 0, inactive: 1}

@@ -16,8 +16,16 @@ module Snowflake
           staff.status = staff_roster['ACTIVE']=='ACTIVE' ? 'active' : 'inactive'
           staff.gender = staff_roster['GENDER']=='Female' ? 'female' : 'male'
           staff.job_type = staff_roster['PARTFULLTIME']=='Full Time' ? full_time : part_time
-          # role
-          staff.role = Role.find_by(name: staff_roster['JOBTITLE'].downcase)
+          case staff_roster['JOBTITLE']
+          when 'RBT' || 'Lead RBT '
+            staff.role = Role.find_or_create_by(name: 'rbt')
+          when 'BCBA'
+            staff.role = Role.find_or_create_by(name: 'bcba')
+          when 'Executive Director'
+            staff.role = Role.find_or_create_by(name: 'executive_director')
+          else
+            staff.role = Role.find_or_create_by(name: staff_roster['JOBTITLE'].downcase)
+          end
           staff.save(validate: false)
 
           if staff_roster['AGENCYNAME'].present?

@@ -49,8 +49,7 @@ paths:
                   email: "testuser2@yopmail.com"
                   role: "ABA Admin"
                 errors:
-                  email: ["has already been taken"]
-                  full_messages: ["Email has already been taken"]
+                  ["Email has already been taken"]
     put:
       summary: User update
       parameters:
