@@ -42,6 +42,21 @@ json.data do
       end
     end
   end
+  if @past_schedules.exceeded_24_h_scheduling.any?
+    json.exceeded_24_h true
+  else
+    json.exceeded_24_h false
+  end
+  if @past_schedules.exceeded_3_days_scheduling.any?
+    json.exceeded_3_days true
+  else
+    json.exceeded_3_days false
+  end
+  if @past_schedules.exceeded_5_days_scheduling.any?
+    json.exceeded_5_days true
+  else
+    json.exceeded_5_days false
+  end
   json.past_schedules do
     json.array! @past_schedules do |schedule|
       client = schedule.client_enrollment_service&.client_enrollment&.client
@@ -81,21 +96,6 @@ json.data do
       json.unrendered_reasons schedule.unrendered_reason
       json.units schedule.units
       json.minutes schedule.minutes
-      if schedule.date<(Time.now.to_date-1) || (schedule.date==(Time.now.to_date-1) && schedule.end_time<Time.now.strftime('%H:%M'))
-        json.exceeded_24_h true
-      else
-        json.exceeded_24_h false
-      end
-      if schedule.date<(Time.now.to_date-3) || (schedule.date==(Time.now.to_date-3) && schedule.end_time<Time.now.strftime('%H:%M'))
-        json.exceeded_3_days true
-      else
-        json.exceeded_3_days false
-      end
-      if schedule.date<(Time.now.to_date-5) || (schedule.date==(Time.now.to_date-5) && schedule.end_time<Time.now.strftime('%H:%M'))
-        json.exceeded_5_days true
-      else
-        json.exceeded_5_days false
-      end
       if schedule.catalyst_data_ids.present?
         catalyst_datas = CatalystData.where(id: schedule.catalyst_data_ids).where(system_scheduling_id: schedule.id)
         if catalyst_datas.present?
@@ -122,38 +122,26 @@ json.data do
       end
     end
   end
-  json.no_appointment_catalyst_data do
-    json.array! @catalyst_data do |catalyst_data|
-      staff = Staff.find_by(catalyst_user_id: catalyst_data.catalyst_user_id)
-      client = Client.find_by(catalyst_patient_id: catalyst_data.catalyst_patient_id)
-      json.id catalyst_data.id
+  json.catalyst_data do
+    json.array! @catalyst_data do |catalyst_datum|
+      staff = Staff.find_by(catalyst_user_id: catalyst_datum.catalyst_user_id)
+      client = Client.find_by(catalyst_patient_id: catalyst_datum.catalyst_patient_id)
+      json.id catalyst_datum.id
       json.client_name "#{client&.first_name} #{client&.last_name}"
       json.client_id client&.id
       json.staff_name "#{staff&.first_name} #{staff&.last_name}"
       json.staff_id staff&.id
-      json.date "#{catalyst_data.date}"
-      json.start_time "#{catalyst_data.start_time}"
-      json.end_time "#{catalyst_data.end_time}"
-      json.units "#{catalyst_data.units}"
-      json.minutes "#{catalyst_data.minutes}"
-      json.note catalyst_data.note
-    end
-  end
-  json.multiple_catalyst_notes do
-    json.array! @multiple_catalyst_notes do |catalyst_data|
-      staff = Staff.find_by(catalyst_user_id: catalyst_data.catalyst_user_id)
-      client = Client.find_by(catalyst_patient_id: catalyst_data.catalyst_patient_id)
-      json.id catalyst_data.id
-      json.client_name "#{client&.first_name} #{client&.last_name}"
-      json.client_id client&.id
-      json.staff_name "#{staff&.first_name} #{staff&.last_name}"
-      json.staff_id staff&.id
-      json.date "#{catalyst_data.date}"
-      json.start_time "#{catalyst_data.start_time}"
-      json.end_time "#{catalyst_data.end_time}"
-      json.units "#{catalyst_data.units}"
-      json.minutes "#{catalyst_data.minutes}"
-      json.note catalyst_data.note
+      json.date "#{catalyst_datum.date}"
+      json.start_time "#{catalyst_datum.start_time}"
+      json.end_time "#{catalyst_datum.end_time}"
+      json.units "#{catalyst_datum.units}"
+      json.minutes "#{catalyst_datum.minutes}"
+      json.note catalyst_datum.note
+      if catalyst_datum.is_appointment_found==false
+        json.unrendered_reasons ["no_appointment_found"]
+      else
+        json.unrendered_reasons ["multiple_soap_notes_found"]
+      end
     end
   end
 end
