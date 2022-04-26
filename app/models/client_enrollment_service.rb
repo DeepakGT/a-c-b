@@ -9,6 +9,9 @@ class ClientEnrollmentService < ApplicationRecord
   accepts_nested_attributes_for :service_providers
 
   validate :validate_service_providers
+  validate :validate_units_and_minutes
+
+  before_save :set_units_and_minutes
 
   scope :by_client, ->(client_ids){ joins(:client_enrollment).where('client_enrollments.client_id': client_ids) }
   scope :by_date, ->(date){ where('start_date <= ? AND end_date >= ?', date, date) }
@@ -24,5 +27,20 @@ class ClientEnrollmentService < ApplicationRecord
   def validate_service_providers
     errors.add(:service_providers, 'must be absent.') if service.is_service_provider_required.to_bool.false? && self.service_providers.present?
     errors.add(:service_providers, 'must be present.') if service.is_service_provider_required.to_bool.true? && self.service_providers.blank?
+  end
+
+  def validate_units_and_minutes
+    if self.units.present? && self.minutes.present?
+      minutes = self.units*15
+      errors.add(:client_enrollment_service, "The units/minutes are wrong. 1 unit is equivalent to 15 minutes, and vice versa.") if minutes != self.minutes
+    end
+  end
+
+  def set_units_and_minutes
+    if self.units.present? && self.minutes.blank?
+      self.minutes = self.units*15
+    elsif self.minutes.present? && self.units.blank?
+      self.units = self.minutes/15
+    end
   end
 end

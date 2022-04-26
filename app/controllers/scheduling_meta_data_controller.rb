@@ -66,8 +66,14 @@ class SchedulingMetaDataController < ApplicationController
   def check_qualifications(client_id, date, staff)
     client_enrollment_services = ClientEnrollmentService.left_outer_joins(service: :service_qualifications).by_client(params[:client_id]).by_date(params[:date])
     staff_qualification_ids = staff.qualifications.pluck(:credential_id)
-    client_enrollment_services = client_enrollment_services.by_service_with_no_qualification
-                                                           .or(client_enrollment_services.by_staff_qualifications(staff_qualification_ids))
+    if staff_qualification_ids.blank?
+      client_enrollment_services = client_enrollment_services.by_service_with_no_qualification
+    else
+      client_enrollment_services = client_enrollment_services.by_service_with_no_qualification
+                                                             .or(client_enrollment_services.by_staff_qualifications(staff_qualification_ids))
+                                                          
+    end
+    client_enrollment_services.uniq
   end
   # end of private
 

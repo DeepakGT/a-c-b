@@ -63,7 +63,7 @@ json.data do
       json.rbt_sign_date soap_note.rbt_signature_date
       json.bcba_sign soap_note.bcba_signature
       json.bcba_sign_name soap_note.bcba_signature_author_name
-      json.bcba_sign_date soap_note.bcba_signature_date
+      json.bcba_sign_date soap_note.bcba_signature_date&.strftime('%Y-%m-%d %H:%M')
       json.clinical_director_sign soap_note.clinical_director_signature
       json.clinical_director_sign_name soap_note.clinical_director_signature_author_name
       json.clinical_director_sign_date soap_note.clinical_director_signature_date
