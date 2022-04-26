@@ -15,7 +15,7 @@ class SchedulingMetaDataController < ApplicationController
     rbt_schedules = Scheduling.by_staff_ids(current_user.id)
     @upcoming_schedules = rbt_schedules.scheduled_scheduling.order(:date).first(10)
     @past_schedules = rbt_schedules.completed_scheduling.unrendered_schedulings.order(date: :desc)
-    @catalyst_data = CatalystData.with_multiple_appointments.or(CatalystData.with_no_appointments)
+    @catalyst_data = CatalystData.with_multiple_appointments.or(CatalystData.with_no_appointments).first(30)
     # sql = "SELECT id, 'Upcoming Schedule' AS type FROM schedulings WHERE staff_id = #{current_user.id} AND date>=CURRENT_TIMESTAMP UNION SELECT id, 'Past Schedule' AS type FROM schedulings WHERE staff_id = #{current_user.id} AND date<CURRENT_TIMESTAMP AND is_rendered=false UNION SELECT id,'Catalyst Data' AS type FROM catalyst_data WHERE is_appointment_found=false OR cardinality(multiple_schedulings_ids)>0"
     # @appointments = ActiveRecord::Base.connection.exec_query(sql)&.rows
   end
@@ -29,7 +29,7 @@ class SchedulingMetaDataController < ApplicationController
     change_requests = SchedulingChangeRequest.by_approval_status
     @change_requests = change_requests.by_bcba_ids(current_user.id)
                                       .or(change_requests.by_staff_ids(current_user.id)).left_outer_joins(:scheduling)
-    @catalyst_data = CatalystData.with_multiple_appointments.or(CatalystData.with_no_appointments)
+    @catalyst_data = CatalystData.with_multiple_appointments.or(CatalystData.with_no_appointments).first(30)
   end
 
   def executive_director_appointments
@@ -45,7 +45,7 @@ class SchedulingMetaDataController < ApplicationController
     @client_enrollment_services = ClientEnrollmentService.by_client(client_ids).about_to_expire
     change_requests = SchedulingChangeRequest.by_approval_status
     @change_requests = change_requests.by_client_ids(client_ids)
-    @catalyst_data = CatalystData.with_multiple_appointments.or(CatalystData.with_no_appointments)
+    @catalyst_data = CatalystData.with_multiple_appointments.or(CatalystData.with_no_appointments).first(30)
   end
 
   private
