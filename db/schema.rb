@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_25_114921) do
+ActiveRecord::Schema.define(version: 2022_04_26_063207) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -344,7 +344,7 @@ ActiveRecord::Schema.define(version: 2022_04_25_114921) do
     t.date "rbt_signature_date"
     t.boolean "bcba_signature"
     t.string "bcba_signature_author_name"
-    t.date "bcba_signature_date"
+    t.datetime "bcba_signature_date"
     t.boolean "clinical_director_signature"
     t.string "clinical_director_signature_author_name"
     t.date "clinical_director_signature_date"

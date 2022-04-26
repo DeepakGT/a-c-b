@@ -65,7 +65,7 @@ class SoapNotesController < ApplicationController
     if params[:bcba_sign].to_bool.true?
       @soap_note.bcba_signature = true
       @soap_note.bcba_signature_author_name = "#{current_user.first_name} #{current_user.last_name}"
-      @soap_note.bcba_signature_date = Time.now.to_date
+      @soap_note.bcba_signature_date = Time.now
     elsif params[:bcba_sign]==false
       @soap_note.bcba_signature = false
       @soap_note.bcba_signature_author_name = nil
@@ -97,7 +97,7 @@ class SoapNotesController < ApplicationController
       if params[:bcba_sign].to_bool.true? && @soap_note.bcba_signature.to_bool.false?
         @soap_note.bcba_signature = true
         @soap_note.bcba_signature_author_name = "#{current_user.first_name} #{current_user.last_name}"
-        @soap_note.bcba_signature_date = Time.now.to_date
+        @soap_note.bcba_signature_date = Time.now
       end
       if params[:clinical_director_sign].to_bool.true? && @soap_note.clinical_director_signature.to_bool.false?
         @soap_note.clinical_director_signature = true
