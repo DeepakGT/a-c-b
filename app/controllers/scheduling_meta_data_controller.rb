@@ -12,10 +12,12 @@ class SchedulingMetaDataController < ApplicationController
 
   def rbt_appointments
     authorize :appointment, :rbt_appointments?
-    rbt_schedules = Scheduling.by_staff_ids(current_user.id)
-    @upcoming_schedules = rbt_schedules.scheduled_scheduling.order(:date).first(10)
-    @past_schedules = rbt_schedules.completed_scheduling.unrendered_schedulings.order(date: :desc)
-    @catalyst_data = CatalystData.with_multiple_appointments.or(CatalystData.with_no_appointments)
+    # rbt_schedules = Scheduling.by_staff_ids(current_user.id)
+    sql = "SELECT id, 'Upcoming Schedule' AS type FROM schedulings WHERE staff_id = #{current_user.id} AND date>=CURRENT_TIMESTAMP UNION SELECT id, 'Past Schedule' AS type FROM schedulings WHERE staff_id = #{current_user.id} AND date<CURRENT_TIMESTAMP UNION SELECT id,'Catalyst Data' AS type FROM catalyst_data WHERE is_appointment_found=false OR cardinality(multiple_schedulings_ids)>0"
+    @appointments = ActiveRecord::Base.connection.exec_query(sql)&.rows
+    # @upcoming_schedules = rbt_schedules.scheduled_scheduling.order(:date).first(10)
+    # @past_schedules = rbt_schedules.completed_scheduling.unrendered_schedulings.order(date: :desc)
+    # @catalyst_data = CatalystData.with_multiple_appointments.or(CatalystData.with_no_appointments)
   end
 
   def bcba_appointments
