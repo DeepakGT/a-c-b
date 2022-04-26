@@ -8,7 +8,7 @@ json.data do
   json.title @user.role_name
   json.gender @user.gender
   json.phone_numbers do
-    json.array! @user.phone_numbers do |phone|
+    json.array! @user.phone_numbers.order(:id) do |phone|
       json.id phone.id
       json.phone_type phone.phone_type
       json.number phone.number
