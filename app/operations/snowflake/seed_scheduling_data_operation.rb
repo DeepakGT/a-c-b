@@ -14,7 +14,7 @@ module Snowflake
         appointments.each do |appointment|
           appointment = appointment.with_indifferent_access
           client_name = appointment['clientname']&.split(',')&.each(&:strip!)
-          client = Client.find_by(dob: appointment['clientdob']&.to_time&.strftime('%Y-%m-%d'), first_name: client_name.last, last_name: client_name.first)
+          client = Client.find_by(dob: appointment['clientdob']&.to_time&.strftime('%Y-%m-%d'), first_name: client_name&.last, last_name: client_name&.first)
           if client.present?
             if appointment['fundingsource'].present?
               funding_source = FundingSource.find_by('lower(name) = ?', appointment['fundingsource'].downcase)
