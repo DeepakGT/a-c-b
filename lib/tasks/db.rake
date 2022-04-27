@@ -4,6 +4,7 @@ namespace :db do
     puts "Production data seed is in progress..."
     ActiveRecord::Base.transaction do
       # Role
+      UserRole.destroy_all
       Role.delete_all
       Role.find_or_create_by!(name: 'super_admin')
       Role.find_or_create_by!(name: 'executive_director')
