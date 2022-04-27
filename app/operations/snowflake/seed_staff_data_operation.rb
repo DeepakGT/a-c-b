@@ -15,7 +15,7 @@ module Snowflake
           staff = Staff.find_or_initialize_by(email: staff_roster['EMAIL'], dob: staff_roster['DOB']&.to_time&.strftime('%Y:%m:%d'), hired_at: staff_roster['HIREDDATE']&.to_time&.strftime('%Y:%m:%d'), first_name: staff_roster['STAFFFIRSTNAME'], last_name: staff_roster['STAFFLASTNAME'], terminated_on: staff_roster['TERMINATEDDATE']&.to_time&.strftime('%Y:%m:%d'))
           staff.status = staff_roster['ACTIVE']=='ACTIVE' ? 'active' : 'inactive'
           staff.gender = staff_roster['GENDER']=='Female' ? 'female' : 'male'
-          staff.job_type = staff_roster['PARTFULLTIME']=='Full Time' ? full_time : part_time
+          staff.job_type = staff_roster['PARTFULLTIME']=='Full Time' ? 'full_time' : 'part_time'
           case staff_roster['JOBTITLE']
           when 'RBT' || 'Lead RBT '
             staff.role = Role.find_or_create_by(name: 'rbt')
