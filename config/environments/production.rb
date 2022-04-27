@@ -13,7 +13,7 @@ Rails.application.configure do
   config.eager_load = true
 
   # Full error reports are disabled and caching is turned on.
-  config.consider_all_requests_local       = false
+  config.consider_all_requests_local = true
 
   # Ensures that a master key has been made available in either ENV["RAILS_MASTER_KEY"]
   # or in config/master.key. This key is used to decrypt credentials (and other encrypted files).
@@ -115,7 +115,7 @@ Rails.application.configure do
 
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.perform_deliveries = true
-  config.action_mailer.default_url_options = { host: 'aba-center-be.herokuapp.com' }
+  config.action_mailer.default_url_options = { host: 'abaconnectemr.com' }
   config.action_mailer.default_options  = {
     from:  "no-reply@abacenters.com"
   }
@@ -136,4 +136,10 @@ Rails.application.configure do
     password:             Rails.application.credentials[:smtp][:password],
     enable_starttls_auto: true
   }
+
+  # Raise an error on page load if there are pending migrations.
+  config.active_record.migration_error = :page_load
+
+  # Highlight code that triggered database queries in logs.
+  config.active_record.verbose_query_logs = true
 end
