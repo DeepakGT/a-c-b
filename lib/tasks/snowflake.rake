@@ -6,7 +6,9 @@ namespace :snowflake do
     ClientEnrollmentService.delete_all
     ClientEnrollment.delete_all
     Client.delete_all
+    UserRole.where(id: Staff.ids).destroy_all
     Staff.delete_all
+    
     puts "Seed staff data is in progress."
     Snowflake::SeedStaffDataOperation.call(args[:username], args[:password])
     puts "Seed staff data is completed. Thank You!"
