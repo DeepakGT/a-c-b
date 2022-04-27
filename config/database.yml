@@ -13,6 +13,12 @@ test:
   <<: *default
   database: aba_centre_be_test
 
+staging:
+  <<: *default
+  database: icbdstage
+  username: icbdstage
+  password: icbdstage
+
 production:
   <<: *default
   host: <%= Rails.application.credentials.dig(:database, :host) %>
