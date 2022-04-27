@@ -29,8 +29,14 @@ module Snowflake
               staff.role = Role.find_or_create_by!(name: 'bcba')
             when 'Executive Director'
               staff.role = Role.find_or_create_by!(name: 'executive_director')
-            else
-              staff.role = Role.find_or_create_by!(name: staff_roster['jobtitle']&.downcase)
+            when 'CEO'
+              staff.role = Role.find_or_create_by!(name: 'super_admin')
+            when 'Scheduler'
+              staff.role = Role.find_or_create_by!(name: 'billing')
+            when 'Program Manager'
+              staff.role = Role.find_or_create_by!(name: 'client_care_coordinator')
+            when 'Admin Assistant' || 'Regional Director of Ops.'
+              staff.role = Role.find_or_create_by!(name: 'administrator')
             end
             staff.save(validate: false)
 
