@@ -7,6 +7,9 @@ namespace :snowflake do
     ClientEnrollment.delete_all
     Client.delete_all
     UserRole.where(id: Staff.ids).destroy_all
+    StaffClinic.where(staff_id: Staff.ids).delete_all
+    Address.where(addressable_type: 'User', addressable_id: Staff.ids).delete_all
+    PhoneNumber.where(phoneable_type: 'User', phoneable_id: Staff.ids).delete_all
     Staff.delete_all
     
     puts "Seed staff data is in progress."
