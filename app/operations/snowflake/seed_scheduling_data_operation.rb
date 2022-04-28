@@ -23,12 +23,11 @@ module Snowflake
               client_enrollment = client&.client_enrollments&.find_by(source_of_payment: 'self_pay')
             end
             if client_enrollment.present?
-              service = Service.where('lower(name) = ?',appointment['servicename'].downcase).first
+              service = Service.where('lower(name) = ?', appointment['servicename']&.downcase).first
               if service.present?
                 client_enrollment_service = client_enrollment.client_enrollment_services.find_by(service_id: service.id)
                 if client_enrollment_service.present?
                   schedule = client_enrollment_service.schedulings.find_or_initialize_by(date: appointment['apptdate']&.to_time&.strftime('%Y-%m-%d'), start_time: appointment['appointmentstartdatetime']&.to_time&.strftime('%H:%M'), end_time: appointment['appointmentenddatetime']&.to_time&.strftime('%H:%M'))
-                  # status
                   schedule.units = appointment['actualunits'].to_f
                   schedule.minutes = appointment['durationmins'].to_f
                   if appointment['isrendered']=='Yes'
