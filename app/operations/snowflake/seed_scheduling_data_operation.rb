@@ -16,7 +16,7 @@ module Snowflake
           client_name = appointment['clientname']&.split(',')&.each(&:strip!)
           client = Client.find_by(dob: appointment['clientdob']&.to_time&.strftime('%Y-%m-%d'), first_name: client_name&.last, last_name: client_name&.first)
           if client.present?
-            funding_source_id = get_funding_source(appointment['fundingsource'])
+            funding_source_id = get_funding_source(appointment['fundingsource'], client)
             if funding_source_id.present?
               client_enrollment = client&.client_enrollments&.find_by('funding_source_id = ?', funding_source_id)
             elsif appointment['fundingsource']==nil
@@ -70,7 +70,7 @@ module Snowflake
         end
       end
 
-      def get_funding_source(funding_source_name)
+      def get_funding_source(funding_source_name,client)
         case funding_source_name
         when 'BCBS NH'
           return FundingSource.find_by(name: 'New Hampshire BCBS').id
@@ -103,11 +103,14 @@ module Snowflake
         when 'BCBS MA'
           return FundingSource.find_by(name: 'Massachusetts BCBS').id
         when 'Humana'
-          return FundingSource.find_by(name: 'Humana').id
+          funding_source = FundingSource.find_by(name: 'humana')
+          return funding_source&.id
         when 'BCBSNJ'
-          return FundingSource.find_by(name: 'BCBS New Jersey').id
+          funding_source = FundingSource.find_by(name: 'bcbs new jersey')
+          return funding_source&.id
         when 'BCBS FL'
-          return FundingSource.find_by(name: 'BCBSFL').id
+          funding_source = FundingSource.find_by(name: 'bcbsfl')
+          return funding_source&.id
         else 
           return nil
         end

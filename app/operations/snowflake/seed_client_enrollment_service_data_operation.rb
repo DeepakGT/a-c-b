@@ -65,9 +65,11 @@ module Snowflake
           return FundingSource.find_by(name: 'Unicare').id
         when 'BEACON HEALTH OPTIONS'
           return FundingSource.find_by(name: 'Beacon Health Options').id
+        when 'BCBS MA' || 'Massachusetts BCBS'
+          return FundingSource.find_by(name: 'Massachusetts BCBS').id
         else 
           if funding_source_name!=nil
-            funding_source = FundingSource.new(name: funding_source_name, clinic_id: client.clinic_id)
+            funding_source = FundingSource.new(name: funding_source_name&.downcase, clinic_id: client.clinic_id)
             funding_source.save(validate: false)
             return funding_source.id
           else
