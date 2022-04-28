@@ -18,7 +18,7 @@ module Snowflake
           if client.present?
             funding_source_id = get_funding_source(appointment['fundingsource'])
             if funding_source_id.present?
-              client_enrollment = client&.client_enrollments&.find_by('source_of_payment = ? AND funding_source_id = ?', 'insurance', funding_source_id)
+              client_enrollment = client&.client_enrollments&.find_by('funding_source_id = ?', funding_source_id)
             elsif appointment['fundingsource']==nil
               client_enrollment = client&.client_enrollments&.find_by(source_of_payment: 'self_pay')
             end
