@@ -18,14 +18,14 @@ module Snowflake
           if client.present?
             funding_source_id = get_funding_source(appointment['fundingsource'])
             if funding_source_id.present?
-              client_enrollment = client&.client_enrollments&.find_by(source_of_payment: 'insurance', funding_source_id: funding_source_id, enrollment_date: appointment['servicefundingbegin']&.to_time&.strftime('%Y-%m-%d'), terminated_on: appointment['servicefundingend']&.to_time&.strftime('%Y-%m-%d'))
+              client_enrollment = client&.client_enrollments&.find_by('source_of_payment = ? AND funding_source_id = ?', 'insurance', funding_source_id)
             elsif appointment['fundingsource']==nil
-              client_enrollment = client&.client_enrollments&.find_by(source_of_payment: 'self_pay', enrollment_date: appointment['servicefundingbegin']&.to_time&.strftime('%Y-%m-%d'), terminated_on: appointment['servicefundingend']&.to_time&.strftime('%Y-%m-%d'))
+              client_enrollment = client&.client_enrollments&.find_by(source_of_payment: 'self_pay')
             end
             if client_enrollment.present?
               service = Service.where('lower(name) = ?',appointment['servicename'].downcase).first
               if service.present?
-                client_enrollment_service = client_enrollment.client_enrollment_services.find_by(service_id: service.id, start_date: appointment['servicestart']&.to_time&.strftime('%Y-%m-%d'), end_date: appointment['serviceend']&.to_time&.strftime('%Y-%m-%d'))
+                client_enrollment_service = client_enrollment.client_enrollment_services.find_by(service_id: service.id)
                 if client_enrollment_service.present?
                   schedule = client_enrollment_service.schedulings.find_or_initialize_by(date: appointment['apptdate']&.to_time&.strftime('%Y-%m-%d'), start_time: appointment['appointmentstartdatetime']&.to_time&.strftime('%H:%M'), end_time: appointment['appointmentenddatetime']&.to_time&.strftime('%H:%M'))
                   # status
