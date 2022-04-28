@@ -63,8 +63,11 @@ module Snowflake
           return FundingSource.find_by(name: 'Beacon Health Options').id
         else 
           if funding_source_name!=nil
-            funding_source = FundingSource.new(name: funding_source_name, clinic_id: client.clinic_id)
-            funding_source.save(validate: false)
+            funding_source = FundingSource.find_by(name: funding_source_name&.downcase)
+            if funding_source.blank?
+              funding_source = FundingSource.new(name: funding_source_name&.downcase, clinic_id: client.clinic_id)
+              funding_source.save(validate: false)
+            end
             return funding_source.id
           else
             return nil
