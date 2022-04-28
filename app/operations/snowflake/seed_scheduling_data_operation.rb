@@ -54,13 +54,15 @@ module Snowflake
                       schedule.status = 'Client_No_Show'
                     end
                   end 
-                  staff = Staff.find_by(email: appointment['staffemail'])
-                  schedule.staff_id = staff.id
-                  creator_name = appointment['apptcreator']&.split(',')&.each(&:strip!)
-                  schedule.creator_id = Staff.find_by(first_name: creator_name.last, last_name: creator_name.first)&.id
-                  schedule.cross_site_allowed = true if appointment['crossofficeappt'].present? && appointment['crossofficeappt'].split('/').count>1
-                  schedule.service_address_id = client.addresses.by_service_address.find_by(city: appointment['clientcity'], zipcode: appointment['clientzip'])
-                  schedule.save(validate: false)
+                  staff = Staff.find_by('lower(email) = ?', appointment['staffemail']&.downcase)
+                  if staff.present?
+                    schedule.staff_id = staff.id
+                    creator_name = appointment['apptcreator']&.split(',')&.each(&:strip!)
+                    schedule.creator_id = Staff.find_by(first_name: creator_name.last, last_name: creator_name.first)&.id
+                    schedule.cross_site_allowed = true if appointment['crossofficeappt'].present? && appointment['crossofficeappt'].split('/').count>1
+                    schedule.service_address_id = client.addresses.by_service_address.find_by(city: appointment['clientcity'], zipcode: appointment['clientzip'])
+                    schedule.save(validate: false)
+                  end
                 end
               end
             end
