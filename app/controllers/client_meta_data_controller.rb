@@ -10,7 +10,7 @@ class ClientMetaDataController < ApplicationController
   def service_providers_list
     staff = @client.clinic.staff
     staff = check_qualification(staff)
-    @staff = staff&.uniq.sort_by(&:id)
+    @staff = staff&.uniq&.sort_by(&:id)
   end
 
   def client_data

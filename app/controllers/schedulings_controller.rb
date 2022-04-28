@@ -31,7 +31,7 @@ class SchedulingsController < ApplicationController
       return if !is_renderable
       update_scheduling 
     elsif current_user.role_name=='bcba' 
-      if @schedule.date>=Time.now.to_date
+      if @schedule.date>=Time.current.to_date
         update_scheduling
       else
         update_render_service if params[:status]=='Rendered'
@@ -96,7 +96,7 @@ class SchedulingsController < ApplicationController
   end
 
   def is_renderable
-    if params[:status]=='Rendered' && @schedule.date<Time.now.to_date && @schedule.is_rendered==false
+    if params[:status]=='Rendered' && @schedule.date<Time.current.to_date && @schedule.is_rendered==false
       @schedule.errors.add(:status, message: "Scheduling could not be rendered.")
       return false 
     end
@@ -106,7 +106,7 @@ class SchedulingsController < ApplicationController
 
   def update_render_service
     if params[:is_rendered].to_bool.true? || params[:status]=='Rendered'
-      if @schedule.date<Time.now.to_date
+      if @schedule.date<Time.current.to_date
         RenderService::RenderSchedule.call(@schedule.id)
       end
     end

@@ -10,7 +10,7 @@ module Catalyst
       def render_service
         scheduling_ids = CatalystData.all&.pluck(:system_scheduling_id)&.uniq
         if scheduling_ids.present?
-          schedules = Scheduling.where(id: scheduling_ids).where('date < ?', Time.now.to_date)
+          schedules = Scheduling.where(id: scheduling_ids).where('date < ?', Time.current.to_date)
           if schedules.any?
             schedules.each do |schedule|
               if schedule.unrendered_reason.blank?

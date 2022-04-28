@@ -113,11 +113,11 @@ json.data do
   #         json.soap_note_id schedule&.soap_notes.last.id if schedule&.soap_notes.present?
   #         json.synced_with_catalyst schedule&.soap_notes.last.synced_with_catalyst if schedule&.soap_notes.present?
   #       end
-  #       if schedule.date<(Time.now.to_date-1) || (schedule.date==(Time.now.to_date-1) && schedule.end_time<Time.now.strftime('%H:%M'))
+  #       if schedule.date<(Time.current.to_date-1) || (schedule.date==(Time.current.to_date-1) && schedule.end_time<Time.current.strftime('%H:%M'))
   #         exceeded_24_h = true
-  #       elsif schedule.date<(Time.now.to_date-3) || (schedule.date==(Time.now.to_date-3) && schedule.end_time<Time.now.strftime('%H:%M'))
+  #       elsif schedule.date<(Time.current.to_date-3) || (schedule.date==(Time.current.to_date-3) && schedule.end_time<Time.current.strftime('%H:%M'))
   #         exceeded_3_days = true
-  #       elsif schedule.date<(Time.now.to_date-5) || (schedule.date==(Time.now.to_date-5) && schedule.end_time<Time.now.strftime('%H:%M'))
+  #       elsif schedule.date<(Time.current.to_date-5) || (schedule.date==(Time.current.to_date-5) && schedule.end_time<Time.current.strftime('%H:%M'))
   #         exceeded_5_days = true
   #       end
   #     elsif appointment.last=='Catalyst Data'

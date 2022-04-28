@@ -22,9 +22,9 @@ class Scheduling < ApplicationRecord
 
   #scopes
   scope :by_status, ->{ where('lower(status) = ?','scheduled') }
-  scope :completed_scheduling, ->{ where('date < ?',Time.now.to_date) }
-  scope :todays_schedulings, ->{ where('date = ?',Time.now.to_date) }
-  scope :scheduled_scheduling, ->{ where('date >= ?',Time.now.to_date) }
+  scope :completed_scheduling, ->{ where('date < ?',Time.current.to_date) }
+  scope :todays_schedulings, ->{ where('date = ?',Time.current.to_date) }
+  scope :scheduled_scheduling, ->{ where('date >= ?',Time.current.to_date) }
   scope :unrendered_schedulings, ->{ where(is_rendered: false) }
   scope :with_units, ->{ where.not(units: nil) }
   scope :with_minutes, ->{ where.not(minutes: nil) }
@@ -35,9 +35,9 @@ class Scheduling < ApplicationRecord
   scope :by_client_clinic, ->(location_id) { where('clients.clinic_id = ?', location_id) }
   scope :by_staff_clinic, ->(location_id) { where('staff_clinics.clinic_id': location_id) }
   scope :on_date, ->(date){ where(date: date) }
-  scope :exceeded_24_h_scheduling, ->{ where('date < ? OR (date = ? AND end_time < ?)', Time.now.to_date-1, Time.now.to_date-1, Time.now.strftime('%H:%M')) }
-  scope :exceeded_3_days_scheduling, ->{ where('date < ? OR (date = ? AND end_time < ?)', Time.now.to_date-3, Time.now.to_date-3, Time.now.strftime('%H:%M')) }
-  scope :exceeded_5_days_scheduling, ->{ where('date < ? OR (date = ? AND end_time < ?)', Time.now.to_date-5, Time.now.to_date-5, Time.now.strftime('%H:%M')) }
+  scope :exceeded_24_h_scheduling, ->{ where('date < ? OR (date = ? AND end_time < ?)', Time.current.to_date-1, Time.current.to_date-1, Time.current.strftime('%H:%M')) }
+  scope :exceeded_3_days_scheduling, ->{ where('date < ? OR (date = ? AND end_time < ?)', Time.current.to_date-3, Time.current.to_date-3, Time.current.strftime('%H:%M')) }
+  scope :exceeded_5_days_scheduling, ->{ where('date < ? OR (date = ? AND end_time < ?)', Time.current.to_date-5, Time.current.to_date-5, Time.current.strftime('%H:%M')) }
 
   private
 
@@ -59,9 +59,9 @@ class Scheduling < ApplicationRecord
     return if self.user.role_name=='super_admin'
 
     if self.user.role_name=='executive_director' && self.date.present?
-      errors.add(:scheduling, 'You are not authorized to create appointments for 3 days ago.') if self.date<(Time.now.to_date-3)
+      errors.add(:scheduling, 'You are not authorized to create appointments for 3 days ago.') if self.date<(Time.current.to_date-3)
     elsif self.date.present?
-      if self.date<Time.now.to_date || (self.date==Time.now.to_date && self.start_time<=Time.now.strftime('%H:%M'))
+      if self.date<Time.current.to_date || (self.date==Time.current.to_date && self.start_time<=Time.current.strftime('%H:%M'))
         errors.add(:scheduling, 'You are not authorized to create appointment in past.') 
       end
     end

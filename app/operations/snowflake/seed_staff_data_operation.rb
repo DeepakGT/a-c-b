@@ -18,7 +18,7 @@ module Snowflake
             staff_roster.update(email: "staff_#{staff_count}_user@yopmail.com") if staff_roster['email'].blank?
           end
           if Staff.where(email: staff_roster['email']).blank?
-            staff = Staff.find_or_initialize_by(email: staff_roster['email'], dob: staff_roster['dob']&.to_time&.strftime('%Y:%m:%d'), hired_at: staff_roster['hireddate']&.to_time&.strftime('%Y:%m:%d'), first_name: staff_roster['stafffirstname'], last_name: staff_roster['stafflastname'], terminated_on: staff_roster['terminateddate']&.to_time&.strftime('%Y:%m:%d'))
+            staff = Staff.find_or_initialize_by(email: staff_roster['email'], dob: staff_roster['dob']&.to_time&.strftime('%Y-%m-%d'), hired_at: staff_roster['hireddate']&.to_time&.strftime('%Y-%m-%d'), first_name: staff_roster['stafffirstname'], last_name: staff_roster['stafflastname'], terminated_on: staff_roster['terminateddate']&.to_time&.strftime('%Y-%m-%d'))
             staff.status = staff_roster['active']=='ACTIVE' ? 'active' : 'inactive'
             staff.gender = staff_roster['gender']=='Female' ? 'female' : 'male'
             staff.job_type = staff_roster['partfulltime']=='Full Time' ? 'full_time' : 'part_time'

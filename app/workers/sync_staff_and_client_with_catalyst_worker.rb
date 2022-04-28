@@ -4,7 +4,7 @@ class SyncStaffAndClientWithCatalystWorker
   include Sidekiq::Worker
 
   def perform
-    puts "#{DateTime.now}"
+    puts "#{DateTime.current}"
     puts "SyncWithCatalystJob is started"
     sync_staff_and_client_data("01-01-1753")
     puts "SyncWithCatalystJob is completed"

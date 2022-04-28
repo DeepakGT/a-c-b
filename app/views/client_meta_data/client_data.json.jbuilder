@@ -86,7 +86,7 @@ json.data do
         json.is_service_provider_required client_enrollment_service.service&.is_service_provider_required
         json.start_date client_enrollment_service.start_date
         json.end_date client_enrollment_service.end_date
-        if client_enrollment_service.end_date > (Time.now.to_date + 9)
+        if client_enrollment_service.end_date > (Time.current.to_date + 9)
           json.about_to_expire false
         else
           json.about_to_expire true

@@ -42,9 +42,9 @@ class Staff < User
   end
 
   def set_status
-    if self.terminated_on.present? && self.terminated_on <= Time.now.to_date
+    if self.terminated_on.present? && self.terminated_on <= Time.current.to_date
       self.status = Staff.statuses['inactive'] 
-    elsif self.terminated_on.blank? || self.terminated_on > Time.now.to_date
+    elsif self.terminated_on.blank? || self.terminated_on > Time.current.to_date
       self.status = Staff.statuses['active'] 
     end
   end

@@ -160,7 +160,7 @@ RSpec.describe SchedulingsController, type: :controller do
         post :create, params: {
           client_enrollment_service_id: client_enrollment_service.id,
           staff_id: staff.id,
-          date: Time.now.to_date,
+          date: Time.current.to_date,
           start_time: '16:00',
           end_time: '17:00',
           status: 'scheduled',
@@ -172,7 +172,7 @@ RSpec.describe SchedulingsController, type: :controller do
         expect(response_body['status']).to eq('success')
         expect(response_body['data']['client_enrollment_service_id']).to eq(client_enrollment_service.id)
         expect(response_body['data']['staff_id']).to eq(staff.id)
-        expect(response_body['data']['date']).to eq(Time.now.to_date.to_s)
+        expect(response_body['data']['date']).to eq(Time.current.to_date.to_s)
         expect(response_body['data']['start_time']).to eq('16:00')
         expect(response_body['data']['end_time']).to eq('17:00')
         expect(response_body['data']['status']).to eq('scheduled')

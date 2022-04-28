@@ -13,7 +13,7 @@ class CatalystController < ApplicationController
     use_abac_units if params[:use_abac_units].to_bool.true?
     use_custom_units if params[:use_custom_units].to_bool.true?
     create_soap_note
-    RenderService::RenderSchedule.call(@schedule.id) if @schedule.date<Time.now.to_date
+    RenderService::RenderSchedule.call(@schedule.id) if @schedule.date<Time.current.to_date
   end
 
   def create_appointment
@@ -28,7 +28,7 @@ class CatalystController < ApplicationController
     @schedule.save(validate: false)
     @catalyst_data.update(is_appointment_found: true, system_scheduling_id: @schedule.id, multiple_schedulings_ids: [])
     create_soap_note
-    RenderService::RenderSchedule.call(@schedule.id) if @schedule.date<Time.now.to_date
+    RenderService::RenderSchedule.call(@schedule.id) if @schedule.date<Time.current.to_date
   end
 
   def assign_catalyst_note
@@ -43,7 +43,7 @@ class CatalystController < ApplicationController
     check_units if @catalyst_data.id == @schedule.catalyst_data_ids.max.to_i
     if (!(@schedule.unrendered_reason.include?('units_does_not_match')) &&  @checked_units==false && temp_var==0) || temp_var==1
       create_soap_note
-      RenderService::RenderSchedule.call(@schedule.id) if @schedule.date<Time.now.to_date
+      RenderService::RenderSchedule.call(@schedule.id) if @schedule.date<Time.current.to_date
     end
   end
 

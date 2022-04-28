@@ -10,8 +10,9 @@ class ClientEnrollmentService < ApplicationRecord
 
   validate :validate_service_providers
   validate :validate_units_and_minutes
+  validate :validate_count_of_units, on: :update
 
-  before_save :set_units_and_minutes
+  before_validation :set_units_and_minutes
 
   scope :by_client, ->(client_ids){ joins(:client_enrollment).where('client_enrollments.client_id': client_ids) }
   scope :by_date, ->(date){ where('start_date <= ? AND end_date >= ?', date, date) }
@@ -20,7 +21,7 @@ class ClientEnrollmentService < ApplicationRecord
   scope :by_staff_qualifications, ->(staff_qualification_ids) { where('service_qualifications.qualification_id': staff_qualification_ids) }
   scope :by_service_with_no_qualification, ->{select("client_enrollment_services.*").group("client_enrollment_services.id").having("count(service_qualifications.*) = ?",0)}
   scope :by_bcba_ids, ->(bcba_ids){ joins(client_enrollment: :client).where('clients.bcba_id': bcba_ids) }
-  scope :about_to_expire, ->{ where('end_date>=? AND end_date<=?', Time.now.to_date, (Time.now.to_date+9)) }
+  scope :about_to_expire, ->{ where('end_date>=? AND end_date<=?', Time.current.to_date, (Time.current.to_date+9)) }
 
   private
 
@@ -41,6 +42,13 @@ class ClientEnrollmentService < ApplicationRecord
       self.minutes = self.units*15
     elsif self.minutes.present? && self.units.blank?
       self.units = self.minutes/15
+    end
+  end
+
+  def validate_count_of_units
+    scheduled_units = self.schedulings&.by_status&.with_units&.pluck(:units)&.sum
+    if scheduled_units>0 && self.units < scheduled_units
+      errors.add(:units, "Units entered in client_enrollment service are less than #{scheduled_units} units used in schedulings.")
     end
   end
 end

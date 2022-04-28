@@ -4,7 +4,7 @@ class UpdateUserStatusWorker
   include Sidekiq::Worker
                                         
   def perform
-    puts "#{DateTime.now}"
+    puts "#{DateTime.current}"
     puts "UpdateUserStatusJob is started"
     update_staff_status
     update_client_status
@@ -17,7 +17,7 @@ class UpdateUserStatusWorker
   def update_staff_status
     staffs = Staff.all
     staffs.each do |staff|
-      if staff.terminated_on.present? && staff.terminated_on <= Time.now.to_date
+      if staff.terminated_on.present? && staff.terminated_on <= Time.current.to_date
         staff.status = Staff.statuses['inactive']
         staff.save(validate: false)
       end
@@ -30,7 +30,7 @@ class UpdateUserStatusWorker
       client_enrollments = client.client_enrollments
       count = 0
       client_enrollments.each do |client_enrollment|
-        if client_enrollment.terminated_on.blank? || client_enrollment.terminated_on > Time.now.to_date
+        if client_enrollment.terminated_on.blank? || client_enrollment.terminated_on > Time.current.to_date
           count = 1
           break 
         end

@@ -10,24 +10,24 @@ module Snowflake
       def seed_scheduling_data(username, password)
         db = Snowflake::SetDatabaseAndWarehouseService.call(username, password)
         appointments = Snowflake::GetAppointmentAdminDataService.call(db)
-
+        
         appointments.each do |appointment|
           appointment = appointment.with_indifferent_access
           client_name = appointment['clientname']&.split(',')&.each(&:strip!)
           client = Client.find_by(dob: appointment['clientdob']&.to_time&.strftime('%Y-%m-%d'), first_name: client_name&.last, last_name: client_name&.first)
           if client.present?
-            if appointment['fundingsource'].present?
-              funding_source = FundingSource.find_by('lower(name) = ?', appointment['fundingsource'].downcase)
-              client_enrollment = client&.client_enrollments&.find_by(source_of_payment: 'insurance', funding_source_id: funding_source&.id, enrollment_date: appointment['servicefundingbegin']&.to_time&.strftime('%Y:%m:%d'), terminated_on: appointment['servicefundingend']&.to_time&.strftime('%Y:%m:%d'))
-            else
-              client_enrollment = client&.client_enrollments&.find_by(source_of_payment: 'self_pay', enrollment_date: appointment['servicefundingbegin']&.to_time&.strftime('%Y:%m:%d'), terminated_on: appointment['servicefundingend']&.to_time&.strftime('%Y:%m:%d'))
+            funding_source_id = get_funding_source(appointment['fundingsource'])
+            if funding_source_id.present?
+              client_enrollment = client&.client_enrollments&.find_by(source_of_payment: 'insurance', funding_source_id: funding_source_id, enrollment_date: appointment['servicefundingbegin']&.to_time&.strftime('%Y-%m-%d'), terminated_on: appointment['servicefundingend']&.to_time&.strftime('%Y-%m-%d'))
+            elsif appointment['fundingsource']==nil
+              client_enrollment = client&.client_enrollments&.find_by(source_of_payment: 'self_pay', enrollment_date: appointment['servicefundingbegin']&.to_time&.strftime('%Y-%m-%d'), terminated_on: appointment['servicefundingend']&.to_time&.strftime('%Y-%m-%d'))
             end
             if client_enrollment.present?
               service = Service.where('lower(name) = ?',appointment['servicename'].downcase).first
               if service.present?
-                client_enrollment_service = client_enrollment.client_enrollment_services.find_by(service_id: service.id, start_date: appointment['servicestart']&.to_time&.strftime('%Y:%m:%d'), end_date: appointment['serviceend']&.to_time&.strftime('%Y:%m:%d'))
+                client_enrollment_service = client_enrollment.client_enrollment_services.find_by(service_id: service.id, start_date: appointment['servicestart']&.to_time&.strftime('%Y-%m-%d'), end_date: appointment['serviceend']&.to_time&.strftime('%Y-%m-%d'))
                 if client_enrollment_service.present?
-                  schedule = client_enrollment_service.schedulings.find_or_initialize_by(date: appointment['apptdate']&.to_time&.strftime('%Y:%m:%d'), start_time: appointment['appointmentstartdatetime']&.to_time&.strftime('%H:%M'), end_time: appointment['appointmentenddatetime']&.to_time&.strftime('%H:%M'))
+                  schedule = client_enrollment_service.schedulings.find_or_initialize_by(date: appointment['apptdate']&.to_time&.strftime('%Y-%m-%d'), start_time: appointment['appointmentstartdatetime']&.to_time&.strftime('%H:%M'), end_time: appointment['appointmentenddatetime']&.to_time&.strftime('%H:%M'))
                   # status
                   schedule.units = appointment['actualunits'].to_f
                   schedule.minutes = appointment['durationmins'].to_f
@@ -66,6 +66,43 @@ module Snowflake
               end
             end
           end
+        end
+      end
+
+      def get_funding_source(funding_source_name)
+        case funding_source_name
+        when 'BCBS NH'
+          return FundingSource.find_by(name: 'New Hampshire BCBS').id
+        when 'AMBETTER NNHF'
+          return FundingSource.find_by(name: 'Ambetter nnhf').id
+        when 'AETNA'
+          return FundingSource.find_by(name: 'Aetna').id
+        when 'OPTUM'
+          return FundingSource.find_by(name: 'Optumhealth Behavioral Solutions').id
+        when 'UBH'
+          return FundingSource.find_by(name: 'United Behavioral Health').id
+        when 'BHS'
+          return FundingSource.find_by(name: 'Beacon health strategies').id
+        when 'AMERIHEALTH'
+          return FundingSource.find_by(name: 'Amerihealth caritas nh').id
+        when 'CIGNA'
+          return FundingSource.find_by(name: 'Cigna').id
+        when 'TUFTS'
+          return FundingSource.find_by(name: 'TUFTS').id
+        when 'UMR'
+          return FundingSource.find_by(name: 'UMR').id
+        when 'HP'
+          return FundingSource.find_by(name: 'Harvard pilgrim').id
+        when 'aba'
+          return FundingSource.find_by(name: 'ABA Centers of America').id
+        when 'UNICARE'
+          return FundingSource.find_by(name: 'Unicare').id
+        when 'BEACON HEALTH OPTIONS'
+          return FundingSource.find_by(name: 'Beacon Health Options').id
+        when 'BCBS MA'
+          return FundingSource.find_by(name: 'Massachusetts BCBS').id
+        else 
+          return nil
         end
       end
     end

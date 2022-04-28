@@ -62,7 +62,7 @@ RSpec.describe SoapNotesController, type: :controller do
         post :create, params: {
           scheduling_id: scheduling.id,
           note: 'test-note-1',
-          add_date: Time.now.to_date
+          add_date: Time.current.to_date
         }
         response_body = JSON.parse(response.body)
 
@@ -70,7 +70,7 @@ RSpec.describe SoapNotesController, type: :controller do
         expect(response_body['status']).to eq('success')
         expect(response_body['data']['scheduling_id']).to eq(scheduling.id)
         expect(response_body['data']['note']).to eq('test-note-1')
-        expect(response_body['data']['add_date']).to eq(Time.now.to_date.to_s)
+        expect(response_body['data']['add_date']).to eq(Time.current.to_date.to_s)
       end
     end
   end
