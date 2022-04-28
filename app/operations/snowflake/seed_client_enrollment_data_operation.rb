@@ -19,7 +19,7 @@ module Snowflake
             client_enrollment = client.client_enrollments.find_or_initialize_by(enrollment_date: student_service['contractstartdate']&.to_time&.strftime('%Y-%m-%d'), terminated_on: student_service['contractenddate']&.to_time&.strftime('%Y-%m-%d'), insurance_id: student_service['authorizationnumber'], subscriber_name: student_service['clientname'], subscriber_dob: client&.dob)
             client_enrollment.relationship = 'self'
             client_enrollment.subscriber_phone = client&.phone_number&.number
-            funding_source_id = get_funding_source(student_service['fundingsource'])
+            funding_source_id = get_funding_source(student_service['fundingsource'], client)
             if funding_source_id.present?
               client_enrollment.source_of_payment = 'insurance'
               client_enrollment.funding_source_id = funding_source_id
@@ -31,7 +31,7 @@ module Snowflake
         end
       end
 
-      def get_funding_source(funding_source_name)
+      def get_funding_source(funding_source_name, client)
         case funding_source_name
         when 'NEW HAMPSHIRE BCBS'
           return FundingSource.find_by(name: 'New Hampshire BCBS').id
@@ -62,7 +62,13 @@ module Snowflake
         when 'BEACON HEALTH OPTIONS'
           return FundingSource.find_by(name: 'Beacon Health Options').id
         else 
-          return nil
+          if funding_source_name!=nil
+            funding_source = FundingSource.new(name: funding_source_name, clinic_id: client.clinic_id)
+            funding_source.save(validate: false)
+            return funding_source.id
+          else
+            return nil
+          end
         end
       end
     end

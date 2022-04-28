@@ -100,6 +100,12 @@ module Snowflake
           return FundingSource.find_by(name: 'Beacon Health Options').id
         when 'BCBS MA'
           return FundingSource.find_by(name: 'Massachusetts BCBS').id
+        when 'Humana'
+          return FundingSource.find_by(name: 'Humana').id
+        when 'BCBSNJ'
+          return FundingSource.find_by(name: 'BCBS New Jersey').id
+        when 'BCBS FL'
+          return FundingSource.find_by(name: 'BCBSFL').id
         else 
           return nil
         end
