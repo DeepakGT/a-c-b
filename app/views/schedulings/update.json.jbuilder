@@ -37,7 +37,10 @@ json.data do
   if @schedule.is_rendered==true
     json.rendered_message "Appointment has been updated and rendered successfully."
   elsif @schedule.unrendered_reason.present?
-    json.rendered_message "Appointment has been updated but cannot be rendered because #{@schedule.unrendered_reason.to_human_string}"
+    message = "Appointment has been updated but cannot be rendered because #{@schedule.unrendered_reason.to_human_string}"
+    message.gsub!('absent', 'not found')
+    message.gsub!('_',' ')
+    json.rendered_message message
   end
   json.units @schedule.units
   json.minutes @schedule.minutes

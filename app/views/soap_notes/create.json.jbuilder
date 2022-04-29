@@ -21,7 +21,10 @@ json.data do
   if @soap_note.scheduling.is_rendered==true
     json.rendered_message "Soap note has been created and Appointment has been rendered successfully."
   elsif @soap_note.scheduling.unrendered_reason.present?
-    json.rendered_message "Soap note has been created but Appointment cannot be rendered because #{@soap_note.scheduling.unrendered_reason.to_human_string}"
+    message = "Appointment has been updated but cannot be rendered because #{@soap_note.scheduling.unrendered_reason.to_human_string}"
+    message.gsub!('absent', 'not found')
+    message.gsub!('_',' ')
+    json.rendered_message message
   end
 end
 json.errors @soap_note.errors.full_messages
