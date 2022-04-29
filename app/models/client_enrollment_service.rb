@@ -26,8 +26,8 @@ class ClientEnrollmentService < ApplicationRecord
   private
 
   def validate_service_providers
-    errors.add(:service_providers, 'must be absent.') if service.is_service_provider_required.to_bool.false? && self.service_providers.present?
-    errors.add(:service_providers, 'must be present.') if service.is_service_provider_required.to_bool.true? && self.service_providers.blank?
+    errors.add(:service_providers, 'must be absent.') if self.service.is_service_provider_required.to_bool.false? && self.service_providers.present?
+    errors.add(:service_providers, 'must be present.') if self.service.is_service_provider_required.to_bool.true? && self.service_providers.blank?
   end
 
   def validate_units_and_minutes

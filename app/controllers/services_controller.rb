@@ -8,7 +8,9 @@ class ServicesController < ApplicationController
   end
 
   def create
-    @service = Service.create(service_params)
+    @service = Service.new(service_params)
+    @service.id = Service.ids.max+1
+    @service.save
   end
 
   def show; end

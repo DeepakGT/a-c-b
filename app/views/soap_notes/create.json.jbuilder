@@ -18,5 +18,10 @@ json.data do
   json.caregiver_sign_date @soap_note.caregiver_signature_datetime
   json.creator_id user&.id
   json.creator "#{user&.first_name} #{user&.last_name}"
+  if @soap_note.scheduling.is_rendered==true
+    json.rendered_message "Appointment has been rendered successfully."
+  elsif @soap_note.scheduling.unrendered_reason.present?
+    json.rendered_message "Appointment cannot be rendered because #{@soap_note.scheduling.unrendered_reason.to_human_string}"
+  end
 end
 json.errors @soap_note.errors.full_messages

@@ -1,10 +1,12 @@
 json.status 'success'
 json.data do
+  staff = Staff.find_by(catalyst_user_id: catalyst_data.catalyst_user_id)
+  client = Client.find_by(catalyst_patient_id: catalyst_data.catalyst_patient_id)
   json.id @catalyst_data.id
-  json.client_name "#{@catalyst_data.client_first_name} #{@catalyst_data.client_last_name}"
-  json.client_id Client.find_by(first_name: @catalyst_data.client_first_name, last_name: @catalyst_data.client_last_name)&.id
-  json.staff_name "#{@catalyst_data.staff_first_name} #{@catalyst_data.staff_last_name}"
-  json.staff_id Staff.find_by(first_name: @catalyst_data.staff_first_name, last_name: @catalyst_data.staff_last_name)&.id
+  json.client_name "#{client&.first_name} #{client&.last_name}"
+  json.client_id client&.id
+  json.staff_name "#{staff&.first_name} #{staff&.last_name}"
+  json.staff_id staff&.id
   json.date "#{@catalyst_data.date}"
   json.start_time "#{@catalyst_data.start_time}"
   json.end_time "#{@catalyst_data.end_time}"
