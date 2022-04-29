@@ -1,7 +1,7 @@
 json.status 'success'
 json.data do
-  staff = Staff.find_by(catalyst_user_id: catalyst_data.catalyst_user_id)
-  client = Client.find_by(catalyst_patient_id: catalyst_data.catalyst_patient_id)
+  staff = Staff.find_by(catalyst_user_id: @catalyst_data.catalyst_user_id)
+  client = Client.find_by(catalyst_patient_id: @catalyst_data.catalyst_patient_id)
   json.id @catalyst_data.id
   json.client_name "#{client&.first_name} #{client&.last_name}"
   json.client_id client&.id
