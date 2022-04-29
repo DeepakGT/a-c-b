@@ -13,7 +13,7 @@ module Catalyst
           schedules = Scheduling.where(id: scheduling_ids).where('date < ?', Time.current.to_date)
           if schedules.any?
             schedules.each do |schedule|
-              if schedule.unrendered_reason.blank?
+              if schedule.unrendered_reasons.blank?
                 RenderService::RenderSchedule.call(schedule.id)
               end
             end

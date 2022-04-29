@@ -1601,8 +1601,8 @@ paths:
                     "id": 1,
                     "name": "Ph.D.",
                     "credential_id": 17,
-                    "issued_at": null,
-                    "expires_at": null,
+                    "issued_on": null,
+                    "expires_on": null,
                     "cert_lic_number": null,
                     "documentation_notes": null
                   }
@@ -1642,8 +1642,8 @@ paths:
                 "data": {
                   "id": 4,
                   "name": "High School Diploma",
-                  "issued_at": null,
-                  "expires_at": null,
+                  "issued_on": null,
+                  "expires_on": null,
                   "cert_lic_number": null,
                   "documentation_notes": "doc temp"
                 }
@@ -1683,8 +1683,8 @@ paths:
                   "id": 1,
                   "name": "Ph.D.",
                   "credential_id": 17,
-                  "issued_at": null,
-                  "expires_at": null,
+                  "issued_on": null,
+                  "expires_on": null,
                   "cert_lic_number": null,
                   "documentation_notes": null
                 }
@@ -1727,8 +1727,8 @@ paths:
                 "data": {
                   "id": 4,
                   "name": "High School Diploma",
-                  "issued_at": null,
-                  "expires_at": null,
+                  "issued_on": null,
+                  "expires_on": null,
                   "cert_lic_number": null,
                   "documentation_notes": "doc temp"
                 }
@@ -1766,8 +1766,8 @@ paths:
                 "data": {
                   "id": 1,
                   "name": "Master's Degree",
-                  "issued_at": "2020-12-12",
-                  "expires_at": null,
+                  "issued_on": "2020-12-12",
+                  "expires_on": null,
                   "cert_lic_number": "up 89 ",
                   "documentation_notes": "some doc notes"
                 }
@@ -5788,7 +5788,7 @@ paths:
                     "last_name": "Waelchi",
                     "email": "bcba_staff2@yopmail.com",
                     "status": "inactive",
-                    "hired_at": null,
+                    "hired_on": null,
                     "terminated_on": "2022-03-08",
                     "title": "bcba",
                     "gender": "male",
@@ -5804,7 +5804,7 @@ paths:
                     "last_name": "Staff ",
                     "email": "bcba_test3456@yopmail.com",
                     "status": "active",
-                    "hired_at": "2022-03-01",
+                    "hired_on": "2022-03-01",
                     "terminated_on": "2055-03-23",
                     "title": "bcba",
                     "gender": "male",
@@ -6573,7 +6573,7 @@ definitions:
         type: "string"
       supervisor_id:
         type: "integer"
-      hired_at:
+      hired_on:
         type: "string"
       terminated_on:
         type: "string"
@@ -6638,7 +6638,7 @@ definitions:
         type: "string"
       supervisor_id:
         type: "integer"
-      hired_at:
+      hired_on:
         type: "string"
       terminated_on:
         type: "string"
@@ -6844,9 +6844,9 @@ definitions:
     properties:
       credential_id:
         type: "string"
-      issued_at:
+      issued_on:
         type: "string"
-      expires_at:
+      expires_on:
         type: "string"
       cert_lic_number:
         type: "string"
