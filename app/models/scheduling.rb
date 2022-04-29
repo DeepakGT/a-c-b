@@ -103,7 +103,17 @@ class Scheduling < ApplicationRecord
     if self.units.present? && self.minutes.blank?
       self.minutes = self.units*15
     elsif self.minutes.present? && self.units.blank?
-      self.units = self.minutes/15
+      # self.units = self.minutes/15
+      rem = self.minutes%15
+      if rem == 0
+        self.units = self.minutes/15
+      else
+        if rem < 8
+          self.units = (self.minutes - rem)/15
+        else
+          self.units = (self.minutes + 15 - rem)/15
+        end
+      end 
     end
   end
   # end of private

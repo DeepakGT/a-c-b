@@ -36,7 +36,17 @@ module Catalyst
                 end
               end
               catalyst_data.minutes = (catalyst_data.end_time.to_time - catalyst_data.start_time.to_time)/60
-              catalyst_data.units = (catalyst_data.minutes)/15
+              # catalyst_data.units = (catalyst_data.minutes)/15
+              rem = catalyst_data.minutes%15
+              if rem == 0
+                catalyst_data.units = catalyst_data.minutes/15
+              else
+                if rem < 8
+                  catalyst_data.units = (catalyst_data.minutes - rem)/15
+                else
+                  catalyst_data.units = (catalyst_data.minutes + 15 - rem)/15
+                end
+              end 
               catalyst_data.save(validate: false)
 
               response_data_hash = CompareCatalystDataWithSystemData::CompareSyncedData.call(catalyst_data)
@@ -61,7 +71,17 @@ module Catalyst
                 catalyst_data.start_time = data['startTime'].to_time.strftime('%H:%M')
                 catalyst_data.end_time = data['endTime'].to_time.strftime('%H:%M')
                 catalyst_data.minutes = (catalyst_data.end_time.to_time - catalyst_data.start_time.to_time)/60
-                catalyst_data.units = (catalyst_data.minutes)/15
+                # catalyst_data.units = (catalyst_data.minutes)/15
+                rem = catalyst_data.minutes%15
+                if rem == 0
+                  catalyst_data.units = catalyst_data.minutes/15
+                else
+                  if rem < 8
+                    catalyst_data.units = (catalyst_data.minutes - rem)/15
+                  else
+                    catalyst_data.units = (catalyst_data.minutes + 15 - rem)/15
+                  end
+                end 
                 catalyst_data.response = data
                 catalyst_data.date_revision_made = data['dateRevisionMade']
                 catalyst_data.save(validate: false)
