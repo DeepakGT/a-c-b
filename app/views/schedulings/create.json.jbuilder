@@ -35,9 +35,9 @@ json.data do
   json.unrendered_reasons @schedule.unrendered_reasons
   json.rendered_at @schedule.rendered_at
   if @schedule.is_rendered==true
-    json.rendered_message "Appointment has been rendered successfully."
+    json.rendered_message "Appointment has been created and rendered successfully."
   elsif @schedule.unrendered_reason.present?
-    json.rendered_message "Appointment cannot be rendered because #{@schedule.unrendered_reason.to_human_string}"
+    json.rendered_message "Appointment has been created but cannot be rendered because #{@schedule.unrendered_reason.to_human_string}"
   end
   json.units @schedule.units
   json.minutes @schedule.minutes
