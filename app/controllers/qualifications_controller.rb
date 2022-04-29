@@ -10,7 +10,9 @@ class QualificationsController < ApplicationController
   end
 
   def create
-    @qualification = Qualification.create(qualification_params)
+    @qualification = Qualification.new(qualification_params)
+    @qualification.id = Qualification.ids.max+1
+    @qualification.save
   end
 
   def show; end

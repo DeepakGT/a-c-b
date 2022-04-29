@@ -10,7 +10,7 @@ class RolesController < ApplicationController
   def show; end
 
   def create
-    @role = Role.create(name: params[:name], permissions: params[:permissions])
+    @role = Role.create(name: params[:name], permissions: params[:permissions], id: Role.ids.max+1)
   end
 
   def update

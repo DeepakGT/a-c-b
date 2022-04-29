@@ -12,6 +12,7 @@ class FundingSourcesController < ApplicationController
 
   def create
     @funding_source = @clinic.funding_sources.new(funding_source_params)
+    @funding_source.id = FundingSource.ids.max+1
     @funding_source.save
   end
 

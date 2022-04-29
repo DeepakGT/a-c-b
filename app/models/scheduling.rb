@@ -18,7 +18,7 @@ class Scheduling < ApplicationRecord
 
   before_save :set_units_and_minutes
 
-  serialize :unrendered_reason, Array
+  serialize :unrendered_reasons, Array
 
   #scopes
   scope :by_status, ->{ where('lower(status) = ?','scheduled') }

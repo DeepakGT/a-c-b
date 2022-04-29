@@ -32,8 +32,13 @@ json.data do
   json.start_time @schedule.start_time
   json.end_time @schedule.end_time
   json.is_rendered @schedule.is_rendered
-  json.unrendered_reasons @schedule.unrendered_reason
+  json.unrendered_reasons @schedule.unrendered_reasons
   json.rendered_at @schedule.rendered_at
+  if @schedule.is_rendered==true
+    json.rendered_message "Appointment has been rendered successfully."
+  elsif @schedule.unrendered_reasons.present?
+    json.rendered_message "Appointment cannot be rendered because #{@schedule.unrendered_reasons.to_human_string}"
+  end
   json.units @schedule.units
   json.minutes @schedule.minutes
   if @schedule.creator_id.present?

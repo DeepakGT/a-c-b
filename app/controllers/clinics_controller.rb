@@ -10,7 +10,9 @@ class ClinicsController < ApplicationController
   end
 
   def create
-    @clinic = Clinic.create(clinic_params)
+    @clinic = Clinic.new(clinic_params)
+    @clinic.id = Clinic.ids.max+1
+    @clinic.save
   end
 
   def show; end

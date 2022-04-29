@@ -7,7 +7,7 @@ json.data do
     json.last_name bcba.last_name
     json.email bcba.email
     json.status bcba.status
-    json.hired_at bcba.hired_at
+    json.hired_on bcba.hired_on
     json.terminated_on bcba.terminated_on
     json.title bcba.role_name
     json.gender bcba.gender

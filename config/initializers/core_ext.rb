@@ -51,3 +51,11 @@ class Integer
     to_s.to_bool
   end
 end
+
+class Array
+  def to_human_string
+    arr = Array.new(self)
+    last = arr.pop
+    arr.join(", ") + " and " + last.to_s
+  end
+end

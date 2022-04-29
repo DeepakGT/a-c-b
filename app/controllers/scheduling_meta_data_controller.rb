@@ -12,7 +12,7 @@ class SchedulingMetaDataController < ApplicationController
 
   def rbt_appointments
     authorize :appointment, :rbt_appointments?
-    rbt_schedules = Scheduling.by_staff_ids(current_user.id)
+    rbt_schedules = Scheduling.by_staff_ids(current_user.id).by_status
     @upcoming_schedules = rbt_schedules.scheduled_scheduling.order(:date).first(10)
     @past_schedules = rbt_schedules.completed_scheduling.unrendered_schedulings.order(date: :desc)
     @catalyst_data = CatalystData.with_multiple_appointments.or(CatalystData.with_no_appointments).first(30)
@@ -22,7 +22,7 @@ class SchedulingMetaDataController < ApplicationController
 
   def bcba_appointments
     authorize :appointment, :bcba_appointments?
-    bcba_schedules = Scheduling.by_staff_ids(current_user.id)
+    bcba_schedules = Scheduling.by_staff_ids(current_user.id).by_status
     @upcoming_schedules = bcba_schedules.scheduled_scheduling.order(:date).first(10)
     @past_schedules = bcba_schedules.completed_scheduling.unrendered_schedulings.order(date: :desc)
     @client_enrollment_services = ClientEnrollmentService.by_bcba_ids(current_user.id).about_to_expire
@@ -35,7 +35,7 @@ class SchedulingMetaDataController < ApplicationController
   def executive_director_appointments
     authorize :appointment, :executive_director_appointments?
     client_ids = Clinic.find(params[:default_location_id]).clients.pluck(:id)
-    schedules = Scheduling.by_client_ids(client_ids)
+    schedules = Scheduling.by_client_ids(client_ids).by_status
     @todays_appointments = schedules.todays_schedulings.order(:start_time).last(10)
     if current_user.role_name=='executive_director' || current_user.role_name=='client_care_coordinator'
       @past_schedules = schedules.exceeded_24_h_scheduling.unrendered_schedulings.order(date: :desc)
