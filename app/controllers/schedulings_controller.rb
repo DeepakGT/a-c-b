@@ -6,7 +6,7 @@ class SchedulingsController < ApplicationController
   before_action :set_client_enrollment_service, only: :create
 
   def index
-    schedules = filter_by_logged_in_user
+    schedules = Scheduling.all
     schedules = do_filter(schedules)
     @schedules = schedules.uniq.sort_by(&:date).paginate(page: params[:page])
   end
@@ -136,15 +136,6 @@ class SchedulingsController < ApplicationController
     @schedule.catalyst_data_ids.push(catalyst_data.id)
     @schedule.save(validate: false)
     catalyst_data.update(system_scheduling_id: @schedule.id, is_appointment_found: true, multiple_schedulings_ids: [])
-  end
-
-  def filter_by_logged_in_user
-    if current_user.role_name=='rbt'
-      schedules = Scheduling.by_staff_ids(current_user.id)
-    else
-      schedules = Scheduling.all
-    end
-    schedules
   end
   # end of private
 end
