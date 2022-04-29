@@ -86,7 +86,7 @@ json.data do
   #       json.end_time schedule&.end_time
   #       json.is_rendered schedule&.is_rendered
   #       json.rendered_at schedule&.rendered_at
-  #       json.unrendered_reasons schedule&.unrendered_reasons
+  #       json.unrendered_reasons schedule&.unrendered_reason
   #       json.units schedule&.units
   #       json.minutes schedule&.minutes
   #       if schedule&.catalyst_data_ids.present?
@@ -109,7 +109,7 @@ json.data do
   #           end
   #         end
   #       end
-  #       if !(schedule&.unrendered_reasons.include?('units_does_not_match')) && !(schedule&.unrendered_reasons.include?('soap_note_absent'))
+  #       if !(schedule&.unrendered_reason.include?('units_does_not_match')) && !(schedule&.unrendered_reason.include?('soap_note_absent'))
   #         json.soap_note_id schedule&.soap_notes.last.id if schedule&.soap_notes.present?
   #         json.synced_with_catalyst schedule&.soap_notes.last.synced_with_catalyst if schedule&.soap_notes.present?
   #       end
@@ -240,7 +240,7 @@ json.data do
       json.end_time schedule.end_time
       json.is_rendered schedule.is_rendered
       json.rendered_at schedule.rendered_at
-      json.unrendered_reasons schedule.unrendered_reasons
+      json.unrendered_reasons schedule.unrendered_reason
       json.units schedule.units
       json.minutes schedule.minutes
       if schedule.catalyst_data_ids.present?
@@ -263,7 +263,7 @@ json.data do
           end
         end
       end
-      if !(schedule.unrendered_reasons.include?('units_does_not_match')) && !(schedule.unrendered_reasons.include?('soap_note_absent'))
+      if !(schedule.unrendered_reason.include?('units_does_not_match')) && !(schedule.unrendered_reason.include?('soap_note_absent'))
         json.soap_note_id schedule.soap_notes.last.id if schedule.soap_notes.present?
         json.synced_with_catalyst schedule.soap_notes.last.synced_with_catalyst if schedule.soap_notes.present?
       end

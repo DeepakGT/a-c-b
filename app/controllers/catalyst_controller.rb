@@ -37,11 +37,11 @@ class CatalystController < ApplicationController
     @schedule.catalyst_data_ids.push(@catalyst_data.id)
     @schedule.save(validate: false)
     temp_var = 0
-    temp_var = 1 if @schedule.unrendered_reasons.include?('units_does_not_match')
+    temp_var = 1 if @schedule.unrendered_reason.include?('units_does_not_match')
     @catalyst_data.update(is_appointment_found: true, system_scheduling_id: @schedule.id, multiple_schedulings_ids: [])
     @checked_units = false
     check_units if @catalyst_data.id == @schedule.catalyst_data_ids.max.to_i
-    if (!(@schedule.unrendered_reasons.include?('units_does_not_match')) &&  @checked_units==false && temp_var==0) || temp_var==1
+    if (!(@schedule.unrendered_reason.include?('units_does_not_match')) &&  @checked_units==false && temp_var==0) || temp_var==1
       create_soap_note
       RenderService::RenderSchedule.call(@schedule.id) if @schedule.date<Time.current.to_date
     end
@@ -70,12 +70,12 @@ class CatalystController < ApplicationController
     @schedule.minutes = @catalyst_data.minutes if @schedule.minutes.present?
     @schedule.start_time = @catalyst_data.start_time
     @schedule.end_time = @catalyst_data.end_time
-    @schedule.unrendered_reasons = []
+    @schedule.unrendered_reason = []
     @schedule.save(validate: false)
   end
 
   def use_abac_units
-    @schedule.unrendered_reasons = []
+    @schedule.unrendered_reason = []
     @schedule.save(validate: false)
   end
 
@@ -84,7 +84,7 @@ class CatalystController < ApplicationController
     @schedule.minutes = params[:minutes] if params[:minutes].present?
     @schedule.start_time = params[:start_time] if params[:start_time].present?
     @schedule.end_time = params[:end_time] if params[:end_time].present?
-    @schedule.unrendered_reasons = []
+    @schedule.unrendered_reason = []
     @schedule.save(validate: false)
   end
 
@@ -120,7 +120,7 @@ class CatalystController < ApplicationController
       @schedule.minutes = catalyst_data.minutes if @schedule.minutes.present?
       @schedule.save(validate: false)
     else
-      @schedule.unrendered_reasons.push('units_does_not_match')
+      @schedule.unrendered_reason.push('units_does_not_match')
       @schedule.save(validate: false)
     end
   end

@@ -41,7 +41,7 @@ module CompareCatalystDataWithSystemData
 
             response_data_hash = {}
           else
-            schedule.unrendered_reasons = schedule.unrendered_reasons | ['units_does_not_match']
+            schedule.unrendered_reason = schedule.unrendered_reason | ['units_does_not_match']
             schedule.catalyst_data_ids = schedule.catalyst_data_ids | ["#{catalyst_data.id}"]
             schedule.save(validate: false)
             response_data_hash[:system_data] = schedule.attributes
