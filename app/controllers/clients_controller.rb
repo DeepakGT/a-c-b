@@ -1,4 +1,4 @@
-# require 'will_paginate/array'
+require 'will_paginate/array'
 class ClientsController < ApplicationController
   before_action :authenticate_user!
   before_action :authorize_user
