@@ -25,7 +25,7 @@ class StaffQualificationsController < ApplicationController
   private
 
   def staff_qualification_params
-    params.permit(:credential_id, :issued_on, :expires_on, :cert_lic_number, :documentation_notes)
+    params.permit(:credential_id, :issued_at, :expires_at, :cert_lic_number, :documentation_notes)
   end
 
   def set_staff

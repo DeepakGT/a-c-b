@@ -8,7 +8,7 @@ json.data do
     json.email staff.email
     json.title staff.role_name
     json.job_type staff.job_type
-    json.hired_on staff.hired_on
+    json.hired_at staff.hired_at
     json.terminated_on staff.terminated_on
     if staff_clinic.present?
       json.organization_id staff_clinic.clinic&.organization_id
