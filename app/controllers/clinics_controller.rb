@@ -11,7 +11,7 @@ class ClinicsController < ApplicationController
 
   def create
     @clinic = Clinic.new(clinic_params)
-    @clinic.id = Clinic.ids.max+1
+    @clinic.id = Clinic.ids.max+1 if Clinic.ids.present?
     @clinic.save
   end
 

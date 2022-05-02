@@ -34,17 +34,38 @@ RSpec.describe ClientMetaDataController, type: :controller do
 
   describe "GET #service_providers_list" do
     context "when sign in" do
-      let(:service) { create(:service) }
-      let(:service_providers) { clinic.staff.joins(:role).where('role.name': ['bcba', 'rbt']) }
-      it "should fetch service providers list successfully." do
-        set_auth_headers(auth_headers)
+      context "and service has no qualifications" do
+        let(:service) { create(:service) }
+        let(:service_providers) { clinic.staff.joins(:role).where('role.name': ['bcba', 'rbt']) }
+        it "should fetch service providers list successfully." do
+          set_auth_headers(auth_headers)
 
-        get :service_providers_list, params: { client_id: client.id, service_id: service.id}
-        response_body = JSON.parse(response.body)
+          get :service_providers_list, params: { client_id: client.id, service_id: service.id}
+          response_body = JSON.parse(response.body)
 
-        expect(response.status).to eq(200)
-        expect(response_body['status']).to eq('success')
-        expect(response_body['data'].count).to eq(service_providers.count)
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data'].count).to eq(service_providers.count)
+        end
+      end
+
+      context "and service has qualifications" do
+        let!(:service) {create(:service)}
+        let!(:staff) {create(:staff, role_name: 'bcba')}
+        let!(:staff_clinic) {create(:staff_clinic, staff_id: staff.id, clinic_id: clinic.id)}
+        let!(:qualification) {create(:qualification)}
+        let!(:service_qualification){create(:service_qualification, service_id: service.id, qualification_id: qualification.id)}
+        let!(:staff_qualification){create(:staff_qualification, staff_id: staff.id, credential_id: qualification.id)}
+        it "should fetch service providers list successfully." do
+          set_auth_headers(auth_headers)
+          
+          get :service_providers_list, params: { client_id: client.id, service_id: service.id}
+          response_body = JSON.parse(response.body)
+
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data'].count).to eq(1)
+        end
       end
     end
   end

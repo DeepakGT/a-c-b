@@ -1,4 +1,4 @@
-require 'will_paginate/array'
+# require 'will_paginate/array'
 class ClientsController < ApplicationController
   before_action :authenticate_user!
   before_action :authorize_user
@@ -7,7 +7,7 @@ class ClientsController < ApplicationController
   def index
     clients = filter_by_logged_in_user
     clients = filter_by_location(clients) if params[:default_location_id].present?
-    @clients = clients.uniq.sort_by(&:first_name).paginate(page: params[:page])
+    @clients = clients.distinct.order(:first_name).paginate(page: params[:page])
   end
 
   def show; end

@@ -178,6 +178,32 @@ RSpec.describe SchedulingsController, type: :controller do
         expect(response_body['data']['status']).to eq('scheduled')
         expect(response_body['data']['minutes']).to eq(288.0)
       end
+
+      context "and catalyst data id is present" do
+        let(:catalyst_data){ create(:catalyst_data, is_appointment_found: false, start_time: '12:30', end_time: '13:30', units: 4, minutes: 60) }
+        it "should create scheduling using catalyst data successfully" do
+          set_auth_headers(auth_headers)
+
+          post :create, params: {
+            catalyst_data_id: catalyst_data.id,
+            client_enrollment_service_id: client_enrollment_service.id,
+            staff_id: staff.id,
+            status: 'scheduled'
+          }
+          response_body = JSON.parse(response.body)
+          
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data']['client_enrollment_service_id']).to eq(client_enrollment_service.id)
+          expect(response_body['data']['staff_id']).to eq(staff.id)
+          expect(response_body['data']['date']).to eq(catalyst_data.date.strftime('%Y-%m-%d'))
+          expect(response_body['data']['start_time']).to eq(catalyst_data.start_time)
+          expect(response_body['data']['end_time']).to eq(catalyst_data.end_time)
+          expect(response_body['data']['status']).to eq('scheduled')
+          expect(response_body['data']['units']).to eq(catalyst_data.units)
+          expect(response_body['data']['minutes']).to eq(catalyst_data.minutes)
+        end
+      end
     end
   end
 
@@ -201,45 +227,98 @@ RSpec.describe SchedulingsController, type: :controller do
 
   describe "PUT #update" do
     context "when sign in" do
-      let(:scheduling) { create(:scheduling, client_enrollment_service_id: client_enrollment_service.id, staff_id: staff.id, start_time: '12:00', end_time: '13:00', units: '2') }
-      it "should update scheduling successfully" do
-        set_auth_headers(auth_headers)
-
-        put :update, params: { id: scheduling.id, status: 'unavailable', end_time: '14:00' }
-        response_body = JSON.parse(response.body)
-
-        expect(response.status).to eq(200)
-        expect(response_body['status']).to eq('success')
-        expect(response_body['data']['id']).to eq(scheduling.id)
-        expect(response_body['data']['status']).to eq('unavailable')
-        expect(response_body['data']['end_time']).to eq('14:00')
-      end
-
-      context "and update associated data" do
-        let(:staff) { create(:staff, :with_role, role_name: 'client_care_coordinator') }
-        it "should update associated staff successfully" do
+      context "when logged in user is super_admin, administrator and executive_director" do
+        let(:scheduling) { create(:scheduling, client_enrollment_service_id: client_enrollment_service.id, staff_id: staff.id, start_time: '12:00', end_time: '13:00', units: '4') }
+        it "should update scheduling successfully" do
           set_auth_headers(auth_headers)
 
-          put :update, params: { id: scheduling.id, staff_id: staff.id }
+          put :update, params: { id: scheduling.id, status: 'unavailable', end_time: '14:00' }
           response_body = JSON.parse(response.body)
 
           expect(response.status).to eq(200)
           expect(response_body['status']).to eq('success')
           expect(response_body['data']['id']).to eq(scheduling.id)
-          expect(response_body['data']['staff_id']).to eq(staff.id)
+          expect(response_body['data']['status']).to eq('unavailable')
+          expect(response_body['data']['end_time']).to eq('14:00')
         end
 
-        let(:client_enrollment_service) { create(:client_enrollment_service) }
-        it "should update associated client enrollment service successfully" do
-          set_auth_headers(auth_headers)
+        context "and update associated data" do
+          let(:staff) { create(:staff, :with_role, role_name: 'client_care_coordinator') }
+          it "should update associated staff successfully" do
+            set_auth_headers(auth_headers)
 
-          put :update, params: { id: scheduling.id, client_enrollment_service_id: client_enrollment_service.id }
-          response_body = JSON.parse(response.body)
+            put :update, params: { id: scheduling.id, staff_id: staff.id }
+            response_body = JSON.parse(response.body)
 
-          expect(response.status).to eq(200)
-          expect(response_body['status']).to eq('success')
-          expect(response_body['data']['id']).to eq(scheduling.id)
-          expect(response_body['data']['client_enrollment_service_id']).to eq(client_enrollment_service.id)
+            expect(response.status).to eq(200)
+            expect(response_body['status']).to eq('success')
+            expect(response_body['data']['id']).to eq(scheduling.id)
+            expect(response_body['data']['staff_id']).to eq(staff.id)
+          end
+
+          let(:client_enrollment_service) { create(:client_enrollment_service) }
+          it "should update associated client enrollment service successfully" do
+            set_auth_headers(auth_headers)
+
+            put :update, params: { id: scheduling.id, client_enrollment_service_id: client_enrollment_service.id }
+            response_body = JSON.parse(response.body)
+
+            expect(response.status).to eq(200)
+            expect(response_body['status']).to eq('success')
+            expect(response_body['data']['id']).to eq(scheduling.id)
+            expect(response_body['data']['client_enrollment_service_id']).to eq(client_enrollment_service.id)
+          end
+        end
+      end
+
+      context "when logged in user is bcba" do
+        let(:role) {create(:role, name: 'bcba', permissions: ['schedule_update'])}
+        let(:bcba_staff) {create(:staff, :with_role, role_name: role.name)}
+        let(:staff_auth_headers) {bcba_staff.create_new_auth_token}
+        context "and date is in future" do
+          let(:scheduling) { create(:scheduling, client_enrollment_service_id: client_enrollment_service.id, staff_id: staff.id, start_time: '12:00', end_time: '13:00', units: '4') }
+          it "should update scheduling successfully" do
+            set_auth_headers(staff_auth_headers)
+
+            put :update, params: { id: scheduling.id, status: 'unavailable', end_time: '14:00' }
+            response_body = JSON.parse(response.body)
+
+            expect(response.status).to eq(200)
+            expect(response_body['status']).to eq('success')
+            expect(response_body['data']['id']).to eq(scheduling.id)
+            expect(response_body['data']['status']).to eq('unavailable')
+            expect(response_body['data']['end_time']).to eq('14:00')
+          end
+        end
+
+        context "and date is in past" do
+          let(:scheduling) { create(:scheduling, client_enrollment_service_id: client_enrollment_service.id, staff_id: staff.id, start_time: '12:00', end_time: '13:00', units: '4', date: Date.yesterday) }
+          it "should update scheduling status successfully" do
+            set_auth_headers(staff_auth_headers)
+
+            put :update, params: { id: scheduling.id, status: 'unavailable'}
+            response_body = JSON.parse(response.body)
+
+            expect(response.status).to eq(200)
+            expect(response_body['status']).to eq('success')
+            expect(response_body['data']['id']).to eq(scheduling.id)
+            expect(response_body['data']['status']).to eq('unavailable')
+          end
+
+          context "when try to update data other than status" do
+            it "should not update scheduling status successfully" do
+              set_auth_headers(staff_auth_headers)
+  
+              put :update, params: { id: scheduling.id, status: 'unavailable', end_time: '13:10'}
+              response_body = JSON.parse(response.body)
+  
+              expect(response.status).to eq(200)
+              expect(response_body['status']).to eq('success')
+              expect(response_body['data']['id']).to eq(scheduling.id)
+              expect(response_body['data']['status']).to eq('unavailable')
+              expect(response_body['data']['end_time']).to eq('13:00')
+            end
+          end
         end
       end
     end
