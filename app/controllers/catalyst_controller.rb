@@ -16,21 +16,6 @@ class CatalystController < ApplicationController
     RenderService::RenderSchedule.call(@schedule.id) if @schedule.date<Time.current.to_date
   end
 
-  def create_appointment
-    @catalyst_data = CatalystData.find(params[:catalyst_data_id])
-    staff = Staff.find_by(first_name: @catalyst_data.staff_first_name, last_name: @catalyst_data.staff_last_name)
-    @schedule = Scheduling.new(date: @catalyst_data.date, start_time: @catalyst_data.start_time, 
-                               end_time: @catalyst_data.end_time, units: @catalyst_data.units, staff_id: staff.id,
-                              client_enrollment_service_id: params[:client_enrollment_service_id])
-    @schedule.service_address_id = params[:service_address_id] if params[:service_address_id].present?
-    @schedule.status = params[:status] if params[:status].present?
-    @schedule.catalyst_data_ids.push(@catalyst_data.id)
-    @schedule.save(validate: false)
-    @catalyst_data.update(is_appointment_found: true, system_scheduling_id: @schedule.id, multiple_schedulings_ids: [])
-    create_soap_note
-    RenderService::RenderSchedule.call(@schedule.id) if @schedule.date<Time.current.to_date
-  end
-
   def assign_catalyst_note
     @schedule = Scheduling.find(params[:scheduling_id])
     @catalyst_data = CatalystData.find(params[:catalyst_data_id])
@@ -85,14 +70,28 @@ class CatalystController < ApplicationController
     @schedule.start_time = params[:start_time] if params[:start_time].present?
     @schedule.end_time = params[:end_time] if params[:end_time].present?
     @schedule.unrendered_reason = []
+    if params[:units].present? && params[:minutes].blank?
+      @schedule.minutes = @schedule.units*15
+    elsif params[:minutes].present? && params[:minutes].blank?
+      rem = @schedule.minutes%15
+      if rem == 0
+        @schedule.units = @schedule.minutes/15
+      else
+        if rem < 8
+          @schedule.units = (@schedule.minutes - rem)/15
+        else
+          @schedule.units = (@schedule.minutes + 15 - rem)/15
+        end
+      end 
+    end
     @schedule.save(validate: false)
   end
 
   def create_soap_note
-    soap_note = schedule.soap_notes.find_or_initialize_by(catalyst_data_id: catalyst_data.id)
-    soap_note.add_date = catalyst_data.date
-    soap_note.note = catalyst_data.note
-    soap_note.creator_id = schedule.staff_id
+    soap_note = @schedule.soap_notes.find_or_initialize_by(catalyst_data_id: @catalyst_data.id)
+    soap_note.add_date = @catalyst_data.date
+    soap_note.note = @catalyst_data.note
+    soap_note.creator_id = @schedule.staff_id
     soap_note.synced_with_catalyst = true
     soap_note.bcba_signature = true if @catalyst_data.bcba_signature.present?
     soap_note.clinical_director_signature = true if @catalyst_data.clinical_director_signature.present?

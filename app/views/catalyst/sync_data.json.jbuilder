@@ -2,11 +2,15 @@ json.status 'success'
 json.data do
   json.array! @response_data_array do |response|
     if response[:catalyst_data].present?
+      catalyst_data = response[:catalyst_data]
+      staff = Staff.find_by(catalyst_user_id: catalyst_data.catalyst_user_id)
+      client = Client.find_by(catalyst_patient_id: catalyst_data.catalyst_patient_id)
       json.catalyst_data do
         json.id catalyst_data.id
-        catalyst_data = response[:catalyst_data]
-        json.client_name "#{catalyst_data.client_first_name} #{catalyst_data.client_last_name}"
-        json.staff_name "#{catalyst_data.staff_first_name} #{catalyst_data.staff_last_name}"
+        json.client_id client&.id
+        json.client_name "#{client&.first_name} #{client&.last_name}"
+        json.staff_id staff&.id
+        json.staff_name "#{staff&.first_name} #{staff&.last_name}"
         json.date "#{catalyst_data.date}"
         json.start_time "#{catalyst_data.start_time}"
         json.end_time "#{catalyst_data.end_time}"

@@ -70,7 +70,6 @@ Rails.application.routes.draw do
     get '/executive_director_appointments', to: 'scheduling_meta_data#executive_director_appointments'
     get '/catalyst/sync_data', to: 'catalyst#sync_data'
     put '/catalyst/update_appointment_units', to: 'catalyst#update_appointment_units'
-    post '/catalyst/create_appointment', to: 'catalyst#create_appointment' 
     put '/catalyst/assign_catalyst_note', to: 'catalyst#assign_catalyst_note'
     get '/catalyst/catalyst_data/:id', to: 'catalyst#catalyst_data_with_multiple_appointments'
     get '/catalyst/:catalyst_data_id/appointments_list', to: 'catalyst#appointments_list'
