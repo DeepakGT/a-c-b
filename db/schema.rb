@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_26_063207) do
+ActiveRecord::Schema.define(version: 2022_05_02_132521) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -170,6 +170,7 @@ ActiveRecord::Schema.define(version: 2022_04_26_063207) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.text "catalyst_patient_id"
+    t.string "tracking_id"
     t.index ["bcba_id"], name: "index_clients_on_bcba_id"
     t.index ["clinic_id"], name: "index_clients_on_clinic_id"
   end
@@ -358,9 +359,9 @@ ActiveRecord::Schema.define(version: 2022_04_26_063207) do
 
   create_table "staff_clinic_services", force: :cascade do |t|
     t.bigint "service_id", null: false
+    t.bigint "staff_clinic_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.bigint "staff_clinic_id"
     t.index ["service_id"], name: "index_staff_clinic_services_on_service_id"
     t.index ["staff_clinic_id"], name: "index_staff_clinic_services_on_staff_clinic_id"
   end

@@ -6704,6 +6704,8 @@ definitions:
       status:
         type: "string"
         enum: [active, inactive]
+      tracking_id:
+        type: "string"
       gender:
         type: "string"
         enum: [male, female]

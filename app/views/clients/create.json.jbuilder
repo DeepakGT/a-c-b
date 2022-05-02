@@ -9,6 +9,7 @@ json.data do
   json.dob @client.dob
   json.gender @client.gender
   json.status @client.status
+  json.tracking_id @client.tracking_id
   json.preferred_language @client.preferred_language
   json.disqualified @client.disqualified
   json.disqualified_reason @client.dq_reason if @client.disqualified?
