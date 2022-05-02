@@ -75,7 +75,7 @@ class SchedulingMetaDataController < ApplicationController
                                                              .or(client_enrollment_services.by_staff_qualifications(staff_qualification_ids))
                                                           
     end
-    client_enrollment_services.distinct
+    client_enrollment_services&.uniq
   end
   # end of private
 

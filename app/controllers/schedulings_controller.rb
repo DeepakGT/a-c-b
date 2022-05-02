@@ -93,7 +93,7 @@ class SchedulingsController < ApplicationController
     if params[:startDate].present? && params[:endDate].present?
       schedules = schedules.on_date(params[:startDate]..params[:endDate])
     end
-    schedules = schedules.distinct.order(:date)
+    schedules = schedules.uniq.sort_by(&:date)
     if params[:page].present?
       schedules = schedules.paginate(page: params[:page])
     end

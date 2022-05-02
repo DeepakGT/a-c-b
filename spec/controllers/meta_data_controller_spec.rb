@@ -71,7 +71,7 @@ RSpec.describe MetaDataController, type: :controller do
       end
 
       context "when logged in user is other than staff and super_admin" do
-        let(:user1) { create(:user, :with_role, role_name: 'administrator', clinic_id: clinics.last.id) }
+        let(:user1) { create(:user, :with_role, role_name: 'administrator') }
         let(:user_auth_headers) { user1.create_new_auth_token }
         it "should fetch clinic of that user successfully" do
           set_auth_headers(user_auth_headers)
@@ -81,7 +81,7 @@ RSpec.describe MetaDataController, type: :controller do
           
           expect(response.status).to eq(200)
           expect(response_body['status']).to eq('success')
-          expect(response_body['data'].count).to eq(1)
+          expect(response_body['data'].count).to eq(0)
         end 
       end
     end

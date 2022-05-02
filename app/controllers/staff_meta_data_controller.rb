@@ -5,11 +5,11 @@ class StaffMetaDataController < ApplicationController
     if current_user.role_name=='rbt'
       clients = Client.by_staff_id_in_scheduling(current_user.id)
       clients = filter_by_location(clients) if params[:default_location_id].present?
-      @clients = clients.distinct.order(:id)
+      @clients = clients.uniq.sort_by(&:id)
     elsif current_user.role_name=='bcba'
       clients = Client.by_staff_id_in_scheduling(current_user.id).or(Client.by_bcbas(current_user.id))
       clients = filter_by_location(clients) if params[:default_location_id].present?
-      @clients = clients.distinct.order(:id)
+      @clients = clients.uniq.sort_by(&:id)
     end
   end
 

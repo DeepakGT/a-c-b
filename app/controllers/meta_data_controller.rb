@@ -11,7 +11,7 @@ class MetaDataController < ApplicationController
     elsif current_user.type=="Staff"
       @clinics = current_user.clinics&.order(:name)
     else
-      @clinics = Clinic.where(id: current_user.clinic_id)&.order(:name)
+      @clinics = Clinic.where(id: current_user&.clinic_id)&.order(:name)
     end
   end
 
