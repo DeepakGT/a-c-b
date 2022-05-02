@@ -79,6 +79,3 @@ json.data do
     end
   end
 end
-json.total_records @schedules.total_entries
-json.limit @schedules.per_page
-json.page params[:page] || 1
