@@ -17,7 +17,7 @@ class SoapNotesController < ApplicationController
       @soap_note.user = current_user
       @soap_note.creator_id = current_user.id
       @soap_note.save
-      RenderService::RenderBySoapNote.call(@soap_note.id) if @scheduling.date<Time.current.to_date
+      RenderAppointments::RenderBySoapNoteOperation.call(@soap_note.id) if @scheduling.date<Time.current.to_date
     end
   end
 
@@ -26,7 +26,7 @@ class SoapNotesController < ApplicationController
       update_signature
       @soap_note.user = current_user
       @soap_note.update(soap_note_params)
-      RenderService::RenderBySoapNote.call(@soap_note.id) if @scheduling.date<Time.current.to_date
+      RenderAppointments::RenderBySoapNoteOperation.call(@soap_note.id) if @scheduling.date<Time.current.to_date
     end
   end
 

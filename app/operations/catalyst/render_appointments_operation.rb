@@ -1,8 +1,8 @@
 module Catalyst
-  module RenderServiceOperation
+  module RenderAppointmentsOperation
     class << self
       def call
-        result = render_service
+        render_service
       end
 
       private
@@ -14,12 +14,11 @@ module Catalyst
           if schedules.any?
             schedules.each do |schedule|
               if schedule.unrendered_reason.blank?
-                RenderService::RenderSchedule.call(schedule.id)
+                RenderAppointments::RenderScheduleOperation.call(schedule.id)
               end
             end
           end
         end
-        true
       end
     end
   end

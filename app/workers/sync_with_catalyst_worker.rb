@@ -15,7 +15,7 @@ class SyncWithCatalystWorker
 
   def sync_data(start_date, end_date)
     response_data_array = Catalyst::SyncDataOperation.call(start_date, end_date)
-    result = Catalyst::RenderServiceOperation.call
+    result = Catalyst::RenderAppointmentsOperation.call
   end
   # end of private
 end

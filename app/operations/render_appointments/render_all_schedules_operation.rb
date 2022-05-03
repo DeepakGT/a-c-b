@@ -1,5 +1,5 @@
-module RenderService
-  module RenderAllSchedules
+module RenderAppointments
+  module RenderAllSchedulesOperation
     class << self
       def call
         render_schedulings
@@ -10,7 +10,7 @@ module RenderService
       def render_schedulings
         schedules = Scheduling.completed_scheduling.where(is_rendered: false).where(catalyst_data_ids: [])
         schedules.each do |schedule|
-          RenderService::RenderSchedule.call(schedule.id)
+          RenderAppointments::RenderScheduleOperation.call(schedule.id)
         end
       end
     end

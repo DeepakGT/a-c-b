@@ -45,6 +45,9 @@ class ClientEnrollmentServicesController < ApplicationController
     set_client_enrollment 
     @enrollment_service.client_enrollment = @client_enrollment
     @enrollment_service.save
+    if @enrollment_service.client_enrollment&.funding_source&.name != 'ABA Centers of America'
+      RenderAppointments::RenderPartiallyRenderedSchedulesOperation.call(@enrollment_service.id)
+    end
   end
 
   def enrollment_service_params

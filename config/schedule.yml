@@ -4,7 +4,7 @@ update_user_status_worker:
 
 render_service_worker:
   cron: '1 4 * * *'
-  class: "RenderServiceWorker"
+  class: "RenderAppointmentsWorker"
 
 sync_soap_notes_with_catalyst_one_month_worker_at_10_pm:
   cron: '0 2 * * *'

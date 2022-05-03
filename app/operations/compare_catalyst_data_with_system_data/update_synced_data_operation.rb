@@ -1,5 +1,5 @@
 module CompareCatalystDataWithSystemData
-  module UpdateSyncedData
+  module UpdateSyncedDataOperation
     class << self
       def call(catalyst_data)
         response_data_hash = update_synced_data(catalyst_data)

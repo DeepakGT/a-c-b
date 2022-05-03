@@ -49,7 +49,7 @@ module Catalyst
               end 
               catalyst_data.save(validate: false)
 
-              response_data_hash = CompareCatalystDataWithSystemData::CompareSyncedData.call(catalyst_data)
+              response_data_hash = CompareCatalystDataWithSystemData::CompareSyncedDataOperation.call(catalyst_data)
             else
               if catalyst_data.date_revision_made!=data['dateRevisionMade']
                 data['responses'].each do |response|
@@ -86,8 +86,8 @@ module Catalyst
                 catalyst_data.date_revision_made = data['dateRevisionMade']
                 catalyst_data.save(validate: false)
                 
-                # response_data_hash = CompareCatalystDataWithSystemData::CompareSyncedData.call(catalyst_data)
-                response_data_hash = CompareCatalystDataWithSystemData::UpdateSyncedData.call(catalyst_data)
+                # response_data_hash = CompareCatalystDataWithSystemData::CompareSyncedDataOperation.call(catalyst_data)
+                response_data_hash = CompareCatalystDataWithSystemData::UpdateSyncedDataOperation.call(catalyst_data)
               end
             end
             response_data_array.push(response_data_hash) if response_data_hash.any?

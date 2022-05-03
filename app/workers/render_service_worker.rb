@@ -1,13 +1,13 @@
 require 'sidekiq'
 require 'sidekiq-cron'
-class RenderServiceWorker                       
+class RenderAppointmentsWorker                       
   include Sidekiq::Worker
                                         
   def perform
     puts "#{DateTime.current}"
-    puts "RenderServiceJob is started"
-    RenderService::RenderAllSchedules.call
-    puts "RenderServiceJob is completed"
+    puts "RenderAppointmentsJob is started"
+    RenderAppointments::RenderAllSchedulesOperation.call
+    puts "RenderAppointmentsJob is completed"
     puts ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"               
   end
   # end of private

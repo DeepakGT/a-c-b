@@ -11,6 +11,7 @@ class ClientEnrollmentService < ApplicationRecord
   validate :validate_service_providers
   validate :validate_units_and_minutes
   validate :validate_count_of_units, on: :update
+  validate :validate_dates
 
   before_validation :set_units_and_minutes
 
@@ -22,6 +23,7 @@ class ClientEnrollmentService < ApplicationRecord
   scope :by_service_with_no_qualification, ->{select("client_enrollment_services.*").group("client_enrollment_services.id").having("count(service_qualifications.*) = ?",0)}
   scope :by_bcba_ids, ->(bcba_ids){ joins(client_enrollment: :client).where('clients.bcba_id': bcba_ids) }
   scope :about_to_expire, ->{ where('end_date>=? AND end_date<=?', Time.current.to_date, (Time.current.to_date+9)) }
+  scope :by_client_enrollment, ->(client_enrollment_id){ where(client_enrollment_id: client_enrollment_id)}
 
   private
 
@@ -61,4 +63,16 @@ class ClientEnrollmentService < ApplicationRecord
       errors.add(:units, "Units entered in client_enrollment service are less than #{scheduled_units} units used in schedulings.")
     end
   end
+
+  def validate_dates
+    client_enrollment_services = ClientEnrollmentService.by_client_enrollment(self.client_enrollment_id)
+                                                        .by_service(self.service_id)
+                                                        .where.not(id: self.id)
+    client_enrollment_services = client_enrollment_services.where('start_date <= ? AND end_date >= ?', self.start_date, self.start_date)
+                                                           .or(client_enrollment_services.where('start_date >= ? AND start_date <= ?', self.start_date, self.end_date))
+    if client_enrollment_services.any?
+      errors.add(:client_enrollment_service, 'cannot be created for given start date and end date.')
+    end
+  end
+  # end of private
 end

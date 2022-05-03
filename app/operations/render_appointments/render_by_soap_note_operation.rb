@@ -1,5 +1,5 @@
-module RenderService
-  module RenderBySoapNote
+module RenderAppointments
+  module RenderBySoapNoteOperation
     class << self
       def call(soap_note_id)
         check_soap_note(soap_note_id)
@@ -30,7 +30,7 @@ module RenderService
         end
         if schedule.unrendered_reason.blank?
           schedule.is_rendered = true
-          schedule.status = 'Rendered' if schedule.client_enrollment_service.client_enrollment.funding_source.name!='ABA Centers of America'
+          schedule.status = 'Rendered' if schedule.client_enrollment_service&.client_enrollment&.funding_source&.name!='ABA Centers of America'
           schedule.rendered_at = DateTime.current
           schedule.save(validate: false)
         end

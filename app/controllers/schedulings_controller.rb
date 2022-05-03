@@ -121,7 +121,7 @@ class SchedulingsController < ApplicationController
   def update_render_service
     if params[:is_rendered].to_bool.true? || params[:status]=='Rendered'
       if @schedule.date<Time.current.to_date
-        RenderService::RenderSchedule.call(@schedule.id)
+        RenderAppointments::RenderScheduleOperation.call(@schedule.id)
       end
     end
   end
