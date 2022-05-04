@@ -48,6 +48,14 @@ class SchedulingMetaDataController < ApplicationController
     @catalyst_data = CatalystData.with_multiple_appointments.or(CatalystData.with_no_appointments).first(30)
   end
 
+  def billing_dashboard
+    @authorizations_expire_in_5_days = ClientEnrollmentService.expire_in_5_days
+    @authorizations_expire_in_6_to_20_days = ClientEnrollmentService.expire_in_6_to_20_days
+    @authorizations_expire_in_21_to_60_days = ClientEnrollmentService.expire_in_21_to_60_days
+    @client_with_no_authorizations = Client.with_no_authorizations
+    @client_with_only_97151_service_authorization = get_clients_with_only_97151_service_authorization
+  end
+
   private
 
   def get_selectable_options_data
@@ -76,6 +84,14 @@ class SchedulingMetaDataController < ApplicationController
                                                           
     end
     client_enrollment_services&.uniq
+  end
+
+  def get_clients_with_only_97151_service_authorization
+    client_enrollment_services_ids = ClientEnrollmentService.joins(:service).where('services.display_code != ?', '97151').pluck(:id)
+    clients = Client.where.not(id: @client_with_no_authorizations.pluck(:id))
+    clients_ids = clients.joins(client_enrollments: :client_enrollment_services).where('client_enrollment_services.id': client_enrollment_services_ids).pluck(:id).uniq
+    clients = clients.where.not(id: clients_ids)
+    clients
   end
   # end of private
 

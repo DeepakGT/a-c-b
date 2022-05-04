@@ -24,6 +24,9 @@ class ClientEnrollmentService < ApplicationRecord
   scope :by_bcba_ids, ->(bcba_ids){ joins(client_enrollment: :client).where('clients.bcba_id': bcba_ids) }
   scope :about_to_expire, ->{ where('end_date>=? AND end_date<=?', Time.current.to_date, (Time.current.to_date+9)) }
   scope :by_client_enrollment, ->(client_enrollment_id){ where(client_enrollment_id: client_enrollment_id)}
+  scope :expire_in_5_days, ->{ where('end_date >= ? AND end_date<=?', Time.current.to_date, (Time.current.to_date+4))}
+  scope :expire_in_6_to_20_days, ->{ where('end_date >= ? AND end_date<=?', (Time.current.to_date+5), (Time.current.to_date+19))}
+  scope :expire_in_21_to_60_days, ->{ where('end_date >= ? AND end_date<=?', (Time.current.to_date+20), (Time.current.to_date+59))}
 
   private
 

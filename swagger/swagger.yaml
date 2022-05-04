@@ -6325,6 +6325,187 @@ paths:
                 }
               }
 
+  /api/billing_dashboard:
+    get:
+      summary: billing dashboard
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      responses:
+        "200":
+          description: "billing dashboard"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "authorizations_expire_in_5_days": [
+                    {
+                      "id": 1588,
+                      "client_id": 232,
+                      "client_enrollment_id": 1808,
+                      "funding_source_id": 2,
+                      "funding_source": "Ambetter nnhf",
+                      "service_id": 2,
+                      "service": "Re-Assessment",
+                      "service_display_code": "97151",
+                      "is_service_provider_required": true,
+                      "start_date": "2021-11-07",
+                      "end_date": "2022-05-06",
+                      "units": 40.0,
+                      "used_units": 0,
+                      "scheduled_units": 0,
+                      "left_units": 40.0,
+                      "minutes": 600.0,
+                      "used_minutes": 0,
+                      "scheduled_minutes": 0,
+                      "left_minutes": 600.0,
+                      "service_number": null,
+                      "service_providers": {
+                        "ids": [],
+                        "staff_ids": [],
+                        "names": []
+                      }
+                    }
+                  ],
+                  "authorizations_expire_in_6_to_20_days": [
+                    {
+                      "id": 1580,
+                      "client_id": 234,
+                      "client_enrollment_id": 1806,
+                      "funding_source_id": 7,
+                      "funding_source": "New Hampshire BCBS",
+                      "service_id": 2,
+                      "service": "Re-Assessment",
+                      "service_display_code": "97151",
+                      "is_service_provider_required": true,
+                      "start_date": "2021-11-19",
+                      "end_date": "2022-05-17",
+                      "units": 32.0,
+                      "used_units": 0,
+                      "scheduled_units": 0,
+                      "left_units": 32.0,
+                      "minutes": 480.0,
+                      "used_minutes": 0,
+                      "scheduled_minutes": 0,
+                      "left_minutes": 480.0,
+                      "service_number": null,
+                      "service_providers": {
+                        "ids": [],
+                        "staff_ids": [],
+                        "names": []
+                      }
+                    }
+                  ],
+                  "authorizations_expire_in_21_to_60_days": [
+                    {
+                      "id": 1576,
+                      "client_id": 238,
+                      "client_enrollment_id": 1805,
+                      "funding_source_id": 2,
+                      "funding_source": "Ambetter nnhf",
+                      "service_id": 2,
+                      "service": "Re-Assessment",
+                      "service_display_code": "97151",
+                      "is_service_provider_required": true,
+                      "start_date": "2022-01-03",
+                      "end_date": "2022-07-01",
+                      "units": 32.0,
+                      "used_units": 0,
+                      "scheduled_units": 0,
+                      "left_units": 32.0,
+                      "minutes": 480.0,
+                      "used_minutes": 0,
+                      "scheduled_minutes": 0,
+                      "left_minutes": 480.0,
+                      "service_number": null,
+                      "service_providers": {
+                        "ids": [],
+                        "staff_ids": [],
+                        "names": []
+                      }
+                    }
+                  ],
+                  "client_with_no_authorizations": [
+                    {
+                      "id": 243,
+                      "first_name": null,
+                      "last_name": null,
+                      "email": null,
+                      "clinic_id": 1,
+                      "clinic_name": "Bedford, NH",
+                      "bcba_id": null,
+                      "bcba_name": " ",
+                      "dob": null,
+                      "gender": null,
+                      "status": "active",
+                      "tracking_id": null,
+                      "preferred_language": "english",
+                      "disqualified": false,
+                      "payor_status": null,
+                      "payor": null,
+                      "addresses": [
+                        {
+                          "id": 1561,
+                          "type": "service_address",
+                          "line1": null,
+                          "line2": null,
+                          "line3": null,
+                          "zipcode": null,
+                          "city": null,
+                          "state": null,
+                          "country": null,
+                          "is_default": true
+                        }
+                      ]
+                    }
+                  ],
+                  "client_with_only_97151_service_authorization": [
+                    {
+                      "id": 266,
+                      "first_name": "Anthony",
+                      "last_name": "Martocci",
+                      "email": null,
+                      "clinic_id": 11,
+                      "clinic_name": "Wellesley, MA",
+                      "bcba_id": null,
+                      "bcba_name": " ",
+                      "dob": "2004-09-21",
+                      "gender": null,
+                      "status": "active",
+                      "tracking_id": null,
+                      "preferred_language": "english",
+                      "disqualified": false,
+                      "payor_status": null,
+                      "addresses": [
+                        {
+                          "id": 1584,
+                          "type": "service_address",
+                          "line1": null,
+                          "line2": null,
+                          "line3": null,
+                          "zipcode": "01545",
+                          "city": "Shrewsbury",
+                          "state": null,
+                          "country": null,
+                          "is_default": true
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+
 definitions:
   UserRegistrationParameters:
     type: "object"
