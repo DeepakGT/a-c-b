@@ -43,7 +43,7 @@ class SoapNote < ApplicationRecord
       if user.role_name=='rbt' && self.rbt_signature==true && self.rbt_signature_author_name=="#{user.first_name} #{user.last_name}"
         errors.add(:rbt_signature, 'must not be present for appointment created for bcba.')
       end
-      if user.role_name=='bcba' && self.bcba_signature==true && self.bcba_signature_author_name=="#{user.first_name} #{user.last_name}"
+      if user.role_name=='bcba' && self.bcba_signature==true && self.bcba_signature_author_name=="#{user.first_name} #{user.last_name}" && self.scheduling.client_enrollment_service.service.is_service_provider_required?
         errors.add(:bcba_signature, 'cannot be done by bcba that is not in authorization.') if !(self.scheduling.client_enrollment_service.staff.include?(user))
       end
     elsif scheduling.staff.role_name=='rbt'

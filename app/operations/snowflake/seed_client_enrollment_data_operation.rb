@@ -15,8 +15,23 @@ module Snowflake
           student_service = student_service.with_indifferent_access
           client_name = student_service['clientname']&.split(' ')
           client = Client.find_by(dob: student_service['clientdob']&.to_time&.strftime('%Y-%m-%d'), first_name: client_name&.first, last_name: client_name&.last)
+          if client.blank?
+            client = Client.new(first_name: client_name&.first, last_name: client_name&.last, dob: student_service['clientdob']&.to_time&.strftime('%Y-%m-%d'))
+            client.status = student_service['clientstatus']&.downcase=='inactive' ? 'inactive' : 'active'
+            client.gender = nil
+            clinic_name = student_service['officename']&.downcase
+            client.clinic_id = Clinic.where('lower(name) = ? OR lower(aka) = ?', clinic_name, clinic_name)&.first&.id
+            if client.clinic_id.blank?
+              client.clinic_id = Clinic.where("name ILIKE '%#{clinic_name}%' OR aka ILIKE '%#{clinic_name}%'")&.first&.id
+              client.clinic_id = Clinic.first.id if client.clinic_id.blank?
+            end
+            client.save(validate: false)
+          end
           if client.present?
-            client_enrollment = client.client_enrollments.find_or_initialize_by(enrollment_date: student_service['contractstartdate']&.to_time&.strftime('%Y-%m-%d'), terminated_on: student_service['contractenddate']&.to_time&.strftime('%Y-%m-%d'), insurance_id: student_service['authorizationnumber'], subscriber_name: student_service['clientname'], subscriber_dob: client&.dob)
+            client_enrollment = client.client_enrollments.find_or_initialize_by(enrollment_date: student_service['servicefundingbegin']&.to_time&.strftime('%Y-%m-%d'), terminated_on: student_service['servicefundingend']&.to_time&.strftime('%Y-%m-%d'))
+            client_enrollment.insurance_id = student_service['authorizationnumber']
+            client_enrollment.subscriber_name = student_service['clientname'] 
+            client_enrollment.subscriber_dob = client&.dob
             client_enrollment.relationship = 'self'
             client_enrollment.subscriber_phone = client&.phone_number&.number
             funding_source_id = get_funding_source(student_service['fundingsource'], client)
@@ -27,6 +42,9 @@ module Snowflake
               client_enrollment.source_of_payment = 'self_pay'
             end
             client_enrollment.save(validate: false)
+            if client_enrollment.id==nil
+              Loggers::SnowflakeLoggerService.call(student_service, 'Client enrollment cannot be saved.')
+            end
           end
         end
       end
@@ -61,11 +79,13 @@ module Snowflake
           return FundingSource.find_by(name: 'Unicare').id
         when 'BEACON HEALTH OPTIONS'
           return FundingSource.find_by(name: 'Beacon Health Options').id
+        when 'MASSACHUSETTS BCBS'
+          return FundingSource.find_by(name: 'Massachusetts BCBS').id
         else 
           if funding_source_name!=nil
-            funding_source = FundingSource.find_by(name: funding_source_name&.downcase)
+            funding_source = FundingSource.where('lower(name) = ?', funding_source_name&.downcase).first
             if funding_source.blank?
-              funding_source = FundingSource.new(name: funding_source_name&.downcase, clinic_id: client.clinic_id)
+              funding_source = FundingSource.new(name: funding_source_name&.downcase, clinic_id: client.clinic_id, id: FundingSource.ids.max+1)
               funding_source.save(validate: false)
             end
             return funding_source.id

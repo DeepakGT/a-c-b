@@ -13,9 +13,9 @@ module Snowflake
 
         staff_rosters.each do |staff_roster|
           staff_roster = staff_roster.with_indifferent_access
-          staff_count = Staff.all.count
+          staff_count = Staff.all.reload.count
           if staff_roster['email'].blank?
-            staff_roster.update(email: "staff_#{staff_count}_user@yopmail.com") if staff_roster['email'].blank?
+            staff_roster.update(email: "staff_#{staff_count}_user@yopmail.com")
           end
           if Staff.where(email: staff_roster['email']).blank?
             staff = Staff.find_or_initialize_by(email: staff_roster['email'], dob: staff_roster['dob']&.to_time&.strftime('%Y-%m-%d'), hired_at: staff_roster['hireddate']&.to_time&.strftime('%Y-%m-%d'), first_name: staff_roster['stafffirstname'], last_name: staff_roster['stafflastname'], terminated_on: staff_roster['terminateddate']&.to_time&.strftime('%Y-%m-%d'))
@@ -40,12 +40,19 @@ module Snowflake
             end
             staff.save(validate: false)
 
+            if staff.id==nil
+              Loggers::SnowflakeLoggerService.call(staff_roster, 'Staff cannot be saved.')
+            end
+
             if staff_roster['agencyname'].present?
               clinic_name = staff_roster['agencyname']&.downcase
               clinic = Clinic.where('lower(name) = ? OR lower(aka) = ?', clinic_name, clinic_name)&.first
               if clinic.present?
                 staff_clinic = staff.staff_clinics.new(clinic_id: clinic.id, is_home_clinic: true)
                 staff_clinic.save(validate: false)
+                if staff_clinic.id==nil
+                  Loggers::SnowflakeLoggerService.call(staff_roster, 'Staff clinic cannot be saved.')
+                end
               end
             end
 
@@ -54,12 +61,15 @@ module Snowflake
             address.state = staff_roster['state']
             address.zipcode = staff_roster['zip']
             address.save(validate: false)
+            if address.id==nil
+              Loggers::SnowflakeLoggerService.call(staff_roster, 'Staff address cannot be saved.')
+            end
 
             phone_number_array = []
-            phone_number_array.push(staff_roster['phone1']) if staff_roster['PHONE1'].present?
-            phone_number_array.push(staff_roster['phone2']) if staff_roster['PHONE2'].present?
-            phone_number_array.push(staff_roster['phone3']) if staff_roster['PHONE3'].present?
-            phone_number_array.push(staff_roster['phone4']) if staff_roster['PHONE4'].present?
+            phone_number_array.push(staff_roster['phone1']) if staff_roster['phone1'].present?
+            phone_number_array.push(staff_roster['phone2']) if staff_roster['phone2'].present?
+            phone_number_array.push(staff_roster['phone3']) if staff_roster['phone3'].present?
+            phone_number_array.push(staff_roster['phone4']) if staff_roster['phone4'].present?
             if phone_number_array.present?
               phone_number_array.each do |phone_number|
                 phone_type_number = phone_number.split(' ')
@@ -79,6 +89,9 @@ module Snowflake
                   staff_phone_number.number = phone_number
                 end
                 staff_phone_number.save(validate: false)
+                if staff_phone_number.id==nil
+                  Loggers::SnowflakeLoggerService.call(staff_roster, 'Staff phone number cannot be saved.')
+                end
               end
             end
           end

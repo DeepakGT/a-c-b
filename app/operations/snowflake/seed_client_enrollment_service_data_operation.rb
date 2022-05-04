@@ -29,6 +29,9 @@ module Snowflake
                 client_enrollment_service.minutes = (student_service['contractedhours'].to_f)*60
                 client_enrollment_service.units = (student_service['contractedhours'].to_f)*4
                 client_enrollment_service.save(validate: false)
+                if client_enrollment_service.id==nil
+                  Loggers::SnowflakeLoggerService.call(student_service, 'Client enrollment service cannot be saved.')
+                end
               end
             end
           end
@@ -65,11 +68,11 @@ module Snowflake
           return FundingSource.find_by(name: 'Unicare').id
         when 'BEACON HEALTH OPTIONS'
           return FundingSource.find_by(name: 'Beacon Health Options').id
-        when 'BCBS MA' || 'Massachusetts BCBS'
+        when 'BCBS MA' || 'massachusetts bcbs' || 'MASSACHUSETTS BCBS'
           return FundingSource.find_by(name: 'Massachusetts BCBS').id
         else 
           if funding_source_name!=nil
-            funding_source = FundingSource.find_by(name: funding_source_name&.downcase)
+            funding_source = FundingSource.find_by('lower(name) = ?', funding_source_name&.downcase)
             if funding_source.blank?
               funding_source = FundingSource.new(name: funding_source_name&.downcase, clinic_id: client.clinic_id)
               funding_source.save(validate: false)
