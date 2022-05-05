@@ -14,7 +14,7 @@ class Scheduling < ApplicationRecord
   validate :validate_past_appointments, on: :create
   validate :validate_units
   # validate :validate_staff, on: :create
-  validate :validate_units_and_minutes
+  # validate :validate_units_and_minutes
 
   before_save :set_units_and_minutes
 
@@ -93,12 +93,12 @@ class Scheduling < ApplicationRecord
   #   end
   # end
 
-  def validate_units_and_minutes
-    if self.units.present? && self.minutes.present?
-      minutes = self.units*15
-      errors.add(:scheduling, "The units/minutes are wrong. 1 unit is equivalent to 15 minutes, and vice versa.") if minutes != self.minutes
-    end
-  end
+  # def validate_units_and_minutes
+  #   if self.units.present? && self.minutes.present?
+  #     minutes = self.units*15
+  #     errors.add(:scheduling, "The units/minutes are wrong. 1 unit is equivalent to 15 minutes, and vice versa.") if minutes != self.minutes
+  #   end
+  # end
 
   def set_units_and_minutes
     if self.units.present? && self.minutes.blank?

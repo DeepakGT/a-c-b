@@ -9,7 +9,7 @@ class ClientEnrollmentService < ApplicationRecord
   accepts_nested_attributes_for :service_providers
 
   validate :validate_service_providers
-  validate :validate_units_and_minutes
+  # validate :validate_units_and_minutes
   validate :validate_count_of_units, on: :update
   validate :validate_dates
 
@@ -35,12 +35,12 @@ class ClientEnrollmentService < ApplicationRecord
     errors.add(:service_providers, 'must be present.') if self.service.is_service_provider_required.to_bool.true? && self.service_providers.blank?
   end
 
-  def validate_units_and_minutes
-    if self.units.present? && self.minutes.present?
-      minutes = self.units*15
-      errors.add(:client_enrollment_service, "The units/minutes are wrong. 1 unit is equivalent to 15 minutes, and vice versa.") if minutes != self.minutes
-    end
-  end
+  # def validate_units_and_minutes
+  #   if self.units.present? && self.minutes.present?
+  #     minutes = self.units*15
+  #     errors.add(:client_enrollment_service, "The units/minutes are wrong. 1 unit is equivalent to 15 minutes, and vice versa.") if minutes != self.minutes
+  #   end
+  # end
 
   def set_units_and_minutes
     if self.units.present? && self.minutes.blank?

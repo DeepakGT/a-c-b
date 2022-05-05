@@ -6506,6 +6506,69 @@ paths:
                 }
               }
 
+  /api/setting:
+    get:
+      summary: welcome note 
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      responses:
+        "200":
+          description: "welcome note"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 1,
+                  "welcome_note": "Welcome!"
+                }
+              }
+
+    put:
+      summary: welcome note update
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/SettingUpdateParameters"
+      responses:
+        "200":
+          description: "update welcome note"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 1,
+                  "welcome_note": "Welcome!"
+                },
+                "errors": []
+              }
+
 definitions:
   UserRegistrationParameters:
     type: "object"
@@ -7384,4 +7447,10 @@ definitions:
     type: "object"
     properties:
       approval_status:
+        type: "string"
+
+  SettingUpdateParameters:
+    type: "object"
+    properties:
+      welcome_note:
         type: "string"

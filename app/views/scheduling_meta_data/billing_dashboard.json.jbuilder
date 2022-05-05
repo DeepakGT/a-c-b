@@ -1,5 +1,7 @@
 json.status 'success'
 json.data do
+  json.setting_data Setting.first&.welcome_note
+
   json.authorizations_expire_in_5_days do
     json.array! @authorizations_expire_in_5_days do |client_enrollment_service|
       schedules = Scheduling.by_client_and_service(client_enrollment_service.client_enrollment.client_id, client_enrollment_service.service_id)

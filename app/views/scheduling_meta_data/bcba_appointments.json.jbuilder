@@ -1,5 +1,7 @@
 json.status 'success'
 json.data do
+  json.setting_data Setting.first&.welcome_note
+
   json.upcoming_schedules do
     json.array! @upcoming_schedules do |schedule|
       client = schedule.client_enrollment_service&.client_enrollment&.client

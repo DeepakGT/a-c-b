@@ -81,5 +81,8 @@ Rails.application.routes.draw do
     end
 
     get '/current_user_detail', to: 'users#current_user_detail'
+
+    get '/setting', to: 'settings#show'
+    get '/setting', to: 'settings#update'
   end
 end

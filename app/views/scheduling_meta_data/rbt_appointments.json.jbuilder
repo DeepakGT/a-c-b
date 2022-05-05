@@ -1,5 +1,7 @@
 json.status 'success'
 json.data do
+  json.setting_data Setting.first&.welcome_note
+
   # json.upcoming_schedules do
   #   json.array! @appointments do |appointment|
   #     if appointment.last=='Upcoming Schedule'
