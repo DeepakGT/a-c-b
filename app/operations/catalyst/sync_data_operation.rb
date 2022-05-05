@@ -90,7 +90,7 @@ module Catalyst
                 response_data_hash = CompareCatalystDataWithSystemData::UpdateSyncedDataOperation.call(catalyst_data)
               end
             end
-            response_data_array.push(response_data_hash) if response_data_hash.any?
+            response_data_array.push(response_data_hash) if response_data_hash.present?
           end
         end
         response_data_array
