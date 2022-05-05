@@ -14,7 +14,7 @@ Rails.application.routes.draw do
     # - Use digests to stop length information leaking (see also ActiveSupport::SecurityUtils.variable_size_secure_compare)
     ActiveSupport::SecurityUtils.secure_compare(::Digest::SHA256.hexdigest(username), ::Digest::SHA256.hexdigest(Rails.application.credentials.dig(:sidekiq, :user_name))) &
       ActiveSupport::SecurityUtils.secure_compare(::Digest::SHA256.hexdigest(password), ::Digest::SHA256.hexdigest(Rails.application.credentials.dig(:sidekiq, :password)))
-  end if Rails.env.staging?
+  end if Rails.env.staging? || Rails.env.production?
 
   mount Rswag::Ui::Engine => '/api-docs'
   mount Rswag::Api::Engine => '/api-docs'
@@ -83,6 +83,6 @@ Rails.application.routes.draw do
     get '/current_user_detail', to: 'users#current_user_detail'
 
     get '/setting', to: 'settings#show'
-    get '/setting', to: 'settings#update'
+    put '/setting', to: 'settings#update'
   end
 end

@@ -16,7 +16,7 @@ class SchedulingMetaDataController < ApplicationController
     @upcoming_schedules = rbt_schedules.scheduled_scheduling.order(:date).first(10)
     @past_schedules = rbt_schedules.completed_scheduling.unrendered_schedulings.order(date: :desc)
     @catalyst_data = CatalystData.with_multiple_appointments.or(CatalystData.with_no_appointments).first(30)
-    # sql = "SELECT id, 'Upcoming Schedule' AS type FROM schedulings WHERE staff_id = #{current_user.id} AND date>=CURRENT_TIMESTAMP UNION SELECT id, 'Past Schedule' AS type FROM schedulings WHERE staff_id = #{current_user.id} AND date<CURRENT_TIMESTAMP AND is_rendered=false UNION SELECT id,'Catalyst Data' AS type FROM catalyst_data WHERE is_appointment_found=false OR cardinality(multiple_schedulings_ids)>0"
+    # sql = "(SELECT id, 'Upcoming Schedule' AS type FROM schedulings WHERE staff_id = #{current_user.id} AND status = 'Scheduled' AND date>=CURRENT_TIMESTAMP ORDER BY date LIMIT 10) UNION (SELECT id, 'Past Schedule' AS type FROM schedulings WHERE staff_id = #{current_user.id} AND status = 'Scheduled' AND date<CURRENT_TIMESTAMP AND date>=(CURRENT_TIMESTAMP + INTERVAL '-1 month') AND is_rendered=false ORDER BY date DESC) UNION (SELECT id,'Catalyst Data' AS type FROM catalyst_data WHERE system_scheduling_id IS NULL LIMIT 30);"
     # @appointments = ActiveRecord::Base.connection.exec_query(sql)&.rows
   end
 
