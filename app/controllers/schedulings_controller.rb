@@ -69,25 +69,17 @@ class SchedulingsController < ApplicationController
     schedules = schedules.by_staff_ids(string_to_array(params[:staff_ids])) if params[:staff_ids].present?
     schedules = schedules.by_client_ids(string_to_array(params[:client_ids])) if params[:client_ids].present?
     schedules = schedules.by_service_ids(string_to_array(params[:service_ids])) if params[:service_ids].present?
-    if current_user.role_name == 'rbt'
-      if params[:default_location_id].present?
-        location_id = params[:default_location_id]
-        schedules = schedules.left_outer_joins(client_enrollment_service: {client_enrollment: :client}).by_client_clinic(location_id)
-                             .or(schedules.by_staff_clinic(location_id)).left_outer_joins(staff: :staff_clinics)
-      end
-    else
-      if params[:staff_ids].blank? && params[:client_ids].blank? && params[:service_ids].blank?
-        if current_user.role_name=='bcba'
-          schedules = schedules.joins(client_enrollment_service: {client_enrollment: :client}).where('clients.bcba_id': current_user.id).or(schedules.where(staff_id: current_user.id))
-        # elsif current_user.role_name=='rbt'
-        #   schedules = schedules.where(staff_id: current_user.id)
-        end
-      else
-        if params[:default_location_id].present?
-          location_id = params[:default_location_id]
-          schedules = schedules.left_outer_joins(client_enrollment_service: {client_enrollment: :client}).by_client_clinic(location_id)
-                              .or(schedules.by_staff_clinic(location_id)).left_outer_joins(staff: :staff_clinics)
-        end
+    if params[:default_location_id].present?
+      location_id = params[:default_location_id]
+      schedules = schedules.left_outer_joins(client_enrollment_service: {client_enrollment: :client}).by_client_clinic(location_id)
+                           .or(schedules.by_staff_clinic(location_id)).left_outer_joins(staff: :staff_clinics)
+    end
+
+    if params[:staff_ids].blank? && params[:client_ids].blank? && params[:service_ids].blank?
+      if current_user.role_name=='bcba'
+        schedules = schedules.joins(client_enrollment_service: {client_enrollment: :client}).where('clients.bcba_id': current_user.id).or(schedules.where(staff_id: current_user.id))
+      # elsif current_user.role_name=='rbt'
+      #   schedules = schedules.where(staff_id: current_user.id)
       end
     end
     if params[:startDate].present? && params[:endDate].present?

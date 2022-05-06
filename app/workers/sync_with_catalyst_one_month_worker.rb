@@ -6,7 +6,7 @@ class SyncWithCatalystOneMonthWorker
   def perform
     puts "#{DateTime.current}"
     puts "SyncWithCatalystJob is started"
-    sync_data((Time.current.to_date-30).strftime('%m-%d-%Y'), (Time.current.to_date).strftime('%m-%d-%Y'))
+    sync_data((Time.current.to_date-60).strftime('%m-%d-%Y'), (Time.current.to_date).strftime('%m-%d-%Y'))
     puts "SyncWithCatalystJob is completed"
     puts ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"        
   end
