@@ -46,6 +46,7 @@ Rails.application.routes.draw do
       get '/client_data', to: 'client_meta_data#client_data'
       get '/soap_notes', to: 'client_meta_data#soap_notes'
       get '/soap_notes/:id', to: 'client_meta_data#soap_note_detail'
+      get '/sync_soap_notes', to: 'client_meta_data#sync_soap_notes'
       resources :service_addresses, controller: 'client_service_addresses'
     end
     
