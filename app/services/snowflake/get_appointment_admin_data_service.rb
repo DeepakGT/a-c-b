@@ -11,7 +11,7 @@ if ENV['CLOUD_PLATFORM']!='heroku'
         private
 
         def get_appointment_admin_data(db)
-          appointments = db.fetch("SELECT * FROM NPAW.PUBLIC.APPOINTMENTADMIN WHERE APPTDATE >= '2021-10-01T00:00:00';").entries
+          appointments = db.fetch("SELECT * FROM NPAW.PUBLIC.APPOINTMENTADMIN WHERE servicename IS NOT NULL and staffname IS NOT NULL;").entries
         end
       end
     end
