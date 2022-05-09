@@ -21,6 +21,15 @@ class ClientMetaDataController < ApplicationController
     @attachments = Attachment.by_client_id(@client.id).first(10)
   end
 
+  def soap_notes
+    @soap_notes = SoapNote.by_client(params[:client_id]).order(add_date: :desc, created_at: :desc)
+                          .paginate(page: params[:page] || 1, per_page: params[:per_page] || 30)
+  end
+
+  def soap_note_detail
+    @soap_note = SoapNote.by_client(params[:client_id]).find(params[:id])
+  end
+
   private
 
   def set_client
