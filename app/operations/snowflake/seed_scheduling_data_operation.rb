@@ -50,7 +50,13 @@ module Snowflake
                     staff = Staff.find_by(first_name: staff_name&.last, last_name: staff_name&.first)
                   end
                   if staff.present?
-                    schedule = client_enrollment_service.schedulings.find_or_initialize_by(date: appointment['apptdate']&.to_time&.strftime('%Y-%m-%d'), start_time: appointment['appointmentstartdatetime']&.to_time&.strftime('%H:%M'), end_time: appointment['appointmentenddatetime']&.to_time&.strftime('%H:%M'), staff_id: staff.id)
+                    schedule = Scheduling.find_or_initialize_by(snowflake_appointment_id: appointment['appointmentid'])
+                    schedule.client_enrollment_service_id = client_enrollment_service.id
+                    schedule.date = appointment['apptdate']&.to_time&.strftime('%Y-%m-%d')
+                    schedule.start_time = appointment['appointmentstartdatetime']&.to_time&.strftime('%H:%M')
+                    schedule.end_time = appointment['appointmentenddatetime']&.to_time&.strftime('%H:%M')
+                    schedule.staff_id = staff.id
+                    # schedule = client_enrollment_service.schedulings.find_or_initialize_by(date: appointment['apptdate']&.to_time&.strftime('%Y-%m-%d'), start_time: appointment['appointmentstartdatetime']&.to_time&.strftime('%H:%M'), end_time: appointment['appointmentenddatetime']&.to_time&.strftime('%H:%M'), staff_id: staff.id)
                     schedule.units = appointment['actualunits'].to_f
                     schedule.minutes = appointment['durationmins'].to_f
                     if appointment['isrendered']=='Yes'

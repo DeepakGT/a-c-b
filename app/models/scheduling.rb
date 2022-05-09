@@ -32,7 +32,7 @@ class Scheduling < ApplicationRecord
   scope :by_client_ids, ->(client_ids){ joins(client_enrollment_service: :client_enrollment).where('client_enrollments.client_id': client_ids) }
   scope :by_staff_ids, ->(staff_ids){ where(staff_id: staff_ids) }
   scope :by_service_ids, ->(service_ids){ joins(:client_enrollment_service).where('client_enrollment_service.service_id': service_ids) }
-  scope :by_client_clinic, ->(location_id) { where('clients.clinic_id = ?', location_id) }
+  scope :by_client_clinic, ->(location_id) { where('clients.clinic_id': location_id) }
   scope :by_staff_clinic, ->(location_id) { where('staff_clinics.clinic_id': location_id) }
   scope :on_date, ->(date){ where(date: date) }
   scope :exceeded_24_h_scheduling, ->{ where('date < ? OR (date = ? AND end_time < ?)', Time.current.to_date-1, Time.current.to_date-1, Time.current.strftime('%H:%M')) }
@@ -76,14 +76,14 @@ class Scheduling < ApplicationRecord
     scheduled_schedules = schedules.scheduled_scheduling
     used_units = completed_schedules.with_units.pluck(:units).sum
     scheduled_units = scheduled_schedules.with_units.pluck(:units).sum
-    used_minutes = completed_schedules.with_minutes.pluck(:minutes).sum
-    scheduled_minutes = scheduled_schedules.with_minutes.pluck(:minutes).sum
+    # used_minutes = completed_schedules.with_minutes.pluck(:minutes).sum
+    # scheduled_minutes = scheduled_schedules.with_minutes.pluck(:minutes).sum
     if self.units.present? && self.client_enrollment_service.units.present?
       errors.add(:units, "There are not enough units left to create this appointment.") if self.units > (self.client_enrollment_service.units - (used_units + scheduled_units))
     end
-    if self.minutes.present? && self.client_enrollment_service.minutes.present?
-      errors.add(:minutes, "There are not enough minutes left to create this appointment.") if self.minutes > (self.client_enrollment_service.minutes - (used_minutes + scheduled_minutes))
-    end
+    # if self.minutes.present? && self.client_enrollment_service.minutes.present?
+    #   errors.add(:minutes, "There are not enough minutes left to create this appointment.") if self.minutes > (self.client_enrollment_service.minutes - (used_minutes + scheduled_minutes))
+    # end
   end
 
   # def validate_staff
@@ -104,7 +104,6 @@ class Scheduling < ApplicationRecord
     if self.units.present? && self.minutes.blank?
       self.minutes = self.units*15
     elsif self.minutes.present? && self.units.blank?
-      # self.units = self.minutes/15
       rem = self.minutes%15
       if rem == 0
         self.units = self.minutes/15
