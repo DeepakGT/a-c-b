@@ -1,17 +1,15 @@
 module Catalyst
   module SyncDataOperation
     class << self
-      def call(start_date, end_date, catalyst_patient_id = nil)
-        sync_data(start_date, end_date, catalyst_patient_id)
+      def call(start_date, end_date)
+        sync_data(start_date, end_date)
       end
 
       private
 
-      def sync_data(start_date, end_date, catalyst_patient_id = nil)
+      def sync_data(start_date, end_date)
         access_token = Catalyst::GetAccessTokenService.call
         data_array = Catalyst::SoapNotesApiService.call(start_date, end_date, access_token)
-        # if we are syncing for only one client.
-        data_array.select! {|catalyst_data| catalyst_data["patientId"] === catalyst_patient_id} if !catalyst_patient_id.nil? 
         response_data_array = Array.new
         if data_array.any?
           data_array.each do |data|

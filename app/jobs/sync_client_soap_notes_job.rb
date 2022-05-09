@@ -4,7 +4,7 @@ class SyncClientSoapNotesJob < ApplicationJob
   def perform
     puts "#{DateTime.current}"
     puts "SyncClientSoapNotesJob is started"
-    sync_data((Time.current.to_date-60).strftime('%m-%d-%Y'), (Time.current.to_date).strftime('%m-%d-%Y'))
+    sync_data((Time.current.to_date-60.days).strftime('%m-%d-%Y'), (Time.current.to_date).strftime('%m-%d-%Y'))
     puts "SyncClientSoapNotesJob is completed"
     puts ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
   end
