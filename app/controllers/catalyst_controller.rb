@@ -44,6 +44,10 @@ class CatalystController < ApplicationController
     @schedules = schedules.order(:start_time)
   end
 
+  def sync_soap_notes
+    SyncClientSoapNotesJob.perform_later
+  end
+
   private
 
   def authorize_user

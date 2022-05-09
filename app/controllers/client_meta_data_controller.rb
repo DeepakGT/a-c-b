@@ -30,10 +30,6 @@ class ClientMetaDataController < ApplicationController
     @soap_note = SoapNote.by_client(params[:client_id]).find(params[:id])
   end
 
-  def sync_soap_notes
-    SyncClientSoapNotesJob.perform_later({catalyst_patient_id: @client.catalyst_patient_id}) if !@client.catalyst_patient_id.nil?
-  end
-
   private
 
   def set_client

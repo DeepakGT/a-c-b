@@ -46,7 +46,6 @@ Rails.application.routes.draw do
       get '/client_data', to: 'client_meta_data#client_data'
       get '/soap_notes', to: 'client_meta_data#soap_notes'
       get '/soap_notes/:id', to: 'client_meta_data#soap_note_detail'
-      get '/sync_soap_notes', to: 'client_meta_data#sync_soap_notes'
       resources :service_addresses, controller: 'client_service_addresses'
     end
     
@@ -77,7 +76,7 @@ Rails.application.routes.draw do
     get '/catalyst/catalyst_data/:id', to: 'catalyst#catalyst_data_with_multiple_appointments'
     get '/catalyst/:catalyst_data_id/appointments_list', to: 'catalyst#appointments_list'
     get '/billing_dashboard', to: 'scheduling_meta_data#billing_dashboard'
-
+    get '/sync_soap_notes', to: 'catalyst#sync_soap_notes'
     resources :schedulings do
       resources :soap_notes
       resources :change_requests, controller: 'scheduling_change_requests', only: %i[create update]
