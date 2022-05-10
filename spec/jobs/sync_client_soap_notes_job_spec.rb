@@ -1,5 +1,12 @@
 require 'rails_helper'
 
 RSpec.describe SyncClientSoapNotesJob, type: :job do
-  pending "add some examples to (or delete) #{__FILE__}"
+  describe "#perform_later" do
+    it "sync client SOAP Notes" do
+      ActiveJob::Base.queue_adapter = :test
+      expect {
+        SyncClientSoapNotesJob.perform_later
+      }.to have_enqueued_job
+    end
+  end
 end
