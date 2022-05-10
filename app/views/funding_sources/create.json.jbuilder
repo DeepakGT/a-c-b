@@ -29,4 +29,4 @@ json.data do
     end
   end
 end
-json.errors @funding_source.errors.full_messages
+json.errors @funding_source.errors.full_messages&.map{|x| x.gsub!('Address ', '')}
