@@ -45,7 +45,13 @@ class CatalystController < ApplicationController
   end
 
   def sync_soap_notes
-    SyncClientSoapNotesJob.perform_later
+    workers = Sidekiq::Workers.new
+    if(workers.size == 0)
+      SyncClientSoapNotesJob.perform_later
+      @success = true
+    else
+      @success = false
+    end
   end
 
   private
