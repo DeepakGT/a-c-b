@@ -9,9 +9,10 @@ module CompareCatalystDataWithSystemData
 
       def compare_synced_data(catalyst_data)
         response_data_hash = Hash.new
-        staff = Staff.find_by(catalyst_user_id: catalyst_data.catalyst_user_id)
+        # staff = Staff.find_by(catalyst_user_id: catalyst_data.catalyst_user_id)
         client = Client.find_by(catalyst_patient_id: catalyst_data.catalyst_patient_id)
-        schedules = Scheduling.by_client_ids(client&.id).by_staff_ids(staff&.id).on_date(catalyst_data.date)
+        # schedules = Scheduling.by_client_ids(client&.id).by_staff_ids(staff&.id).on_date(catalyst_data.date)
+        schedules = Scheduling.by_client_ids(client&.id).on_date(catalyst_data.date)
 
         if schedules.count==1
           schedule = schedules.first
