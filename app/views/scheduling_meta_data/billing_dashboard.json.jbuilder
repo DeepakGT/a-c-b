@@ -4,6 +4,7 @@ json.data do
 
   json.authorizations_expire_in_5_days do
     json.array! @authorizations_expire_in_5_days do |client_enrollment_service|
+      client = client_enrollment_service.client_enrollment&.client
       schedules = Scheduling.by_client_and_service(client_enrollment_service.client_enrollment.client_id, client_enrollment_service.service_id)
       schedules = schedules.by_status
       completed_schedules = schedules.completed_scheduling
@@ -14,6 +15,7 @@ json.data do
       scheduled_minutes = scheduled_schedules.with_minutes.pluck(:minutes).sum
       json.id client_enrollment_service.id
       json.client_id client_enrollment_service.client_enrollment&.client_id
+      json.client_name "#{client&.first_name} #{client&.last_name}"
       json.client_enrollment_id client_enrollment_service.client_enrollment_id
       json.funding_source_id client_enrollment_service.client_enrollment.funding_source_id
       json.funding_source client_enrollment_service.client_enrollment.funding_source&.name
@@ -49,6 +51,7 @@ json.data do
   end
   json.authorizations_renewal_in_5_to_20_days do
     json.array! @authorizations_renewal_in_5_to_20_days do |client_enrollment_service|
+      client = client_enrollment_service.client_enrollment&.client
       schedules = Scheduling.by_client_and_service(client_enrollment_service.client_enrollment.client_id, client_enrollment_service.service_id)
       schedules = schedules.by_status
       completed_schedules = schedules.completed_scheduling
@@ -59,6 +62,7 @@ json.data do
       scheduled_minutes = scheduled_schedules.with_minutes.pluck(:minutes).sum
       json.id client_enrollment_service.id
       json.client_id client_enrollment_service.client_enrollment&.client_id
+      json.client_name "#{client&.first_name} #{client&.last_name}"
       json.client_enrollment_id client_enrollment_service.client_enrollment_id
       json.funding_source_id client_enrollment_service.client_enrollment.funding_source_id
       json.funding_source client_enrollment_service.client_enrollment.funding_source&.name
@@ -94,6 +98,7 @@ json.data do
   end
   json.authorizations_renewal_in_21_to_60_days do
     json.array! @authorizations_renewal_in_21_to_60_days do |client_enrollment_service|
+      client = client_enrollment_service.client_enrollment&.client
       schedules = Scheduling.by_client_and_service(client_enrollment_service.client_enrollment.client_id, client_enrollment_service.service_id)
       schedules = schedules.by_status
       completed_schedules = schedules.completed_scheduling
@@ -104,6 +109,7 @@ json.data do
       scheduled_minutes = scheduled_schedules.with_minutes.pluck(:minutes).sum
       json.id client_enrollment_service.id
       json.client_id client_enrollment_service.client_enrollment&.client_id
+      json.client_name "#{client&.first_name} #{client&.last_name}"
       json.client_enrollment_id client_enrollment_service.client_enrollment_id
       json.funding_source_id client_enrollment_service.client_enrollment.funding_source_id
       json.funding_source client_enrollment_service.client_enrollment.funding_source&.name

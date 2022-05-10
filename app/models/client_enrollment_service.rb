@@ -26,9 +26,11 @@ class ClientEnrollmentService < ApplicationRecord
   scope :by_client_enrollment, ->(client_enrollment_id){ where(client_enrollment_id: client_enrollment_id)}
   scope :by_funding_source, ->(funding_source_id){ joins(:client_enrollment).where('client_enrollments.funding_source_id': funding_source_id) }
   scope :expire_in_5_days, ->{ where('end_date >= ? AND end_date<=?', Time.current.to_date, (Time.current.to_date+4))}
-  scope :starting_in_5_to_20_days, ->{ where('start_date>=? AND start_date<=?', (Time.current + 5.days).strftime('%Y-%m-%d'), (Time.current + 20.days).strftime('%Y-%m-%d')) }
-  scope :starting_in_21_to_60_days, ->{ where('start_date>=? AND start_date<=?', (Time.current + 21.days).strftime('%Y-%m-%d'), (Time.current + 60.days).strftime('%Y-%m-%d')) }
+  scope :started_between_5_to_20_days_past_from_today, ->{ where('start_date>=? AND start_date<=?', (Time.current - 20.days).strftime('%Y-%m-%d'), (Time.current - 5.days).strftime('%Y-%m-%d')) }
+  scope :started_between_21_to_60_days_past_from_today, ->{ where('start_date>=? AND start_date<=?', (Time.current - 60.days).strftime('%Y-%m-%d'), (Time.current - 21.days).strftime('%Y-%m-%d')) }
   scope :except_self, ->(self_id){ where.not(id: self_id) }
+  scope :active, ->{ where('end_date >= ?', Time.current.strftime('%Y-%m-%d')) }
+  scope :before_date, ->(date){ where('start_date < ?', date.to_time.strftime('%Y-%m-%d')) }
 
   private
 

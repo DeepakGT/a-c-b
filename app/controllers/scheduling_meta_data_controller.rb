@@ -30,6 +30,8 @@ class SchedulingMetaDataController < ApplicationController
     @change_requests = change_requests.by_bcba_ids(current_user.id)
                                       .or(change_requests.by_staff_ids(current_user.id)).left_outer_joins(:scheduling)
     @catalyst_data = CatalystData.with_multiple_appointments.or(CatalystData.with_no_appointments).first(30)
+    # sql = "(SELECT id, 'Upcoming Schedule' AS type FROM schedulings WHERE staff_id = #{current_user.id} AND status = 'Scheduled' AND date>=CURRENT_TIMESTAMP ORDER BY date LIMIT 20) UNION (SELECT id, 'Past Schedule' AS type FROM schedulings WHERE staff_id = #{current_user.id} AND status = 'Scheduled' AND date<CURRENT_TIMESTAMP AND date>=(CURRENT_TIMESTAMP + INTERVAL '-1 month') AND is_rendered=false ORDER BY date DESC) UNION (SELECT client_enrollment_services.id, 'client_enrollment_services' AS type FROM client_enrollment_services INNER JOIN client_enrollments ON client_enrollments.id=client_enrollment_services.client_enrollment_id INNER JOIN clients ON clients.id=client_enrollments.client_id WHERE clients.bcba_id = #{current_user.id} AND client_enrollment_services.end_date >= CURRENT_TIMESTAMP AND client_enrollment_services.end_date <= (CURRENT_TIMESTAMP + INTERVAL '9 day')) UNION (SELECT id,'Catalyst Data' AS type FROM catalyst_data WHERE system_scheduling_id IS NULL LIMIT 30);"
+    # @data = ActiveRecord::Base.connection.exec_query(sql)&.rows
   end
 
   def executive_director_appointments
@@ -95,19 +97,19 @@ class SchedulingMetaDataController < ApplicationController
   end
 
   def get_authorization_renewals_in_5_to_20_days
-    client_enrollment_services = ClientEnrollmentService.starting_in_5_to_20_days
+    client_enrollment_services = ClientEnrollmentService.started_between_5_to_20_days_past_from_today.active
     client_enrollment_services = get_authorization_renewals(client_enrollment_services)
   end
 
   def get_authorization_renewals_in_21_to_60_days
-    client_enrollment_services = ClientEnrollmentService.starting_in_21_to_60_days
+    client_enrollment_services = ClientEnrollmentService.started_between_21_to_60_days_past_from_today.active
     client_enrollment_services = get_authorization_renewals(client_enrollment_services)
   end
 
   def get_authorization_renewals(client_enrollment_services)
     return client_enrollment_services if client_enrollment_services.blank?
 
-    client_enrollment_services = client_enrollment_services.map{|x| x if ClientEnrollmentService.by_funding_source(x.client_enrollment&.funding_source_id).by_service(x.service_id).except_self(x.id).present?}
+    client_enrollment_services = client_enrollment_services.map{|client_enrollment_service| client_enrollment_service if ClientEnrollmentService.by_funding_source(client_enrollment_service.client_enrollment&.funding_source_id).by_service(client_enrollment_service.service_id).except_self(client_enrollment_service.id).before_date(client_enrollment_service.start_date).present?}
     client_enrollment_services.compact!
   end
   # end of private
