@@ -366,9 +366,9 @@ ActiveRecord::Schema.define(version: 2022_05_09_072628) do
 
   create_table "staff_clinic_services", force: :cascade do |t|
     t.bigint "service_id", null: false
-    t.bigint "staff_clinic_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.bigint "staff_clinic_id"
     t.index ["service_id"], name: "index_staff_clinic_services_on_service_id"
     t.index ["staff_clinic_id"], name: "index_staff_clinic_services_on_staff_clinic_id"
   end

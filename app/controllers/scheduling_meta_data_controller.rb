@@ -50,8 +50,8 @@ class SchedulingMetaDataController < ApplicationController
 
   def billing_dashboard
     @authorizations_expire_in_5_days = ClientEnrollmentService.expire_in_5_days
-    @authorizations_expire_in_6_to_20_days = ClientEnrollmentService.expire_in_6_to_20_days
-    @authorizations_expire_in_21_to_60_days = ClientEnrollmentService.expire_in_21_to_60_days
+    @authorizations_renewal_in_5_to_20_days = get_authorization_renewals_in_5_to_20_days
+    @authorizations_renewal_in_21_to_60_days = get_authorization_renewals_in_21_to_60_days
     @client_with_no_authorizations = Client.with_no_authorizations
     @client_with_only_97151_service_authorization = get_clients_with_only_97151_service_authorization
   end
@@ -92,6 +92,23 @@ class SchedulingMetaDataController < ApplicationController
     clients_ids = clients.joins(client_enrollments: :client_enrollment_services).where('client_enrollment_services.id': client_enrollment_services_ids).pluck(:id).uniq
     clients = clients.where.not(id: clients_ids)
     clients
+  end
+
+  def get_authorization_renewals_in_5_to_20_days
+    client_enrollment_services = ClientEnrollmentService.starting_in_5_to_20_days
+    client_enrollment_services = get_authorization_renewals(client_enrollment_services)
+  end
+
+  def get_authorization_renewals_in_21_to_60_days
+    client_enrollment_services = ClientEnrollmentService.starting_in_21_to_60_days
+    client_enrollment_services = get_authorization_renewals(client_enrollment_services)
+  end
+
+  def get_authorization_renewals(client_enrollment_services)
+    return client_enrollment_services if client_enrollment_services.blank?
+
+    client_enrollment_services = client_enrollment_services.map{|x| x if ClientEnrollmentService.by_funding_source(x.client_enrollment&.funding_source_id).by_service(x.service_id).except_self(x.id).present?}
+    client_enrollment_services.compact!
   end
   # end of private
 

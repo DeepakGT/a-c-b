@@ -79,7 +79,7 @@ module CompareCatalystDataWithSystemData
               catalyst_data.save
               break
             else
-              catalyst_data.multiple_schedulings_ids = schedule.multiple_schedulings_ids | ["#{schedule.id}"]
+              catalyst_data.multiple_schedulings_ids = catalyst_data.multiple_schedulings_ids | ["#{schedule.id}"]
               catalyst_data.save(validate: false)
               response_data_hash[:system_data] = schedule.attributes
               response_data_hash[:catalyst_data] = catalyst_data.attributes

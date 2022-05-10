@@ -47,8 +47,8 @@ json.data do
       end
     end
   end
-  json.authorizations_expire_in_6_to_20_days do
-    json.array! @authorizations_expire_in_6_to_20_days do |client_enrollment_service|
+  json.authorizations_renewal_in_5_to_20_days do
+    json.array! @authorizations_renewal_in_5_to_20_days do |client_enrollment_service|
       schedules = Scheduling.by_client_and_service(client_enrollment_service.client_enrollment.client_id, client_enrollment_service.service_id)
       schedules = schedules.by_status
       completed_schedules = schedules.completed_scheduling
@@ -92,8 +92,8 @@ json.data do
       end
     end
   end
-  json.authorizations_expire_in_21_to_60_days do
-    json.array! @authorizations_expire_in_21_to_60_days do |client_enrollment_service|
+  json.authorizations_renewal_in_21_to_60_days do
+    json.array! @authorizations_renewal_in_21_to_60_days do |client_enrollment_service|
       schedules = Scheduling.by_client_and_service(client_enrollment_service.client_enrollment.client_id, client_enrollment_service.service_id)
       schedules = schedules.by_status
       completed_schedules = schedules.completed_scheduling

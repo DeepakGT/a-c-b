@@ -106,7 +106,7 @@ module Snowflake
         case funding_source_name
         when 'BCBS NH'
           return FundingSource.find_by(name: 'New Hampshire BCBS').id
-        when 'AMBETTER NNHF'
+        when 'AMBETTER NNHF' || 'AMBETTER NHHF'
           return FundingSource.find_by(name: 'Ambetter nnhf').id
         when 'AETNA'
           return FundingSource.find_by(name: 'Aetna').id
