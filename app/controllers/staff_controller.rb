@@ -23,7 +23,7 @@ class StaffController < ApplicationController
     @staff = Staff.new(staff_params)
     set_role
     @staff.save
-    set_home_clinic
+    set_home_clinic if @staff.id!=nil
   end
 
   def destroy

@@ -109,7 +109,7 @@ class SchedulingMetaDataController < ApplicationController
   def get_authorization_renewals(client_enrollment_services)
     return client_enrollment_services if client_enrollment_services.blank?
 
-    client_enrollment_services = client_enrollment_services.map{|client_enrollment_service| client_enrollment_service if ClientEnrollmentService.by_funding_source(client_enrollment_service.client_enrollment&.funding_source_id).by_service(client_enrollment_service.service_id).except_self(client_enrollment_service.id).before_date(client_enrollment_service.start_date).present?}
+    client_enrollment_services = client_enrollment_services.map{|client_enrollment_service| client_enrollment_service if ClientEnrollmentService.by_client(client_enrollment_service.client_enrollment.client_id).by_funding_source(client_enrollment_service.client_enrollment&.funding_source_id).by_service(client_enrollment_service.service_id).except_self(client_enrollment_service.id).before_date(client_enrollment_service.start_date).present?}
     client_enrollment_services.compact!
   end
   # end of private

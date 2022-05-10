@@ -79,7 +79,7 @@ class Scheduling < ApplicationRecord
     # used_minutes = completed_schedules.with_minutes.pluck(:minutes).sum
     # scheduled_minutes = scheduled_schedules.with_minutes.pluck(:minutes).sum
     if self.units.present? && self.client_enrollment_service.units.present?
-      errors.add(:units, "There are not enough units left to create this appointment.") if self.units > (self.client_enrollment_service.units - (used_units + scheduled_units))
+      errors.add(:units, "left for authorization are not enough to create this appointment.") if self.units > (self.client_enrollment_service.units - (used_units + scheduled_units))
     end
     # if self.minutes.present? && self.client_enrollment_service.minutes.present?
     #   errors.add(:minutes, "There are not enough minutes left to create this appointment.") if self.minutes > (self.client_enrollment_service.minutes - (used_minutes + scheduled_minutes))
