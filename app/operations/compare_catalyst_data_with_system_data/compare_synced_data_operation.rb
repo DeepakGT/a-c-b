@@ -13,6 +13,7 @@ module CompareCatalystDataWithSystemData
         client = Client.find_by(catalyst_patient_id: catalyst_data.catalyst_patient_id)
         # schedules = Scheduling.by_client_ids(client&.id).by_staff_ids(staff&.id).on_date(catalyst_data.date)
         schedules = Scheduling.by_client_ids(client&.id).on_date(catalyst_data.date)
+        response_data_hash = Hash.new
 
         if schedules.count==1
           schedule = schedules.first
@@ -22,7 +23,6 @@ module CompareCatalystDataWithSystemData
           max_end_time = (catalyst_data.end_time.to_time+15.minutes)
           min_units = (catalyst_data.units-1)
           max_units = (catalyst_data.units+1)
-          response_data_hash = Hash.new
 
           if (min_start_time..max_start_time).include?(schedule.start_time.to_time) && (min_end_time..max_end_time).include?(schedule.end_time.to_time) && (min_units..max_units).include?(schedule.units) 
             schedule.update(start_time: catalyst_data.start_time, end_time: catalyst_data.end_time)

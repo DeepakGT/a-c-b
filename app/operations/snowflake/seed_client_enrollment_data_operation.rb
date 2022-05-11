@@ -28,19 +28,24 @@ module Snowflake
             client.save(validate: false)
           end
           if client.present?
-            client_enrollment = client.client_enrollments.find_or_initialize_by(enrollment_date: student_service['servicefundingbegin']&.to_time&.strftime('%Y-%m-%d'), terminated_on: student_service['servicefundingend']&.to_time&.strftime('%Y-%m-%d'))
-            client_enrollment.insurance_id = student_service['authorizationnumber']
+            if student_service['authorizationnumber'].present?
+              client_enrollment = client.client_enrollments.find_or_initialize_by(insurance_id: student_service['authorizationnumber'])
+              client_enrollment.enrollment_date = student_service['servicefundingbegin']&.to_time&.strftime('%Y-%m-%d')
+              client_enrollment.terminated_on = student_service['servicefundingend']&.to_time&.strftime('%Y-%m-%d')
+            else
+              funding_source_id = get_funding_source(student_service['fundingsource'], client)
+              if funding_source_id.present?
+                client_enrollment = client.client_enrollments.find_or_initialize_by(enrollment_date: student_service['servicefundingbegin']&.to_time&.strftime('%Y-%m-%d'), terminated_on: student_service['servicefundingend']&.to_time&.strftime('%Y-%m-%d'), funding_source_id: funding_source_id)
+                client_enrollment.source_of_payment = 'insurance'
+              elsif student_service['fundingsource']==nil
+                client_enrollment = client.client_enrollments.find_or_initialize_by(enrollment_date: student_service['servicefundingbegin']&.to_time&.strftime('%Y-%m-%d'), terminated_on: student_service['servicefundingend']&.to_time&.strftime('%Y-%m-%d'), source_of_payment: 'self_pay')
+              end
+              client_enrollment.insurance_id = student_service['authorizationnumber']
+            end
             client_enrollment.subscriber_name = student_service['clientname'] 
             client_enrollment.subscriber_dob = client&.dob
             client_enrollment.relationship = 'self'
             client_enrollment.subscriber_phone = client&.phone_number&.number
-            funding_source_id = get_funding_source(student_service['fundingsource'], client)
-            if funding_source_id.present?
-              client_enrollment.source_of_payment = 'insurance'
-              client_enrollment.funding_source_id = funding_source_id
-            elsif student_service['fundingsource']==nil
-              client_enrollment.source_of_payment = 'self_pay'
-            end
             client_enrollment.save(validate: false)
             if client_enrollment.id==nil
               Loggers::SnowflakeLoggerService.call(student_service, 'Client enrollment cannot be saved.')
