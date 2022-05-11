@@ -2,15 +2,15 @@ namespace :snowflake do
   desc "Seed staff, client, client_enrollment, client_enrollment_service, scheduling from snowflake"
   task :seed_snowflake_data, [:username, :password] => [:environment] do |t, args|
     # seed staff data
-    Scheduling.delete_all
-    ClientEnrollmentService.delete_all
-    ClientEnrollment.delete_all
-    Client.delete_all
-    UserRole.where(user_id: Staff.ids).destroy_all
-    StaffClinic.where(staff_id: Staff.ids).delete_all
-    Address.where(addressable_type: 'User', addressable_id: Staff.ids).delete_all
-    PhoneNumber.where(phoneable_type: 'User', phoneable_id: Staff.ids).delete_all
-    Staff.delete_all
+    # Scheduling.delete_all
+    # ClientEnrollmentService.delete_all
+    # ClientEnrollment.delete_all
+    # Client.delete_all
+    # UserRole.where(user_id: Staff.ids).destroy_all
+    # StaffClinic.where(staff_id: Staff.ids).delete_all
+    # Address.where(addressable_type: 'User', addressable_id: Staff.ids).delete_all
+    # PhoneNumber.where(phoneable_type: 'User', phoneable_id: Staff.ids).delete_all
+    # Staff.delete_all
     
     puts "Seed staff data is in progress."
     Snowflake::SeedStaffDataOperation.call(args[:username], args[:password])
