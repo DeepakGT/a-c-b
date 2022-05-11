@@ -4475,6 +4475,139 @@ paths:
                 }
               }
 
+  /api/clients/{client_id}/soap_notes:
+    get:
+      summary: List client SOAP notes
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "Associated client ID"
+      - in: "query"
+        name: "page"
+        schema:
+          type: "integer"
+        description: "Page number to display"
+        required: false
+      - in: "query"
+        name: "per_page"
+        schema:
+          type: "integer"
+        description: "Number of records per page"
+        required: false
+      responses:
+        "200":
+          description: "List of SOAP notes with page meta data"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": [
+                  {
+                    "id": 33,
+                    "scheduling_id": 49,
+                    "note": "tester testing123 testing again",
+                    "add_date": null,
+                    "rbt_sign": true,
+                    "rbt_sign_name": "Tester RBT 12",
+                    "rbt_sign_date": "2022-05-04",
+                    "bcba_sign": null,
+                    "bcba_sign_name": null,
+                    "bcba_sign_date": null,
+                    "clinical_director_sign": null,
+                    "clinical_director_sign_name": null,
+                    "clinical_director_sign_date": null,
+                    "caregiver_sign": null,
+                    "caregiver_sign_date": null,
+                    "creator_id": 43,
+                    "creator": "Tester RBT 12"
+                  },
+                  {
+                    "id": 46,
+                    "scheduling_id": 49,
+                    "note": "test-note-10",
+                    "add_date": "2022-04-29",
+                    "rbt_sign": null,
+                    "rbt_sign_name": null,
+                    "rbt_sign_date": null,
+                    "bcba_sign": null,
+                    "bcba_sign_name": null,
+                    "bcba_sign_date": null,
+                    "clinical_director_sign": null,
+                    "clinical_director_sign_name": null,
+                    "clinical_director_sign_date": null,
+                    "caregiver_sign": null,
+                    "caregiver_sign_date": null,
+                    "creator_id": 12,
+                    "creator": "test Muller"
+                  }
+                ],
+                "total_records": 2,
+                "limit": 10,
+                "page": "1"
+              }
+
+  /api/clients/{client_id}/soap_notes/{id}:
+    get:
+      summary: List client SOAP notes
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "Associated client ID"
+      - in: "path"
+        name: "id"
+        description: "Associated SOAP Note ID"
+      responses:
+        "200":
+          description: "SOAP note"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 20,
+                  "scheduling_id": 17,
+                  "note": "testing 123345",
+                  "add_date": "2022-05-04",
+                  "rbt_sign": true,
+                  "rbt_sign_name": "test Muller",
+                  "rbt_sign_date": "2022-05-04",
+                  "bcba_sign": true,
+                  "bcba_sign_name": "test Muller",
+                  "bcba_sign_date": "2022-05-04 00:50",
+                  "clinical_director_sign": true,
+                  "clinical_director_sign_name": "test Muller",
+                  "clinical_director_sign_date": "2022-05-04",
+                  "caregiver_sign": "https://icbd-stage-files.s3.amazonaws.com/e2ncizg21tyevbakvxwngqiym2tn?response-content-disposition=inline%3B%20filename%3D%22signature%22%3B%20filename%2A%3DUTF-8%27%27signature&response-content-type=image%2Fpng&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIASS4SZPMBHMISC6Z3%2F20220511%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220511T045915Z&X-Amz-Expires=300&X-Amz-SignedHeaders=host&X-Amz-Signature=54d16b264cf1942400958c329aee45662c7ef5fe292cfa0384e1643b87cf1814",
+                  "caregiver_sign_date": "2022-05-04T00:50:25.308-04:00",
+                  "creator_id": 35,
+                  "creator": "Caalyst test RBT"
+                }
+              }
+
   /api/scheduling_meta_data:
     get:
       summary: Scheduling meta data selectable options list
@@ -6174,6 +6307,32 @@ paths:
                     }
                   ]
                 }
+              }
+
+  /api/sync_soap_notes:
+    get:
+      summary: Enqueue SOAP note sync job
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      responses:
+        "200":
+          description: "SOAP note sync job was scheduled"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "message": "SOAP Notes syncing in progress."
               }
 
   /api/schedulings/{scheduling_id}/change_requests:
