@@ -10,6 +10,8 @@ module Snowflake
       def seed_client_enrollment_service_data(username, password)
         db = Snowflake::SetDatabaseAndWarehouseService.call(username, password)
         student_services = Snowflake::GetStudentServiceDataService.call(db)
+        initial_count = ClientEnrollmentService.count
+        Loggers::SnowflakeClientEnrollmentServiceLoggerService.call(student_services.count, "Got #{student_services.count} from snowflake.")
 
         student_services.each do |student_service|
           student_service = student_service.with_indifferent_access
@@ -17,6 +19,9 @@ module Snowflake
           client = Client.find_by(dob: student_service['clientdob']&.to_time&.strftime('%Y-%m-%d'), first_name: client_name&.first, last_name: client_name&.last)
           if client.present?
             funding_source_id = get_funding_source(student_service['fundingsource'], client)
+            if student_service['fundingsource'].present? && funding_source_id.blank?
+              Loggers::SnowflakeClientEnrollmentServiceLoggerService.call(student_services.find_index(student_service), "#{student_service['fundingsource']} not found.")
+            end
             if student_service['authorizationnumber'].present?
               if funding_source_id.present?
                 client_enrollment = client&.client_enrollments&.find_by(source_of_payment: 'insurance', funding_source_id: funding_source_id, enrollment_date: student_service['servicefundingbegin']&.to_time&.strftime('%Y-%m-%d'), terminated_on: student_service['servicefundingend']&.to_time&.strftime('%Y-%m-%d'), insurance_id: student_service['authorizationnumber'])
@@ -38,12 +43,23 @@ module Snowflake
                 client_enrollment_service.units = (student_service['contractedhours'].to_f)*4
                 client_enrollment_service.save(validate: false)
                 if client_enrollment_service.id==nil
-                  Loggers::SnowflakeLoggerService.call(student_service, 'Client enrollment service cannot be saved.')
+                  Loggers::SnowflakeClientEnrollmentServiceLoggerService.call(student_services.find_index(student_service), 'Client enrollment service cannot be saved.')
+                else
+                  Loggers::SnowflakeClientEnrollmentServiceLoggerService.call(student_services.find_index(student_service), 'Client enrollment service is saved.')
                 end
+              else
+                Loggers::SnowflakeClientEnrollmentServiceLoggerService.call(student_services.find_index(student_service), "#{student_service['servicename']} not found.")
               end
+            else
+              Loggers::SnowflakeClientEnrollmentServiceLoggerService.call(student_services.find_index(student_service), 'Client enrollment not found.')
             end
+          else
+            Loggers::SnowflakeClientEnrollmentServiceLoggerService.call(student_services.find_index(student_service), 'Client not found.')
           end
         end
+        final_count = ClientEnrollmentService.count
+        seed_count = final_count - initial_count
+        Loggers::SnowflakeClientEnrollmentServiceLoggerService.call(seed_count, "#{seed_count} authorization seeded.")
       end
 
       def get_funding_source(funding_source_name, client)

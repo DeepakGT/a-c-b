@@ -10,6 +10,8 @@ module Snowflake
       def seed_scheduling_data(username, password)
         db = Snowflake::SetDatabaseAndWarehouseService.call(username, password)
         appointments = Snowflake::GetAppointmentAdminDataService.call(db)
+        initial_count = Scheduling.count
+        Loggers::SnowflakeSchedulingLoggerService.call(appointments.count, "Got #{appointments.count} from snowflake.")
         
         appointments.each do |appointment|
           appointment = appointment.with_indifferent_access
@@ -17,6 +19,9 @@ module Snowflake
           client = Client.find_by(dob: appointment['clientdob']&.to_time&.strftime('%Y-%m-%d'), first_name: client_name&.last, last_name: client_name&.first)
           if client.present?
             funding_source_id = get_funding_source(appointment['fundingsource'], client)
+            if funding_source_id.blank? && appointment['fundingsource'].present?
+              Loggers::SnowflakeSchedulingLoggerService.call(appointments.find_index(appointment), "#{appointment['fundingsource']} funding source not found.")
+            end
             if funding_source_id.present?
               if appointment['authorizationnumber'].present?
                 client_enrollments = client&.client_enrollments&.where(funding_source_id: funding_source_id, insurance_id: appointment['authorizationnumber'])
@@ -109,16 +114,29 @@ module Snowflake
                     schedule.service_address_id = client.addresses.by_service_address.find_by(city: appointment['clientcity'], zipcode: appointment['clientzip'])
                     schedule.save(validate: false)
                     if schedule.id==nil
-                      Loggers::SnowflakeLoggerService.call(appointment, 'Schedule cannot be saved.')
+                      Loggers::SnowflakeSchedulingLoggerService.call(appointments.find_index(appointment), 'Schedule cannot be saved.')
+                    else
+                      Loggers::SnowflakeSchedulingLoggerService.call(appointments.find_index(appointment), 'Schedule is saved.')
                     end
                   else
-                    Loggers::SnowflakeLoggerService.call(appointment, 'Staff is not present.')
+                    Loggers::SnowflakeSchedulingLoggerService.call(appointments.find_index(appointment), 'Staff not found.')
                   end
+                else
+                  Loggers::SnowflakeSchedulingLoggerService.call(appointments.find_index(appointment), 'Client enrollment service not found.')
                 end
+              else
+                Loggers::SnowflakeSchedulingLoggerService.call(appointments.find_index(appointment), "#{appointment['servicename']} service not found.")
               end
+            else
+              Loggers::SnowflakeSchedulingLoggerService.call(appointments.find_index(appointment), "Client enrollment not found.")
             end
+          else
+            Loggers::SnowflakeSchedulingLoggerService.call(appointments.find_index(appointment), 'Client not found.')
           end
         end
+        final_count = Scheduling.count
+        seed_count = final_count - initial_count
+        Loggers::SnowflakeSchedulingLoggerService.call(seed_count, "#{seed_count} schedulings seeded.")
       end
 
       def get_funding_source(funding_source_name,client)

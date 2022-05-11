@@ -1,5 +1,5 @@
 module Loggers
-  module SnowflakeLoggerService
+  module SnowflakeClientLoggerService
     class << self
       def call(snowflake_data, message)
         log_data_sync(snowflake_data, message)
@@ -8,9 +8,9 @@ module Loggers
       private
 
       def log_data_sync(snowflake_data, message)
-        log = Logger.new('log/snowflake.log')
+        log = Logger.new('log/snowflake_client.log')
         log.error StandardError.new("#{snowflake_data}")
-        log.info("#{message}")
+        log.info("#{message}\n-----------------------------------------------------------------------------")
       end
     end
   end

@@ -10,6 +10,10 @@ module Snowflake
       def seed_client_data(username, password)
         db = Snowflake::SetDatabaseAndWarehouseService.call(username, password)
         appointments = Snowflake::GetAppointmentAdminDataService.call(db)
+        clients_array = appointments.map{|x| x if x[:clientname].present?}
+        clients_array.compact!
+        Loggers::SnowflakeClientLoggerService.call(clients_array.count, "Received #{clients_array.count} from snowflake.")
+
         appointments.each do |appointment|
           appointment = appointment.with_indifferent_access
           client_name = appointment['clientname']&.split(',')&.each(&:strip!)
@@ -24,16 +28,21 @@ module Snowflake
           end
           client.save(validate: false)
           if client.id==nil
-            Loggers::SnowflakeLoggerService.call(appointment, 'Client cannot be saved.')
+            Loggers::SnowflakeClientLoggerService.call(appointments.find_index(appointment), 'Client cannot be saved.')
+          else
+            Loggers::SnowflakeClientLoggerService.call(appointments.find_index(appointment), 'Client is saved.')
           end
 
           address = client.addresses.find_or_initialize_by(city: appointment['clientcity'], zipcode: appointment['clientzip'], address_type: 'service_address')
           address.is_default = true
           address.save(validate: false)
           if address.id==nil
-            Loggers::SnowflakeLoggerService.call(appointment, 'Client address cannot be saved.')
+            Loggers::SnowflakeClientLoggerService.call(appointments.find_index(appointment), 'Client address cannot be saved.')
+          else
+            Loggers::SnowflakeClientLoggerService.call(appointments.find_index(appointment), 'Client address is saved.')
           end
         end
+        Loggers::SnowflakeClientLoggerService.call(Client.all.count, "Seeded #{Client.count} clients.")
       end
     end
   end

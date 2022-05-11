@@ -10,6 +10,7 @@ module Snowflake
       def seed_staff_data(username, password)
         db = Snowflake::SetDatabaseAndWarehouseService.call(username, password)
         staff_rosters = Snowflake::GetStaffRosterDataService.call(db)
+        Loggers::SnowflakeStaffLoggerService.call(student_services.count, "Got #{student_services.count} from snowflake.")
 
         staff_rosters.each do |staff_roster|
           staff_roster = staff_roster.with_indifferent_access
@@ -41,7 +42,9 @@ module Snowflake
             staff.save(validate: false)
 
             if staff.id==nil
-              Loggers::SnowflakeLoggerService.call(staff_roster, 'Staff cannot be saved.')
+              Loggers::SnowflakeStaffLoggerService.call(staff_rosters.find_index(staff_roster), 'Staff cannot be saved.')
+            else
+              Loggers::SnowflakeStaffLoggerService.call(staff_rosters.find_index(staff_roster), 'Staff is saved.')
             end
 
             if staff_roster['agencyname'].present?
@@ -51,7 +54,9 @@ module Snowflake
                 staff_clinic = staff.staff_clinics.new(clinic_id: clinic.id, is_home_clinic: true)
                 staff_clinic.save(validate: false)
                 if staff_clinic.id==nil
-                  Loggers::SnowflakeLoggerService.call(staff_roster, 'Staff clinic cannot be saved.')
+                  Loggers::SnowflakeStaffLoggerService.call(staff_rosters.find_index(staff_roster), 'Staff clinic cannot be saved.')
+                else
+                  Loggers::SnowflakeStaffLoggerService.call(staff_rosters.find_index(staff_roster), 'Staff clinic is saved.')
                 end
               end
             end
@@ -62,7 +67,9 @@ module Snowflake
             address.zipcode = staff_roster['zip']
             address.save(validate: false)
             if address.id==nil
-              Loggers::SnowflakeLoggerService.call(staff_roster, 'Staff address cannot be saved.')
+              Loggers::SnowflakeStaffLoggerService.call(staff_rosters.find_index(staff_roster), 'Staff address cannot be saved.')
+            else
+              Loggers::SnowflakeStaffLoggerService.call(staff_rosters.find_index(staff_roster), 'Staff address is saved.')
             end
 
             phone_number_array = []
@@ -90,12 +97,15 @@ module Snowflake
                 end
                 staff_phone_number.save(validate: false)
                 if staff_phone_number.id==nil
-                  Loggers::SnowflakeLoggerService.call(staff_roster, 'Staff phone number cannot be saved.')
+                  Loggers::SnowflakeStaffLoggerService.call(staff_rosters.find_index(staff_roster), 'Staff phone number cannot be saved.')
+                else
+                  Loggers::SnowflakeStaffLoggerService.call(staff_rosters.find_index(staff_roster), 'Staff phone number is saved.')
                 end
               end
             end
           end
         end
+        Loggers::SnowflakeStaffLoggerService.call(Staff.all.count, "Seeded #{Staff.count} staff.")
       end
     end
   end
