@@ -19,7 +19,7 @@ module Snowflake
             funding_source_id = get_funding_source(appointment['fundingsource'], client)
             if funding_source_id.present?
               if appointment['authorizationnumber'].present?
-                client_enrollments = client&.client_enrollments&.where('funding_source_id = ?', funding_source_id, insurance_id: appointment['authorizationnumber'])
+                client_enrollments = client&.client_enrollments&.where(funding_source_id: funding_source_id, insurance_id: appointment['authorizationnumber'])
               else
                 client_enrollments = client&.client_enrollments&.where('funding_source_id = ?', funding_source_id)
               end
@@ -44,7 +44,7 @@ module Snowflake
               if appointment['authorizationnumber'].present?
                 client_enrollment = client.client_enrollments.new(funding_source_id: funding_source_id, enrollment_date: appointment['servicestart'], terminated_on: appointment['serviceend'], insurance_id: appointment['authorizationnumber'])
                 client_enrollment.save(validate: false)
-                client_enrollments = client&.client_enrollments&.where('funding_source_id = ?', funding_source_id, insurance_id: appointment['authorizationnumber']).reload
+                client_enrollments = client&.client_enrollments&.where(funding_source_id: funding_source_id, insurance_id: appointment['authorizationnumber']).reload
               else
                 client_enrollment = client.client_enrollments.new(funding_source_id: funding_source_id, enrollment_date: appointment['servicestart'], terminated_on: appointment['serviceend'])
                 client_enrollment.save(validate: false)
