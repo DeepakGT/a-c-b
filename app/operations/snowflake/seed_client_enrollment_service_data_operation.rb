@@ -17,10 +17,18 @@ module Snowflake
           client = Client.find_by(dob: student_service['clientdob']&.to_time&.strftime('%Y-%m-%d'), first_name: client_name&.first, last_name: client_name&.last)
           if client.present?
             funding_source_id = get_funding_source(student_service['fundingsource'], client)
-            if funding_source_id.present?
-              client_enrollment = client&.client_enrollments&.find_by(source_of_payment: 'insurance', funding_source_id: funding_source_id, enrollment_date: student_service['servicefundingbegin']&.to_time&.strftime('%Y-%m-%d'), terminated_on: student_service['servicefundingend']&.to_time&.strftime('%Y-%m-%d'))
-            elsif student_service['fundingsource']==nil
-              client_enrollment = client&.client_enrollments&.find_by(source_of_payment: 'self_pay', enrollment_date: student_service['servicefundingbegin']&.to_time&.strftime('%Y-%m-%d'), terminated_on: student_service['servicefundingend']&.to_time&.strftime('%Y-%m-%d'))
+            if student_service['authorizationnumber'].present?
+              if funding_source_id.present?
+                client_enrollment = client&.client_enrollments&.find_by(source_of_payment: 'insurance', funding_source_id: funding_source_id, enrollment_date: student_service['servicefundingbegin']&.to_time&.strftime('%Y-%m-%d'), terminated_on: student_service['servicefundingend']&.to_time&.strftime('%Y-%m-%d'), insurance_id: student_service['authorizationnumber'])
+              elsif student_service['fundingsource']==nil
+                client_enrollment = client&.client_enrollments&.find_by(source_of_payment: 'self_pay', enrollment_date: student_service['servicefundingbegin']&.to_time&.strftime('%Y-%m-%d'), terminated_on: student_service['servicefundingend']&.to_time&.strftime('%Y-%m-%d'), insurance_id: student_service['authorizationnumber'])
+              end
+            else
+              if funding_source_id.present?
+                client_enrollment = client&.client_enrollments&.find_by(source_of_payment: 'insurance', funding_source_id: funding_source_id, enrollment_date: student_service['servicefundingbegin']&.to_time&.strftime('%Y-%m-%d'), terminated_on: student_service['servicefundingend']&.to_time&.strftime('%Y-%m-%d'))
+              elsif student_service['fundingsource']==nil
+                client_enrollment = client&.client_enrollments&.find_by(source_of_payment: 'self_pay', enrollment_date: student_service['servicefundingbegin']&.to_time&.strftime('%Y-%m-%d'), terminated_on: student_service['servicefundingend']&.to_time&.strftime('%Y-%m-%d'))
+              end
             end
             if client_enrollment.present?
               service = Service.where('lower(name) = ?',student_service['servicename'].downcase).first

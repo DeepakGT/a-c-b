@@ -18,19 +18,38 @@ module Snowflake
           if client.present?
             funding_source_id = get_funding_source(appointment['fundingsource'], client)
             if funding_source_id.present?
-              client_enrollments = client&.client_enrollments&.where('funding_source_id = ?', funding_source_id)
+              if appointment['authorizationnumber'].present?
+                client_enrollments = client&.client_enrollments&.where('funding_source_id = ?', funding_source_id, insurance_id: appointment['authorizationnumber'])
+              else
+                client_enrollments = client&.client_enrollments&.where('funding_source_id = ?', funding_source_id)
+              end
             elsif appointment['fundingsource']==nil
-              client_enrollments = client&.client_enrollments&.find_by(source_of_payment: 'self_pay')
-              if client_enrollments.blank? && appointment['servicename'].present?
-                client_enrollment = client.client_enrollments.new(source_of_payment: 'self_pay', enrollment_date: appointment['servicestart'], terminated_on: appointment['serviceend'])
-                client_enrollment.save(validate: false)
-                client_enrollments = client&.client_enrollments&.where(source_of_payment: 'self_pay').reload
+              if appointment['authorizationnumber'].present?
+                client_enrollments = client&.client_enrollments&.find_by(source_of_payment: 'self_pay', insurance_id: appointment['authorizationnumber'])
+                if client_enrollments.blank? && appointment['servicename'].present?
+                  client_enrollment = client.client_enrollments.new(source_of_payment: 'self_pay', enrollment_date: appointment['servicestart'], terminated_on: appointment['serviceend'], insurance_id: appointment['authorizationnumber'])
+                  client_enrollment.save(validate: false)
+                  client_enrollments = client&.client_enrollments&.where(source_of_payment: 'self_pay', insurance_id: appointment['authorizationnumber']).reload
+                end
+              else
+                client_enrollments = client&.client_enrollments&.find_by(source_of_payment: 'self_pay')
+                if client_enrollments.blank? && appointment['servicename'].present?
+                  client_enrollment = client.client_enrollments.new(source_of_payment: 'self_pay', enrollment_date: appointment['servicestart'], terminated_on: appointment['serviceend'])
+                  client_enrollment.save(validate: false)
+                  client_enrollments = client&.client_enrollments&.where(source_of_payment: 'self_pay').reload
+                end
               end
             end
             if client_enrollments.blank? && appointment['servicename'].present?
-              client_enrollment = client.client_enrollments.new(funding_source_id: funding_source_id, enrollment_date: appointment['servicestart'], terminated_on: appointment['serviceend'])
-              client_enrollment.save(validate: false)
-              client_enrollments = client&.client_enrollments&.where('funding_source_id = ?', funding_source_id).reload
+              if appointment['authorizationnumber'].present?
+                client_enrollment = client.client_enrollments.new(funding_source_id: funding_source_id, enrollment_date: appointment['servicestart'], terminated_on: appointment['serviceend'], insurance_id: appointment['authorizationnumber'])
+                client_enrollment.save(validate: false)
+                client_enrollments = client&.client_enrollments&.where('funding_source_id = ?', funding_source_id, insurance_id: appointment['authorizationnumber']).reload
+              else
+                client_enrollment = client.client_enrollments.new(funding_source_id: funding_source_id, enrollment_date: appointment['servicestart'], terminated_on: appointment['serviceend'])
+                client_enrollment.save(validate: false)
+                client_enrollments = client&.client_enrollments&.where('funding_source_id = ?', funding_source_id).reload
+              end
             end
             if client_enrollments.present?
               service = Service.where('lower(name) = ?', appointment['servicename']&.downcase).first
