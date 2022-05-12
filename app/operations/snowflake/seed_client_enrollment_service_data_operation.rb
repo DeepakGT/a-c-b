@@ -23,11 +23,12 @@ module Snowflake
               Loggers::SnowflakeClientEnrollmentServiceLoggerService.call(student_services.find_index(student_service), "#{student_service['fundingsource']} not found.")
             end
             if student_service['authorizationnumber'].present?
-              if funding_source_id.present?
-                client_enrollment = client&.client_enrollments&.find_by(source_of_payment: 'insurance', funding_source_id: funding_source_id, enrollment_date: student_service['servicefundingbegin']&.to_time&.strftime('%Y-%m-%d'), terminated_on: student_service['servicefundingend']&.to_time&.strftime('%Y-%m-%d'), insurance_id: student_service['authorizationnumber'])
-              elsif student_service['fundingsource']==nil
-                client_enrollment = client&.client_enrollments&.find_by(source_of_payment: 'self_pay', enrollment_date: student_service['servicefundingbegin']&.to_time&.strftime('%Y-%m-%d'), terminated_on: student_service['servicefundingend']&.to_time&.strftime('%Y-%m-%d'), insurance_id: student_service['authorizationnumber'])
-              end
+              # if funding_source_id.present?
+              #   client_enrollment = client&.client_enrollments&.find_by(source_of_payment: 'insurance', funding_source_id: funding_source_id, enrollment_date: student_service['servicefundingbegin']&.to_time&.strftime('%Y-%m-%d'), terminated_on: student_service['servicefundingend']&.to_time&.strftime('%Y-%m-%d'), insurance_id: student_service['authorizationnumber'])
+              # elsif student_service['fundingsource']==nil
+              #   client_enrollment = client&.client_enrollments&.find_by(source_of_payment: 'self_pay', enrollment_date: student_service['servicefundingbegin']&.to_time&.strftime('%Y-%m-%d'), terminated_on: student_service['servicefundingend']&.to_time&.strftime('%Y-%m-%d'), insurance_id: student_service['authorizationnumber'])
+              # end
+              client_enrollment = ClientEnrollment.find_by(insurance_id: student_service['authorizationnumber'])
             else
               if funding_source_id.present?
                 client_enrollment = client&.client_enrollments&.find_by(source_of_payment: 'insurance', funding_source_id: funding_source_id, enrollment_date: student_service['servicefundingbegin']&.to_time&.strftime('%Y-%m-%d'), terminated_on: student_service['servicefundingend']&.to_time&.strftime('%Y-%m-%d'))

@@ -13,6 +13,9 @@ module Catalyst
 
         clinic_data_array.each do |clinic_data|
           clinic = Clinic.find_by(name: clinic_data['name'])
+          if clinic_data['name'] == 'Portsmouth, NH'
+            clinic = Clinic.find_by(name: 'Porthsmouth, NH')
+          end
           if clinic.present?
             clinic.catalyst_clinic_id = clinic_data['siteId']
             clinic.save(validate: false)

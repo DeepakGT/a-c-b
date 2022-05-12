@@ -10,7 +10,7 @@ module Snowflake
       def seed_staff_data(username, password)
         db = Snowflake::SetDatabaseAndWarehouseService.call(username, password)
         staff_rosters = Snowflake::GetStaffRosterDataService.call(db)
-        Loggers::SnowflakeStaffLoggerService.call(student_services.count, "Got #{student_services.count} from snowflake.")
+        Loggers::SnowflakeStaffLoggerService.call(staff_rosters.count, "Got #{staff_rosters.count} from snowflake.")
 
         staff_rosters.each do |staff_roster|
           staff_roster = staff_roster.with_indifferent_access
