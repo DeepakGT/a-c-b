@@ -60,7 +60,7 @@ namespace :db do
                 {"id"=>1, "name"=>"Bedford, NH", "aka"=>"bedford", "web"=>nil, "email"=>"bedford@abacenters.com", "status"=>"active", "organization_id"=>1, "catalyst_clinic_id"=> nil},
                 {"id"=>8, "name"=>"Peabody, MA", "aka"=>"pebody", "web"=>nil, "email"=>"peabody@abacenters.com", "status"=>"active", "organization_id"=>1, "catalyst_clinic_id"=> nil},
                 {"id"=>9, "name"=>"Porthsmouth, NH", "aka"=>"portsmouth", "web"=>nil, "email"=>"ports@abacenters.com", "status"=>"active", "organization_id"=>1, "catalyst_clinic_id"=> nil},
-                {"id"=>10, "name"=>"South East, FL", "aka"=>"shoutheast", "web"=>nil, "email"=>"sourthfl@abacenters.com", "status"=>"active", "organization_id"=>1, "catalyst_clinic_id"=> nil},
+                {"id"=>10, "name"=>"South East, FL", "aka"=>"southeast", "web"=>nil, "email"=>"sourthfl@abacenters.com", "status"=>"active", "organization_id"=>1, "catalyst_clinic_id"=> nil},
                 {"id"=>11, "name"=>"Wellesley, MA", "aka"=>"wellesley", "web"=>nil, "email"=>"welles@abacetners.com", "status"=>"active", "organization_id"=>1, "catalyst_clinic_id"=> nil},
                 {"id"=>13, "name"=>"Corporate, FL", "aka"=>"corporate", "web"=>nil, "email"=>"corproate@abacenters.com", "status"=>"active", "organization_id"=>1, "catalyst_clinic_id"=> nil},
                 {"id"=>2, "name"=>"Nashua, NH", "aka"=>"nashua", "web"=>nil, "email"=>"nashua@abacenters.com", "status"=>"active", "organization_id"=>1, "catalyst_clinic_id"=> nil},

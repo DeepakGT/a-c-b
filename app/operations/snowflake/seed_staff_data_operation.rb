@@ -50,6 +50,9 @@ module Snowflake
             if staff_roster['agencyname'].present?
               clinic_name = staff_roster['agencyname']&.downcase
               clinic = Clinic.where('lower(name) = ? OR lower(aka) = ?', clinic_name, clinic_name)&.first
+              if staff_roster['agencyname']=='salem'
+                clinic = Clinic.find_by(name: 'Salem, NH')
+              end
               if clinic.present?
                 staff_clinic = staff.staff_clinics.new(clinic_id: clinic.id, is_home_clinic: true)
                 staff_clinic.save(validate: false)
@@ -100,6 +103,21 @@ module Snowflake
                   Loggers::SnowflakeStaffLoggerService.call(staff_rosters.find_index(staff_roster), 'Staff phone number cannot be saved.')
                 else
                   Loggers::SnowflakeStaffLoggerService.call(staff_rosters.find_index(staff_roster), 'Staff phone number is saved.')
+                end
+              end
+            end
+          else
+            staff = Staff.find_by(email: staff_roster['email'])
+            if staff.staff_clinics.blank?
+              if staff_roster['agencyname'].present?
+                clinic_name = staff_roster['agencyname']&.downcase
+                clinic = Clinic.where('lower(name) = ? OR lower(aka) = ?', clinic_name, clinic_name)&.first
+                if staff_roster['agencyname']=='salem'
+                  clinic = Clinic.find_by(name: 'Salem, NH')
+                end
+                if clinic.present?
+                  staff_clinic = staff.staff_clinics.new(clinic_id: clinic.id, is_home_clinic: true)
+                  staff_clinic.save(validate: false)
                 end
               end
             end

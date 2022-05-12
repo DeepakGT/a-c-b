@@ -39,6 +39,7 @@ class Scheduling < ApplicationRecord
   scope :exceeded_3_days_scheduling, ->{ where('date < ? OR (date = ? AND end_time < ?)', Time.current.to_date-3, Time.current.to_date-3, Time.current.strftime('%H:%M')) }
   scope :exceeded_5_days_scheduling, ->{ where('date < ? OR (date = ? AND end_time < ?)', Time.current.to_date-5, Time.current.to_date-5, Time.current.strftime('%H:%M')) }
   scope :partially_rendered_schedules, ->{ where(is_rendered: true).where.not(status: 'Rendered')}
+  scope :past_60_days_schedules, ->{ where('date>=? AND date<?', (Time.current-60.days).strftime('%Y-%m-%d'), Time.current.strftime('%Y-%m-%d')) }
 
   private
 
