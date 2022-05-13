@@ -2,8 +2,8 @@ json.status 'success'
 json.data do
   json.setting_data Setting.first&.welcome_note
 
-  json.upcoming_schedules do
-    json.array! @upcoming_schedules do |schedule|
+  json.todays_schedules do
+    json.array! @todays_appointments do |schedule|
       client = schedule.client_enrollment_service&.client_enrollment&.client
       service = schedule.client_enrollment_service&.service
       json.id schedule.id

@@ -149,8 +149,8 @@ json.data do
   # json.exceeded_3_days exceeded_3_days
   # json.exceeded_5_days exceeded_5_days
 
-  json.upcoming_schedules do
-    json.array! @upcoming_schedules do |schedule|
+  json.todays_schedules do
+    json.array! @todays_appointments do |schedule|
       client = schedule.client_enrollment_service&.client_enrollment&.client
       service = schedule.client_enrollment_service&.service
       json.id schedule.id
@@ -186,9 +186,9 @@ json.data do
       json.is_rendered schedule.is_rendered
       json.units schedule.units
       json.minutes schedule.minutes
-      if schedule.scheduling_change_requests.by_approval_status.any?
-        json.request_raised 1
-      end
+      # if schedule.scheduling_change_requests.by_approval_status.any?
+      #   json.request_raised 1
+      # end
     end
   end
   if @past_schedules.exceeded_24_h_scheduling.any?
