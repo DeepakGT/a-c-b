@@ -17,42 +17,7 @@ module Snowflake
           student_service = student_service.with_indifferent_access
           client_name = student_service['clientname']&.split(' ')
           client = Client.find_by(dob: student_service['clientdob']&.to_time&.strftime('%Y-%m-%d'), first_name: client_name&.first, last_name: client_name&.last)
-          # if client.blank?
-            # client = Client.new(first_name: client_name&.first, last_name: client_name&.last, dob: student_service['clientdob']&.to_time&.strftime('%Y-%m-%d'))
-            # client.status = student_service['clientstatus']&.downcase=='inactive' ? 'inactive' : 'active'
-            # client.gender = nil
-            # clinic_name = student_service['officename']&.downcase
-            # client.clinic_id = Clinic.where('lower(name) = ? OR lower(aka) = ?', clinic_name, clinic_name)&.first&.id
-            # if client.clinic_id.blank?
-            #   client.clinic_id = Clinic.where("name ILIKE '%#{clinic_name}%' OR aka ILIKE '%#{clinic_name}%'")&.first&.id
-            #   client.clinic_id = Clinic.first.id if client.clinic_id.blank?
-            # end
-            # client.save(validate: false)
-          #   Loggers::SnowflakeClientEnrollmentLoggerService.call(student_services.find_index(student_service), "Created client #{client.id}")
-          # end
           if client.present?
-            # if student_service['authorizationnumber'].present?
-            #   client_enrollment = client.client_enrollments.find_or_initialize_by(insurance_id: student_service['authorizationnumber'])
-            #   client_enrollment.enrollment_date = student_service['servicefundingbegin']&.to_time&.strftime('%Y-%m-%d')
-            #   client_enrollment.terminated_on = student_service['servicefundingend']&.to_time&.strftime('%Y-%m-%d')
-            # else
-            #   funding_source_id = get_funding_source(student_service['fundingsource'], client)
-            #   if funding_source_id.blank? && student_service['fundingsource'].present?
-            #     Loggers::SnowflakeClientEnrollmentLoggerService.call(student_services.find_index(student_service), "#{student_service['fundingsource']} not found.")
-            #   end
-            #   if funding_source_id.present?
-            #     client_enrollment = client.client_enrollments.find_or_initialize_by(enrollment_date: student_service['servicefundingbegin']&.to_time&.strftime('%Y-%m-%d'), terminated_on: student_service['servicefundingend']&.to_time&.strftime('%Y-%m-%d'), funding_source_id: funding_source_id)
-            #     client_enrollment.source_of_payment = 'insurance'
-            #   elsif student_service['fundingsource']==nil
-            #     client_enrollment = client.client_enrollments.find_or_initialize_by(enrollment_date: student_service['servicefundingbegin']&.to_time&.strftime('%Y-%m-%d'), terminated_on: student_service['servicefundingend']&.to_time&.strftime('%Y-%m-%d'), source_of_payment: 'self_pay')
-            #   end
-            #   client_enrollment.insurance_id = student_service['authorizationnumber']
-            # end
-            # client_enrollment.subscriber_name = student_service['clientname'] 
-            # client_enrollment.subscriber_dob = client&.dob
-            # client_enrollment.relationship = 'self'
-            # client_enrollment.subscriber_phone = client&.phone_number&.number
-            # client_enrollment.save(validate: false)
             if student_service['fundingsource'].present?
               funding_source_id = get_funding_source(student_service['fundingsource'], client)
               if funding_source_id.present?

@@ -18,7 +18,7 @@ module Snowflake
           client_name = student_service['clientname']&.split(' ')
           client = Client.find_by(dob: student_service['clientdob']&.to_time&.strftime('%Y-%m-%d'), first_name: client_name&.first, last_name: client_name&.last)
           if client.present?
-            if student_service['funding_source'].present?
+            if student_service['fundingsource'].present?
               funding_source_id = get_funding_source(student_service['fundingsource'], client)
               if funding_source_id.present?
                 client_enrollment = client&.client_enrollments&.find_by(source_of_payment: 'insurance', funding_source_id: funding_source_id, enrollment_date: student_service['contractstartdate']&.to_time&.strftime('%Y-%m-%d'), terminated_on: student_service['contractenddate']&.to_time&.strftime('%Y-%m-%d'))
@@ -79,42 +79,6 @@ module Snowflake
                 Loggers::SnowflakeClientEnrollmentServiceLoggerService.call(student_services.find_index(student_service), "Client enrollment not found.")
               end
             end
-            # funding_source_id = get_funding_source(student_service['fundingsource'], client)
-            # if student_service['fundingsource'].present? && funding_source_id.blank?
-            #   Loggers::SnowflakeClientEnrollmentServiceLoggerService.call(student_services.find_index(student_service), "#{student_service['fundingsource']} not found.")
-            # end
-            # if student_service['authorizationnumber'].present?
-            #   if funding_source_id.present?
-            #     client_enrollment = client&.client_enrollments&.find_by(source_of_payment: 'insurance', funding_source_id: funding_source_id, enrollment_date: student_service['servicefundingbegin']&.to_time&.strftime('%Y-%m-%d'), terminated_on: student_service['servicefundingend']&.to_time&.strftime('%Y-%m-%d'), insurance_id: student_service['authorizationnumber'])
-            #   elsif student_service['fundingsource']==nil
-            #     client_enrollment = client&.client_enrollments&.find_by(source_of_payment: 'self_pay', enrollment_date: student_service['servicefundingbegin']&.to_time&.strftime('%Y-%m-%d'), terminated_on: student_service['servicefundingend']&.to_time&.strftime('%Y-%m-%d'), insurance_id: student_service['authorizationnumber'])
-            #   end
-            #   client_enrollment = ClientEnrollment.find_by(insurance_id: student_service['authorizationnumber'])
-            # else
-            #   if funding_source_id.present?
-            #     client_enrollment = client&.client_enrollments&.find_by(source_of_payment: 'insurance', funding_source_id: funding_source_id, enrollment_date: student_service['servicefundingbegin']&.to_time&.strftime('%Y-%m-%d'), terminated_on: student_service['servicefundingend']&.to_time&.strftime('%Y-%m-%d'))
-            #   elsif student_service['fundingsource']==nil
-            #     client_enrollment = client&.client_enrollments&.find_by(source_of_payment: 'self_pay', enrollment_date: student_service['servicefundingbegin']&.to_time&.strftime('%Y-%m-%d'), terminated_on: student_service['servicefundingend']&.to_time&.strftime('%Y-%m-%d'))
-            #   end
-            # end
-            # if client_enrollment.present?
-            #   service = Service.where('lower(name) = ?',student_service['servicename'].downcase).first
-            #   if service.present?
-            #     client_enrollment_service = client_enrollment.client_enrollment_services.find_or_initialize_by(start_date: student_service['contractstartdate']&.to_time&.strftime('%Y-%m-%d'), end_date: student_service['contractenddate']&.to_time&.strftime('%Y-%m-%d'), service_id: service.id)
-            #     client_enrollment_service.minutes = (student_service['contractedhours'].to_f)*60
-            #     client_enrollment_service.units = (student_service['contractedhours'].to_f)*4
-            #     client_enrollment_service.save(validate: false)
-            #     if client_enrollment_service.id==nil
-            #       Loggers::SnowflakeClientEnrollmentServiceLoggerService.call(student_services.find_index(student_service), 'Client enrollment service cannot be saved.')
-            #     else
-            #       Loggers::SnowflakeClientEnrollmentServiceLoggerService.call(student_services.find_index(student_service), 'Client enrollment service is saved.')
-            #     end
-            #   else
-            #     Loggers::SnowflakeClientEnrollmentServiceLoggerService.call(student_services.find_index(student_service), "#{student_service['servicename']} not found.")
-            #   end
-            # else
-            #   Loggers::SnowflakeClientEnrollmentServiceLoggerService.call(student_services.find_index(student_service), 'Client enrollment not found.')
-            # end
           else
             Loggers::SnowflakeClientEnrollmentServiceLoggerService.call(student_services.find_index(student_service), 'Client not found.')
           end
