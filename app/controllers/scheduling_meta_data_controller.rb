@@ -13,7 +13,8 @@ class SchedulingMetaDataController < ApplicationController
   def rbt_appointments
     authorize :appointment, :rbt_appointments?
     rbt_schedules = Scheduling.by_staff_ids(current_user.id).by_status
-    @upcoming_schedules = rbt_schedules.scheduled_scheduling.order(:date).first(10)
+    # @upcoming_schedules = rbt_schedules.scheduled_scheduling.order(:date).first(10)
+    @todays_appointments = rbt_schedules.todays_schedulings.order(:start_time).last(10)
     @past_schedules = rbt_schedules.past_60_days_schedules.unrendered_schedulings.order(date: :desc)
     @catalyst_data = CatalystData.past_60_days_catalyst_data.and(CatalystData.with_multiple_appointments.or(CatalystData.with_no_appointments)).first(30)
     # sql = "(SELECT id, 'Upcoming Schedule' AS type FROM schedulings WHERE staff_id = #{current_user.id} AND status = 'Scheduled' AND date>=CURRENT_TIMESTAMP ORDER BY date LIMIT 10) UNION (SELECT id, 'Past Schedule' AS type FROM schedulings WHERE staff_id = #{current_user.id} AND status = 'Scheduled' AND date<CURRENT_TIMESTAMP AND date>=(CURRENT_TIMESTAMP + INTERVAL '-2 month') AND is_rendered=false ORDER BY date DESC) UNION (SELECT id,'Catalyst Data' AS type FROM catalyst_data WHERE system_scheduling_id IS NULL LIMIT 30);"
@@ -23,7 +24,8 @@ class SchedulingMetaDataController < ApplicationController
   def bcba_appointments
     authorize :appointment, :bcba_appointments?
     bcba_schedules = Scheduling.by_staff_ids(current_user.id).by_status
-    @upcoming_schedules = bcba_schedules.scheduled_scheduling.order(:date).first(10)
+    # @upcoming_schedules = bcba_schedules.scheduled_scheduling.order(:date).first(10)
+    @todays_appointments = bcba_schedules.todays_schedulings.order(:start_time).last(10)
     @past_schedules = bcba_schedules.past_60_days_schedules.unrendered_schedulings.order(date: :desc)
     @client_enrollment_services = ClientEnrollmentService.by_bcba_ids(current_user.id).and(ClientEnrollmentService.about_to_expire.or(ClientEnrollmentService.expired)).includes(:client_enrollment, client_enrollment: :client)
     # change_requests = SchedulingChangeRequest.by_approval_status
