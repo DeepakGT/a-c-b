@@ -18,112 +18,125 @@ module Snowflake
           client_name = appointment['clientname']&.split(',')&.each(&:strip!)
           client = Client.find_by(dob: appointment['clientdob']&.to_time&.strftime('%Y-%m-%d'), first_name: client_name&.last, last_name: client_name&.first)
           if client.present?
-            funding_source_id = get_funding_source(appointment['fundingsource'], client)
-            if funding_source_id.blank? && appointment['fundingsource'].present?
-              Loggers::SnowflakeSchedulingLoggerService.call(appointments.find_index(appointment), "#{appointment['fundingsource']} funding source not found.")
-            end
-            if appointment['authorizationnumber'].present?
-              client_enrollment = ClientEnrollment.find_by(insurance_id: appointment['authorizationnumber'])
-              if client_enrollment.blank?
-                if funding_source_id.present?
-                  client_enrollment = client.client_enrollments.new(funding_source_id: funding_source_id, enrollment_date: appointment['servicestart'], terminated_on: appointment['serviceend'], insurance_id: appointment['authorizationnumber'])
-                  client_enrollment.save(validate: false)
-                  Loggers::SnowflakeSchedulingLoggerService.call(appointments.find_index(appointment), "Created new client_enrollment #{client_enrollment.id}")
-                else
-                  client_enrollment = client.client_enrollments.new(source_of_payment: 'self_pay', enrollment_date: appointment['servicestart'], terminated_on: appointment['serviceend'], insurance_id: appointment['authorizationnumber'])
-                  client_enrollment.save(validate: false)
-                  Loggers::SnowflakeSchedulingLoggerService.call(appointments.find_index(appointment), "Created new client_enrollment #{client_enrollment.id}")
-                end
-              end
-            else
+            if appointment['fundingsource'].present?
+              funding_source_id = get_funding_source(appointment['fundingsource'], client)
               if funding_source_id.present?
-                client_enrollments = client&.client_enrollments&.where('funding_source_id = ?', funding_source_id)
-                if client_enrollments.blank?
-                  client_enrollment = client.client_enrollments.new(funding_source_id: funding_source_id, enrollment_date: appointment['servicestart'], terminated_on: appointment['serviceend'], source_of_payment: 'insurance')
-                  client_enrollment.save(validate: false)
-                  Loggers::SnowflakeSchedulingLoggerService.call(appointments.find_index(appointment), "Created new client_enrollment #{client_enrollment.id}")
+                service = Service.where('lower(name) = ?', appointment['servicename']&.downcase).first
+                if service.present?
+                  client_enrollment_services = ClientEnrollmentService.by_client(client.id).by_funding_source(funding_source_id).by_service(service.id).by_date(appointment['apptdate']&.to_time&.strftime('%Y-%m-%d'))
+                  if client_enrollment_services.present?
+                    if client_enrollment_services.count==1
+                      client_enrollment_service = client_enrollment_services.first
+                    else
+                      client_enrollment_services = client_enrollment_services.where('start_date <= ? AND end_date>=?', appointment['servicestart']&.to_time&.strftime('%Y-%m-%d'), appointment['serviceend']&.to_time&.strftime('%Y-%m-%d'))
+                      if client_enrollment_services.count==1
+                        client_enrollment_service = client_enrollment_services.first
+                      else
+                        client_enrollment_services.each do |authorization|
+                          schedules = authorization.schedulings&.by_status
+                          completed_schedules = schedules&.completed_scheduling
+                          scheduled_schedules = schedules&.scheduled_scheduling
+                          used_units = completed_schedules&.with_units&.pluck(:units)&.sum
+                          used_units = 0 if used_units.blank?
+                          scheduled_units = scheduled_schedules&.with_units&.pluck(:units)&.sum
+                          scheduled_units = 0 if scheduled_units.blank?
+                          left_units = authorization&.units - (used_units + scheduled_units)
+                          if left_units >= appointment['actualunits'].to_f
+                            client_enrollment_service = authorization
+                            break
+                          end
+                        end
+                      end
+                    end
+                    staff = Staff.find_by('lower(email) = ?', appointment['staffemail']&.downcase)
+                    if staff.blank?
+                      staff_name = appointment['staffname']&.split(',')&.each(&:strip!)
+                      staff = Staff.find_by(first_name: staff_name&.last, last_name: staff_name&.first)
+                    end
+                    if staff.present?
+                      schedule = Scheduling.find_or_initialize_by(snowflake_appointment_id: appointment['appointmentid'])
+                      schedule.client_enrollment_service_id = client_enrollment_service.id
+                      schedule.staff_id = staff.id
+                      schedule.date = appointment['apptdate']&.to_time&.strftime('%Y-%m-%d')
+                      schedule.start_time = appointment['appointmentstartdatetime']&.to_time&.strftime('%H:%M')
+                      schedule.end_time = appointment['appointmentenddatetime']&.to_time&.strftime('%H:%M')
+                      schedule.units = appointment['actualunits'].to_f
+                      schedule.minutes = appointment['durationmins'].to_f
+                      if appointment['isrendered']=='Yes'
+                        schedule.status = 'Rendered'
+                        schedule.is_rendered = true
+                        schedule.rendered_at = appointment['renderedtime']&.to_datetime if appointment['renderedtime'].present?
+                      else
+                        case appointment['apptstatus']
+                        when 'ACTIVE'
+                          schedule.status = 'Scheduled'
+                        when 'Non-Billable'
+                          schedule.status = 'Non_Billable'
+                        when 'Unavailable'
+                          schedule.status = 'Unavailable'
+                        when 'Staff Cancellation'
+                          schedule.status = 'Staff_Cancellation'
+                        when 'Client Cancel Less Than 24 Hours'
+                          schedule.status = 'Client_Cancel_Less_than_24_h'
+                        when 'Client Cancel Greater Than 24 Hours'
+                          schedule.status = 'Client_Cancel_Greater_than_24_h'
+                        when 'Inclement Weather Cancellation'
+                          schedule.status = 'Inclement_Weather_Cancellation'
+                        when 'Client No Show'
+                          schedule.status = 'Client_No_Show'
+                        end
+                      end 
+                      creator_name = appointment['apptcreator']&.split(',')&.each(&:strip!)
+                      schedule.creator_id = Staff.find_by(first_name: creator_name.last, last_name: creator_name.first)&.id
+                      schedule.cross_site_allowed = true if appointment['crossofficeappt'].present? && appointment['crossofficeappt'].split('/').count>1
+                      schedule.service_address_id = client.addresses&.by_service_address&.find_by(city: appointment['clientcity'], zipcode: appointment['clientzip'])&.id
+                      schedule.save(validate: false)
+                      if schedule.id==nil
+                        Loggers::SnowflakeSchedulingLoggerService.call(appointments.find_index(appointment), 'Schedule cannot be saved.')
+                      else
+                        Loggers::SnowflakeSchedulingLoggerService.call(appointments.find_index(appointment), 'Schedule is saved.')
+                      end
+                    else
+                      Loggers::SnowflakeSchedulingLoggerService.call(appointments.find_index(appointment), "Staff #{appointment['staffname']} not found.")
+                    end
+                  else
+                    Loggers::SnowflakeSchedulingLoggerService.call(appointments.find_index(appointment), "Client enrollment service not found.")
+                  end
+                else
+                  Loggers::SnowflakeSchedulingLoggerService.call(appointments.find_index(appointment), "#{appointment['servicename']} service not found.")
                 end
               else
-                client_enrollment = client&.client_enrollments&.find_by(source_of_payment: 'self_pay')
-                if client_enrollment.blank?
-                  client_enrollment = client.client_enrollments.new(source_of_payment: 'self_pay', enrollment_date: appointment['servicestart'], terminated_on: appointment['serviceend'])
-                  client_enrollment.save(validate: false)
-                  Loggers::SnowflakeSchedulingLoggerService.call(appointments.find_index(appointment), "Created new client_enrollment #{client_enrollment.id}")
-                end
+                Loggers::SnowflakeSchedulingLoggerService.call(appointments.find_index(appointment), "#{appointment['fundingsource']} funding source not found.")
               end
-            end
-            # if funding_source_id.present?
-            #   if appointment['authorizationnumber'].present?
-            #     # client_enrollments = client&.client_enrollments&.where(funding_source_id: funding_source_id, insurance_id: appointment['authorizationnumber'])
-            #     client_enrollments = client&.client_enrollments&.where(insurance_id: appointment['authorizationnumber'])
-            #   else
-            #     client_enrollments = client&.client_enrollments&.where('funding_source_id = ?', funding_source_id)
-            #   end
-            # elsif appointment['fundingsource']==nil
-            #   if appointment['authorizationnumber'].present?
-            #     # client_enrollments = client&.client_enrollments&.find_by(source_of_payment: 'self_pay', insurance_id: appointment['authorizationnumber'])
-            #     client_enrollments = client&.client_enrollments&.find_by(insurance_id: appointment['authorizationnumber'])
-            #     if client_enrollments.blank? && appointment['servicename'].present?
-            #       client_enrollment = client.client_enrollments.new(source_of_payment: 'self_pay', enrollment_date: appointment['servicestart'], terminated_on: appointment['serviceend'], insurance_id: appointment['authorizationnumber'])
-            #       client_enrollment.save(validate: false)
-            #       client_enrollments = client&.client_enrollments&.where(source_of_payment: 'self_pay', insurance_id: appointment['authorizationnumber']).reload
-            #       Loggers::SnowflakeSchedulingLoggerService.call(appointments.find_index(appointment), "Created new client_enrollment #{client_enrollment.id}")
-            #     end
-            #   else
-            #     client_enrollments = client&.client_enrollments&.find_by(source_of_payment: 'self_pay')
-            #     if client_enrollments.blank? && appointment['servicename'].present?
-            #       client_enrollment = client.client_enrollments.new(source_of_payment: 'self_pay', enrollment_date: appointment['servicestart'], terminated_on: appointment['serviceend'])
-            #       client_enrollment.save(validate: false)
-            #       client_enrollments = client&.client_enrollments&.where(source_of_payment: 'self_pay').reload
-            #       Loggers::SnowflakeSchedulingLoggerService.call(appointments.find_index(appointment), "Created new client_enrollment #{client_enrollment.id}")
-            #     end
-            #   end
-            # end
-            # if client_enrollments.blank? && appointment['servicename'].present?
-            #   if appointment['authorizationnumber'].present?
-            #     client_enrollment = client.client_enrollments.new(funding_source_id: funding_source_id, enrollment_date: appointment['servicestart'], terminated_on: appointment['serviceend'], insurance_id: appointment['authorizationnumber'])
-            #     client_enrollment.save(validate: false)
-            #     client_enrollments = client&.client_enrollments&.where(funding_source_id: funding_source_id, insurance_id: appointment['authorizationnumber']).reload
-            #     Loggers::SnowflakeSchedulingLoggerService.call(appointments.find_index(appointment), "Created new client_enrollment #{client_enrollment.id}")
-            #   else
-            #     client_enrollment = client.client_enrollments.new(funding_source_id: funding_source_id, enrollment_date: appointment['servicestart'], terminated_on: appointment['serviceend'])
-            #     client_enrollment.save(validate: false)
-            #     client_enrollments = client&.client_enrollments&.where('funding_source_id = ?', funding_source_id).reload
-            #     Loggers::SnowflakeSchedulingLoggerService.call(appointments.find_index(appointment), "Created new client_enrollment #{client_enrollment.id}")
-            #   end
-            # end
-            # if client_enrollments.present?
-            if client_enrollments.present? || client_enrollment.present?
+            else
+              #self_pay
               service = Service.where('lower(name) = ?', appointment['servicename']&.downcase).first
               if service.present?
-                if client_enrollments.present?
-                  client_enrollment_service = ClientEnrollmentService.where(client_enrollment_id: client_enrollments.pluck(:id))&.find_by(service_id: service.id, start_date: appointment['servicestart'], end_date: appointment['serviceend'])
-                elsif client_enrollment.present?
-                  client_enrollment_service = ClientEnrollmentService.where(client_enrollment_id: client_enrollment.id).find_by(service_id: service.id, start_date: appointment['servicestart'], end_date: appointment['serviceend'])
-                end
-                if client_enrollment_service.blank?
-                  if client_enrollments.present?
-                    client_enrollment_service = ClientEnrollmentService.where(client_enrollment_id: client_enrollments.pluck(:id))&.find_by(service_id: service.id)
-                  elsif client_enrollment.present?
-                    client_enrollment_service = ClientEnrollmentService.where(client_enrollment_id: client_enrollment.id)&.find_by(service_id: service.id)
+                client_enrollment_services = ClientEnrollmentService.by_client(client.id).where('client_enrollments.source_of_payment = ?', 'self_pay').by_service(service.id).by_date(appointment['apptdate']&.to_time&.strftime('%Y-%m-%d'))
+                if client_enrollment_services.present?
+                  if client_enrollment_services.count==1
+                    client_enrollment_service = client_enrollment_services.first
+                  else
+                    client_enrollment_services = client_enrollment_services.where('start_date <= ? AND end_date>=?', appointment['servicestart']&.to_time&.strftime('%Y-%m-%d'), appointment['serviceend']&.to_time&.strftime('%Y-%m-%d'))
+                    if client_enrollment_services.count==1
+                      client_enrollment_service = client_enrollment_services.first
+                    else
+                      client_enrollment_services.each do |authorization|
+                        schedules = authorization.schedulings&.by_status
+                        completed_schedules = schedules&.completed_scheduling
+                        scheduled_schedules = schedules&.scheduled_scheduling
+                        used_units = completed_schedules&.with_units&.pluck(:units)&.sum
+                        used_units = 0 if used_units.blank?
+                        scheduled_units = scheduled_schedules&.with_units&.pluck(:units)&.sum
+                        scheduled_units = 0 if scheduled_units.blank?
+                        left_units = authorization&.units - (used_units + scheduled_units)
+                        if left_units >= appointment['actualunits'].to_f
+                          client_enrollment_service = authorization
+                          break
+                        end
+                      end
+                    end
                   end
-                end
-                if client_enrollment_service.blank?
-                  client_enrollment_service = ClientEnrollmentService.new
-                  if client_enrollments.present?
-                    # client_enrollment_service = client_enrollments.first.client_enrollment_services.new(service_id: service.id, start_date: appointment['servicestart'], end_date: appointment['serviceend'])
-                    client_enrollment_service.client_enrollment_id = client_enrollments.first.id
-                  elsif client_enrollment.present?
-                    # client_enrollment_service = client_enrollment.client_enrollment_services.new(service_id: service.id, start_date: appointment['servicestart'], end_date: appointment['serviceend'])
-                    client_enrollment_service.client_enrollment_id = client_enrollment.id
-                  end
-                  client_enrollment_service.service_id = service.id
-                  client_enrollment_service.start_date =  appointment['servicestart']
-                  client_enrollment_service.end_date =  appointment['serviceend']
-                  client_enrollment_service.save(validate: false)
-                  Loggers::SnowflakeSchedulingLoggerService.call(appointments.find_index(appointment), "Created new client_enrollment service #{client_enrollment_service.id}")
-                end
-                if client_enrollment_service.present?
                   staff = Staff.find_by('lower(email) = ?', appointment['staffemail']&.downcase)
                   if staff.blank?
                     staff_name = appointment['staffname']&.split(',')&.each(&:strip!)
@@ -132,11 +145,10 @@ module Snowflake
                   if staff.present?
                     schedule = Scheduling.find_or_initialize_by(snowflake_appointment_id: appointment['appointmentid'])
                     schedule.client_enrollment_service_id = client_enrollment_service.id
+                    schedule.staff_id = staff.id
                     schedule.date = appointment['apptdate']&.to_time&.strftime('%Y-%m-%d')
                     schedule.start_time = appointment['appointmentstartdatetime']&.to_time&.strftime('%H:%M')
                     schedule.end_time = appointment['appointmentenddatetime']&.to_time&.strftime('%H:%M')
-                    schedule.staff_id = staff.id
-                    # schedule = client_enrollment_service.schedulings.find_or_initialize_by(date: appointment['apptdate']&.to_time&.strftime('%Y-%m-%d'), start_time: appointment['appointmentstartdatetime']&.to_time&.strftime('%H:%M'), end_time: appointment['appointmentenddatetime']&.to_time&.strftime('%H:%M'), staff_id: staff.id)
                     schedule.units = appointment['actualunits'].to_f
                     schedule.minutes = appointment['durationmins'].to_f
                     if appointment['isrendered']=='Yes'
@@ -163,11 +175,10 @@ module Snowflake
                         schedule.status = 'Client_No_Show'
                       end
                     end 
-                    schedule.staff_id = staff.id
                     creator_name = appointment['apptcreator']&.split(',')&.each(&:strip!)
                     schedule.creator_id = Staff.find_by(first_name: creator_name.last, last_name: creator_name.first)&.id
                     schedule.cross_site_allowed = true if appointment['crossofficeappt'].present? && appointment['crossofficeappt'].split('/').count>1
-                    schedule.service_address_id = client.addresses.by_service_address.find_by(city: appointment['clientcity'], zipcode: appointment['clientzip'])
+                    schedule.service_address_id = client.addresses&.by_service_address&.find_by(city: appointment['clientcity'], zipcode: appointment['clientzip'])&.id
                     schedule.save(validate: false)
                     if schedule.id==nil
                       Loggers::SnowflakeSchedulingLoggerService.call(appointments.find_index(appointment), 'Schedule cannot be saved.')
@@ -175,16 +186,14 @@ module Snowflake
                       Loggers::SnowflakeSchedulingLoggerService.call(appointments.find_index(appointment), 'Schedule is saved.')
                     end
                   else
-                    Loggers::SnowflakeSchedulingLoggerService.call(appointments.find_index(appointment), 'Staff not found.')
+                    Loggers::SnowflakeSchedulingLoggerService.call(appointments.find_index(appointment), "Staff #{appointment['staffname']} not found.")
                   end
                 else
-                  Loggers::SnowflakeSchedulingLoggerService.call(appointments.find_index(appointment), 'Client enrollment service not found.')
+                  Loggers::SnowflakeSchedulingLoggerService.call(appointments.find_index(appointment), "Client enrollment service not found.")
                 end
               else
                 Loggers::SnowflakeSchedulingLoggerService.call(appointments.find_index(appointment), "#{appointment['servicename']} service not found.")
               end
-            else
-              Loggers::SnowflakeSchedulingLoggerService.call(appointments.find_index(appointment), "Client enrollment not found.")
             end
           else
             Loggers::SnowflakeSchedulingLoggerService.call(appointments.find_index(appointment), 'Client not found.')
