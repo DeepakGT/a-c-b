@@ -40,9 +40,9 @@ class SchedulingMetaDataController < ApplicationController
     schedules = Scheduling.by_client_ids(client_ids).by_status
     @todays_appointments = schedules.todays_schedulings.order(:start_time).last(10)
     if current_user.role_name=='executive_director' || current_user.role_name=='client_care_coordinator'
-      @past_schedules = schedules.exceeded_24_h_scheduling.unrendered_schedulings.order(date: :desc)
+      @past_schedules = schedules.past_60_days_schedules.exceeded_24_h_scheduling.unrendered_schedulings.order(date: :desc)
     elsif current_user.role_name=='super_admin' || current_user.role_name=='administrator'
-      @past_schedules = schedules.exceeded_3_days_scheduling.unrendered_schedulings.order(date: :desc)
+      @past_schedules = schedules.past_60_days_schedules.exceeded_3_days_scheduling.unrendered_schedulings.order(date: :desc)
     end
     @client_enrollment_services = ClientEnrollmentService.by_client(client_ids).about_to_expire.or(ClientEnrollmentService.expired)
     change_requests = SchedulingChangeRequest.by_approval_status
