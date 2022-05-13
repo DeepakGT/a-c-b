@@ -30,5 +30,6 @@ json.data do
     else
       json.left_minutes 0
     end
+    json.funding_source_name client_enrollment_service&.client_enrollment&.funding_source&.name 
   end
 end
