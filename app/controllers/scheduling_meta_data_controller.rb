@@ -25,7 +25,7 @@ class SchedulingMetaDataController < ApplicationController
     bcba_schedules = Scheduling.by_staff_ids(current_user.id).by_status
     @upcoming_schedules = bcba_schedules.scheduled_scheduling.order(:date).first(10)
     @past_schedules = bcba_schedules.past_60_days_schedules.unrendered_schedulings.order(date: :desc)
-    @client_enrollment_services = ClientEnrollmentService.by_bcba_ids(current_user.id).about_to_expire.or(ClientEnrollmentService.expired)
+    @client_enrollment_services = ClientEnrollmentService.by_bcba_ids(current_user.id).and(ClientEnrollmentService.about_to_expire.or(ClientEnrollmentService.expired)).includes(:client_enrollment, client_enrollment: :client)
     # change_requests = SchedulingChangeRequest.by_approval_status
     # @change_requests = change_requests.by_bcba_ids(current_user.id)
     #                                   .or(change_requests.by_staff_ids(current_user.id)).left_outer_joins(:scheduling)
@@ -44,7 +44,7 @@ class SchedulingMetaDataController < ApplicationController
     elsif current_user.role_name=='super_admin' || current_user.role_name=='administrator'
       @past_schedules = schedules.past_60_days_schedules.exceeded_3_days_scheduling.unrendered_schedulings.order(date: :desc)
     end
-    @client_enrollment_services = ClientEnrollmentService.by_client(client_ids).about_to_expire.or(ClientEnrollmentService.expired)
+    @client_enrollment_services = ClientEnrollmentService.by_client(client_ids).and(ClientEnrollmentService.about_to_expire.or(ClientEnrollmentService.expired)).includes(:client_enrollment, client_enrollment: :client)
     change_requests = SchedulingChangeRequest.by_approval_status
     @change_requests = change_requests.by_client_ids(client_ids)
     @catalyst_data = CatalystData.past_60_days_catalyst_data.and(CatalystData.with_multiple_appointments.or(CatalystData.with_no_appointments)).first(30)
