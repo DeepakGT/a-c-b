@@ -15,7 +15,7 @@ class SchedulingMetaDataController < ApplicationController
     rbt_schedules = Scheduling.by_staff_ids(current_user.id).by_status
     @upcoming_schedules = rbt_schedules.scheduled_scheduling.order(:date).first(10)
     @past_schedules = rbt_schedules.past_60_days_schedules.unrendered_schedulings.order(date: :desc)
-    @catalyst_data = CatalystData.with_multiple_appointments.or(CatalystData.with_no_appointments).first(30)
+    @catalyst_data = CatalystData.past_60_days_catalyst_data.and(CatalystData.with_multiple_appointments.or(CatalystData.with_no_appointments)).first(30)
     # sql = "(SELECT id, 'Upcoming Schedule' AS type FROM schedulings WHERE staff_id = #{current_user.id} AND status = 'Scheduled' AND date>=CURRENT_TIMESTAMP ORDER BY date LIMIT 10) UNION (SELECT id, 'Past Schedule' AS type FROM schedulings WHERE staff_id = #{current_user.id} AND status = 'Scheduled' AND date<CURRENT_TIMESTAMP AND date>=(CURRENT_TIMESTAMP + INTERVAL '-2 month') AND is_rendered=false ORDER BY date DESC) UNION (SELECT id,'Catalyst Data' AS type FROM catalyst_data WHERE system_scheduling_id IS NULL LIMIT 30);"
     # @appointments = ActiveRecord::Base.connection.exec_query(sql)&.rows
   end
@@ -25,11 +25,11 @@ class SchedulingMetaDataController < ApplicationController
     bcba_schedules = Scheduling.by_staff_ids(current_user.id).by_status
     @upcoming_schedules = bcba_schedules.scheduled_scheduling.order(:date).first(10)
     @past_schedules = bcba_schedules.past_60_days_schedules.unrendered_schedulings.order(date: :desc)
-    @client_enrollment_services = ClientEnrollmentService.by_bcba_ids(current_user.id).about_to_expire
+    @client_enrollment_services = ClientEnrollmentService.by_bcba_ids(current_user.id).about_to_expire.or(ClientEnrollmentService.expired)
     # change_requests = SchedulingChangeRequest.by_approval_status
     # @change_requests = change_requests.by_bcba_ids(current_user.id)
     #                                   .or(change_requests.by_staff_ids(current_user.id)).left_outer_joins(:scheduling)
-    @catalyst_data = CatalystData.with_multiple_appointments.or(CatalystData.with_no_appointments).first(30)
+    @catalyst_data = CatalystData.past_60_days_catalyst_data.and(CatalystData.with_multiple_appointments.or(CatalystData.with_no_appointments)).first(30)
     # sql = "(SELECT id, 'Upcoming Schedule' AS type FROM schedulings WHERE staff_id = #{current_user.id} AND status = 'Scheduled' AND date>=CURRENT_TIMESTAMP ORDER BY date LIMIT 20) UNION (SELECT id, 'Past Schedule' AS type FROM schedulings WHERE staff_id = #{current_user.id} AND status = 'Scheduled' AND date<CURRENT_TIMESTAMP AND date>=(CURRENT_TIMESTAMP + INTERVAL '-2 month') AND is_rendered=false ORDER BY date DESC) UNION (SELECT client_enrollment_services.id, 'client_enrollment_services' AS type FROM client_enrollment_services INNER JOIN client_enrollments ON client_enrollments.id=client_enrollment_services.client_enrollment_id INNER JOIN clients ON clients.id=client_enrollments.client_id WHERE clients.bcba_id = #{current_user.id} AND client_enrollment_services.end_date >= CURRENT_TIMESTAMP AND client_enrollment_services.end_date <= (CURRENT_TIMESTAMP + INTERVAL '9 day')) UNION (SELECT id,'Catalyst Data' AS type FROM catalyst_data WHERE system_scheduling_id IS NULL LIMIT 30);"
     # @data = ActiveRecord::Base.connection.exec_query(sql)&.rows
   end
@@ -44,10 +44,10 @@ class SchedulingMetaDataController < ApplicationController
     elsif current_user.role_name=='super_admin' || current_user.role_name=='administrator'
       @past_schedules = schedules.exceeded_3_days_scheduling.unrendered_schedulings.order(date: :desc)
     end
-    @client_enrollment_services = ClientEnrollmentService.by_client(client_ids).about_to_expire
+    @client_enrollment_services = ClientEnrollmentService.by_client(client_ids).about_to_expire.or(ClientEnrollmentService.expired)
     change_requests = SchedulingChangeRequest.by_approval_status
     @change_requests = change_requests.by_client_ids(client_ids)
-    @catalyst_data = CatalystData.with_multiple_appointments.or(CatalystData.with_no_appointments).first(30)
+    @catalyst_data = CatalystData.past_60_days_catalyst_data.and(CatalystData.with_multiple_appointments.or(CatalystData.with_no_appointments)).first(30)
   end
 
   def billing_dashboard

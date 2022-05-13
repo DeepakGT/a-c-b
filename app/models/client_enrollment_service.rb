@@ -31,7 +31,7 @@ class ClientEnrollmentService < ApplicationRecord
   scope :except_self, ->(self_id){ where.not(id: self_id) }
   scope :active, ->{ where('end_date >= ?', Time.current.strftime('%Y-%m-%d')) }
   scope :before_date, ->(date){ where('start_date < ?', date.to_time.strftime('%Y-%m-%d')) }
-
+  scope :expired, ->{ where('end_date < ?', Time.current.strftime('%Y-%m-%d'))}
   private
 
   def validate_service_providers
