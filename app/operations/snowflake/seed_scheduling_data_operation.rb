@@ -199,7 +199,7 @@ module Snowflake
         case funding_source_name
         when 'BCBS NH'
           return FundingSource.find_by(name: 'New Hampshire BCBS').id
-        when 'AMBETTER NNHF' || 'AMBETTER NHHF' || 'AMBETTER NHHF '
+        when 'AMBETTER NNHF', 'AMBETTER NHHF', 'AMBETTER NHHF '
           return FundingSource.find_by(name: 'Ambetter nnhf').id
         when 'AETNA'
           return FundingSource.find_by(name: 'Aetna').id
@@ -225,16 +225,19 @@ module Snowflake
           return FundingSource.find_by(name: 'Unicare').id
         when 'BEACON HEALTH OPTIONS'
           return FundingSource.find_by(name: 'Beacon Health Options').id
-        when 'BCBS MA' || 'massachusetts bcbs' || 'MASSACHUSETTS BCBS'
+        when 'BCBS MA', 'massachusetts bcbs', 'MASSACHUSETTS BCBS'
           return FundingSource.find_by(name: 'Massachusetts BCBS').id
         when 'Humana'
           funding_source = FundingSource.find_by(name: 'humana')
           return funding_source&.id
         when 'BCBSNJ'
-          funding_source = FundingSource.find_by(name: 'bcbs new jersey')
+          funding_source = FundingSource.find_by(name: 'BCBS New Jersey')
           return funding_source&.id
         when 'BCBS FL'
           funding_source = FundingSource.find_by(name: 'bcbsfl')
+          return funding_source&.id
+        when 'COMPSYCH'
+          funding_source = FundingSource.find_by(name: 'compsych')
           return funding_source&.id
         else 
           return nil
