@@ -64,7 +64,7 @@ class SchedulingMetaDataController < ApplicationController
     if params[:appointment_id].present? && params[:client_id].present?
       schedule = Scheduling.find(params[:appointment_id])
       client = Client.find(params[:client_id])
-      @unassinged_notes = CatalystData.where(
+      @unassigned_notes = CatalystData.where(
         catalyst_patient_id: client.catalyst_patient_id,
         date: schedule.date, 
         system_scheduling_id: nil
