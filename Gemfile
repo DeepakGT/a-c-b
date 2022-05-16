@@ -67,6 +67,7 @@ group :development, :test do
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
   gem 'rswag-specs'
   gem 'pry'
+  gem 'bullet'
 end
 
 group :test do
