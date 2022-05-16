@@ -77,6 +77,7 @@ Rails.application.routes.draw do
     get '/catalyst/:catalyst_data_id/appointments_list', to: 'catalyst#appointments_list'
     get '/billing_dashboard', to: 'scheduling_meta_data#billing_dashboard'
     get '/sync_soap_notes', to: 'catalyst#sync_soap_notes'
+    get '/unassigned_catalyst_soap_notes', to: 'scheduling_meta_data#unassigned_catalyst_soap_notes'
     resources :schedulings do
       resources :soap_notes
       resources :change_requests, controller: 'scheduling_change_requests', only: %i[create update]
