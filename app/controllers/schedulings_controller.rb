@@ -58,7 +58,7 @@ class SchedulingsController < ApplicationController
 
   def scheduling_params
     params.permit(:staff_id, :status, :date, :start_time, :end_time, :units, :minutes, 
-                  :client_enrollment_service_id, :cross_site_allowed, :service_address_id)
+                  :client_enrollment_service_id, :cross_site_allowed, :service_address_id, :catalyst_soap_note_id)
   end
 
   def set_scheduling
@@ -124,8 +124,12 @@ class SchedulingsController < ApplicationController
   def update_render_service
     if params[:is_rendered].to_bool.true? || params[:status]=='Rendered'
       if @schedule.date<Time.current.to_date
-        RenderAppointments::RenderScheduleOperation.call(@schedule.id)
+        RenderAppointments::RenderScheduleManualOperation.call(@schedule.id, params[:catalyst_soap_note_id])
       end
+    # elsif (params[:is_rendered].to_bool.true? || params[:status]=='Rendered')
+    #   if @schedule.date<Time.current.to_date
+    #     RenderAppointments::RenderScheduleOperation.call(@schedule.id)
+    #   end
     end
   end
 
