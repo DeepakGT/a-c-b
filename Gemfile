@@ -67,6 +67,7 @@ group :development, :test do
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
   gem 'rswag-specs'
   gem 'pry'
+  gem 'bullet'
 end
 
 group :test do
@@ -75,7 +76,6 @@ group :test do
   gem 'rails-controller-testing'
   gem 'shoulda-matchers', '~> 5.0'
   gem 'shoulda-callback-matchers', '~> 1.1.1'
-  gem 'bullet'
 end
 
 group :development do
