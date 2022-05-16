@@ -13,7 +13,8 @@ module Snowflake
         initial_count = Scheduling.count
         Loggers::SnowflakeSchedulingLoggerService.call(appointments.count, "Got #{appointments.count} from snowflake.")
         
-        appointments.each do |appointment|
+        appointments.each_index do |i|
+          appointment = appointments[i]
           appointment = appointment.with_indifferent_access
           client_name = appointment['clientname']&.split(',')&.each(&:strip!)
           client = Client.find_by(dob: appointment['clientdob']&.to_time&.strftime('%Y-%m-%d'), first_name: client_name&.last, last_name: client_name&.first)
@@ -92,21 +93,21 @@ module Snowflake
                       schedule.service_address_id = client.addresses&.by_service_address&.find_by(city: appointment['clientcity'], zipcode: appointment['clientzip'])&.id
                       schedule.save(validate: false)
                       if schedule.id==nil
-                        Loggers::SnowflakeSchedulingLoggerService.call(appointments.find_index(appointment), 'Schedule cannot be saved.')
+                        Loggers::SnowflakeSchedulingLoggerService.call(i, 'Schedule cannot be saved.')
                       else
-                        Loggers::SnowflakeSchedulingLoggerService.call(appointments.find_index(appointment), 'Schedule is saved.')
+                        Loggers::SnowflakeSchedulingLoggerService.call(i, 'Schedule is saved.')
                       end
                     else
-                      Loggers::SnowflakeSchedulingLoggerService.call(appointments.find_index(appointment), "Staff #{appointment['staffname']} not found.")
+                      Loggers::SnowflakeSchedulingLoggerService.call(i, "Staff #{appointment['staffname']} not found.")
                     end
                   else
-                    Loggers::SnowflakeSchedulingLoggerService.call(appointments.find_index(appointment), "Client enrollment service not found.")
+                    Loggers::SnowflakeSchedulingLoggerService.call(i, "Client enrollment service not found.")
                   end
                 else
-                  Loggers::SnowflakeSchedulingLoggerService.call(appointments.find_index(appointment), "#{appointment['servicename']} service not found.")
+                  Loggers::SnowflakeSchedulingLoggerService.call(i, "#{appointment['servicename']} service not found.")
                 end
               else
-                Loggers::SnowflakeSchedulingLoggerService.call(appointments.find_index(appointment), "#{appointment['fundingsource']} funding source not found.")
+                Loggers::SnowflakeSchedulingLoggerService.call(i, "#{appointment['fundingsource']} funding source not found.")
               end
             else
               #self_pay
@@ -181,22 +182,22 @@ module Snowflake
                     schedule.service_address_id = client.addresses&.by_service_address&.find_by(city: appointment['clientcity'], zipcode: appointment['clientzip'])&.id
                     schedule.save(validate: false)
                     if schedule.id==nil
-                      Loggers::SnowflakeSchedulingLoggerService.call(appointments.find_index(appointment), 'Schedule cannot be saved.')
+                      Loggers::SnowflakeSchedulingLoggerService.call(i, 'Schedule cannot be saved.')
                     else
-                      Loggers::SnowflakeSchedulingLoggerService.call(appointments.find_index(appointment), 'Schedule is saved.')
+                      Loggers::SnowflakeSchedulingLoggerService.call(i, 'Schedule is saved.')
                     end
                   else
-                    Loggers::SnowflakeSchedulingLoggerService.call(appointments.find_index(appointment), "Staff #{appointment['staffname']} not found.")
+                    Loggers::SnowflakeSchedulingLoggerService.call(i, "Staff #{appointment['staffname']} not found.")
                   end
                 else
-                  Loggers::SnowflakeSchedulingLoggerService.call(appointments.find_index(appointment), "Client enrollment service not found.")
+                  Loggers::SnowflakeSchedulingLoggerService.call(i, "Client enrollment service not found.")
                 end
               else
-                Loggers::SnowflakeSchedulingLoggerService.call(appointments.find_index(appointment), "#{appointment['servicename']} service not found.")
+                Loggers::SnowflakeSchedulingLoggerService.call(i, "#{appointment['servicename']} service not found.")
               end
             end
           else
-            Loggers::SnowflakeSchedulingLoggerService.call(appointments.find_index(appointment), 'Client not found.')
+            Loggers::SnowflakeSchedulingLoggerService.call(i, 'Client not found.')
           end
         end
         final_count = Scheduling.count
