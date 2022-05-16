@@ -16,6 +16,7 @@ module Catalyst
           if clinic_data['name'] == 'Portsmouth, NH'
             clinic = Clinic.find_by(name: 'Porthsmouth, NH')
           end
+          
           if clinic.present?
             clinic.catalyst_clinic_id = clinic_data['siteId']
             clinic.save(validate: false)
