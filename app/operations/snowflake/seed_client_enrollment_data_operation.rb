@@ -16,7 +16,10 @@ module Snowflake
         student_services.each do |student_service|
           student_service = student_service.with_indifferent_access
           client_name = student_service['clientname']&.split(' ')
-          if client_name.count==3
+          if student_service['clientname']=='Syed Abraham Hasan' || student_service['clientname']=='Syed Adam Hasan' || student_service['clientname']=='Ana Clara El-Gamel'
+            client_name[0] = "#{client_name[0]} #{client_name[1]}"
+            client_name[1] = "#{client_name[2]}"
+          elsif client_name.count==3
             client_name[1] = "#{client_name[1]} #{client_name[2]}"
           elsif client_name.count==4
             client_name[1] = "#{client_name[1]} #{client_name[2]} #{client_name[3]}"
