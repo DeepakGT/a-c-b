@@ -70,4 +70,10 @@ Rails.application.configure do
   config.action_mailer.default_options  = {
     from:  "no-reply <from_test_user@codes.com>"
   }
+
+  config.after_initialize do
+    Bullet.enable = true
+    Bullet.console = true
+    Bullet.bullet_logger = true
+  end
 end
