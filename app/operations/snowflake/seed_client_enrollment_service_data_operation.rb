@@ -16,6 +16,13 @@ module Snowflake
         student_services.each do |student_service|
           student_service = student_service.with_indifferent_access
           client_name = student_service['clientname']&.split(' ')
+          if client_name.count==3
+            client_name.last = "#{client_name[1]} #{client_name[2]}"
+          elsif client_name.count==4
+            client_name.last = "#{client_name[1]} #{client_name[2]} #{client_name[3]}"
+          elsif client_name.count==5
+            client_name.last = "#{client_name[1]} #{client_name[2]} #{client_name[3]} #{client_name[4]}"
+          end
           client = Client.find_by(dob: student_service['clientdob']&.to_time&.strftime('%Y-%m-%d'), first_name: client_name&.first, last_name: client_name&.last)
           if client.present?
             if student_service['fundingsource'].present?
