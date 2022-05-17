@@ -307,6 +307,7 @@ ActiveRecord::Schema.define(version: 2022_05_17_071154) do
     t.string "catalyst_data_ids", default: [], array: true
     t.datetime "rendered_at"
     t.string "snowflake_appointment_id"
+    t.boolean "is_manual_render", default: false
     t.index ["client_enrollment_service_id"], name: "index_schedulings_on_client_enrollment_service_id"
     t.index ["creator_id"], name: "index_schedulings_on_creator_id"
     t.index ["date"], name: "index_schedulings_on_date"
