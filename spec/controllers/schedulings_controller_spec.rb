@@ -68,7 +68,7 @@ RSpec.describe SchedulingsController, type: :controller do
           
           expect(response.status).to eq(200)
           expect(response_body['status']).to eq('success')
-          expect(response_body['data'].count).to eq(Scheduling.by_client_ids(client.id).count)
+          expect(response_body['data'].count).to eq(Scheduling.joins(client_enrollment_service: :client_enrollment).by_client_ids(client.id).count)
         end
       end
 
@@ -94,7 +94,7 @@ RSpec.describe SchedulingsController, type: :controller do
 
           expect(response.status).to eq(200)
           expect(response_body['status']).to eq('success')
-          expect(response_body['data'].count).to eq(Scheduling.by_service_ids(service.id).count)
+          expect(response_body['data'].count).to eq(Scheduling.joins(client_enrollment_service: :client_enrollment).by_service_ids(service.id).count)
         end
       end
 

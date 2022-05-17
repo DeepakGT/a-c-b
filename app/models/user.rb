@@ -54,7 +54,7 @@ class User < ActiveRecord::Base
   # format response
   def as_json(options = {})
     response = super(options)
-               .select { |key| key.in?(['email', 'uid', 'first_name', 'last_name']) }
+               .select { |key| key.in?(['id', 'email', 'uid', 'first_name', 'last_name']) }
                .merge({role: Role.find_by(name: self.role_name)})
 
     response.merge!({organization_id: self.organization&.id}) if self.role_name=='executive_director'

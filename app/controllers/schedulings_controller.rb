@@ -6,8 +6,7 @@ class SchedulingsController < ApplicationController
   before_action :set_client_enrollment_service, only: :create
 
   def index
-    schedules = Scheduling.all
-    @schedules = do_filter(schedules)
+    @schedules = do_filter
   end
 
   def show; end
@@ -65,7 +64,8 @@ class SchedulingsController < ApplicationController
     @schedule = Scheduling.find(params[:id])
   end
 
-  def do_filter(schedules)
+  def do_filter
+    schedules = Scheduling.preload(staff: :staff_clinics, client_enrollment_service: { client_enrollment: :client}, client_enrollment_service: :service)
     schedules = schedules.by_staff_ids(string_to_array(params[:staff_ids])) if params[:staff_ids].present?
     schedules = schedules.by_client_ids(string_to_array(params[:client_ids])) if params[:client_ids].present?
     schedules = schedules.by_service_ids(string_to_array(params[:service_ids])) if params[:service_ids].present?
@@ -86,15 +86,14 @@ class SchedulingsController < ApplicationController
     # end
     if current_user.role_name=='rbt' || current_user.role_name=='bcba'
       clinic_ids = current_user.staff_clinics&.pluck(:clinic_id)
-      schedules = schedules.left_outer_joins(client_enrollment_service: {client_enrollment: :client}).by_client_clinic(clinic_ids)
+      schedules = schedules.by_client_clinic(clinic_ids)
     end
     if params[:startDate].present? && params[:endDate].present?
       schedules = schedules.on_date(params[:startDate]..params[:endDate])
     end
     if params[:default_location_id].present?
       location_id = params[:default_location_id]
-      schedules = schedules.left_outer_joins(client_enrollment_service: {client_enrollment: :client}).by_client_clinic(location_id)
-                          .or(schedules.by_staff_clinic(location_id)).left_outer_joins(staff: :staff_clinics)
+      schedules = schedules.by_client_clinic(location_id).or(schedules.by_staff_clinic(location_id))
     end
     schedules = schedules.uniq.sort_by(&:date)
     if params[:page].present?

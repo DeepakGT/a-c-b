@@ -21,7 +21,7 @@ module CompareCatalystDataWithSystemData
         soap_note.caregiver_signature = true if catalyst_data.caregiver_signature.present?
         soap_note.save(validate: false)
         # schedules = Scheduling.by_client_ids(client&.id).by_staff_ids(staff&.id).on_date(catalyst_data.date)
-        schedules = Scheduling.by_client_ids(client&.id).on_date(catalyst_data.date)
+        schedules = Scheduling.joins(client_enrollment_service: :client_enrollment).by_client_ids(client&.id).on_date(catalyst_data.date)
         response_data_hash = Hash.new
 
         if schedules.count==1
@@ -36,7 +36,7 @@ module CompareCatalystDataWithSystemData
           if schedule.is_rendered.to_bool.true?
             schedule.catalyst_data_ids.push(catalyst_data.id)
             schedule.save(validate: false)
-            
+
             if schedule.staff.role_name=='rbt' && catalyst_data.provider_signature.present?
               soap_note.rbt_signature = true
             elsif schedule.staff.role_name=='bcba' && catalyst_data.provider_signature.present?
