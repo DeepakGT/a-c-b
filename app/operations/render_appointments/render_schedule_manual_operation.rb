@@ -28,9 +28,10 @@ module RenderAppointments
       end
 
       def create_soap_note(schedule, catalyst_data)
-        soap_note = schedule.soap_notes.find_or_initialize_by(catalyst_data_id: catalyst_data.id)
+        soap_note = SoapNote.find_or_initialize_by(catalyst_data_id: catalyst_data.id)
         soap_note.add_date = catalyst_data.date
         soap_note.note = catalyst_data.note
+        soap_note.scheduling_id = schedule.id
         soap_note.creator_id = schedule.staff_id
         soap_note.synced_with_catalyst = true
         soap_note.bcba_signature = true if catalyst_data.bcba_signature.present?
