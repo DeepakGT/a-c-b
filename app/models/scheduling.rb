@@ -21,7 +21,7 @@ class Scheduling < ApplicationRecord
   serialize :unrendered_reason, Array
 
   #scopes
-  scope :by_status, ->{ where('lower(status) = ?','scheduled') }
+  scope :by_status, ->{ where('lower(schedulings.status) = ?','scheduled') }
   scope :completed_scheduling, ->{ where('date < ?',Time.current.to_date) }
   scope :todays_schedulings, ->{ where('date = ?',Time.current.to_date) }
   scope :scheduled_scheduling, ->{ where('date >= ?',Time.current.to_date) }

@@ -12,7 +12,7 @@ class SchedulingMetaDataController < ApplicationController
 
   def rbt_appointments
     authorize :appointment, :rbt_appointments?
-    rbt_schedules = Scheduling.preload(:staff, client_enrollment_service: [:service, {client_enrollment: :client}]).by_staff_ids(current_user.id).by_status
+    rbt_schedules = Scheduling.includes(:staff, client_enrollment_service: [:service, {client_enrollment: :client}]).by_staff_ids(current_user.id).by_status
     # @upcoming_schedules = rbt_schedules.scheduled_scheduling.order(:date).first(10)
     @todays_appointments = rbt_schedules.todays_schedulings.order(:start_time).last(10)
     @past_schedules = rbt_schedules.past_60_days_schedules.unrendered_schedulings.order(date: :desc)
@@ -23,7 +23,7 @@ class SchedulingMetaDataController < ApplicationController
 
   def bcba_appointments
     authorize :appointment, :bcba_appointments?
-    bcba_schedules = Scheduling.preload(:staff, client_enrollment_service: [:service, {client_enrollment: :client}]).by_staff_ids(current_user.id).by_status
+    bcba_schedules = Scheduling.includes(:staff, client_enrollment_service: [:service, {client_enrollment: :client}]).by_staff_ids(current_user.id).by_status
     # @upcoming_schedules = bcba_schedules.scheduled_scheduling.order(:date).first(10)
     @todays_appointments = bcba_schedules.todays_schedulings.order(:start_time).last(10)
     @past_schedules = bcba_schedules.past_60_days_schedules.unrendered_schedulings.order(date: :desc)
@@ -39,8 +39,9 @@ class SchedulingMetaDataController < ApplicationController
   def executive_director_appointments
     authorize :appointment, :executive_director_appointments?
     client_ids = Clinic.find(params[:default_location_id]).clients.pluck(:id)
-    schedules = Scheduling.preload(:soap_notes, :staff, client_enrollment_service: [{client_enrollment: :client}, :service]).by_client_ids(client_ids).by_status
-    @todays_appointments = schedules.todays_schedulings.order(:start_time).last(10)
+    schedules = Scheduling.includes(:soap_notes, :staff, client_enrollment_service: [:service, {client_enrollment: :client}])
+    schedules = schedules.by_client_ids(client_ids).by_status
+    @todays_appointments = schedules.todays_schedulings.last(10)
     if current_user.role_name=='executive_director' || current_user.role_name=='client_care_coordinator'
       @past_schedules = schedules.past_60_days_schedules.exceeded_24_h_scheduling.unrendered_schedulings.order(date: :desc)
     elsif current_user.role_name=='super_admin' || current_user.role_name=='administrator'
