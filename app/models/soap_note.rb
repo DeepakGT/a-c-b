@@ -2,7 +2,7 @@ class SoapNote < ApplicationRecord
   attr_accessor :caregiver_sign
   attr_accessor :user
 
-  belongs_to :scheduling
+  belongs_to :scheduling, optional: true
   has_one_attached :signature_file
 
   before_save :set_signature_file
@@ -39,20 +39,22 @@ class SoapNote < ApplicationRecord
   end
 
   def validate_signatures
-    if scheduling.staff.role_name=='bcba'
-      if user.role_name=='rbt' && self.rbt_signature==true && self.rbt_signature_author_name=="#{user.first_name} #{user.last_name}"
-        errors.add(:rbt_signature, 'must not be present for appointment created for bcba.')
-      end
-      if user.role_name=='bcba' && self.bcba_signature==true && self.bcba_signature_author_name=="#{user.first_name} #{user.last_name}"
-        if !(self.scheduling.client_enrollment_service.staff.include?(user)) && scheduling.staff_id!=user.id && scheduling.client_enrollment_service.client_enrollment.client.bcba_id!=user.id
-          errors.add(:bcba_signature, 'cannot be done by bcba that is not in authorization.')
+    if self.scheduling.present?
+      if scheduling.staff.role_name=='bcba'
+        if user.role_name=='rbt' && self.rbt_signature==true && self.rbt_signature_author_name=="#{user.first_name} #{user.last_name}"
+          errors.add(:rbt_signature, 'must not be present for appointment created for bcba.')
         end
-      end
-    elsif scheduling.staff.role_name=='rbt'
-      if user.role_name=='rbt' && self.rbt_signature==true && self.rbt_signature_author_name=="#{user.first_name} #{user.last_name}"
-        errors.add(:rbt_signature, 'cannot be done by rbt that is not in appointment. Please update appointment to let another rbt sign.') if self.scheduling.staff!=user
-      elsif user.role_name=='bcba' && self.rbt_signature==true && self.rbt_signature_author_name=="#{user.first_name} #{user.last_name}"
-        errors.add(:rbt_signature, 'cannot be done by bcba.')
+        if user.role_name=='bcba' && self.bcba_signature==true && self.bcba_signature_author_name=="#{user.first_name} #{user.last_name}"
+          if !(self.scheduling.client_enrollment_service.staff.include?(user)) && scheduling.staff_id!=user.id && scheduling.client_enrollment_service.client_enrollment.client.bcba_id!=user.id
+            errors.add(:bcba_signature, 'cannot be done by bcba that is not in authorization.')
+          end
+        end
+      elsif scheduling.staff.role_name=='rbt'
+        if user.role_name=='rbt' && self.rbt_signature==true && self.rbt_signature_author_name=="#{user.first_name} #{user.last_name}"
+          errors.add(:rbt_signature, 'cannot be done by rbt that is not in appointment. Please update appointment to let another rbt sign.') if self.scheduling.staff!=user
+        elsif user.role_name=='bcba' && self.rbt_signature==true && self.rbt_signature_author_name=="#{user.first_name} #{user.last_name}"
+          errors.add(:rbt_signature, 'cannot be done by bcba.')
+        end
       end
     end
     if self.bcba_signature==true && self.bcba_signature_author_name=="#{user.first_name} #{user.last_name}" && !(user.role.permissions.include?('bcba_signature')) && user.role_name!='bcba'
