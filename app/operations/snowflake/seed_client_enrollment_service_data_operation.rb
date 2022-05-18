@@ -128,7 +128,7 @@ module Snowflake
           return FundingSource.find_by(name: 'Unicare').id
         when 'BEACON HEALTH OPTIONS'
           return FundingSource.find_by(name: 'Beacon Health Options').id
-        when 'BCBS MA' || 'massachusetts bcbs' || 'MASSACHUSETTS BCBS'
+        when 'BCBS MA', 'massachusetts bcbs', 'MASSACHUSETTS BCBS'
           return FundingSource.find_by(name: 'Massachusetts BCBS').id
         else 
           if funding_source_name!=nil

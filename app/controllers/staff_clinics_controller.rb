@@ -16,7 +16,7 @@ class StaffClinicsController < ApplicationController
 
   def update
     StaffClinic.transaction do
-      remove_services if params[:staff_clinic_services_attributes].present?
+      remove_services # if params[:staff_clinic_services_attributes].present?
       @staff_clinic.update(staff_clinic_params)
     end
   end
@@ -44,7 +44,7 @@ class StaffClinicsController < ApplicationController
   end
 
   def remove_services
-    @staff_clinic.services.destroy_all
+    @staff_clinic.staff_clinic_services.destroy_all
   end
   # end of private
 end

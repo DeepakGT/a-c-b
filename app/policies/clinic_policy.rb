@@ -1,6 +1,6 @@
 class ClinicPolicy < ApplicationPolicy
   def index?
-    show? || update? || destroy?
+    true
   end
 
   def show?

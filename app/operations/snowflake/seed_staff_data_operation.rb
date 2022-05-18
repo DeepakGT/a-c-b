@@ -24,7 +24,7 @@ module Snowflake
             staff.gender = staff_roster['gender']=='Female' ? 'female' : 'male'
             staff.job_type = staff_roster['partfulltime']=='Full Time' ? 'full_time' : 'part_time'
             case staff_roster['jobtitle']
-            when 'RBT' || 'Lead RBT '
+            when 'RBT', 'Lead RBT '
               staff.role = Role.find_or_create_by!(name: 'rbt')
             when 'BCBA'
               staff.role = Role.find_or_create_by!(name: 'bcba')
@@ -36,7 +36,7 @@ module Snowflake
               staff.role = Role.find_or_create_by!(name: 'billing')
             when 'Program Manager'
               staff.role = Role.find_or_create_by!(name: 'client_care_coordinator')
-            when 'Admin Assistant' || 'Regional Director of Ops.'
+            when 'Admin Assistant', 'Regional Director of Ops.'
               staff.role = Role.find_or_create_by!(name: 'administrator')
             end
             staff.save(validate: false)
@@ -49,7 +49,11 @@ module Snowflake
 
             if staff_roster['agencyname'].present?
               clinic_name = staff_roster['agencyname']&.downcase
-              clinic = Clinic.where('lower(name) = ? OR lower(aka) = ?', clinic_name, clinic_name)&.first
+              # clinic = Clinic.where('lower(name) = ? OR lower(aka) = ?', clinic_name, clinic_name)&.first
+              clinic = Clinic.where("name ILIKE '%#{clinic_name}%'")&.first
+              if clinic.blank?
+                clinic = Clinic.where("aka ILIKE '%#{clinic_name}%'")&.first
+              end
               if staff_roster['agencyname']=='salem'
                 clinic = Clinic.find_by(name: 'Salem, NH')
               end
@@ -111,7 +115,11 @@ module Snowflake
             if staff.staff_clinics.blank?
               if staff_roster['agencyname'].present?
                 clinic_name = staff_roster['agencyname']&.downcase
-                clinic = Clinic.where('lower(name) = ? OR lower(aka) = ?', clinic_name, clinic_name)&.first
+                # clinic = Clinic.where('lower(name) = ? OR lower(aka) = ?', clinic_name, clinic_name)&.first
+                clinic = Clinic.where("name ILIKE '%#{clinic_name}%'")&.first
+                if clinic.blank?
+                  clinic = Clinic.where("aka ILIKE '%#{clinic_name}%'")&.first
+                end
                 if staff_roster['agencyname']=='salem'
                   clinic = Clinic.find_by(name: 'Salem, NH')
                 end
