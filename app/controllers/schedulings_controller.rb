@@ -20,6 +20,7 @@ class SchedulingsController < ApplicationController
     else
       @schedule.save
     end
+    update_units_columns(@schedule.client_enrollment_service)
   end
 
   def update
@@ -37,6 +38,7 @@ class SchedulingsController < ApplicationController
         @schedule.update(status: params[:status]) if params[:status].present?
       end
     end
+    update_units_columns(@schedule.client_enrollment_service)
   end
 
   def destroy
@@ -161,6 +163,10 @@ class SchedulingsController < ApplicationController
     @schedule.catalyst_data_ids.push(catalyst_data.id)
     @schedule.save(validate: false)
     catalyst_data.update(system_scheduling_id: @schedule.id, is_appointment_found: true, multiple_schedulings_ids: [])
+  end
+  
+  def update_units_columns(client_enrollment_service)
+    ClientEnrollmentServices::UpdateUnitsColumnsOperation.call(client_enrollment_service)
   end
   # end of private
 end

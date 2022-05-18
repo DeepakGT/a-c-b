@@ -6,6 +6,7 @@ class ClientEnrollmentServicesController < ApplicationController
   def create
     set_client_enrollment
     @enrollment_service = @client_enrollment.client_enrollment_services.create(enrollment_service_params)
+    update_units_columns(@enrollment_service)
   end
 
   def show; end
@@ -14,6 +15,7 @@ class ClientEnrollmentServicesController < ApplicationController
     ClientEnrollmentService.transaction do
       remove_service_providers if params[:service_providers_attributes].present?
       @enrollment_service.update(enrollment_service_params)
+      update_units_columns(@enrollment_service)
       update_client_enrollment if params[:funding_source_id].present?
     end
   end
@@ -57,6 +59,10 @@ class ClientEnrollmentServicesController < ApplicationController
 
   def remove_service_providers
     @enrollment_service.service_providers.destroy_all
+  end
+
+  def update_units_columns(client_enrollment_service)
+    ClientEnrollmentServices::UpdateUnitsColumnsOperation.call(client_enrollment_service)
   end
   # end of private
 end
