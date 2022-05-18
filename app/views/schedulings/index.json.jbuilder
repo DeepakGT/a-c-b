@@ -4,7 +4,7 @@ json.data do
     client = schedule.client_enrollment_service&.client_enrollment&.client
     service = schedule.client_enrollment_service&.service
     schedules = Scheduling.by_client_and_service(schedule.client_enrollment_service.client_enrollment.client_id, schedule.client_enrollment_service.service_id)
-    schedules = schedules.by_status
+    schedules = schedules.with_rendered_or_scheduled_as_status
     completed_schedules = schedules.completed_scheduling
     scheduled_schedules = schedules.scheduled_scheduling
     used_units = completed_schedules.with_units.pluck(:units).sum

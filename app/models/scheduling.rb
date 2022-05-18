@@ -22,6 +22,7 @@ class Scheduling < ApplicationRecord
 
   #scopes
   scope :by_status, ->{ where('lower(schedulings.status) = ?','scheduled') }
+  scope :with_rendered_or_scheduled_as_status, ->{ where('lower(schedulings.status) = ? OR lower(schedulings.status) = ?', 'scheduled', 'rendered') }
   scope :completed_scheduling, ->{ where('date < ?',Time.current.to_date) }
   scope :todays_schedulings, ->{ where('date = ?',Time.current.to_date) }
   scope :scheduled_scheduling, ->{ where('date >= ?',Time.current.to_date) }
@@ -72,7 +73,7 @@ class Scheduling < ApplicationRecord
   def validate_units
     return if self.client_enrollment_service.blank?
 
-    schedules = Scheduling.where.not(id: self.id).where(client_enrollment_service_id: self.client_enrollment_service.id).by_status
+    schedules = Scheduling.where.not(id: self.id).where(client_enrollment_service_id: self.client_enrollment_service.id).with_rendered_or_scheduled_as_status
     completed_schedules = schedules.completed_scheduling
     scheduled_schedules = schedules.scheduled_scheduling
     used_units = completed_schedules.with_units.pluck(:units).sum

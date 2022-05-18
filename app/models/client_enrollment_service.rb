@@ -65,9 +65,9 @@ class ClientEnrollmentService < ApplicationRecord
   end
 
   def validate_count_of_units
-    scheduled_units = self.schedulings&.by_status&.with_units&.pluck(:units)&.sum
-    if scheduled_units>0 && self.units < scheduled_units
-      errors.add(:units, "Units entered in client_enrollment service are less than #{scheduled_units} units used in schedulings.")
+    used_and_scheduled_units = self.schedulings&.with_rendered_or_scheduled_as_status&.with_units&.pluck(:units)&.sum
+    if used_and_scheduled_units>0 && self.units < used_and_scheduled_units
+      errors.add(:units, "Units entered in client_enrollment service are less than #{used_and_scheduled_units} units used in schedulings.")
     end
   end
 

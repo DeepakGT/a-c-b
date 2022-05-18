@@ -124,7 +124,7 @@ json.data do
   json.client_enrollment_services do
     json.array! @client_enrollment_services do |client_enrollment_service|
       schedules = Scheduling.by_client_and_service(client_enrollment_service.client_enrollment.client_id, client_enrollment_service.service_id)
-      schedules = schedules.by_status
+      schedules = schedules.with_rendered_or_scheduled_as_status
       completed_schedules = schedules.completed_scheduling
       scheduled_schedules = schedules.scheduled_scheduling
       used_units = completed_schedules.with_units.pluck(:units).sum

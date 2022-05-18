@@ -6,7 +6,7 @@ json.data do
     json.array! @authorizations_expire_in_5_days do |client_enrollment_service|
       client = client_enrollment_service.client_enrollment&.client
       schedules = Scheduling.by_client_and_service(client_enrollment_service.client_enrollment.client_id, client_enrollment_service.service_id)
-      schedules = schedules.by_status
+      schedules = schedules.with_rendered_or_scheduled_as_status
       completed_schedules = schedules.completed_scheduling
       scheduled_schedules = schedules.scheduled_scheduling
       used_units = completed_schedules.with_units.pluck(:units).sum
@@ -53,7 +53,7 @@ json.data do
     json.array! @authorizations_renewal_in_5_to_20_days do |client_enrollment_service|
       client = client_enrollment_service.client_enrollment&.client
       schedules = Scheduling.by_client_and_service(client_enrollment_service.client_enrollment.client_id, client_enrollment_service.service_id)
-      schedules = schedules.by_status
+      schedules = schedules.with_rendered_or_scheduled_as_status
       completed_schedules = schedules.completed_scheduling
       scheduled_schedules = schedules.scheduled_scheduling
       used_units = completed_schedules.with_units.pluck(:units).sum
@@ -100,7 +100,7 @@ json.data do
     json.array! @authorizations_renewal_in_21_to_60_days do |client_enrollment_service|
       client = client_enrollment_service.client_enrollment&.client
       schedules = Scheduling.by_client_and_service(client_enrollment_service.client_enrollment.client_id, client_enrollment_service.service_id)
-      schedules = schedules.by_status
+      schedules = schedules.with_rendered_or_scheduled_as_status
       completed_schedules = schedules.completed_scheduling
       scheduled_schedules = schedules.scheduled_scheduling
       used_units = completed_schedules.with_units.pluck(:units).sum

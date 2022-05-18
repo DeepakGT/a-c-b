@@ -34,7 +34,7 @@ module Snowflake
                         client_enrollment_service = client_enrollment_services.first
                       else
                         client_enrollment_services.each do |authorization|
-                          schedules = authorization.schedulings&.by_status
+                          schedules = authorization.schedulings&.with_rendered_or_scheduled_as_statusstatus
                           completed_schedules = schedules&.completed_scheduling
                           scheduled_schedules = schedules&.scheduled_scheduling
                           used_units = completed_schedules&.with_units&.pluck(:units)&.sum
@@ -123,7 +123,7 @@ module Snowflake
                       client_enrollment_service = client_enrollment_services.first
                     else
                       client_enrollment_services.each do |authorization|
-                        schedules = authorization.schedulings&.by_status
+                        schedules = authorization.schedulings&.with_rendered_or_scheduled_as_status
                         completed_schedules = schedules&.completed_scheduling
                         scheduled_schedules = schedules&.scheduled_scheduling
                         used_units = completed_schedules&.with_units&.pluck(:units)&.sum
