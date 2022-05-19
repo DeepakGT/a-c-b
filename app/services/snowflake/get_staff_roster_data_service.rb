@@ -2,18 +2,18 @@ if ENV['CLOUD_PLATFORM']!='heroku'
   require 'odbc'
   require 'sequel'
   module Snowflake
-  module GetStaffRosterDataService
+    module GetStaffRosterDataService
       class << self
-      def call(db)
+        def call(db)
           staff_rosters = get_staff_roster_data(db)
-      end
+        end
 
-      private
+        private
 
-      def get_staff_roster_data(db)
+        def get_staff_roster_data(db)
           staff_rosters = db.fetch("SELECT * FROM PUBLIC.STAFF_ROSTER;").entries
+        end
       end
-      end
-  end
+    end
   end
 end
