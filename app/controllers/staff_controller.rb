@@ -120,7 +120,6 @@ class StaffController < ApplicationController
                   .or(staff.by_organization(query))
                   .or(staff.by_role(query))
                   .or(staff.by_supervisor_full_name(fname,lname))
-                  .or(staff.by_location(query))
     else
       staff = staff.by_first_name(fname)
                    .or(staff.by_last_name(fname))
@@ -128,7 +127,6 @@ class StaffController < ApplicationController
                    .or(staff.by_role(query))
                    .or(staff.by_supervisor_first_name(fname))
                    .or(staff.by_supervisor_last_name(fname))
-                   .or(staff.by_location(query))
     end
     staff
   end
