@@ -72,14 +72,14 @@ json.data do
   if @client_enrollment_services.present?
     json.client_enrollment_services do
       json.array! @client_enrollment_services do |client_enrollment_service|
-        # schedules = Scheduling.by_client_and_service(@client_id, client_enrollment_service.service_id)
-        # schedules = schedules.with_rendered_or_scheduled_as_status
-        # completed_schedules = schedules.completed_scheduling
-        # scheduled_schedules = schedules.scheduled_scheduling
-        # used_units = completed_schedules.with_units.pluck(:units).sum
-        # scheduled_units = scheduled_schedules.with_units.pluck(:units).sum
-        # used_minutes = completed_schedules.with_minutes.pluck(:minutes).sum
-        # scheduled_minutes = scheduled_schedules.with_minutes.pluck(:minutes).sum
+        schedules = Scheduling.by_client_and_service(@client_id, client_enrollment_service.service_id)
+        schedules = schedules.with_rendered_or_scheduled_as_status
+        completed_schedules = schedules.completed_scheduling
+        scheduled_schedules = schedules.scheduled_scheduling
+        used_units = completed_schedules.with_units.pluck(:units).sum
+        scheduled_units = scheduled_schedules.with_units.pluck(:units).sum
+        used_minutes = completed_schedules.with_minutes.pluck(:minutes).sum
+        scheduled_minutes = scheduled_schedules.with_minutes.pluck(:minutes).sum
         json.id client_enrollment_service.id
         json.service_id client_enrollment_service.service_id
         json.service_name client_enrollment_service.service&.name
@@ -93,43 +93,43 @@ json.data do
           json.about_to_expire true
         end
         json.units client_enrollment_service.units
-        json.used_units client_enrollment_service.used_units
-        json.scheduled_units client_enrollment_service.scheduled_units
-        json.left_units client_enrollment_service.left_units
-        if (used_units + scheduled_units)>=(0.9 * client_enrollment_service.units)
-          json.is_exhausted true
-        else
-          json.is_exhausted false
-        end
-        # if client_enrollment_service.units.present?
-        #   json.left_units client_enrollment_service.units - (used_units + scheduled_units) 
-        #   if (used_units + scheduled_units)>=(0.9 * client_enrollment_service.units)
-        #     json.is_exhausted true
-        #   else
-        #     json.is_exhausted false
-        #   end
+        json.used_units used_units
+        json.scheduled_units scheduled_units
+        # json.left_units client_enrollment_service.left_units
+        # if (used_units + scheduled_units)>=(0.9 * client_enrollment_service.units)
+        #   json.is_exhausted true
         # else
-        #   json.left_units 0
+        #   json.is_exhausted false
         # end
+        if client_enrollment_service.units.present?
+          json.left_units client_enrollment_service.units - (used_units + scheduled_units) 
+          if (used_units + scheduled_units)>=(0.9 * client_enrollment_service.units)
+            json.is_exhausted true
+          else
+            json.is_exhausted false
+          end
+        else
+          json.left_units 0
+        end
         json.minutes client_enrollment_service.minutes
-        json.used_minutes client_enrollment_service.used_minutes
-        json.scheduled_minutes client_enrollment_service.scheduled_minutes
-        json.left_minutes client_enrollment_service.left_minutes
-        if (used_minutes + scheduled_minutes)>=(0.9 * client_enrollment_service.minutes)
-          json.is_exhausted true
-        else
-          json.is_exhausted false
-        end
-        # if client_enrollment_service.minutes.present?
-        #   json.left_minutes client_enrollment_service.minutes - (used_minutes + scheduled_minutes)
-        #   if (used_minutes + scheduled_minutes)>=(0.9 * client_enrollment_service.minutes)
-        #     json.is_exhausted true
-        #   else
-        #     json.is_exhausted false
-        #   end
+        json.used_minutes used_minutes
+        json.scheduled_minutes scheduled_minutes
+        # json.left_minutes client_enrollment_service.left_minutes
+        # if (used_minutes + scheduled_minutes)>=(0.9 * client_enrollment_service.minutes)
+        #   json.is_exhausted true
         # else
-        #   json.left_minutes 0
+        #   json.is_exhausted false
         # end
+        if client_enrollment_service.minutes.present?
+          json.left_minutes client_enrollment_service.minutes - (used_minutes + scheduled_minutes)
+          if (used_minutes + scheduled_minutes)>=(0.9 * client_enrollment_service.minutes)
+            json.is_exhausted true
+          else
+            json.is_exhausted false
+          end
+        else
+          json.left_minutes 0
+        end
         json.service_number client_enrollment_service.service_number
         json.service_providers do
           json.ids client_enrollment_service.service_providers.pluck(:staff_id)
