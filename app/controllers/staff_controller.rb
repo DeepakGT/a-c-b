@@ -8,6 +8,7 @@ class StaffController < ApplicationController
     staff = Staff.all
     staff = do_filter(staff) if params[:search_value].present?
     staff = filter_by_location(staff) if params[:default_location_id].present?
+    # debugger
     @staff = staff.uniq.sort_by(&:first_name).paginate(page: params[:page])
   end
 
@@ -79,8 +80,15 @@ class StaffController < ApplicationController
       case params[:search_by]
       when "name"
         fname, lname = params[:search_value].split(' ')
-        staff = staff.by_first_name(fname) if fname.present?
-        staff = staff.by_last_name(lname) if lname.present?
+        if fname.present? && lname.blank?
+          staff = staff.by_first_name(fname).or(staff.by_last_name(fname))
+        elsif fname.present? && lname.present?
+          staff = staff.by_first_name(fname)
+          staff = staff.by_last_name(lname)
+        else
+          staff = staff.by_first_name(fname) if fname.present?
+          staff = staff.by_last_name(lname) if lname.present?
+        end
         return staff
       when "organization"
         staff.joins(clinics: :organization).by_organization(params[:search_value])
@@ -88,7 +96,11 @@ class StaffController < ApplicationController
         staff.joins(:role).by_role(params[:search_value])
       when "immediate_supervisor"
         fname, lname = params[:search_value].split
-        staff.by_supervisor_name(fname, lname)
+        if lname.present?
+          staff.by_supervisor_full_name(fname, lname)
+        else
+          staff.by_supervisor_first_name(fname).or(staff.by_supervisor_last_name(fname))
+        end
       when "location"
         staff.joins(:address).by_location(params[:search_value])
       else
@@ -103,11 +115,22 @@ class StaffController < ApplicationController
     staff = Staff.left_joins(:role, :address, clinics: :organization).all
     # formated_val = query.split.map{|x| "%#{x}%"}
     fname, lname = query.split
-    staff = staff.by_first_name(fname).by_last_name(lname)
-                 .or(staff.by_organization(query))
-                 .or(staff.by_role(query))
-                 .or(staff.by_supervisor_name(fname,lname))
-                 .or(staff.by_location(query))
+    if lname.present?
+      staff = staff.by_first_name(fname).by_last_name(lname)
+                  .or(staff.by_organization(query))
+                  .or(staff.by_role(query))
+                  .or(staff.by_supervisor_full_name(fname,lname))
+                  .or(staff.by_location(query))
+    else
+      staff = staff.by_first_name(fname)
+                   .or(staff.by_last_name(fname))
+                   .or(staff.by_organization(query))
+                   .or(staff.by_role(query))
+                   .or(staff.by_supervisor_first_name(fname))
+                   .or(staff.by_supervisor_last_name(fname))
+                   .or(staff.by_location(query))
+    end
+    staff
   end
 
   def authorize_user
