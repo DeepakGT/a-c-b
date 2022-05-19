@@ -16,16 +16,20 @@ module RenderAppointments
           schedule.unrendered_reason = schedule.unrendered_reason | ['bcba_signature_absent']
           schedule.save(validate: false)
         end
-        if soap_note.clinical_director_signature.to_bool.false? 
-          schedule.unrendered_reason = schedule.unrendered_reason | ['clinical_director_signature_absent']
-          schedule.save(validate: false)
-        end
+        # if soap_note.clinical_director_signature.to_bool.false? 
+        #   schedule.unrendered_reason = schedule.unrendered_reason | ['clinical_director_signature_absent']
+        #   schedule.save(validate: false)
+        # end
         if soap_note.rbt_signature.to_bool.false?  && schedule.staff.role_name=='rbt'
           schedule.unrendered_reason = schedule.unrendered_reason | ['rbt_signature_absent']
           schedule.save(validate: false)
         end
         if !soap_note.signature_file.attached? && soap_note.caregiver_signature!=true
           schedule.unrendered_reason = schedule.unrendered_reason | ['caregiver_signature_absent']
+          schedule.save(validate: false)
+        end
+        if schedule.unrendered_reason.include?('clinical_director_signature_absent')
+          schedule.unrendered_reason.delete('clinical_director_signature_absent')
           schedule.save(validate: false)
         end
         if schedule.unrendered_reason.blank?

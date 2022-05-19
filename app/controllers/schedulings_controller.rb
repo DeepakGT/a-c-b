@@ -65,7 +65,7 @@ class SchedulingsController < ApplicationController
   end
 
   def do_filter
-    if params[:staff_ids].present? || params[:client_ids].present? || params[:service_ids].present? || current_user.role_name=='rbt' || current_user.role_name=='bcba' || (params[:startDate].present? && params[:endDate].present?) || params[:default_location_id].present?
+    if params[:staff_ids].present? || params[:client_ids].present? || params[:service_ids].present? || current_user.role_name=='rbt' || current_user.role_name=='bcba' || params[:default_location_id].present?
       schedules = Scheduling.includes(staff: :staff_clinics, client_enrollment_service: [:service, {client_enrollment: :client}])
     else
       schedules = Scheduling.all

@@ -129,6 +129,40 @@ module Snowflake
                 end
               end
             end
+
+            staff.phone_numbers.destroy_all
+            phone_number_array = []
+            phone_number_array.push(staff_roster['phone1']) if staff_roster['phone1'].present?
+            phone_number_array.push(staff_roster['phone2']) if staff_roster['phone2'].present?
+            phone_number_array.push(staff_roster['phone3']) if staff_roster['phone3'].present?
+            phone_number_array.push(staff_roster['phone4']) if staff_roster['phone4'].present?
+            if phone_number_array.present?
+              phone_number_array.each do |phone_number|
+                phone_type_number = phone_number.split(' ')
+                staff_phone_number = staff.phone_numbers.new 
+                case phone_type_number.first
+                when 'Mobile'
+                  staff_phone_number.phone_type = 'mobile'
+                  staff_phone_number.number = phone_type_number.count<=2 ? phone_type_number.last : "#{phone_type_number[1]}#{phone_type_number[2]}"
+                when 'Home'
+                  staff_phone_number.phone_type = 'home'
+                  staff_phone_number.number = phone_type_number.count<=2 ? phone_type_number.last : "#{phone_type_number[1]}#{phone_type_number[2]}"
+                when 'Work'
+                  staff_phone_number.phone_type = 'work'
+                  staff_phone_number.number = phone_type_number.count<=2 ? phone_type_number.last : "#{phone_type_number[1]}#{phone_type_number[2]}"
+                else
+                  staff_phone_number.phone_type = 'other'
+                  staff_phone_number.number = phone_number
+                end
+                staff_phone_number.save(validate: false)
+                if staff_phone_number.id==nil
+                  Loggers::SnowflakeStaffLoggerService.call(staff_rosters.find_index(staff_roster), 'Staff phone number cannot be saved.')
+                else
+                  Loggers::SnowflakeStaffLoggerService.call(staff_rosters.find_index(staff_roster), 'Staff phone number is saved.')
+                end
+              end
+            end
+
           end
         end
         Loggers::SnowflakeStaffLoggerService.call(Staff.all.count, "Seeded #{Staff.count} staff.")
