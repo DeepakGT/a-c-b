@@ -16,7 +16,7 @@ module CsvImport
         count = 0
         i=0
 
-        CSV.foreach(Rails.root.join('lib/appointment_admin.csv'), headers: true, header_converters: :symbol) do |student_service|
+        CSV.foreach(Rails.root.join('lib/appointment_admin.csv'), headers: true, header_converters: :symbol) do |appointment|
           i=i+1
           client_name = appointment[:clientname]&.split(',')&.each(&:strip!)
           client = Client.find_by(dob: appointment[:clientdob]&.to_time&.strftime('%Y-%m-%d'), first_name: client_name&.last, last_name: client_name&.first)
@@ -40,6 +40,9 @@ module CsvImport
                 funding_source_id = get_funding_source(appointment[:fundingsource], client)
                 if funding_source_id.present?
                   service = Service.where('lower(name) = ?', appointment[:servicename]&.downcase).first
+                  if student_service[:servicename]=='Supervision'
+                    service = Service.find(17)
+                  end
                   if service.present?
                     client_enrollment_services = ClientEnrollmentService.by_client(client.id).by_funding_source(funding_source_id).by_service(service.id).by_date(appointment[:apptdate]&.to_time&.strftime('%Y-%m-%d'))
                     if client_enrollment_services.present?
@@ -129,6 +132,9 @@ module CsvImport
               else
                 #self_pay
                 service = Service.where('lower(name) = ?', appointment[:servicename]&.downcase).first
+                if student_service[:servicename]=='Supervision'
+                  service = Service.find(17)
+                end
                 if service.present?
                   client_enrollment_services = ClientEnrollmentService.by_client(client.id).where('client_enrollments.source_of_payment = ?', 'self_pay').by_service(service.id).by_date(appointment[:apptdate]&.to_time&.strftime('%Y-%m-%d'))
                   if client_enrollment_services.present?
