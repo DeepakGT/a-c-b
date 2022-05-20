@@ -8,9 +8,11 @@ module Snowflake
       private
 
       def location_specific_seed_scheduling_data(username, password, clinic_id)
+        clinic = Clinic.find(clinic_id)
         db = Snowflake::SetDatabaseAndWarehouseService.call(username, password)
         appointments = Snowflake::GetAppointmentAdminDataService.call(db)
         initial_count = Scheduling.count
+        Loggers::SnowflakeSchedulingLoggerService.call(appointments.count, "Seeding #{clinic.name} appointment data.")
         Loggers::SnowflakeSchedulingLoggerService.call(appointments.count, "Got #{appointments.count} from snowflake.")
         count = 0
 

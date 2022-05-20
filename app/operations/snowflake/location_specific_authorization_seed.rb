@@ -8,9 +8,11 @@ module Snowflake
       private
 
       def location_specific_seed_client_enrollment_service_data(username, password, clinic_id)
+        clinic = Clinic.find(clinic_id)
         db = Snowflake::SetDatabaseAndWarehouseService.call(username, password)
         student_services = Snowflake::GetStudentServiceDataService.call(db)
         initial_count = ClientEnrollmentService.count
+        Loggers::SnowflakeClientEnrollmentServiceLoggerService.call(student_services.count, "Seeding #{clinic.name} authorization data.")
         Loggers::SnowflakeClientEnrollmentServiceLoggerService.call(student_services.count, "Got #{student_services.count} from snowflake.")
         count = 0
 
