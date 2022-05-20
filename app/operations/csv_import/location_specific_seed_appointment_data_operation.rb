@@ -20,18 +20,20 @@ module CsvImport
           i=i+1
           client_name = appointment[:clientname]&.split(',')&.each(&:strip!)
           client = Client.find_by(dob: appointment[:clientdob]&.to_time&.strftime('%Y-%m-%d'), first_name: client_name&.last, last_name: client_name&.first)
-          if client.blank?
-            if appointment[:clientname]=='Syed Abraham Hasan' || appointment[:clientname]=='Syed Adam Hasan' || appointment[:clientname]=='Ana Clara El-Gamel'
-              client_name[2] = "#{client_name[1]} #{client_name[2]}"
-              # client_name[1] = "#{client_name[2]}"
-            elsif client_name.count==3
-              client_name[0] = "#{client_name[0]} #{client_name[1]}"
-            elsif client_name.count==4
-              client_name[0] = "#{client_name[0]} #{client_name[1]} #{client_name[2]}"
-            elsif client_name.count==5
-              client_name[0] = "#{client_name[0]} #{client_name[1]} #{client_name[2]} #{client_name[3]}"
+          if client_name.present?
+            if client.blank?
+              if appointment[:clientname]=='Syed Abraham Hasan' || appointment[:clientname]=='Syed Adam Hasan' || appointment[:clientname]=='Ana Clara El-Gamel'
+                client_name[2] = "#{client_name[1]} #{client_name[2]}"
+                # client_name[1] = "#{client_name[2]}"
+              elsif client_name.count==3
+                client_name[0] = "#{client_name[0]} #{client_name[1]}"
+              elsif client_name.count==4
+                client_name[0] = "#{client_name[0]} #{client_name[1]} #{client_name[2]}"
+              elsif client_name.count==5
+                client_name[0] = "#{client_name[0]} #{client_name[1]} #{client_name[2]} #{client_name[3]}"
+              end
+              client = Client.find_by(dob: appointment[:clientdob]&.to_time&.strftime('%Y-%m-%d'), first_name: client_name&.last, last_name: client_name&.first)
             end
-            client = Client.find_by(dob: appointment[:clientdob]&.to_time&.strftime('%Y-%m-%d'), first_name: client_name&.last, last_name: client_name&.first)
           end
           if client.present?
             if client.clinic_id==clinic_id

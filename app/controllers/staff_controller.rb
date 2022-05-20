@@ -137,7 +137,7 @@ class StaffController < ApplicationController
 
   def filter_by_location(staff)
     location_id = params[:default_location_id]
-    staff = staff.by_clinic(location_id)
+    staff = staff.by_home_clinic(location_id)
   end
   # end of private
 end

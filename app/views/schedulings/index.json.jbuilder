@@ -82,3 +82,8 @@ json.data do
     # end
   end
 end
+if params[:page].present?
+  json.total_records @schedules.total_entries
+  json.limit @schedules.per_page
+  json.page params[:page]
+end

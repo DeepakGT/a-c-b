@@ -20,6 +20,7 @@ class Staff < User
   scope :by_supervisor_first_name, ->(fname){ where(supervisor_id: User.by_first_name(fname).ids) }
   scope :by_supervisor_last_name, ->(fname){ where(supervisor_id: User.by_last_name(fname).ids) }
   scope :by_clinic, ->(clinic_id){ joins(:staff_clinics).where('staff_clinics.clinic_id = ?', clinic_id) }
+  scope :by_home_clinic, ->(clinic_id){ joins(:staff_clinics).where('staff_clinics.clinic_id = ? AND is_home_clinic = ?', clinic_id, true) }
   scope :by_roles, ->(role_names){ joins(:role).where('role.name': role_names) }
   scope :by_service_qualifications, ->(service_qualification_ids){ joins(:staff_qualifications).where('staff_qualifications.credential_id': service_qualification_ids) }
 
