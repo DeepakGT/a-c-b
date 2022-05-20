@@ -42,7 +42,7 @@ module CsvImport
                 funding_source_id = get_funding_source(appointment[:fundingsource], client)
                 if funding_source_id.present?
                   service = Service.where('lower(name) = ?', appointment[:servicename]&.downcase).first
-                  if student_service[:servicename]=='Supervision'
+                  if appointment[:servicename]=='Supervision'
                     service = Service.find(17)
                   end
                   if service.present?
@@ -134,7 +134,7 @@ module CsvImport
               else
                 #self_pay
                 service = Service.where('lower(name) = ?', appointment[:servicename]&.downcase).first
-                if student_service[:servicename]=='Supervision'
+                if appointment[:servicename]=='Supervision'
                   service = Service.find(17)
                 end
                 if service.present?
