@@ -50,6 +50,9 @@ json.data do
     end
   end
 end
+if params[:show_inactive] == 1 || params[:show_inactive] == "1"
+  json.show_inactive params[:show_inactive]
+end
 json.total_records @clients.total_entries
 json.limit @clients.per_page
 json.page params[:page] || 1

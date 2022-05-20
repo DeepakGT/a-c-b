@@ -30,6 +30,7 @@ class Client < ApplicationRecord
   scope :by_staff_id_in_scheduling, ->(staff_id){ joins(client_enrollments: {client_enrollment_services: :schedulings}).where('schedulings.staff_id = ?', staff_id) }
   scope :with_no_authorizations, ->{ left_outer_joins(client_enrollments: :client_enrollment_services).select('clients.*').group('clients.id').having('count(client_enrollment_services.*) = ?',0) }
   scope :active, ->{ where(status: 'active') }
+  scope :inactive, ->{ where(status: 'inactive') }
 
   def save_with_exception_handler
     self.save

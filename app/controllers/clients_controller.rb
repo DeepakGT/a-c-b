@@ -7,6 +7,7 @@ class ClientsController < ApplicationController
   def index
     clients = filter_by_logged_in_user
     clients = filter_by_location(clients) if params[:default_location_id].present?
+    clients = filter_by_status(clients)
     @clients = clients.uniq.sort_by(&:first_name).paginate(page: params[:page])
   end
 
@@ -55,6 +56,15 @@ class ClientsController < ApplicationController
       clients = Client.by_staff_id_in_scheduling(current_user.id).or(Client.by_bcbas(current_user.id))
     else
       clients = Client.all
+    end
+    clients
+  end
+  
+  def filter_by_status(clients)
+    if params[:show_inactive]=="1" || params[:show_inactive]==1
+      clients = clients.inactive
+    else
+      clients = clients.active
     end
     clients
   end
