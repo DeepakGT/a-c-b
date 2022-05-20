@@ -24,6 +24,7 @@ class Staff < User
   scope :by_roles, ->(role_names){ joins(:role).where('role.name': role_names) }
   scope :by_service_qualifications, ->(service_qualification_ids){ joins(:staff_qualifications).where('staff_qualifications.credential_id': service_qualification_ids) }
   scope :active, ->{ where(status: 'active') }
+  scope :inactive, ->{ where(status: 'inactive') }
 
   def self.by_location(query) 
     staff = self

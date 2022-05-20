@@ -76,6 +76,11 @@ class StaffController < ApplicationController
   end
 
   def do_filter(staff)
+    if params[:show_inactive]=="1" || params[:show_inactive]==1
+      staff = staff.inactive
+    else
+      staff = staff.active
+    end
     if params[:search_by].present?
       case params[:search_by]
       when "name"
