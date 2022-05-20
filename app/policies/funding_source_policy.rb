@@ -1,6 +1,6 @@
 class FundingSourcePolicy < ApplicationPolicy
   def index?
-    show? || update? || destroy?
+    show? || update? || destroy? || user.role_name=='Admissions'
   end
 
   def show?

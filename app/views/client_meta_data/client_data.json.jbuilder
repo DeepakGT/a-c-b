@@ -96,7 +96,7 @@ json.data do
         json.used_units client_enrollment_service.used_units
         json.scheduled_units client_enrollment_service.scheduled_units
         json.left_units client_enrollment_service.left_units
-        if (used_units + scheduled_units)>=(0.9 * client_enrollment_service.units)
+        if (client_enrollment_service.used_units + client_enrollment_service.scheduled_units)>=(0.9 * client_enrollment_service.units)
           json.is_exhausted true
         else
           json.is_exhausted false
@@ -115,7 +115,7 @@ json.data do
         json.used_minutes client_enrollment_service.used_minutes
         json.scheduled_minutes client_enrollment_service.scheduled_minutes
         json.left_minutes client_enrollment_service.left_minutes
-        if (used_minutes + scheduled_minutes)>=(0.9 * client_enrollment_service.minutes)
+        if (client_enrollment_service.used_minutes + client_enrollment_service.scheduled_minutes)>=(0.9 * client_enrollment_service.minutes)
           json.is_exhausted true
         else
           json.is_exhausted false
