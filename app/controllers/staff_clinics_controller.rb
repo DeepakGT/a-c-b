@@ -11,12 +11,15 @@ class StaffClinicsController < ApplicationController
   def show; end
   
   def create
-    @staff_clinic = @staff.staff_clinics.create(staff_clinic_params)
+    @staff_clinic = @staff.staff_clinics.new(staff_clinic_params)
+    remove_home_clinic if params[:is_home_clinic].to_bool.true?
+    @staff_clinic.save
   end
 
   def update
     StaffClinic.transaction do
       remove_services # if params[:staff_clinic_services_attributes].present?
+      remove_home_clinic if params[:is_home_clinic].to_bool.true?
       @staff_clinic.update(staff_clinic_params)
     end
   end
@@ -45,6 +48,13 @@ class StaffClinicsController < ApplicationController
 
   def remove_services
     @staff_clinic.staff_clinic_services.destroy_all
+  end
+
+  def remove_home_clinic
+    home_clinics = @staff.staff_clinics.where(is_home_clinic: true)
+    if home_clinics.present?
+      home_clinics.update_all(is_home_clinic: false)
+    end
   end
   # end of private
 end
