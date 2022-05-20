@@ -6,6 +6,7 @@ class StaffController < ApplicationController
 
   def index
     staff = Staff.all
+    staff = filter_by_status(staff)
     staff = do_filter(staff) if params[:search_value].present?
     staff = filter_by_location(staff) if params[:default_location_id].present?
     # debugger
@@ -76,11 +77,6 @@ class StaffController < ApplicationController
   end
 
   def do_filter(staff)
-    if params[:show_inactive]=="1" || params[:show_inactive]==1
-      staff = staff.inactive
-    else
-      staff = staff.active
-    end
     if params[:search_by].present?
       case params[:search_by]
       when "name"
@@ -143,6 +139,14 @@ class StaffController < ApplicationController
   def filter_by_location(staff)
     location_id = params[:default_location_id]
     staff = staff.by_home_clinic(location_id)
+  end
+
+  def filter_by_status(staff)
+    if params[:show_inactive]=="1" || params[:show_inactive]==1
+      staff = staff.inactive
+    else
+      staff = staff.active
+    end
   end
   # end of private
 end
