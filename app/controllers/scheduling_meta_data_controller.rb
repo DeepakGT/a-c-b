@@ -78,12 +78,12 @@ class SchedulingMetaDataController < ApplicationController
   def get_selectable_options_data
     if params[:location_id].present?
       clinic = Clinic.find(params[:location_id])
-      client = clinic.clients
-      staff = clinic.staff.by_roles(['bcba', 'rbt']) if !(params[:cross_site_allowed].to_bool.true?)
-      staff = Staff.by_roles(['bcba', 'rbt']) if params[:cross_site_allowed].to_bool.true?
+      client = clinic.clients.active
+      staff = clinic.staff.by_roles(['bcba', 'rbt']).active if !(params[:cross_site_allowed].to_bool.true?)
+      staff = Staff.by_roles(['bcba', 'rbt']).active if params[:cross_site_allowed].to_bool.true?
     else
-      client = Client.all
-      staff = Staff.by_roles(['bcba', 'rbt'])
+      client = Client.active
+      staff = Staff.by_roles(['bcba', 'rbt']).active
     end
     selectable_options = { clients: client.order(:first_name),
                            staff: staff.order(:first_name),

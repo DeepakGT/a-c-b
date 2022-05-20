@@ -91,13 +91,14 @@ class SchedulingsController < ApplicationController
     #   end
     # end
     if current_user.role_name=='rbt' || current_user.role_name=='bcba'
-      clinic_ids = current_user.staff_clinics&.pluck(:clinic_id)
-      schedules = schedules.by_client_clinic(clinic_ids)
+      # clinic_ids = current_user.staff_clinics&.pluck(:clinic_id)
+      # schedules = schedules.by_client_clinic(clinic_ids)
+      schedules = schedules.by_staff_ids(current_user.id)
     end
     if params[:startDate].present? && params[:endDate].present?
       schedules = schedules.on_date(params[:startDate]..params[:endDate])
     end
-    if params[:default_location_id].present?
+    if params[:default_location_id].present? && current_user.role_name!='rbt' && current_user.role_name!='bcba'
       location_id = params[:default_location_id]
       schedules = schedules.by_client_clinic(location_id).or(schedules.by_staff_clinic(location_id))
     end
