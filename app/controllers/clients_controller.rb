@@ -5,9 +5,10 @@ class ClientsController < ApplicationController
   before_action :set_client, only: %i[show update destroy]
 
   def index
-    clients = filter_by_logged_in_user
-    clients = filter_by_location(clients) if params[:default_location_id].present?
+    clients = do_filter if params[:search_value].present?
+    clients = filter_by_logged_in_user(clients)
     clients = filter_by_status(clients)
+    clients = filter_by_location(clients)
     @clients = clients.uniq.sort_by(&:first_name).paginate(page: params[:page])
   end
 
@@ -44,18 +45,18 @@ class ClientsController < ApplicationController
   end
 
   def filter_by_location(clients)
-    location_id = params[:default_location_id]
-    clients = clients.by_clinic(location_id)
+    if params[:default_location_id].present? && params[:search_cross_location]!=1 && params[:search_cross_location]!="1" 
+      location_id = params[:default_location_id]
+      clients = clients.by_clinic(location_id)
+    end
     clients
   end
 
-  def filter_by_logged_in_user
+  def filter_by_logged_in_user(clients)
     if current_user.role_name=='rbt'
-      clients = Client.by_staff_id_in_scheduling(current_user.id)
+      clients = clients.by_staff_id_in_scheduling(current_user.id)
     elsif current_user.role_name=='bcba'
-      clients = Client.by_staff_id_in_scheduling(current_user.id).or(Client.by_bcbas(current_user.id))
-    else
-      clients = Client.all
+      clients = clients.by_staff_id_in_scheduling(current_user.id).or(Client.by_bcbas(current_user.id))
     end
     clients
   end
@@ -67,6 +68,63 @@ class ClientsController < ApplicationController
       clients = clients.active
     end
     clients
+  end
+
+  def do_filter
+    if params[:search_by].present?
+      clients = Client.all
+      case params[:search_by]
+      when "name"
+        fname, lname = params[:search_value].split(' ')
+        if fname.present? && lname.blank?
+          clients = clients.by_first_name(fname).or(clients.by_last_name(fname))
+        elsif fname.present? && lname.present?
+          clients = clients.by_first_name(fname)
+          clients = clients.by_last_name(lname)
+        else
+          clients = clients.by_first_name(fname) if fname.present?
+          clients = clients.by_last_name(lname) if lname.present?
+        end
+        return clients
+      when "gender"
+        clients.by_gender(params[:search_value]&.downcase)
+      when "payor_status"
+        clients.by_payor_status(params[:search_value]&.downcase)
+      when "bcba"
+        fname, lname = params[:search_value].split
+        if lname.present?
+          clients.by_bcba_full_name(fname, lname)
+        else
+          clients.by_bcba_first_name(fname).or(clients.by_bcba_last_name(fname))
+        end
+      when "payor"
+        clients.by_payor(params[:search_value])
+      else
+        clients
+      end
+    else
+      search_on_all_fields(params[:search_value])
+    end
+
+    def search_on_all_fields(query)
+      fname, lname = query.split
+      if lname.present?
+        clients = Client.by_payor(query)
+                        .or(Client.by_first_name(fname).by_last_name(lname))
+                        .or(Client.by_gender(query))
+                        .or(Client.by_payor_status(query))
+                        .or(Client.by_bcba_full_name(fname,lname))
+      else
+        clients = Client.by_payor(query)
+                        .or(Client.by_first_name(fname))
+                        .or(Client.by_last_name(fname))
+                        .or(Client.by_payor_status(query))
+                        .or(Client.by_gender(query))
+                        .or(Client.by_bcba_first_name(fname))
+                        .or(Client.by_bcba_last_name(fname))
+      end
+      clients
+    end
   end
   # end of private
 

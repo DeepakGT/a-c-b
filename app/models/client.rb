@@ -31,6 +31,13 @@ class Client < ApplicationRecord
   scope :with_no_authorizations, ->{ left_outer_joins(client_enrollments: :client_enrollment_services).select('clients.*').group('clients.id').having('count(client_enrollment_services.*) = ?',0) }
   scope :active, ->{ where(status: 'active') }
   scope :inactive, ->{ where(status: 'inactive') }
+  scope :by_first_name, ->(fname){ where("first_name ILIKE '%#{fname}%'") }
+  scope :by_last_name, ->(lname){ where("last_name ILIKE '%#{lname}%'") }
+  scope :by_bcba_full_name, ->(fname,lname){ where(bcba_id: User.by_roles(['bcba', 'Clinical Director']).by_first_name(fname).by_last_name(lname)&.ids) }
+  scope :by_bcba_first_name, ->(fname){ where(bcba_id: User.by_roles(['bcba', 'Clinical Director']).by_first_name(fname)&.ids) }
+  scope :by_gender, ->(gender_value){ where(gender: gender_value) }
+  scope :by_payor_status, ->(payor_status_value){ where("payor_status ILIKE '%#{payor_status_value}%'") }
+  scope :by_payor, ->(payor_name){ joins(client_enrollments: :funding_source).where("funding_sources.name ILIKE '%#{payor_name}%'") }
 
   def save_with_exception_handler
     self.save

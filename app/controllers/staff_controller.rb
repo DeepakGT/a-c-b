@@ -6,10 +6,9 @@ class StaffController < ApplicationController
 
   def index
     staff = Staff.all
-    staff = filter_by_status(staff)
     staff = do_filter(staff) if params[:search_value].present?
-    staff = filter_by_location(staff) if params[:default_location_id].present?
-    # debugger
+    staff = filter_by_status(staff)
+    staff = filter_by_location(staff) 
     @staff = staff.uniq.sort_by(&:first_name).paginate(page: params[:page])
   end
 
@@ -137,8 +136,11 @@ class StaffController < ApplicationController
   end
 
   def filter_by_location(staff)
-    location_id = params[:default_location_id]
-    staff = staff.by_home_clinic(location_id)
+    if params[:default_location_id].present? && params[:search_cross_location]!=1 && params[:search_cross_location]!="1" 
+      location_id = params[:default_location_id]
+      staff = staff.by_home_clinic(location_id)
+    end
+    staff
   end
 
   def filter_by_status(staff)
