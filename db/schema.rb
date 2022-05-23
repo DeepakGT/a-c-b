@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_05_18_112508) do
+ActiveRecord::Schema.define(version: 2022_05_23_064423) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -367,6 +367,8 @@ ActiveRecord::Schema.define(version: 2022_05_18_112508) do
     t.boolean "caregiver_signature", default: false
     t.boolean "synced_with_catalyst", default: false
     t.string "catalyst_data_id"
+    t.bigint "client_id"
+    t.index ["client_id"], name: "index_soap_notes_on_client_id"
     t.index ["creator_id"], name: "index_soap_notes_on_creator_id"
     t.index ["scheduling_id"], name: "index_soap_notes_on_scheduling_id"
   end
@@ -467,6 +469,7 @@ ActiveRecord::Schema.define(version: 2022_05_18_112508) do
   add_foreign_key "schedulings", "users", column: "updator_id"
   add_foreign_key "service_qualifications", "qualifications"
   add_foreign_key "service_qualifications", "services"
+  add_foreign_key "soap_notes", "clients"
   add_foreign_key "soap_notes", "schedulings"
   add_foreign_key "soap_notes", "users", column: "creator_id"
   add_foreign_key "staff_clinic_services", "services"

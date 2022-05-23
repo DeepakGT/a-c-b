@@ -10,7 +10,7 @@ class SoapNote < ApplicationRecord
   
   validate :validate_signatures
 
-  scope :by_client, ->(client_id){ joins(scheduling: [{client_enrollment_service: :client_enrollment}]).where('client_enrollments.client_id': client_id) }
+  scope :by_client, ->(client_id){ where(client_id: client_id) }
 
   private
 

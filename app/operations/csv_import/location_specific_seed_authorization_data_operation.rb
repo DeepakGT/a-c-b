@@ -47,6 +47,7 @@ module CsvImport
                     end
                     if service.present?
                       client_enrollment_service = client_enrollment.client_enrollment_services.find_or_initialize_by(start_date: student_service[:servicefundingbegin]&.to_time&.strftime('%Y-%m-%d'), end_date: student_service[:servicefundingend]&.to_time&.strftime('%Y-%m-%d'), service_id: service.id)
+                      client_enrollment_service.service_number = student_service['authorizationnumber']
                       client_enrollment_service.minutes = (student_service[:contractedhours].to_f)*60
                       rem = client_enrollment_service.minutes % 15
                       if rem==0
@@ -84,6 +85,7 @@ module CsvImport
                   end
                   if service.present?
                     client_enrollment_service = client_enrollment.client_enrollment_services.find_or_initialize_by(start_date: student_service[:servicefundingbegin]&.to_time&.strftime('%Y-%m-%d'), end_date: student_service[:servicefundingend]&.to_time&.strftime('%Y-%m-%d'), service_id: service.id)
+                    client_enrollment_service.service_number = student_service['authorizationnumber']
                     client_enrollment_service.minutes = (student_service[:contractedhours].to_f)*60
                     rem = client_enrollment_service.minutes % 15
                     if rem==0

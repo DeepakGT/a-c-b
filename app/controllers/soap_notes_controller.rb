@@ -16,6 +16,7 @@ class SoapNotesController < ApplicationController
       set_signature
       @soap_note.user = current_user
       @soap_note.creator_id = current_user.id
+      @soap_note.client_id = @scheduling.client_enrollment_service.client_enrollment.client.id
       @soap_note.save
       RenderAppointments::RenderBySoapNoteOperation.call(@soap_note.id) if @scheduling.date<Time.current.to_date
     end
