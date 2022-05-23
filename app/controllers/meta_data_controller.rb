@@ -16,8 +16,9 @@ class MetaDataController < ApplicationController
   end
 
   def bcba_list
-    bcbas = Staff.joins(:role).by_role('bcba')
-    bcbas = bcbas.by_clinic(params[:location_id]) if params[:location_id].present?
+    # bcbas = Staff.joins(:role).by_role('bcba')
+    bcbas = Staff.joins(:role).by_roles(['bcba', 'Clinical Director'])
+    # bcbas = bcbas.by_clinic(params[:location_id]) if params[:location_id].present?
     @bcbas = bcbas.order(:first_name, :last_name)
   end
 

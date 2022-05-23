@@ -25,7 +25,19 @@ class StaffClinicsController < ApplicationController
   end
 
   def destroy
-    @staff_clinic.destroy
+    if @staff_clinic.is_home_clinic.to_bool.true?
+      other_staff_clinics = @staff_clinic.staff.staff_clinics.except_ids(@staff_clinic.id)
+      if other_staff_clinics.any?
+        staff_clinic = other_staff_clinics.first
+        staff_clinic.is_home_clinic = true
+        staff_clinic.save(validate: false)
+        @staff_clinic.destroy
+      else
+        errors.add(:is_home_clinic, 'Please add another home location first.')
+      end
+    else
+      @staff_clinic.destroy
+    end
   end
 
   private
