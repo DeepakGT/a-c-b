@@ -43,6 +43,7 @@ module CompareCatalystDataWithSystemData
               soap_note.bcba_signature = true
             end
             soap_note.scheduling_id = schedule.id
+            soap_note.client_id = schedule.client_enrollment_service.client_enrollment.client_id
             soap_note.creator_id = schedule.staff_id
             soap_note.save(validate: false)
 
@@ -61,6 +62,7 @@ module CompareCatalystDataWithSystemData
                 soap_note.bcba_signature = true
               end
               soap_note.scheduling_id = schedule.id
+              soap_note.client_id = schedule.client_enrollment_service.client_enrollment.client_id
               soap_note.creator_id = schedule.staff_id
               soap_note.save(validate: false)
 
@@ -72,6 +74,7 @@ module CompareCatalystDataWithSystemData
 
               soap_note.scheduling_id = schedule.id
               soap_note.creator_id = schedule.staff_id
+              soap_note.client_id = schedule.client_enrollment_service.client_enrollment.client_id
               soap_note.save(validate: false)
 
               response_data_hash[:system_data] = schedule.attributes
@@ -102,6 +105,7 @@ module CompareCatalystDataWithSystemData
                 soap_note.bcba_signature = true
               end
               soap_note.scheduling_id = schedule.id
+              soap_note.client_id = schedule.client_enrollment_service.client_enrollment.client_id
               soap_note.creator_id = schedule.staff_id
               soap_note.save(validate: false)
 
