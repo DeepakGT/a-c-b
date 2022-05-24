@@ -35,7 +35,8 @@ class Client < ApplicationRecord
   scope :by_last_name, ->(lname){ where("last_name ILIKE '%#{lname}%'") }
   scope :by_bcba_full_name, ->(fname,lname){ where(bcba_id: User.by_roles(['bcba', 'Clinical Director']).by_first_name(fname).by_last_name(lname)&.ids) }
   scope :by_bcba_first_name, ->(fname){ where(bcba_id: User.by_roles(['bcba', 'Clinical Director']).by_first_name(fname)&.ids) }
-  scope :by_gender, ->(gender_value){ where(gender: gender_value) }
+  scope :by_bcba_last_name, ->(fname){ where(bcba_id: User.by_roles(['bcba', 'Clinical Director']).by_last_name(fname).ids) }
+  scope :by_gender, ->(gender_value){ where(gender: Client.genders[gender_value] || -1) }
   scope :by_payor_status, ->(payor_status_value){ where("payor_status ILIKE '%#{payor_status_value}%'") }
   scope :by_payor, ->(payor_name){ joins(client_enrollments: :funding_source).where("funding_sources.name ILIKE '%#{payor_name}%'") }
 
