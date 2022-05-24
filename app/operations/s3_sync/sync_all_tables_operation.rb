@@ -4,7 +4,7 @@ module S3Sync
   module SyncAllTablesOperation
     class << self
       def call
-        return unless Rails.env.production?
+        # return unless Rails.env.production?
         sync_all_tables
       end
 
@@ -44,8 +44,10 @@ module S3Sync
 
       def sync_data_for(model)
         data = to_csv model
-        object_name = "/#{model.table_name}/#{DateTime.current.to_s(:iso8601)}.csv"
-        object_uploaded?(object_name, data) if Rails.env.production?
+        object_name = "#{DateTime.current.to_s(:iso8601)}.csv"
+        Dir.mkdir(Rails.root.join('tmp', 'csv_files', model.table_name)) unless File.exists?(Rails.root.join('tmp', 'csv_files', model.table_name))
+        File.write(Rails.root.join('tmp', 'csv_files', model.table_name, object_name), data)
+        # object_uploaded?(object_name, data) if Rails.env.production?
       end
 
       def to_csv(model)
@@ -56,6 +58,8 @@ module S3Sync
           end
         end
       end
+
+
 
       def object_uploaded?(object_key, body) 
         bucket_name = Rails.application.credentials.dig(:aws, :bi_bucket) 
