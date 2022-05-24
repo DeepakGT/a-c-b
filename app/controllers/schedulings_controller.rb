@@ -25,7 +25,7 @@ class SchedulingsController < ApplicationController
 
   def update
     @schedule.user = current_user
-    if current_user.role_name=='super_admin' || current_user.role_name=='administrator' || current_user.role_name=='executive_director'
+    if current_user.role_name=='super_admin' || current_user.role_name=='administrator' || current_user.role_name=='executive_director' || current_user.role_name=='Clinical Director'
       update_render_service if params[:status]=='Rendered'
       return if !is_renderable
       update_scheduling 
