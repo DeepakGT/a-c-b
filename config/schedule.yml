@@ -29,7 +29,3 @@ sync_staff_and_client_with_catalyst_at_10_am:
 sync_staff_and_client_with_catalyst_at_7_pm:
   cron: '0 19 * * *'
   class: "SyncStaffAndClientWithCatalystWorker"
-
-s3_sync_at_3_am:
-  cron: '0 3 * * *'
-  class: "S3SyncWorker"
