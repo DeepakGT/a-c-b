@@ -87,7 +87,8 @@ class ClientsController < ApplicationController
         end
         return clients
       when "gender"
-        clients.by_gender(params[:search_value]&.downcase)
+        gender_value = params[:search_value]&.downcase
+        clients.by_gender(gender_value)
       when "payor_status"
         clients.by_payor_status(params[:search_value]&.downcase)
       when "bcba"
@@ -109,6 +110,7 @@ class ClientsController < ApplicationController
   end
 
   def search_on_all_fields(query, clients)
+    query = query&.downcase
     fname, lname = query.split
     if lname.present?
       clients = clients.by_payor(query)
