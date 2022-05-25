@@ -83,8 +83,17 @@ module CsvImport
                         schedule.date = appointment[:apptdate]&.to_time&.strftime('%Y-%m-%d')
                         schedule.start_time = appointment[:appointmentstartdatetime]&.to_time&.strftime('%H:%M')
                         schedule.end_time = appointment[:appointmentenddatetime]&.to_time&.strftime('%H:%M')
-                        schedule.units = appointment[:actualunits].to_f
                         schedule.minutes = appointment[:durationmins].to_f
+                        rem = schedule.minutes%15
+                        if rem == 0
+                          schedule.units = schedule.minutes/15
+                        else
+                          if rem < 8
+                            schedule.units = (schedule.minutes - rem)/15
+                          else
+                            schedule.units = (schedule.minutes + 15 - rem)/15
+                          end
+                        end 
                         if appointment[:isrendered]=='Yes'
                           schedule.status = 'Rendered'
                           schedule.is_rendered = true
@@ -175,7 +184,16 @@ module CsvImport
                       schedule.date = appointment[:apptdate]&.to_time&.strftime('%Y-%m-%d')
                       schedule.start_time = appointment[:appointmentstartdatetime]&.to_time&.strftime('%H:%M')
                       schedule.end_time = appointment[:appointmentenddatetime]&.to_time&.strftime('%H:%M')
-                      schedule.units = appointment[:actualunits].to_f
+                      rem = schedule.minutes%15
+                      if rem == 0
+                        schedule.units = schedule.minutes/15
+                      else
+                        if rem < 8
+                          schedule.units = (schedule.minutes - rem)/15
+                        else
+                          schedule.units = (schedule.minutes + 15 - rem)/15
+                        end
+                      end 
                       schedule.minutes = appointment[:durationmins].to_f
                       if appointment[:isrendered]=='Yes'
                         schedule.status = 'Rendered'
