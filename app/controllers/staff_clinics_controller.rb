@@ -33,7 +33,7 @@ class StaffClinicsController < ApplicationController
         staff_clinic.save(validate: false)
         @staff_clinic.destroy
       else
-        errors.add(:is_home_clinic, 'Please add another home location first.')
+        @staff_clinic.errors.add(:is_home_clinic, 'Please add another home location first.')
       end
     else
       @staff_clinic.destroy
