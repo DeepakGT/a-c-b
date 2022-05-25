@@ -44,18 +44,19 @@ class SchedulingMetaDataController < ApplicationController
     authorize :appointment, :executive_director_appointments?
     client_ids = Clinic.find(params[:default_location_id]).clients.pluck(:id)
     schedules = Scheduling.includes(:soap_notes, :staff, client_enrollment_service: [:service, {client_enrollment: :client}])
-    schedules = schedules.by_client_ids(client_ids).by_status
-    @todays_appointments = schedules.todays_schedulings.last(10)
+    schedules = schedules.by_client_ids(client_ids)
+    @todays_appointments = schedules.by_status.todays_schedulings.last(10)
     if current_user.role_name=='executive_director' || current_user.role_name=='client_care_coordinator'
-      @past_schedules = schedules.past_60_days_schedules.exceeded_24_h_scheduling.unrendered_schedulings.order(date: :desc)
+      @past_schedules = schedules.by_status.past_60_days_schedules.exceeded_24_h_scheduling.unrendered_schedulings.order(date: :desc)
     elsif current_user.role_name=='super_admin' || current_user.role_name=='administrator'
-      @past_schedules = schedules.past_60_days_schedules.exceeded_3_days_scheduling.unrendered_schedulings.order(date: :desc)
+      @past_schedules = schedules.by_status.past_60_days_schedules.exceeded_3_days_scheduling.unrendered_schedulings.order(date: :desc)
     end
     @client_enrollment_services = ClientEnrollmentService.by_client(client_ids).and(ClientEnrollmentService.about_to_expire.or(ClientEnrollmentService.expired)).includes(:service, :staff, :service_providers, :client_enrollment, client_enrollment: [:client, :funding_source]).uniq
     change_requests = SchedulingChangeRequest.by_approval_status
     @change_requests = change_requests.by_client_ids(client_ids)
     catalyst_patient_ids = Client.where(id: client_ids).pluck(:catalyst_patient_id).compact!
     @catalyst_data = CatalystData.after_live_date.past_60_days_catalyst_data.by_catalyst_patient_ids(catalyst_patient_ids).and(CatalystData.with_multiple_appointments.or(CatalystData.with_no_appointments)).first(30)
+    @unassigned_appointments = schedules.scheduled_scheduling.without_staff
   end
 
   def billing_dashboard

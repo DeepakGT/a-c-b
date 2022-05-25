@@ -10,5 +10,4 @@ class RenderAppointmentsWorker
     puts "RenderAppointmentsJob is completed"
     puts ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"               
   end
-  # end of private
 end

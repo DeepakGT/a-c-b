@@ -22,6 +22,10 @@ class MetaDataController < ApplicationController
     @bcbas = bcbas.order(:first_name, :last_name)
   end
 
+  def rbt_list
+    @staff = Staff.active.by_roles('rbt')
+  end
+
   private
 
   def get_selectable_options_data

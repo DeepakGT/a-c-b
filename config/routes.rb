@@ -67,6 +67,7 @@ Rails.application.routes.draw do
     get '/clients_list', to: 'staff_meta_data#clients_list'
     get '/clinics_list',to: 'meta_data#clinics_list'
     get '/bcba_list',to: 'meta_data#bcba_list'
+    get '/rbt_list',to: 'meta_data#rbt_list'
     get '/rbt_appointments', to: 'scheduling_meta_data#rbt_appointments'
     get '/bcba_appointments', to: 'scheduling_meta_data#bcba_appointments'
     get '/executive_director_appointments', to: 'scheduling_meta_data#executive_director_appointments'
@@ -79,6 +80,7 @@ Rails.application.routes.draw do
     get '/sync_soap_notes', to: 'catalyst#sync_soap_notes'
     get '/unassigned_catalyst_soap_notes', to: 'scheduling_meta_data#unassigned_catalyst_soap_notes'
     resources :schedulings do
+      post '/create_without_staff', to: 'schedulings#create_without_staff', on: :collection
       resources :soap_notes
       resources :change_requests, controller: 'scheduling_change_requests', only: %i[create update]
     end

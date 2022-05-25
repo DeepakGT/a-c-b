@@ -51,6 +51,14 @@ class SchedulingsController < ApplicationController
     @schedule.destroy
   end
 
+  def create_without_staff
+    @schedule = @client_enrollment_service.schedulings.new(scheduling_params)
+    @schedule.status = 'Non-Billable' if params[:status].blank?
+    @schedule.creator_id = current_user.id
+    @schedule.user = current_user
+    @schedule.save
+  end
+
   private
 
   def authorize_user
@@ -58,8 +66,12 @@ class SchedulingsController < ApplicationController
   end
 
   def scheduling_params
-    params.permit(:staff_id, :status, :date, :start_time, :end_time, :units, :minutes, 
-                  :client_enrollment_service_id, :cross_site_allowed, :service_address_id, :catalyst_soap_note_id)
+    arr = %i[status date start_time end_time units minutes 
+           client_enrollment_service_id cross_site_allowed service_address_id]
+
+    arr.concat(%i[staff_id catalyst_soap_note_id]) if params[:action] == 'create'
+
+    params.permit(arr)
   end
 
   def set_scheduling
