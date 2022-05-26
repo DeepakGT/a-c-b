@@ -3,7 +3,7 @@ class SchedulingsController < ApplicationController
   before_action :authenticate_user!
   before_action :authorize_user
   before_action :set_scheduling, only: %i[show update destroy]
-  before_action :set_client_enrollment_service, only: :create
+  before_action :set_client_enrollment_service, only: %i[create create_without_staff]
 
   def index
     @schedules = do_filter
