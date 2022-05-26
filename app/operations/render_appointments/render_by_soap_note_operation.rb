@@ -20,7 +20,7 @@ module RenderAppointments
         #   schedule.unrendered_reason = schedule.unrendered_reason | ['clinical_director_signature_absent']
         #   schedule.save(validate: false)
         # end
-        if soap_note.rbt_signature.to_bool.false?  && schedule.staff.role_name=='rbt'
+        if soap_note.rbt_signature.to_bool.false?  && schedule.staff&.role_name=='rbt'
           schedule.unrendered_reason = schedule.unrendered_reason | ['rbt_signature_absent']
           schedule.save(validate: false)
         end

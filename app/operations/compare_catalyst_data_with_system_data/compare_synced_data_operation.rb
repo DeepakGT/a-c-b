@@ -37,9 +37,9 @@ module CompareCatalystDataWithSystemData
             schedule.catalyst_data_ids.push(catalyst_data.id)
             schedule.save(validate: false)
 
-            if schedule.staff.role_name=='rbt' && catalyst_data.provider_signature.present?
+            if schedule.staff&.role_name=='rbt' && catalyst_data.provider_signature.present?
               soap_note.rbt_signature = true
-            elsif schedule.staff.role_name=='bcba' && catalyst_data.provider_signature.present?
+            elsif schedule.staff&.role_name=='bcba' && catalyst_data.provider_signature.present?
               soap_note.bcba_signature = true
             end
             soap_note.scheduling_id = schedule.id
@@ -56,9 +56,9 @@ module CompareCatalystDataWithSystemData
               schedule.catalyst_data_ids.push(catalyst_data.id)
               schedule.save(validate: false)
 
-              if schedule.staff.role_name=='rbt' && catalyst_data.provider_signature.present?
+              if schedule.staff&.role_name=='rbt' && catalyst_data.provider_signature.present?
                 soap_note.rbt_signature = true
-              elsif schedule.staff.role_name=='bcba' && catalyst_data.provider_signature.present?
+              elsif schedule.staff&.role_name=='bcba' && catalyst_data.provider_signature.present?
                 soap_note.bcba_signature = true
               end
               soap_note.scheduling_id = schedule.id
@@ -99,9 +99,9 @@ module CompareCatalystDataWithSystemData
               schedule.catalyst_data_ids.push(catalyst_data.id)
               schedule.save(validate: false)
 
-              if schedule.staff.role_name=='rbt' && catalyst_data.provider_signature.present?
+              if schedule.staff&.role_name=='rbt' && catalyst_data.provider_signature.present?
                 soap_note.rbt_signature = true
-              elsif schedule.staff.role_name=='bcba' && catalyst_data.provider_signature.present?
+              elsif schedule.staff&.role_name=='bcba' && catalyst_data.provider_signature.present?
                 soap_note.bcba_signature = true
               end
               soap_note.scheduling_id = schedule.id

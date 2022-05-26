@@ -51,7 +51,7 @@ json.data do
   json.staff_id @schedule.staff_id
   json.staff_name "#{@schedule.staff.first_name} #{@schedule.staff.last_name}" if @schedule.staff.present?
   json.staff_role @schedule.staff.role_name if @schedule.staff.present?
-  json.staff_email @schedule.staff.email
+  json.staff_email @schedule.staff.email if @schedule.staff.present?
   json.service_id service&.id
   json.service_name service&.name
   json.service_display_code service&.display_code 

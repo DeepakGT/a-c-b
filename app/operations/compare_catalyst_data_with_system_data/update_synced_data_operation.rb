@@ -32,9 +32,9 @@ module CompareCatalystDataWithSystemData
             soap_note.bcba_signature = true if catalyst_data.bcba_signature.present?
             soap_note.clinical_director_signature = true if catalyst_data.clinical_director_signature.present?
             soap_note.caregiver_signature = true if catalyst_data.caregiver_signature.present?
-            if schedule.staff.role_name=='rbt' && catalyst_data.provider_signature.present?
+            if schedule.staff&.role_name=='rbt' && catalyst_data.provider_signature.present?
               soap_note.rbt_signature = true
-            elsif schedule.staff.role_name=='bcba' && catalyst_data.provider_signature.present?
+            elsif schedule.staff&.role_name=='bcba' && catalyst_data.provider_signature.present?
               soap_note.bcba_signature = true
             end
             soap_note.save(validate: false)
@@ -58,9 +58,9 @@ module CompareCatalystDataWithSystemData
               soap_note.bcba_signature = true if catalyst_data.bcba_signature.present?
               soap_note.clinical_director_signature = true if catalyst_data.clinical_director_signature.present?
               soap_note.caregiver_signature = true if catalyst_data.caregiver_signature.present?
-              if schedule.staff.role_name=='rbt' && catalyst_data.provider_signature.present?
+              if schedule.staff&.role_name=='rbt' && catalyst_data.provider_signature.present?
                 soap_note.rbt_signature = true
-              elsif schedule.staff.role_name=='bcba' && catalyst_data.provider_signature.present?
+              elsif schedule.staff&.role_name=='bcba' && catalyst_data.provider_signature.present?
                 soap_note.bcba_signature = true
               end
               soap_note.save(validate: false)
