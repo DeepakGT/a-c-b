@@ -70,6 +70,7 @@ class SchedulingsController < ApplicationController
            client_enrollment_service_id cross_site_allowed service_address_id]
 
     arr.concat(%i[staff_id catalyst_soap_note_id]) if params[:action] == 'create'
+    arr.concat(%i[staff_id]) if params[:action] == 'update'
 
     params.permit(arr)
   end
