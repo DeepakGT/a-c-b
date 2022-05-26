@@ -13,17 +13,19 @@ json.data do
       json.client_name "#{client.first_name} #{client.last_name}" if client.present?
       json.service_address_id schedule.service_address_id
       if schedule.service_address_id.present?
-        service_address = Address.find(schedule.service_address_id)
-        json.service_address do
-          json.line1 service_address.line1
-          json.line2 service_address.line2
-          json.line3 service_address.line3
-          json.zipcode service_address.zipcode
-          json.city service_address.city
-          json.state service_address.state
-          json.country service_address.country
-          json.is_default service_address.is_default
-          json.address_name service_address.address_name
+        service_address = Address.find_by(id: schedule.service_address_id)
+        if service_address.present?
+          json.service_address do
+            json.line1 service_address.line1
+            json.line2 service_address.line2
+            json.line3 service_address.line3
+            json.zipcode service_address.zipcode
+            json.city service_address.city
+            json.state service_address.state
+            json.country service_address.country
+            json.is_default service_address.is_default
+            json.address_name service_address.address_name
+          end
         end
       end
       json.staff_id schedule.staff_id
@@ -67,17 +69,19 @@ json.data do
       json.client_name "#{client.first_name} #{client.last_name}" if client.present?
       json.service_address_id schedule.service_address_id
       if schedule.service_address_id.present?
-        service_address = Address.find(schedule.service_address_id)
-        json.service_address do
-          json.line1 service_address.line1
-          json.line2 service_address.line2
-          json.line3 service_address.line3
-          json.zipcode service_address.zipcode
-          json.city service_address.city
-          json.state service_address.state
-          json.country service_address.country
-          json.is_default service_address.is_default
-          json.address_name service_address.address_name
+        service_address = Address.find_by(id: schedule.service_address_id)
+        if service_address.present?
+          json.service_address do
+            json.line1 service_address.line1
+            json.line2 service_address.line2
+            json.line3 service_address.line3
+            json.zipcode service_address.zipcode
+            json.city service_address.city
+            json.state service_address.state
+            json.country service_address.country
+            json.is_default service_address.is_default
+            json.address_name service_address.address_name
+          end
         end
       end
       json.staff_id schedule.staff_id
@@ -227,17 +231,19 @@ json.data do
       json.client_name "#{client.first_name} #{client.last_name}" if client.present?
       json.service_address_id schedule.service_address_id
       if schedule.service_address_id.present?
-        service_address = Address.find(schedule.service_address_id)
-        json.service_address do
-          json.line1 service_address.line1
-          json.line2 service_address.line2
-          json.line3 service_address.line3
-          json.zipcode service_address.zipcode
-          json.city service_address.city
-          json.state service_address.state
-          json.country service_address.country
-          json.is_default service_address.is_default
-          json.address_name service_address.address_name
+        service_address = Address.find_by(id: schedule.service_address_id)
+        if service_address.present?
+          json.service_address do
+            json.line1 service_address.line1
+            json.line2 service_address.line2
+            json.line3 service_address.line3
+            json.zipcode service_address.zipcode
+            json.city service_address.city
+            json.state service_address.state
+            json.country service_address.country
+            json.is_default service_address.is_default
+            json.address_name service_address.address_name
+          end
         end
       end
       json.staff_role schedule.staff.role_name if schedule.staff.present?
