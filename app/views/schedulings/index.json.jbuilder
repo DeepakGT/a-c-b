@@ -37,17 +37,19 @@ json.data do
     json.client_name "#{client.first_name} #{client.last_name}" if client.present?
     # # json.service_address_id schedule.service_address_id
     if schedule.service_address_id.present?
-      service_address = Address.find(schedule.service_address_id)
-      json.service_address do
-        json.service_address_line1 service_address.line1
-        json.service_address_line2 service_address.line2
-        json.service_address_line3 service_address.line3
-        json.service_address_zipcode service_address.zipcode
-        json.service_address_city service_address.city
-        json.service_address_state service_address.state
-        json.service_address_country service_address.country
-        json.service_address_is_default service_address.is_default
-        json.service_address_address_name service_address.address_name
+      service_address = Address.find_by(id: schedule.service_address_id)
+      if service_address.present?
+        json.service_address do
+          json.service_address_line1 service_address.line1
+          json.service_address_line2 service_address.line2
+          json.service_address_line3 service_address.line3
+          json.service_address_zipcode service_address.zipcode
+          json.service_address_city service_address.city
+          json.service_address_state service_address.state
+          json.service_address_country service_address.country
+          json.service_address_is_default service_address.is_default
+          json.service_address_address_name service_address.address_name
+        end
       end
     end
     # # json.staff_id schedule.staff_id
