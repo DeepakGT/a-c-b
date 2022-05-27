@@ -6,7 +6,7 @@ class AppointmentPolicy < ApplicationPolicy
   end
 
   def bcba_appointments?
-    return true if user.role_name=='bcba'
+    return true if user.role_name=='bcba' || user.role_name=='Lead RBT'
 
     false
   end
