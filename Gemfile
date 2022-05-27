@@ -39,11 +39,6 @@ gem 'rails', '~> 6.1.4'
 gem 'rack-cors'
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 
-# for jobs
-gem 'sidekiq'
-gem 'sidekiq-cron'
-gem 'sidekiq-failures'
-
 gem 'rspec-rails'
 
 # Api documentation
@@ -55,6 +50,12 @@ if ENV['CLOUD_PLATFORM']!='heroku'
   gem 'ruby-odbc' 
   gem 'sequel'
 end
+
+# for jobs
+gem 'sidekiq'
+gem 'sidekiq-cron'
+gem 'sidekiq-failures'
+
 # Rack::Cors provides support for Cross-Origin Resource Sharing (CORS) 
 # for Rack compatible web applications.
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
@@ -64,19 +65,19 @@ gem 'will_paginate', '~> 3.3'
 gem 'whenever', require: false
 
 group :development, :test do
+  gem 'bullet'
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
-  gem 'rswag-specs'
   gem 'pry'
-  gem 'bullet'
+  gem 'rswag-specs'
 end
 
 group :test do
   gem 'database_cleaner-active_record'
   gem 'factory_bot_rails'
   gem 'rails-controller-testing'
-  gem 'shoulda-matchers', '~> 5.0'
   gem 'shoulda-callback-matchers', '~> 1.1.1'
+  gem 'shoulda-matchers', '~> 5.0'
 end
 
 group :development do
