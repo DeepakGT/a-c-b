@@ -20,7 +20,7 @@ module CsvImport
           i=i+1
           client_name = appointment[:clientname]&.split(',')&.each(&:strip!)
           client = Client.find_by(dob: appointment[:clientdob]&.to_time&.strftime('%Y-%m-%d'), first_name: client_name&.last, last_name: client_name&.first)
-          if client_name.present?
+          if client_name.present? && client.blank?
             if client.blank?
               if appointment[:clientname]=='Syed Abraham Hasan' || appointment[:clientname]=='Syed Adam Hasan' || appointment[:clientname]=='Ana Clara El-Gamel'
                 client_name[2] = "#{client_name[1]} #{client_name[2]}"
@@ -81,6 +81,9 @@ module CsvImport
                       end
                       if staff.present?
                         schedule = Scheduling.find_or_initialize_by(snowflake_appointment_id: appointment[:appointmentid])
+                        if client_enrollment_service.blank?
+                          puts "#{appointment}"
+                        end
                         schedule.client_enrollment_service_id = client_enrollment_service.id
                         schedule.staff_id = staff.id
                         schedule.date = appointment[:apptdate]&.to_time&.strftime('%Y-%m-%d')
