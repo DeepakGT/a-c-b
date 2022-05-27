@@ -25,16 +25,19 @@ class SchedulingsController < ApplicationController
 
   def update
     @schedule.user = current_user
-    if current_user.role_name=='super_admin' || current_user.role_name=='administrator' || current_user.role_name=='executive_director' || current_user.role_name=='Clinical Director' || current_user.role_name=='client_care_coordinator'
+    case current_user.role_name
+    when 'super_admin', 'administrator', 'executive_director', 'Clinical Director', 'client_care_coordinator'
       update_render_service if params[:status]=='Rendered'
       return if !is_renderable
+
       update_scheduling 
-    elsif current_user.role_name=='bcba' 
+    when 'bcba'
       if @schedule.date>=Time.current.to_date
         update_scheduling
       else
         update_render_service if params[:status]=='Rendered'
         return if !is_renderable
+
         @schedule.update(status: params[:status]) if params[:status].present?
       end
     end
@@ -43,7 +46,7 @@ class SchedulingsController < ApplicationController
 
   def destroy
     CatalystData.where(system_scheduling_id: @schedule.id).update_all(system_scheduling_id: nil)
-    catalyst_data =  CatalystData.where('multiple_schedulings_ids @> ?', "{#{@schedule.id}}")
+    catalyst_data = CatalystData.where('multiple_schedulings_ids @> ?', "{#{@schedule.id}}")
     catalyst_data.each do |catalyst_datum| 
       catalyst_datum.multiple_schedulings_ids.delete("#{@schedule.id}")
       catalyst_datum.save
@@ -66,8 +69,8 @@ class SchedulingsController < ApplicationController
   end
 
   def scheduling_params
-    arr = %i[status date start_time end_time units minutes 
-           client_enrollment_service_id cross_site_allowed service_address_id]
+    arr = %i[ status date start_time end_time units minutes 
+              client_enrollment_service_id cross_site_allowed service_address_id]
 
     arr.concat(%i[staff_id catalyst_soap_note_id]) if params[:action] == 'create'
     arr.concat(%i[staff_id]) if params[:action] == 'update'
@@ -108,17 +111,15 @@ class SchedulingsController < ApplicationController
       # schedules = schedules.by_client_clinic(clinic_ids)
       schedules = schedules.by_staff_ids(current_user.id)
     end
-    if params[:startDate].present? && params[:endDate].present?
-      schedules = schedules.on_date(params[:startDate]..params[:endDate])
-    end
+
+    schedules = schedules.on_date(params[:startDate]..params[:endDate]) if params[:startDate].present? && params[:endDate].present?
+
     if params[:default_location_id].present? && current_user.role_name!='rbt' && current_user.role_name!='bcba'
       location_id = params[:default_location_id]
       schedules = schedules.by_client_clinic(location_id).or(schedules.by_staff_clinic(location_id))
     end
     schedules = schedules.uniq.sort_by(&:date)
-    if params[:page].present?
-      schedules = schedules.paginate(page: params[:page])
-    end
+    schedules = schedules.paginate(page: params[:page]) if params[:page].present?
     schedules
   end
 
@@ -143,13 +144,7 @@ class SchedulingsController < ApplicationController
 
   def update_render_service
     if params[:is_rendered].to_bool.true? || params[:status]=='Rendered'
-      if @schedule.date<Time.current.to_date
-        RenderAppointments::RenderScheduleManualOperation.call(@schedule.id, params[:catalyst_soap_note_id])
-      end
-    # elsif (params[:is_rendered].to_bool.true? || params[:status]=='Rendered')
-    #   if @schedule.date<Time.current.to_date
-    #     RenderAppointments::RenderScheduleOperation.call(@schedule.id)
-    #   end
+      RenderAppointments::RenderScheduleManualOperation.call(@schedule.id, params[:catalyst_soap_note_id]) if @schedule.date<Time.current.to_date
     end
   end
 

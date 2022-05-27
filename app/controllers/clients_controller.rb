@@ -31,9 +31,9 @@ class ClientsController < ApplicationController
 
   def client_params
     params.permit(:first_name, :last_name, :status, :gender, :email, :dob, :clinic_id, :payor_status, :preferred_language, 
-      :disqualified, :dq_reason, :bcba_id, :tracking_id, addresses_attributes: 
-      %i[id line1 line2 line3 zipcode city state country address_type addressable_type addressable_id],
-      phone_number_attributes: %i[phone_type number])
+                  :disqualified, :dq_reason, :bcba_id, :tracking_id, addresses_attributes: 
+                  %i[id line1 line2 line3 zipcode city state country address_type addressable_type addressable_id],
+                  phone_number_attributes: %i[phone_type number])
   end
 
   def set_client
@@ -53,9 +53,10 @@ class ClientsController < ApplicationController
   end
 
   def filter_by_logged_in_user
-    if current_user.role_name=='rbt'
+    case current_user.role_name
+    when 'rbt'
       Client.by_staff_id_in_scheduling(current_user.id)
-    elsif current_user.role_name=='bcba'
+    when 'bcba'
       Client.by_staff_id_in_scheduling(current_user.id).or(Client.by_bcbas(current_user.id))
     else
       Client.all
@@ -63,10 +64,12 @@ class ClientsController < ApplicationController
   end
   
   def filter_by_status(clients)
-    if params[:show_inactive]=="1" || params[:show_inactive]==1
-      clients = clients.inactive if clients.present?
-    else
-      clients = clients.active if clients.present?
+    if clients.present?
+      if params[:show_inactive]=="1" || params[:show_inactive]==1
+        clients = clients.inactive
+      else
+        clients = clients.active
+      end
     end
     clients
   end
@@ -114,18 +117,18 @@ class ClientsController < ApplicationController
     fname, lname = query.split
     if lname.present?
       clients = clients.by_payor(query)
-                        .or(clients.by_first_name(fname).by_last_name(lname))
-                        .or(clients.by_gender(query))
-                        .or(clients.by_payor_status(query))
-                        .or(clients.by_bcba_full_name(fname,lname))
+                       .or(clients.by_first_name(fname).by_last_name(lname))
+                       .or(clients.by_gender(query))
+                       .or(clients.by_payor_status(query))
+                       .or(clients.by_bcba_full_name(fname,lname))
     else
       clients = clients.by_payor(query)
-                        .or(clients.by_first_name(fname))
-                        .or(clients.by_last_name(fname))
-                        .or(clients.by_payor_status(query))
-                        .or(clients.by_gender(query))
-                        .or(clients.by_bcba_first_name(fname))
-                        .or(clients.by_bcba_last_name(fname))
+                       .or(clients.by_first_name(fname))
+                       .or(clients.by_last_name(fname))
+                       .or(clients.by_payor_status(query))
+                       .or(clients.by_gender(query))
+                       .or(clients.by_bcba_first_name(fname))
+                       .or(clients.by_bcba_last_name(fname))
     end
     clients
   end

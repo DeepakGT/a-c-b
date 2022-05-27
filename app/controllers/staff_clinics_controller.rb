@@ -64,9 +64,7 @@ class StaffClinicsController < ApplicationController
 
   def remove_home_clinic
     home_clinics = @staff.staff_clinics.where(is_home_clinic: true)
-    if home_clinics.present?
-      home_clinics.update_all(is_home_clinic: false)
-    end
+    home_clinics.update_all(is_home_clinic: false) if home_clinics.present?
   end
   # end of private
 end

@@ -26,7 +26,7 @@ class CatalystController < ApplicationController
     @catalyst_data.update(is_appointment_found: true, system_scheduling_id: @schedule.id, multiple_schedulings_ids: [])
     @checked_units = false
     check_units if @catalyst_data.id == @schedule.catalyst_data_ids.max.to_i
-    if (!(@schedule.unrendered_reason.include?('units_does_not_match')) &&  @checked_units==false && temp_var==0) || temp_var==1
+    if (!(@schedule.unrendered_reason.include?('units_does_not_match')) && @checked_units==false && temp_var==0) || temp_var==1
       update_soap_note
       RenderAppointments::RenderScheduleOperation.call(@schedule.id) if @schedule.date<Time.current.to_date
     end
@@ -46,7 +46,7 @@ class CatalystController < ApplicationController
 
   def sync_soap_notes
     workers = Sidekiq::Workers.new
-    if(workers.size == 0)
+    if workers.empty?
       SyncClientSoapNotesJob.perform_later
       @success = true
     else
@@ -86,12 +86,10 @@ class CatalystController < ApplicationController
       rem = @schedule.minutes%15
       if rem == 0
         @schedule.units = @schedule.minutes/15
+      elsif rem < 8
+        @schedule.units = (@schedule.minutes - rem)/15
       else
-        if rem < 8
-          @schedule.units = (@schedule.minutes - rem)/15
-        else
-          @schedule.units = (@schedule.minutes + 15 - rem)/15
-        end
+        @schedule.units = (@schedule.minutes + 15 - rem)/15
       end 
     end
     @schedule.save(validate: false)

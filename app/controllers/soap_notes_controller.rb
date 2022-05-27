@@ -81,9 +81,7 @@ class SoapNotesController < ApplicationController
       @soap_note.clinical_director_signature_author_name = nil
       @soap_note.clinical_director_signature_date = nil
     end
-    if params[:caregiver_sign].present?
-      @soap_note.caregiver_signature_datetime = DateTime.current
-    end
+    @soap_note.caregiver_signature_datetime = DateTime.current if params[:caregiver_sign].present?
   end
 
   def update_signature
@@ -105,9 +103,7 @@ class SoapNotesController < ApplicationController
         @soap_note.clinical_director_signature_author_name = "#{current_user.first_name} #{current_user.last_name}"
         @soap_note.clinical_director_signature_date = Time.current.to_date
       end
-      if params[:caregiver_sign].present? && !@soap_note.signature_file.attached?
-        @soap_note.caregiver_signature_datetime = DateTime.current
-      end
+      @soap_note.caregiver_signature_datetime = DateTime.current if params[:caregiver_sign].present? && !@soap_note.signature_file.attached?
     end
   end
   # end of private

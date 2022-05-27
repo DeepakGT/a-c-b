@@ -24,7 +24,7 @@ class StaffController < ApplicationController
     @staff = Staff.new(staff_params)
     set_role
     @staff.save
-    set_home_clinic if @staff.id!=nil
+    set_home_clinic if !@staff.id.nil?
   end
 
   def destroy
@@ -117,9 +117,9 @@ class StaffController < ApplicationController
     fname, lname = query.split
     if lname.present?
       staff = staff.by_first_name(fname).by_last_name(lname)
-                  .or(staff.by_organization(query))
-                  .or(staff.by_role(query))
-                  .or(staff.by_supervisor_full_name(fname,lname))
+                   .or(staff.by_organization(query))
+                   .or(staff.by_role(query))
+                   .or(staff.by_supervisor_full_name(fname,lname))
     else
       staff = staff.by_first_name(fname)
                    .or(staff.by_last_name(fname))

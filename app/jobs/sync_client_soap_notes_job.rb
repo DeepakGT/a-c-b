@@ -4,7 +4,7 @@ class SyncClientSoapNotesJob < ApplicationJob
   def perform
     puts "#{DateTime.current}"
     puts "SyncClientSoapNotesJob is started"
-    puts "Syncing Catalyst SOAP notes from 01 Feb 2022 to #{Date.current.to_date.to_s}"
+    puts "Syncing Catalyst SOAP notes from 01 Feb 2022 to #{Date.current.to_date}"
     from = Date.strptime("02-01-2022", "%m-%d-%Y").to_date
     to = Date.current.end_of_month
     while from < to

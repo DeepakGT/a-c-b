@@ -6,22 +6,21 @@ class SchedulingChangeRequestsController < ApplicationController
 
   def create
     @change_request = @schedule.scheduling_change_requests.create(change_request_params)
-    if params[:status]&.to_s=='Client_No_Show'
-      if @schedule.scheduling_change_requests.where(status: 'Client_No_Show').count<=1
-        @schedule.scheduling_change_requests.by_approval_status.update(approval_status: 'declined')
-        set_approval_status('approved')
-        @schedule.user = current_user
-        update_scheduling
-      end
+    if params[:status]&.to_s=='Client_No_Show' && @schedule.scheduling_change_requests.where(status: 'Client_No_Show').count<=1
+      @schedule.scheduling_change_requests.by_approval_status.update(approval_status: 'declined')
+      set_approval_status('approved')
+      @schedule.user = current_user
+      update_scheduling
     end
   end
 
   def update
-    if params[:approval_status]&.to_s=='approve'
+    case params[:approval_status]&.to_s
+    when 'approve'
       set_approval_status('approved')
       @schedule.user = current_user
       update_scheduling
-    elsif params[:approval_status]&.to_s=='decline'
+    when 'decline'
       set_approval_status('declined')
     end
   end
