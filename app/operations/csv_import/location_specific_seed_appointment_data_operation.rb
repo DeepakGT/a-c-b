@@ -50,7 +50,7 @@ module CsvImport
                     if client_enrollment_services.present?
                       if client_enrollment_services.count==1
                         client_enrollment_service = client_enrollment_services.first
-                      else
+                      elsif client_enrollment_services.count>1
                         client_enrollment_services = client_enrollment_services.where('start_date <= ? AND end_date>=?', appointment[:servicestart]&.to_time&.strftime('%Y-%m-%d'), appointment[:serviceend]&.to_time&.strftime('%Y-%m-%d'))
                         if client_enrollment_services.count==1
                           client_enrollment_service = client_enrollment_services.first
@@ -70,6 +70,9 @@ module CsvImport
                             end
                           end
                         end
+                      else
+                        client_enrollment_services = ClientEnrollmentService.by_client(client.id).by_funding_source(funding_source_id).by_service(service.id).by_date(appointment[:apptdate]&.to_time&.strftime('%Y-%m-%d'))
+                        client_enrollment_service = client_enrollment_services.first
                       end
                       staff = Staff.find_by('lower(email) = ?', appointment[:staffemail]&.downcase)
                       if staff.blank?
