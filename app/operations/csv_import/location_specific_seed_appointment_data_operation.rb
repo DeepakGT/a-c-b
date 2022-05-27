@@ -20,7 +20,7 @@ module CsvImport
           i=i+1
           client_name = appointment[:clientname]&.split(',')&.each(&:strip!)
           client = Client.find_by(dob: appointment[:clientdob]&.to_time&.strftime('%Y-%m-%d'), first_name: client_name&.last, last_name: client_name&.first)
-          if client_name.present? && client.blank?
+          if client_name.present? && client_name.count>2
             if client.blank?
               if appointment[:clientname]=='Syed Abraham Hasan' || appointment[:clientname]=='Syed Adam Hasan' || appointment[:clientname]=='Ana Clara El-Gamel'
                 client_name[2] = "#{client_name[1]} #{client_name[2]}"
