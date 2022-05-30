@@ -15,13 +15,20 @@ class UpdateUserStatusWorker
   private
 
   def update_staff_status
+    Loggers::UpdateUserStatusLoggerService.call(nil, "Update user status on #{Time.current.to_date} has started.")
     staffs = Staff.all
     staffs.each do |staff|
       if staff.terminated_on.present? && staff.terminated_on <= Time.current.to_date
         staff.status = Staff.statuses['inactive']
         staff.save(validate: false)
+        if staff.status=='inactive'
+          Loggers::UpdateUserStatusLoggerService.call(staff.id, "Staff #{staff.id} status is updated to inactive.")
+        else
+          Loggers::UpdateUserStatusLoggerService.call(staff.id, "Staff #{staff.id} status cannot be updated to inactive.")
+        end
       end
     end
+    Loggers::UpdateUserStatusLoggerService.call(nil, "Update user status on #{Time.current.to_date} is completed.")
   end
 
   # def update_client_status

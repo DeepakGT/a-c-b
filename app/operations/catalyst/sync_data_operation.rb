@@ -11,6 +11,8 @@ module Catalyst
         access_token = Catalyst::GetAccessTokenService.call
         data_array = Catalyst::SoapNotesApiService.call(start_date, end_date, access_token)
         response_data_array = Array.new
+
+        Loggers::Catalyst::SyncSoapNotesLoggerService.call(data_array.count, "Received #{data_array.count} soap notes from catalyst.")
         if data_array.any?
           data_array.each do |data|
             response_data_hash = Hash.new
@@ -48,6 +50,11 @@ module Catalyst
                 end
               end 
               catalyst_data.save(validate: false)
+              if catalyst_data.id==nil
+                Loggers::Catalyst::SyncSoapNotesLoggerService.call(data['soapNoteId'], "Catalyst soap note with id #{data['soapNoteId']} cannot be saved.")
+              else
+                Loggers::Catalyst::SyncSoapNotesLoggerService.call(data['soapNoteId'], "Catalyst soap note with id #{data['soapNoteId']} is saved.")
+              end
 
               response_data_hash = CompareCatalystDataWithSystemData::CompareSyncedDataOperation.call(catalyst_data)
             else
@@ -85,7 +92,8 @@ module Catalyst
                 catalyst_data.response = data
                 catalyst_data.date_revision_made = data['dateRevisionMade']
                 catalyst_data.save(validate: false)
-                
+                Loggers::Catalyst::SyncSoapNotesLoggerService.call(data['soapNoteId'], "Catalyst soap note with id #{data['soapNoteId']} is updated.")
+
                 # response_data_hash = CompareCatalystDataWithSystemData::CompareSyncedDataOperation.call(catalyst_data)
                 response_data_hash = CompareCatalystDataWithSystemData::UpdateSyncedDataOperation.call(catalyst_data)
               end

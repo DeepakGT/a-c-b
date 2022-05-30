@@ -13,11 +13,13 @@ module Catalyst
         access_token = Catalyst::GetAccessTokenService.call
         staff_data_array = Catalyst::UsersApiService.call(start_date, access_token)
 
-        staff_data_array.each do |staff_data|
+        staff_data_array.each do |i|
+          staff_data = staff_data_array[i]
           staff = Staff.find_by(first_name: staff_data['firstName'], last_name: staff_data['lastName'], email: staff_data['email'])
           if staff.present?
             staff.catalyst_user_id = staff_data['userId']
             staff.save(validate: false)
+            Loggers::Catalyst::SyncStaffAndClientsLoggerService.call(i, "Staff #{staff_data['firstName'] staff_data['lastName']} catalyst user id is saved.")
           # else
           #   # create staff
           #   staff = Staff.new(first_name: staff_data['firstName'], last_name: staff_data['lastName'], email: staff_data['email'], catalyst_user_id: staff_data['userId'], password: STAFF_PASSWORD, password_confirmation: STAFF_PASSWORD)
@@ -49,6 +51,8 @@ module Catalyst
           #   address.zipcode = staff_data['postalCode'] if staff_data['postalCode'].present? && staff_data['postalCode']!='NOT DEFINED'
           #   address.country = country_name if country_name.present?
           #   address.save(validate: false) if address.line1.present? || address.city.present? || address.state.present? || address.country.present? || address.zipcode.present?
+          else
+            Loggers::Catalyst::SyncStaffAndClientsLoggerService.call(i, "Staff #{staff_data['firstName'] staff_data['lastName']} not found.")
           end
         end
       end
