@@ -2,13 +2,13 @@ require 'csv'
 module CsvImport
   module LocationSpecificSeedAuthorizationDataOperation
     class << self
-      def call(clinic_id)
-        location_specific_seed_client_enrollment_service_data(clinic_id)
+      def call(clinic_id, file_path)
+        location_specific_seed_client_enrollment_service_data(clinic_id, file_path)
       end
     
       private
 
-      def location_specific_seed_client_enrollment_service_data(clinic_id)
+      def location_specific_seed_client_enrollment_service_data(clinic_id, file_path)
         clinic = Clinic.find(clinic_id)
         initial_count = ClientEnrollmentService.count
         # Loggers::SnowflakeClientEnrollmentServiceLoggerService.call(student_services.count, "Seeding #{clinic.name} authorization data.")
@@ -16,15 +16,13 @@ module CsvImport
         count = 0
         i=0
 
-        CSV.foreach(Rails.root.join('lib/student_services.csv'), headers: true, header_converters: :symbol) do |student_service|
+        CSV.foreach(Rails.root.join("#{file_path}"), headers: true, header_converters: :symbol) do |student_service|
           i=i+1
           client_name = student_service[:clientname]&.split(' ')
           if student_service[:clientname]=='Syed Abraham Hasan' || student_service[:clientname]=='Syed Adam Hasan' || student_service[:clientname]=='Ana Clara El-Gamel'
             client_name[0] = "#{client_name[0]} #{client_name[1]}"
             client_name[1] = "#{client_name[2]}"
-          elsif student_service[:clientname]=='James, Francis Franky' || student_service[:clientname]=='Buss, Matthias Rumell'
-            client_name[2] = client_name[1]
-          elsif student_service[:clientname]=='Tanay Toth, Peter '
+          elsif student_service[:clientname]=='Peter Tanay Toth'
             client = Client.find(1894)
           elsif client_name.count==3
             client_name[1] = "#{client_name[1]} #{client_name[2]}"
