@@ -19,7 +19,7 @@ module Catalyst
           if staff.present?
             staff.catalyst_user_id = staff_data['userId']
             staff.save(validate: false)
-            Loggers::Catalyst::SyncStaffAndClientsLoggerService.call(i, "Staff #{staff_data['firstName'] staff_data['lastName']} catalyst user id is saved.")
+            Loggers::Catalyst::SyncStaffAndClientsLoggerService.call(i, "Staff #{staff_data['firstName']} #{staff_data['lastName']} catalyst user id is saved.")
           # else
           #   # create staff
           #   staff = Staff.new(first_name: staff_data['firstName'], last_name: staff_data['lastName'], email: staff_data['email'], catalyst_user_id: staff_data['userId'], password: STAFF_PASSWORD, password_confirmation: STAFF_PASSWORD)
@@ -52,7 +52,7 @@ module Catalyst
           #   address.country = country_name if country_name.present?
           #   address.save(validate: false) if address.line1.present? || address.city.present? || address.state.present? || address.country.present? || address.zipcode.present?
           else
-            Loggers::Catalyst::SyncStaffAndClientsLoggerService.call(i, "Staff #{staff_data['firstName'] staff_data['lastName']} not found.")
+            Loggers::Catalyst::SyncStaffAndClientsLoggerService.call(i, "Staff #{staff_data['firstName']} #{staff_data['lastName']} not found.")
           end
         end
       end

@@ -25,7 +25,7 @@ module Catalyst
           #   client.gender = client_data['gender']==2 ? 1 : 0
           #   client.save(validate: false)
           else
-            Loggers::Catalyst::SyncStaffAndClientsLoggerService.call(i, "Client #{client_data['firstName'] client_data['lastName']} not found.")
+            Loggers::Catalyst::SyncStaffAndClientsLoggerService.call(i, "Client #{client_data['firstName']} #{client_data['lastName']} not found.")
           end
         end
       end
