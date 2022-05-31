@@ -11,7 +11,8 @@ module Catalyst
         access_token = Catalyst::GetAccessTokenService.call
         client_data_array = Catalyst::PatientsApiService.call(start_date, access_token)
 
-        client_data_array.each do |client_data|
+        client_data_array.each_index do |i|
+          client_data = client_data_array[i]
           client = Client.find_by(first_name: client_data['firstName'], last_name: client_data['lastName'], dob: client_data['dateOfBirth'])
           if client.present?
             client.catalyst_patient_id = client_data['patientId']

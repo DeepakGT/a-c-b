@@ -13,7 +13,7 @@ module Catalyst
         access_token = Catalyst::GetAccessTokenService.call
         staff_data_array = Catalyst::UsersApiService.call(start_date, access_token)
 
-        staff_data_array.each do |i|
+        staff_data_array.each_index do |i|
           staff_data = staff_data_array[i]
           staff = Staff.find_by(first_name: staff_data['firstName'], last_name: staff_data['lastName'], email: staff_data['email'])
           if staff.present?
