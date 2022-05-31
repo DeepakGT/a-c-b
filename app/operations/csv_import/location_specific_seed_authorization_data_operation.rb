@@ -22,8 +22,8 @@ module CsvImport
           if student_service[:clientname]=='Syed Abraham Hasan' || student_service[:clientname]=='Syed Adam Hasan' || student_service[:clientname]=='Ana Clara El-Gamel'
             client_name[0] = "#{client_name[0]} #{client_name[1]}"
             client_name[1] = "#{client_name[2]}"
-          elsif student_service[:clientname]=='Peter Tanay Toth'
-            client = Client.find(1894)
+          elsif student_service[:clientname]=='Abdulhadi Mir'
+            client_name[1] = '(Sultana)'
           elsif client_name.count==3
             client_name[1] = "#{client_name[1]} #{client_name[2]}"
           elsif client_name.count==4

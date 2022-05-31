@@ -89,56 +89,55 @@ module CsvImport
                       end
                       if staff.present?
                         schedule = Scheduling.find_or_initialize_by(snowflake_appointment_id: appointment[:appointmentid])
-                          schedule.client_enrollment_service_id = client_enrollment_service.id
-                          schedule.staff_id = staff.id
-                          schedule.date = appointment[:apptdate]&.to_time&.strftime('%Y-%m-%d')
-                          schedule.start_time = appointment[:appointmentstartdatetime]&.to_time&.strftime('%H:%M')
-                          schedule.end_time = appointment[:appointmentenddatetime]&.to_time&.strftime('%H:%M')
-                          schedule.minutes = appointment[:durationmins].to_f
-                          rem = schedule.minutes%15
-                          if rem == 0
-                            schedule.units = schedule.minutes/15
+                        schedule.client_enrollment_service_id = client_enrollment_service.id
+                        schedule.staff_id = staff.id
+                        schedule.date = appointment[:apptdate]&.to_time&.strftime('%Y-%m-%d')
+                        schedule.start_time = appointment[:appointmentstartdatetime]&.to_time&.strftime('%H:%M')
+                        schedule.end_time = appointment[:appointmentenddatetime]&.to_time&.strftime('%H:%M')
+                        schedule.minutes = appointment[:durationmins].to_f
+                        rem = schedule.minutes%15
+                        if rem == 0
+                          schedule.units = schedule.minutes/15
+                        else
+                          if rem < 8
+                            schedule.units = (schedule.minutes - rem)/15
                           else
-                            if rem < 8
-                              schedule.units = (schedule.minutes - rem)/15
-                            else
-                              schedule.units = (schedule.minutes + 15 - rem)/15
-                            end
-                          end 
-                          if appointment[:isrendered]=='Yes'
-                            schedule.status = 'Rendered'
-                            schedule.is_rendered = true
-                            schedule.rendered_at = appointment[:renderedtime]&.to_datetime if appointment[:renderedtime].present?
-                          else
-                            case appointment[:apptstatus]
-                            when 'ACTIVE'
-                              schedule.status = 'Scheduled'
-                            when 'Non-Billable'
-                              schedule.status = 'Non_Billable'
-                            when 'Unavailable'
-                              schedule.status = 'Unavailable'
-                            when 'Staff Cancellation'
-                              schedule.status = 'Staff_Cancellation'
-                            when 'Client Cancel Less Than 24 Hours'
-                              schedule.status = 'Client_Cancel_Less_than_24_h'
-                            when 'Client Cancel Greater Than 24 Hours'
-                              schedule.status = 'Client_Cancel_Greater_than_24_h'
-                            when 'Inclement Weather Cancellation'
-                              schedule.status = 'Inclement_Weather_Cancellation'
-                            when 'Client No Show'
-                              schedule.status = 'Client_No_Show'
-                            end
-                          end 
-                          creator_name = appointment[:apptcreator]&.split(',')&.each(&:strip!)
-                          schedule.creator_id = Staff.find_by(first_name: creator_name.last, last_name: creator_name.first)&.id
-                          schedule.cross_site_allowed = true if appointment[:crossofficeappt].present? && appointment[:crossofficeappt].split('/').count>1
-                          schedule.service_address_id = client.addresses&.by_service_address&.find_by(city: appointment[:clientcity], zipcode: appointment[:clientzip])&.id
-                          schedule.save(validate: false)
-                          if schedule.id==nil
-                            Loggers::SnowflakeSchedulingLoggerService.call(i, 'Schedule cannot be saved.')
-                          else
-                            Loggers::SnowflakeSchedulingLoggerService.call(i, 'Schedule is saved.')
+                            schedule.units = (schedule.minutes + 15 - rem)/15
                           end
+                        end 
+                        if appointment[:isrendered]=='Yes'
+                          schedule.status = 'Rendered'
+                          schedule.is_rendered = true
+                          schedule.rendered_at = appointment[:renderedtime]&.to_datetime if appointment[:renderedtime].present?
+                        else
+                          case appointment[:apptstatus]
+                          when 'ACTIVE'
+                            schedule.status = 'Scheduled'
+                          when 'Non-Billable'
+                            schedule.status = 'Non_Billable'
+                          when 'Unavailable'
+                            schedule.status = 'Unavailable'
+                          when 'Staff Cancellation'
+                            schedule.status = 'Staff_Cancellation'
+                          when 'Client Cancel Less Than 24 Hours'
+                            schedule.status = 'Client_Cancel_Less_than_24_h'
+                          when 'Client Cancel Greater Than 24 Hours'
+                            schedule.status = 'Client_Cancel_Greater_than_24_h'
+                          when 'Inclement Weather Cancellation'
+                            schedule.status = 'Inclement_Weather_Cancellation'
+                          when 'Client No Show'
+                            schedule.status = 'Client_No_Show'
+                          end
+                        end 
+                        creator_name = appointment[:apptcreator]&.split(',')&.each(&:strip!)
+                        schedule.creator_id = Staff.find_by(first_name: creator_name.last, last_name: creator_name.first)&.id
+                        schedule.cross_site_allowed = true if appointment[:crossofficeappt].present? && appointment[:crossofficeappt].split('/').count>1
+                        schedule.service_address_id = client.addresses&.by_service_address&.find_by(city: appointment[:clientcity], zipcode: appointment[:clientzip])&.id
+                        schedule.save(validate: false)
+                        if schedule.id==nil
+                          Loggers::SnowflakeSchedulingLoggerService.call(i, 'Schedule cannot be saved.')
+                        else
+                          Loggers::SnowflakeSchedulingLoggerService.call(i, 'Schedule is saved.')
                         end
                       else
                         Loggers::SnowflakeSchedulingLoggerService.call(i, "Staff #{appointment[:staffname]} not found.")
