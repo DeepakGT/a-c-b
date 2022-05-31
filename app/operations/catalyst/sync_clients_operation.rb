@@ -16,7 +16,7 @@ module Catalyst
           if client.present?
             client.catalyst_patient_id = client_data['patientId']
             client.save(validate: false)
-            Loggers::Catalyst::SyncStaffAndClientsLoggerService.call(i, "Client #{client_data['firstName'] client_data['lastName']} catalyst patient id is saved.")
+            Loggers::Catalyst::SyncStaffAndClientsLoggerService.call(i, "Client #{client_data['firstName']} #{client_data['lastName']} catalyst patient id is saved.")
           # else
           #   client = Client.new(first_name: client_data['firstName'], last_name: client_data['lastName'], dob: client_data['dateOfBirth'], catalyst_patient_id: client_data['patientId'])
           #   client.status = 'inactive' if client_data['active'].to_bool.false?
