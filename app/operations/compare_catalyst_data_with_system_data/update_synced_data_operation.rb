@@ -31,7 +31,7 @@ module CompareCatalystDataWithSystemData
             soap_note.add_date = catalyst_data.date
             soap_note.note = catalyst_data.note
             soap_note.creator_id = schedule.staff_id
-            soap_note.scheduling_id = schedule.
+            soap_note.scheduling_id = schedule.id
             soap_note.client_id = schedule.client_enrollment_service.client_enrollment.client_id
             soap_note.synced_with_catalyst = true
             soap_note.bcba_signature = true if catalyst_data.bcba_signature.present?

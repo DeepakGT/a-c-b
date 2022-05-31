@@ -19,27 +19,29 @@ module CsvImport
         CSV.foreach(Rails.root.join("#{file_path}"), headers: true, header_converters: :symbol) do |appointment|
           i=i+1
           client_name = appointment[:clientname]&.split(',')&.each(&:strip!)
-          client = Client.find_by(dob: appointment[:clientdob]&.to_time&.strftime('%Y-%m-%d'), first_name: client_name&.last, last_name: client_name&.first)
+          if appointment[:clientname]=='James, Francis Franky' 
+            client_name[1] = 'Francis'
+          elsif appointment[:clientname]=='Buss, Matthias Rumell'
+            client_name[1] = 'Matthias'
+          end
           if client_name.present? && client_name.count>2
-            if client.blank?
-              if appointment[:clientname]=='Syed Abraham Hasan' || appointment[:clientname]=='Syed Adam Hasan' || appointment[:clientname]=='Ana Clara El-Gamel'
-                client_name[2] = "#{client_name[1]} #{client_name[2]}"
-                # client_name[1] = "#{client_name[2]}"
-              elsif appointment[:clientname]=='James, Francis Franky' || appointment[:clientname]=='Buss, Matthias Rumell'
-                client_name[2] = client_name[1]
-              elsif appointment[:clientname]=='Tanay Toth, Peter '  || student_service[:clientname]=='Tanay Toth, Peter'
-                client = Client.find(1894)
-              elsif client_name.count==3
-                client_name[0] = "#{client_name[0]} #{client_name[1]}"
-              elsif client_name.count==4
-                client_name[0] = "#{client_name[0]} #{client_name[1]} #{client_name[2]}"
-              elsif client_name.count==5
-                client_name[0] = "#{client_name[0]} #{client_name[1]} #{client_name[2]} #{client_name[3]}"
-              end
-              if client.blank?
-                client = Client.find_by(dob: appointment[:clientdob]&.to_time&.strftime('%Y-%m-%d'), first_name: client_name&.last, last_name: client_name&.first)
-              end
+            client = Client.find_by(dob: appointment[:clientdob]&.to_time&.strftime('%Y-%m-%d'), first_name: client_name&.last, last_name: client_name&.first)
+            if appointment[:clientname]=='Syed Abraham Hasan' || appointment[:clientname]=='Syed Adam Hasan' || appointment[:clientname]=='Ana Clara El-Gamel'
+              client_name[2] = "#{client_name[1]} #{client_name[2]}"
+              # client_name[1] = "#{client_name[2]}"
+            elsif client_name.count==3
+              client_name[0] = "#{client_name[0]} #{client_name[1]}"
+            elsif client_name.count==4
+              client_name[0] = "#{client_name[0]} #{client_name[1]} #{client_name[2]}"
+            elsif client_name.count==5
+              client_name[0] = "#{client_name[0]} #{client_name[1]} #{client_name[2]} #{client_name[3]}"
             end
+            if client.blank?
+              client = Client.find_by(dob: appointment[:clientdob]&.to_time&.strftime('%Y-%m-%d'), first_name: client_name&.last, last_name: client_name&.first)
+            end
+          end
+          if appointment[:clientname]=='Tanay Toth, Peter '
+            client = Client.find(1894)
           end
           if client.present?
             if client.clinic_id==clinic_id
@@ -87,10 +89,6 @@ module CsvImport
                       end
                       if staff.present?
                         schedule = Scheduling.find_or_initialize_by(snowflake_appointment_id: appointment[:appointmentid])
-                        if client_enrollment_service.blank?
-                          puts "#{client.id}"
-                          puts "#{appointment}"
-                        else
                           schedule.client_enrollment_service_id = client_enrollment_service.id
                           schedule.staff_id = staff.id
                           schedule.date = appointment[:apptdate]&.to_time&.strftime('%Y-%m-%d')

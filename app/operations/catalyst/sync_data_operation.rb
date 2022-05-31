@@ -19,7 +19,7 @@ module Catalyst
             catalyst_data = CatalystData.find_by(catalyst_soap_note_id: data['soapNoteId'])
       
             if catalyst_data.blank?
-              catalyst_data = CatalystData.create(response: data, catalyst_patient_id: data['patientId'], catalyst_user_id: data['userId'],
+              catalyst_data = CatalystData.new(response: data, catalyst_patient_id: data['patientId'], catalyst_user_id: data['userId'],
                 date: data['date'].to_time.strftime('%Y-%m-%d'), start_time: data['startTime'].to_time.strftime('%H:%M'), 
                 end_time: data['endTime'].to_time.strftime('%H:%M'), catalyst_soap_note_id: data['soapNoteId'], 
                 date_revision_made: data['dateRevisionMade'])
@@ -31,7 +31,7 @@ module Catalyst
                   catalyst_data.clinical_director_signature = response['answer']
                 elsif response['questionText']=='Notes'
                   catalyst_data.note = response['answer']
-                elsif response['questionText']=='Guardian Signature'
+                elsif response['questionText']=='Guardian Signature' || response['questionText']=='Client/Guardian Signature'
                   catalyst_data.caregiver_signature = response['answer']
                 elsif response['questionText']=='Provider Signature'
                   catalyst_data.provider_signature = response['answer']
@@ -66,7 +66,7 @@ module Catalyst
                     catalyst_data.clinical_director_signature = response['answer']
                   elsif response['questionText']=='Notes'
                     catalyst_data.note = response['answer']
-                  elsif response['questionText']=='Guardian Signature'
+                  elsif response['questionText']=='Guardian Signature' || response['questionText']=='Client/Guardian Signature'
                     catalyst_data.caregiver_signature = response['answer']
                   elsif response['questionText']=='Provider Signature'
                     catalyst_data.provider_signature = response['answer']
