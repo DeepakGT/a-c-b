@@ -24,8 +24,7 @@ module CsvImport
           elsif appointment[:clientname]=='Buss, Matthias Rumell'
             client_name[1] = 'Matthias'
           end
-          if client_name.present? && client_name.count>2
-            client = Client.find_by(dob: appointment[:clientdob]&.to_time&.strftime('%Y-%m-%d'), first_name: client_name&.last, last_name: client_name&.first)
+          if client_name.present?
             if appointment[:clientname]=='Syed Abraham Hasan' || appointment[:clientname]=='Syed Adam Hasan' || appointment[:clientname]=='Ana Clara El-Gamel'
               client_name[2] = "#{client_name[1]} #{client_name[2]}"
               # client_name[1] = "#{client_name[2]}"
@@ -36,9 +35,7 @@ module CsvImport
             elsif client_name.count==5
               client_name[0] = "#{client_name[0]} #{client_name[1]} #{client_name[2]} #{client_name[3]}"
             end
-            if client.blank?
-              client = Client.find_by(dob: appointment[:clientdob]&.to_time&.strftime('%Y-%m-%d'), first_name: client_name&.last, last_name: client_name&.first)
-            end
+            client = Client.find_by(dob: appointment[:clientdob]&.to_time&.strftime('%Y-%m-%d'), first_name: client_name&.last, last_name: client_name&.first)
           end
           if appointment[:clientname]=='Tanay Toth, Peter '
             client = Client.find(1894)
