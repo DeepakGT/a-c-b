@@ -21,9 +21,9 @@ module CompareCatalystDataWithSystemData
         soap_note.caregiver_signature = true if catalyst_data.caregiver_signature.present?
         soap_note.save(validate: false)
         if soap_note.present? && soap_note.id!=nil
-          Loggers::Catalyst::SyncSoapNotesLoggerService.call(catalyst_data.id, "Soap note with catalyst soap note id #{data['soapNoteId']} is saved.")
+          Loggers::Catalyst::SyncSoapNotesLoggerService.call(catalyst_data.id, "Soap note with catalyst soap note id #{catalyst_data.catalyst_soap_note_id} is saved.")
         else
-          Loggers::Catalyst::SyncSoapNotesLoggerService.call(catalyst_data.id, "Soap note with catalyst soap note id #{data['soapNoteId']} cannot be saved.")
+          Loggers::Catalyst::SyncSoapNotesLoggerService.call(catalyst_data.id, "Soap note with catalyst soap note id #{catalyst_data.catalyst_soap_note_id} cannot be saved.")
         end
         # schedules = Scheduling.by_client_ids(client&.id).by_staff_ids(staff&.id).on_date(catalyst_data.date)
         schedules = Scheduling.joins(client_enrollment_service: :client_enrollment).by_client_ids(client&.id).on_date(catalyst_data.date)
