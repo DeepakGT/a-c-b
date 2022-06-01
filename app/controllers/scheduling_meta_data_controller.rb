@@ -87,6 +87,20 @@ class SchedulingMetaDataController < ApplicationController
     end
   end
 
+  def clients_list_for_filter
+    case current_user.role_name
+    when 'rbt', 'bcba'
+      clients = Client.by_staff_id_in_scheduling(current_user.id).or(Client.by_clinic(params[:location_id]))
+    else
+      clients = Client.by_clinic(params[:location_id])
+    end
+    @clients = clients&.uniq&.sort_by(&:first_name)
+  end
+
+  def staff_list_for_filter
+    @staff = Staff.by_home_clinic(params[:location_id])
+  end
+
   private
 
   def selectable_options_data
