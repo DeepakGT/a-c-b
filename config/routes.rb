@@ -79,8 +79,7 @@ Rails.application.routes.draw do
     get '/billing_dashboard', to: 'scheduling_meta_data#billing_dashboard'
     get '/sync_soap_notes', to: 'catalyst#sync_soap_notes'
     get '/unassigned_catalyst_soap_notes', to: 'scheduling_meta_data#unassigned_catalyst_soap_notes'
-    get '/schedulings/clients_list', to: 'scheduling_meta_data#clients_list_for_filter'
-    get '/schedulings/staff_list', to: 'scheduling_meta_data#staff_list_for_filter'
+    get '/schedulings/clients_and_staff_list', to: 'scheduling_meta_data#clients_and_staff_list_for_filter'
     resources :schedulings do
       post '/create_without_staff', to: 'schedulings#create_without_staff', on: :collection
       resources :soap_notes
