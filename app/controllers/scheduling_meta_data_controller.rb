@@ -2,7 +2,7 @@ class SchedulingMetaDataController < ApplicationController
   before_action :authenticate_user!
 
   def selectable_options
-    @selectable_options = get_selectable_options_data
+    @selectable_options = selectable_options_data
   end
 
   def services_list
@@ -39,6 +39,8 @@ class SchedulingMetaDataController < ApplicationController
     #                                   .or(change_requests.by_staff_ids(current_user.id)).left_outer_joins(:scheduling)
     @catalyst_data = CatalystData.after_live_date.past_60_days_catalyst_data.by_catalyst_user_id(current_user.id)
                                  .and(CatalystData.with_multiple_appointments.or(CatalystData.with_no_appointments)).first(30)
+
+                                 
     # sql = "(SELECT id, 'Upcoming Schedule' AS type FROM schedulings WHERE staff_id = #{current_user.id} AND status = 'Scheduled' AND date>=CURRENT_TIMESTAMP ORDER BY date LIMIT 20) UNION (SELECT id, 'Past Schedule' AS type FROM schedulings WHERE staff_id = #{current_user.id} AND status = 'Scheduled' AND date<CURRENT_TIMESTAMP AND date>=(CURRENT_TIMESTAMP + INTERVAL '-2 month') AND is_rendered=false ORDER BY date DESC) UNION (SELECT client_enrollment_services.id, 'client_enrollment_services' AS type FROM client_enrollment_services INNER JOIN client_enrollments ON client_enrollments.id=client_enrollment_services.client_enrollment_id INNER JOIN clients ON clients.id=client_enrollments.client_id WHERE clients.bcba_id = #{current_user.id} AND client_enrollment_services.end_date >= CURRENT_TIMESTAMP AND client_enrollment_services.end_date <= (CURRENT_TIMESTAMP + INTERVAL '9 day')) UNION (SELECT id,'Catalyst Data' AS type FROM catalyst_data WHERE system_scheduling_id IS NULL LIMIT 30);"
     # @data = ActiveRecord::Base.connection.exec_query(sql)&.rows
   end
@@ -50,13 +52,13 @@ class SchedulingMetaDataController < ApplicationController
     schedules = schedules.by_client_ids(client_ids)
     @todays_appointments = schedules.by_status.todays_schedulings.last(10)
     case current_user.role_name
-    when 'executive_director', 'client_care_coordinator'
+    when 'executive_director', 'client_care_coordinator', 'Clinical Director'
       @past_schedules = schedules.by_status.past_60_days_schedules.exceeded_24_h_scheduling.unrendered_schedulings.order(date: :desc)
     when 'super_admin', 'administrator'
       @past_schedules = schedules.by_status.past_60_days_schedules.exceeded_3_days_scheduling.unrendered_schedulings.order(date: :desc)
     end
     @client_enrollment_services = ClientEnrollmentService.by_client(client_ids).and(ClientEnrollmentService.about_to_expire.or(ClientEnrollmentService.expired))
-                                                         .includes(:service, :staff, :service_providers, :client_enrollment, client_enrollment: [:client, :funding_source]).uniq
+                                                         .includes(:service, :staff, :service_providers, :client_enrollment, client_enrollment: %i[client funding_source]).uniq
     change_requests = SchedulingChangeRequest.by_approval_status
     @change_requests = change_requests.by_client_ids(client_ids)
     catalyst_patient_ids = Client.where(id: client_ids).pluck(:catalyst_patient_id).compact!
@@ -67,10 +69,10 @@ class SchedulingMetaDataController < ApplicationController
 
   def billing_dashboard
     @authorizations_expire_in_5_days = ClientEnrollmentService.expire_in_5_days
-    @authorizations_renewal_in_5_to_20_days = get_authorization_renewals_in_5_to_20_days
-    @authorizations_renewal_in_21_to_60_days = get_authorization_renewals_in_21_to_60_days
+    @authorizations_renewal_in_5_to_20_days = authorization_renewals_in_5_to_20_days
+    @authorizations_renewal_in_21_to_60_days = authorization_renewals_in_21_to_60_days
     @client_with_no_authorizations = Client.with_no_authorizations
-    @client_with_only_97151_service_authorization = get_clients_with_only_97151_service_authorization
+    @client_with_only_97151_service_authorization = clients_with_only_97151_service_authorization
   end
 
   def unassigned_catalyst_soap_notes
@@ -87,7 +89,7 @@ class SchedulingMetaDataController < ApplicationController
 
   private
 
-  def get_selectable_options_data
+  def selectable_options_data
     if params[:location_id].present?
       clinic = Clinic.find(params[:location_id])
       client = clinic.clients.active
@@ -115,32 +117,30 @@ class SchedulingMetaDataController < ApplicationController
     client_enrollment_services&.uniq
   end
 
-  def get_clients_with_only_97151_service_authorization
+  def clients_with_only_97151_service_authorization
     client_enrollment_services_ids = ClientEnrollmentService.joins(:service).where('services.display_code != ?', '97151').pluck(:id)
     clients = Client.where.not(id: @client_with_no_authorizations.pluck(:id))
     clients_ids = clients.joins(client_enrollments: :client_enrollment_services).where('client_enrollment_services.id': client_enrollment_services_ids).pluck(:id).uniq
     clients = clients.where.not(id: clients_ids)
   end
 
-  def get_authorization_renewals_in_5_to_20_days
+  def authorization_renewals_in_5_to_20_days
     client_enrollment_services = ClientEnrollmentService.started_between_5_to_20_days_past_from_today.active
-    client_enrollment_services = get_authorization_renewals(client_enrollment_services)
+    client_enrollment_services = authorization_renewals(client_enrollment_services)
   end
 
-  def get_authorization_renewals_in_21_to_60_days
+  def authorization_renewals_in_21_to_60_days
     client_enrollment_services = ClientEnrollmentService.started_between_21_to_60_days_past_from_today.active
-    client_enrollment_services = get_authorization_renewals(client_enrollment_services)
+    client_enrollment_services = authorization_renewals(client_enrollment_services)
   end
 
-  def get_authorization_renewals(client_enrollment_services)
+  def authorization_renewals(client_enrollment_services)
     return client_enrollment_services if client_enrollment_services.blank?
 
     client_enrollment_services = client_enrollment_services.map do |client_enrollment_service|
       authorizations = ClientEnrollmentService.by_client(client_enrollment_service.client_enrollment.client_id).by_funding_source(client_enrollment_service.client_enrollment&.funding_source_id)
                                               .by_service(client_enrollment_service.service_id).except_self(client_enrollment_service.id).before_date(client_enrollment_service.start_date)
-      if authorizations.present?
-        client_enrollment_service
-      end
+      client_enrollment_service if authorizations.present?
     end
     client_enrollment_services.compact!
   end
