@@ -32,8 +32,8 @@ class SchedulingsController < ApplicationController
 
       update_scheduling 
     when 'bcba'
-      if @schedule.date>=Time.current.to_date
-        update_scheduling
+      if @schedule.date>Time.current.to_date || (@schedule.date==Time.current.to_date && @schedule.start_time > Time.current.strftime('%H:%M')) 
+        update_scheduling_when_bcba
       else
         update_render_service if params[:status]=='Rendered'
         return if !is_renderable
@@ -45,13 +45,12 @@ class SchedulingsController < ApplicationController
   end
 
   def destroy
-    CatalystData.where(system_scheduling_id: @schedule.id).update_all(system_scheduling_id: nil)
-    catalyst_data = CatalystData.where('multiple_schedulings_ids @> ?', "{#{@schedule.id}}")
-    catalyst_data.each do |catalyst_datum| 
-      catalyst_datum.multiple_schedulings_ids.delete("#{@schedule.id}")
-      catalyst_datum.save
+    case current_user.role_name
+    when 'super_admin'
+      delete_scheduling
+    when 'bcba', 'executive_director', 'client_care_coordinator', 'Clinical Director', 'administrator'
+      delete_scheduling if @schedule.created_at.strftime('%Y-%m-%d')>=(Time.current-1.day).strftime('%Y-%m-%d')
     end
-    @schedule.destroy
   end
 
   def create_without_staff
@@ -78,6 +77,10 @@ class SchedulingsController < ApplicationController
     params.permit(arr)
   end
 
+  def scheduling_params_when_bcba
+    params.permit(%i[ status date start_time end_time units minutes])
+  end
+
   def set_scheduling
     @schedule = Scheduling.find(params[:id])
   end
@@ -91,26 +94,6 @@ class SchedulingsController < ApplicationController
     schedules = schedules.by_staff_ids(string_to_array(params[:staff_ids])) if params[:staff_ids].present?
     schedules = schedules.by_client_ids(string_to_array(params[:client_ids])) if params[:client_ids].present?
     schedules = schedules.by_service_ids(string_to_array(params[:service_ids])) if params[:service_ids].present?
-    # if current_user.role_name == 'rbt'
-    #   if params[:default_location_id].present?
-    #     location_id = params[:default_location_id]
-    #     schedules = schedules.left_outer_joins(client_enrollment_service: {client_enrollment: :client}).by_client_clinic(location_id)
-    #                          .or(schedules.by_staff_clinic(location_id)).left_outer_joins(staff: :staff_clinics)
-    #   end
-    # else
-    #   if params[:staff_ids].blank? && params[:client_ids].blank? && params[:service_ids].blank?
-    #     if current_user.role_name=='bcba'
-    #       schedules = schedules.joins(client_enrollment_service: {client_enrollment: :client}).where('clients.bcba_id': current_user.id).or(schedules.where(staff_id: current_user.id))
-    #     # elsif current_user.role_name=='rbt'
-    #     #   schedules = schedules.where(staff_id: current_user.id)
-    #     end
-    #   end
-    # end
-    if current_user.role_name=='rbt' || current_user.role_name=='bcba'
-      # clinic_ids = current_user.staff_clinics&.pluck(:clinic_id)
-      # schedules = schedules.by_client_clinic(clinic_ids)
-      schedules = schedules.by_staff_ids(current_user.id)
-    end
 
     schedules = schedules.on_date(params[:startDate]..params[:endDate]) if params[:startDate].present? && params[:endDate].present?
 
@@ -143,13 +126,19 @@ class SchedulingsController < ApplicationController
   end 
 
   def update_render_service
-    if params[:is_rendered].to_bool.true? || params[:status]=='Rendered'
-      RenderAppointments::RenderScheduleManualOperation.call(@schedule.id, params[:catalyst_soap_note_id]) if @schedule.date<Time.current.to_date
-    end
+    RenderAppointments::RenderScheduleManualOperation.call(@schedule.id, params[:catalyst_soap_note_id]) if (params[:is_rendered].to_bool.true? || params[:status]=='Rendered') && @schedule.date<Time.current.to_date
   end
 
   def update_scheduling
     @schedule.update(scheduling_params)
+    @schedule.updator_id = current_user.id
+    update_render_service if params[:is_rendered].present? || params[:status]=='Rendered'
+    update_client_enrollment_service if params[:client_enrollment_service_id].present?
+    @schedule.save
+  end
+
+  def update_scheduling_when_bcba
+    @schedule.update(scheduling_params_when_bcba)
     @schedule.updator_id = current_user.id
     update_render_service if params[:is_rendered].present? || params[:status]=='Rendered'
     update_client_enrollment_service if params[:client_enrollment_service_id].present?
@@ -176,6 +165,16 @@ class SchedulingsController < ApplicationController
   
   def update_units_columns(client_enrollment_service)
     ClientEnrollmentServices::UpdateUnitsColumnsOperation.call(client_enrollment_service)
+  end
+
+  def delete_scheduling
+    CatalystData.where(system_scheduling_id: @schedule.id).update_all(system_scheduling_id: nil)
+    catalyst_data = CatalystData.where('multiple_schedulings_ids @> ?', "{#{@schedule.id}}")
+    catalyst_data.each do |catalyst_datum| 
+      catalyst_datum.multiple_schedulings_ids.delete("#{@schedule.id}")
+      catalyst_datum.save
+    end
+    @schedule.destroy
   end
   # end of private
 end
