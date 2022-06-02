@@ -16,13 +16,15 @@ module CsvImport
 
         CSV.foreach(Rails.root.join("#{file_path}"), headers: true, header_converters: :symbol) do |appointment|
           i=i+1
-          if appointment[:clientname]=='Martin, Wyatt ' || appointment[:clientname]=='Martin, Wyatt'
+          if appointment[:clientname]=='Anderson, Robert RJ'
             client_name = appointment[:clientname]&.split(',')&.each(&:strip!)
             case appointment[:clientname]
             when 'James, Francis Franky' 
               client_name[1] = 'Francis'
             when 'Buss, Matthias Rumell'
               client_name[1] = 'Matthias'
+            when 'Anderson, Robert RJ'
+              client_name[1] = 'Robert'
             end
             if client_name.present?
               if appointment[:clientname]=='Syed Abraham Hasan' || appointment[:clientname]=='Syed Adam Hasan' || appointment[:clientname]=='Ana Clara El-Gamel'
