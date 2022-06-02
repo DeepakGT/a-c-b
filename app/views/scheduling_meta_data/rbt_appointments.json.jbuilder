@@ -249,7 +249,29 @@ json.data do
       json.unrendered_reasons schedule.unrendered_reason
       json.units schedule.units
       json.minutes schedule.minutes
-      if schedule.catalyst_data_ids.present?
+      if schedule.soap_notes.present? && schedule.soap_notes.last.catalyst_data_id.nil?
+        json.soap_note do 
+          soap_note = schedule.soap_notes.last
+          json.id soap_note.id
+          json.scheduling_id soap_note.scheduling_id
+          json.note soap_note.note
+          json.add_date soap_note.add_date
+          json.rbt_sign soap_note.rbt_signature
+          json.rbt_sign_name soap_note.rbt_signature_author_name
+          json.rbt_sign_date soap_note.rbt_signature_date
+          json.bcba_sign soap_note.bcba_signature
+          json.bcba_sign_name soap_note.bcba_signature_author_name
+          json.bcba_sign_date soap_note.bcba_signature_date&.strftime('%Y-%m-%d %H:%M')
+          json.clinical_director_sign soap_note.clinical_director_signature
+          json.clinical_director_sign_name soap_note.clinical_director_signature_author_name
+          json.clinical_director_sign_date soap_note.clinical_director_signature_date
+          json.caregiver_sign soap_note.signature_file&.blob&.service_url
+          json.caregiver_sign_date soap_note.caregiver_signature_datetime
+          json.creator_id user&.id
+          json.creator "#{user&.first_name} #{user&.last_name}"
+          json.synced_with_catalyst soap_note.synced_with_catalyst
+        end
+      elsif schedule.catalyst_data_ids.present?
         catalyst_datas = CatalystData.where(id: schedule.catalyst_data_ids).where(system_scheduling_id: schedule.id)
         if catalyst_datas.present?
           json.catalyst_data do
