@@ -6,7 +6,7 @@ class SyncWithCatalystOneMonthWorker
   def perform
     puts "#{DateTime.current}"
     puts "SyncWithCatalystJob is started"
-    sync_data((Time.current.to_date-10).strftime('%m-%d-%Y'), (Time.current.to_date).strftime('%m-%d-%Y'))
+    sync_data((Time.current.to_date-60).strftime('%m-%d-%Y'), (Time.current.to_date).strftime('%m-%d-%Y'))
     puts "SyncWithCatalystJob is completed"
     puts ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"        
   end
@@ -24,7 +24,7 @@ class SyncWithCatalystOneMonthWorker
       Loggers::Catalyst::SyncSoapNotesLoggerService.call(nil, "From #{batch_start_date} to #{batch_end_date}, processed catalyst soap note sync at #{Time.current}.")
       batch_start_date = batch_end_date
     end
-    
+
     Loggers::Catalyst::SyncSoapNotesLoggerService.call(nil, "Syncing catalyst soap notes from #{start_date} to #{end_date} at #{Time.current} is completed.")
 
     Loggers::Catalyst::SyncSoapNotesLoggerService.call(nil, "Rendering catalyst synced appointments from #{start_date} to #{end_date} at #{Time.current} has started.")
