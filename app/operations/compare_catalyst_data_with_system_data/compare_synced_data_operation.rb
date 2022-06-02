@@ -28,7 +28,7 @@ module CompareCatalystDataWithSystemData
         # schedules = Scheduling.by_client_ids(client&.id).by_staff_ids(staff&.id).on_date(catalyst_data.date)
         schedules = Scheduling.joins(client_enrollment_service: :client_enrollment).by_client_ids(client&.id).on_date(catalyst_data.date).with_staff
 
-        if schedules.count==1 && schedules.first.staff_id==staff.id
+        if schedules.count==1
           schedule = schedules.first
           min_start_time = (catalyst_data.start_time.to_time-15.minutes)
           max_start_time = (catalyst_data.start_time.to_time+15.minutes)
@@ -130,7 +130,7 @@ module CompareCatalystDataWithSystemData
             max_start_time = (catalyst_data.start_time.to_time+15.minutes)
             min_end_time = (catalyst_data.end_time.to_time-15.minutes)
             max_end_time = (catalyst_data.end_time.to_time+15.minutes)
-            if (min_start_time..max_start_time).include?(appointment.start_time.to_time) && (min_end_time..max_end_time).include?(appointment.end_time.to_time) && appointment.staff_id==staff.id
+            if (min_start_time..max_start_time).include?(appointment.start_time.to_time) && (min_end_time..max_end_time).include?(appointment.end_time.to_time)
               if appointment.is_rendered.to_bool.false?
                 appointment.update(start_time: catalyst_data.start_time, end_time: catalyst_data.end_time)
                 appointment.units = catalyst_data.units
