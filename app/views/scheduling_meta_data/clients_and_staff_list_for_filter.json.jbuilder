@@ -9,6 +9,7 @@ json.data do
   json.staff do
     json.array! @staff do |staff|
       json.id staff.id
+      json.name "#{staff.first_name} #{staff.last_name}"
       json.first_name staff.first_name
       json.last_name staff.last_name
       json.email staff.email
@@ -17,6 +18,14 @@ json.data do
       json.terminated_on staff.terminated_on
       json.title staff.role_name
       json.gender staff.gender
+    end
+  end
+  json.services do
+    json.array! @services do |service|
+      json.id service.id
+      json.name service.name
+      json.display_code service.display_code
+      json.is_service_provider_required service.is_service_provider_required
     end
   end
 end
