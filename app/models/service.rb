@@ -12,4 +12,6 @@ class Service < ApplicationRecord
 
   # Enums
   enum status: {active: 0, inactive: 1}
+
+  scope :by_unassigned_appointments_allowed, -> { where('services.is_unassigned_appointment_allowed = ?', true)}
 end

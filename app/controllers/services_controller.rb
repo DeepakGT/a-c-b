@@ -30,7 +30,7 @@ class ServicesController < ApplicationController
 
   def service_params
     params.permit(:name, :status, :display_code, :is_service_provider_required,
-                  service_qualifications_attributes: :qualification_id)
+                  service_qualifications_attributes: :qualification_id, :is_unassigned_appointment_allowed)
   end
 
   def set_service
