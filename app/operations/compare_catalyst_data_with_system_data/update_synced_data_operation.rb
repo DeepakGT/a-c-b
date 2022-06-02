@@ -132,6 +132,10 @@ module CompareCatalystDataWithSystemData
             response_data_hash[:catalyst_data] = catalyst_data.attributes
           end
           response_data_hash
+        else
+          catalyst_data.multiple_schedulings_ids = []
+          catalyst_data.save(validate: false)
+          response_data_hash = CompareCatalystDataWithSystemData::CompareSyncedDataOperation.call(catalyst_data)
         end
       end
     end
