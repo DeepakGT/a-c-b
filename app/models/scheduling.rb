@@ -65,9 +65,7 @@ class Scheduling < ApplicationRecord
     if self.user.role_name=='executive_director' && self.date.present?
       errors.add(:scheduling, 'You are not authorized to create appointments for 3 days ago.') if self.date<(Time.current.to_date-3)
     elsif self.date.present?
-      if self.date<Time.current.to_date || (self.date==Time.current.to_date && self.start_time<=Time.current.strftime('%H:%M'))
-        errors.add(:scheduling, 'You are not authorized to create appointment in past.') 
-      end
+      errors.add(:scheduling, 'You are not authorized to create appointment in past.') if self.date<Time.current.to_date || (self.date==Time.current.to_date && self.start_time<=Time.current.strftime('%H:%M'))
     end
   end
 
@@ -79,14 +77,8 @@ class Scheduling < ApplicationRecord
     scheduled_schedules = schedules.scheduled_scheduling
     used_units = completed_schedules.with_units.pluck(:units).sum
     scheduled_units = scheduled_schedules.with_units.pluck(:units).sum
-    # used_minutes = completed_schedules.with_minutes.pluck(:minutes).sum
-    # scheduled_minutes = scheduled_schedules.with_minutes.pluck(:minutes).sum
-    if self.units.present? && self.client_enrollment_service.units.present?
-      errors.add(:units, "left for authorization are not enough to create this appointment.") if self.units > (self.client_enrollment_service.units - (used_units + scheduled_units))
-    end
-    # if self.minutes.present? && self.client_enrollment_service.minutes.present?
-    #   errors.add(:minutes, "There are not enough minutes left to create this appointment.") if self.minutes > (self.client_enrollment_service.minutes - (used_minutes + scheduled_minutes))
-    # end
+    
+    errors.add(:units, "left for authorization are not enough to create this appointment.") if self.units.present? && self.client_enrollment_service.units.present? && (self.units>(self.client_enrollment_service.units-(used_units+scheduled_units)))
   end
 
   # def validate_staff
@@ -110,14 +102,12 @@ class Scheduling < ApplicationRecord
       rem = self.minutes%15
       if rem == 0
         self.units = self.minutes/15
+      elsif rem < 8
+        self.units = (self.minutes - rem)/15
       else
-        if rem < 8
-          self.units = (self.minutes - rem)/15
-        else
-          self.units = (self.minutes + 15 - rem)/15
-        end
-      end 
-    end
+        self.units = (self.minutes + 15 - rem)/15
+      end
+    end 
   end
   # end of private
 end

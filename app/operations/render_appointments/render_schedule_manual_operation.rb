@@ -17,11 +17,11 @@ module RenderAppointments
         if catalyst_notes_ids.present? && !catalyst_notes_ids.empty?
           @catalyst_notes = CatalystData.where('id IN (?)', catalyst_notes_ids)
           @catalyst_notes.each do |catalyst_note|
-          create_soap_note(schedule, catalyst_note)
-          catalyst_note.is_appointment_found = true
-          catalyst_note.system_scheduling_id = schedule.id
-          catalyst_note.multiple_schedulings_ids = []
-          catalyst_note.save(validate: false)
+            create_soap_note(schedule, catalyst_note)
+            catalyst_note.is_appointment_found = true
+            catalyst_note.system_scheduling_id = schedule.id
+            catalyst_note.multiple_schedulings_ids = []
+            catalyst_note.save(validate: false)
           end
         end
         schedule.save(validate: false)

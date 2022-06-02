@@ -61,7 +61,7 @@ module CsvImport
                         client_enrollment_service.units = (client_enrollment_service.minutes - rem) / 15
                       end
                       client_enrollment_service.save(validate: false)
-                      if client_enrollment_service.id==nil
+                      if client_enrollment_service.id.nil?
                         Loggers::SnowflakeClientEnrollmentServiceLoggerService.call(i, 'Client enrollment service cannot be saved.')
                       else
                         Loggers::SnowflakeClientEnrollmentServiceLoggerService.call(i, 'Client enrollment service is saved.')
@@ -100,7 +100,7 @@ module CsvImport
                       client_enrollment_service.units = (client_enrollment_service.minutes - rem) / 15
                     end
                     client_enrollment_service.save(validate: false)
-                    if client_enrollment_service.id==nil
+                    if client_enrollment_service.id.nil?
                       Loggers::SnowflakeClientEnrollmentServiceLoggerService.call(i, 'Client enrollment service cannot be saved.')
                     else
                       Loggers::SnowflakeClientEnrollmentServiceLoggerService.call(i, 'Client enrollment service is saved.')
@@ -157,7 +157,7 @@ module CsvImport
         when 'BCBS MA', 'massachusetts bcbs', 'MASSACHUSETTS BCBS'
           return FundingSource.find_by(name: 'Massachusetts BCBS').id
         else 
-          if funding_source_name!=nil
+          if !funding_source_name.nil?
             funding_source = FundingSource.find_by('lower(name) = ?', funding_source_name&.downcase)
             return funding_source.id
           else

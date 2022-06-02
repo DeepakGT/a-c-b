@@ -63,9 +63,7 @@ class ClientEnrollmentService < ApplicationRecord
 
   def validate_count_of_units
     used_and_scheduled_units = self.schedulings&.with_rendered_or_scheduled_as_status&.with_units&.pluck(:units)&.sum
-    if used_and_scheduled_units>0 && self.units < used_and_scheduled_units
-      errors.add(:units, "Units entered in client_enrollment service are less than #{used_and_scheduled_units} units used in schedulings.")
-    end
+    errors.add(:units, "Units entered in client_enrollment service are less than #{used_and_scheduled_units} units used in schedulings.") if used_and_scheduled_units>0 && self.units < used_and_scheduled_units
   end
 
   def validate_dates
@@ -74,9 +72,7 @@ class ClientEnrollmentService < ApplicationRecord
                                                         .where.not(id: self.id)
     client_enrollment_services = client_enrollment_services.where('start_date <= ? AND end_date >= ?', self.start_date, self.start_date)
                                                            .or(client_enrollment_services.where('start_date >= ? AND start_date <= ?', self.start_date, self.end_date))
-    if client_enrollment_services.any?
-      errors.add(:client_enrollment_service, 'cannot be created for given start date and end date.')
-    end
+    errors.add(:client_enrollment_service, 'cannot be created for given start date and end date.') if client_enrollment_services.any?
   end
   # end of private
 end

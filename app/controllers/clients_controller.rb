@@ -9,7 +9,7 @@ class ClientsController < ApplicationController
     clients = filter_by_status(clients)
     clients = do_filter(clients) if params[:search_value].present?
     clients = filter_by_location(clients)
-    @clients = clients.uniq&.sort_by(&:first_name).paginate(page: params[:page])
+    @clients = clients&.uniq&.sort_by(&:first_name)&.paginate(page: params[:page])
   end
 
   def show; end
@@ -24,6 +24,7 @@ class ClientsController < ApplicationController
   end
 
   def destroy
+    SoapNote.by_client(@client.id).destroy_all
     @client.destroy
   end
 
@@ -85,8 +86,8 @@ class ClientsController < ApplicationController
           clients = clients.by_first_name(fname)
           clients = clients.by_last_name(lname)
         else
-          clients = clients.by_first_name(fname) if fname.present?
-          clients = clients.by_last_name(lname) if lname.present?
+          clients = clients.by_first_name(fname) # if fname.present?
+          clients = clients.by_last_name(lname) # if lname.present?
         end
         return clients
       when "gender"

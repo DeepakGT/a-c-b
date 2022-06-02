@@ -30,7 +30,7 @@ module Snowflake
             client.clinic_id = Clinic.first.id if client.clinic_id.blank?
           end
           client.save(validate: false)
-          if client.id==nil
+          if client.id.nil?
             Loggers::SnowflakeClientLoggerService.call(appointments.find_index(appointment), 'Client cannot be saved.')
           else
             Loggers::SnowflakeClientLoggerService.call(appointments.find_index(appointment), 'Client is saved.')
@@ -39,7 +39,7 @@ module Snowflake
           address = client.addresses.find_or_initialize_by(city: appointment['clientcity'], zipcode: appointment['clientzip'], address_type: 'service_address')
           address.is_default = true
           address.save(validate: false)
-          if address.id==nil
+          if address.id.nil?
             Loggers::SnowflakeClientLoggerService.call(appointments.find_index(appointment), 'Client address cannot be saved.')
           else
             Loggers::SnowflakeClientLoggerService.call(appointments.find_index(appointment), 'Client address is saved.')

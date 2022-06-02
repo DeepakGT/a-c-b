@@ -34,7 +34,7 @@ module Snowflake
                 client_enrollment = client.client_enrollments.find_or_initialize_by(enrollment_date: student_service['contractstartdate']&.to_time&.strftime('%Y-%m-%d'), terminated_on: student_service['contractenddate']&.to_time&.strftime('%Y-%m-%d'), funding_source_id: funding_source_id)
                 client_enrollment.source_of_payment = 'insurance'
                 client_enrollment.save(validate: false)
-                if client_enrollment.id==nil
+                if client_enrollment.id.nil?
                   Loggers::SnowflakeClientEnrollmentLoggerService.call(student_services.find_index(student_service), 'Client enrollment cannot be saved.')
                 else
                   Loggers::SnowflakeClientEnrollmentLoggerService.call(student_services.find_index(student_service), 'Client enrollment is saved.')
@@ -46,7 +46,7 @@ module Snowflake
               Loggers::SnowflakeClientEnrollmentLoggerService.call(student_services.find_index(student_service), 'Creating self_pay client_enrollment.')
               client_enrollment = client.client_enrollments.find_or_initialize_by(enrollment_date: student_service['contractstartdate']&.to_time&.strftime('%Y-%m-%d'), terminated_on: student_service['contractenddate']&.to_time&.strftime('%Y-%m-%d'), source_of_payment: 'self_pay')
               client_enrollment.save(validate: false)
-              if client_enrollment.id==nil
+              if client_enrollment.id.nil?
                 Loggers::SnowflakeClientEnrollmentLoggerService.call(student_services.find_index(student_service), 'Client enrollment cannot be saved.')
               else
                 Loggers::SnowflakeClientEnrollmentLoggerService.call(student_services.find_index(student_service), 'Client enrollment is saved.')
@@ -94,7 +94,7 @@ module Snowflake
         when 'MASSACHUSETTS BCBS'
           return FundingSource.find_by(name: 'Massachusetts BCBS').id
         else 
-          if funding_source_name!=nil
+          if !funding_source_name.nil?
             funding_source = FundingSource.where('lower(name) = ?', funding_source_name&.downcase).first
             return funding_source.id
           else

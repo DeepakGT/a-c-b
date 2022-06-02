@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe SoapNote, type: :model do
   describe "#associations" do
-    it { SoapNote.reflect_on_association(:scheduling).macro.should  eq(:belongs_to) }
+    it { SoapNote.reflect_on_association(:scheduling).macro.should eq(:belongs_to) }
     it { should have_one_attached(:signature_file) }
   end
 

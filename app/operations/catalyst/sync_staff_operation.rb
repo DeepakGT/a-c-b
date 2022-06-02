@@ -1,6 +1,6 @@
 module Catalyst
   module SyncStaffOperation
-    STAFF_PASSWORD = 'Staff@1234'
+    STAFF_PASSWORD = 'Staff@1234'.freeze
 
     class << self
       def call(start_date)

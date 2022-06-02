@@ -4,7 +4,7 @@ class ClientMetaDataController < ApplicationController
   before_action :set_service, only: :service_providers_list
 
   def selectable_options
-    @selectable_options = get_selectable_options_data
+    @selectable_options = selectable_options_data
   end
 
   def service_providers_list
@@ -40,7 +40,7 @@ class ClientMetaDataController < ApplicationController
     @service = Service.find(params[:service_id])
   end
 
-  def get_selectable_options_data
+  def selectable_options_data
     client_enrollments = @client.client_enrollments.active.where.not(source_of_payment: 'self_pay')
     selectable_options = { services: Service.order(:name),
                            client_enrollments: client_enrollments&.order(is_primary: :desc) }

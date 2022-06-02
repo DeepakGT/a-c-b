@@ -28,8 +28,7 @@ class Client < ApplicationRecord
   scope :by_clinic, ->(clinic_id){ where(clinic_id: clinic_id) }
   scope :by_bcbas, ->(bcba_ids) { where(bcba_id: bcba_ids) }
   scope :by_staff_id_in_scheduling, ->(staff_id){ joins(client_enrollments: {client_enrollment_services: :schedulings}).where('schedulings.staff_id = ?', staff_id) }
-  scope :with_no_authorizations, ->{ left_outer_joins(client_enrollments: :client_enrollment_services).select('clients.*').group('clients.id')
-                                                                                                      .having('count(client_enrollment_services.*) = ?',0) }
+  scope :with_no_authorizations, ->{ left_outer_joins(client_enrollments: :client_enrollment_services).select('clients.*').group('clients.id').having('count(client_enrollment_services.*) = ?',0) }
   scope :active, ->{ where(status: 'active') }
   scope :inactive, ->{ where(status: 'inactive') }
   scope :by_first_name, ->(fname){ where("first_name ILIKE '%#{fname}%'") }
@@ -39,19 +38,17 @@ class Client < ApplicationRecord
   scope :by_bcba_last_name, ->(fname){ where(bcba_id: User.by_roles(['bcba', 'Clinical Director']).by_last_name(fname).ids) }
   scope :by_gender, ->(gender_value){ where(gender: Client.genders[gender_value] || -1) }
   scope :by_payor_status, ->(payor_status_value){ where("payor_status ILIKE '%#{payor_status_value}%'") }
-  scope :by_payor, ->(payor_name){ joins(client_enrollments: :funding_source).where("client_enrollments.is_primary = ?", true)
-                                                                             .where("client_enrollments.terminated_on >= ? OR terminated_on IS NULL", Time.current.strftime('%Y-%m-%d'))
-                                                                             .where("funding_sources.name ILIKE '%#{payor_name}%'") }
+  scope :by_payor, ->(payor_name){ joins(client_enrollments: :funding_source).where("client_enrollments.is_primary = ?", true).where("client_enrollments.terminated_on >= ? OR terminated_on IS NULL", Time.current.strftime('%Y-%m-%d')).where("funding_sources.name ILIKE '%#{payor_name}%'") }
 
   def save_with_exception_handler
     self.save
-  rescue Exception => e
+  rescue StandardError => e
     errors.add(:address_type, "already present.") if e.is_a? ActiveRecord::RecordNotUnique
   end
 
   def update_with_exception_handler(client_params)
     self.update(client_params)
-  rescue Exception => e
+  rescue StandardError => e
     errors.add(:address_type, "already present.") if e.is_a? ActiveRecord::RecordNotUnique
   end
 

@@ -9,6 +9,8 @@ module RenderAppointments
 
       def render_schedule(schedule_id)
         schedule = Scheduling.find(schedule_id)
+        schedule.unrendered_reason = []
+        schedule.save(validate: false)
         if schedule.soap_notes.present?
           schedule.soap_notes.each do |soap_note|
             RenderAppointments::RenderBySoapNoteOperation.call(soap_note.id)

@@ -86,8 +86,8 @@ class StaffController < ApplicationController
           staff = staff.by_first_name(fname)
           staff = staff.by_last_name(lname)
         else
-          staff = staff.by_first_name(fname) if fname.present?
-          staff = staff.by_last_name(lname) if lname.present?
+          staff = staff.by_first_name(fname) # if fname.present?
+          staff = staff.by_last_name(lname) # if lname.present?
         end
         return staff
       when "organization"

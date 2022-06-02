@@ -1,5 +1,7 @@
-class Overrides::RegistrationsController < DeviseTokenAuth::RegistrationsController
-  def resource_errors
-    super[:full_messages]
-  end
+class Overrides < DeviseTokenAuth::RegistrationsController
+  class RegistrationsController
+    def resource_errors
+      super[:full_messages]
+    end
+  end 
 end

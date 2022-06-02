@@ -92,7 +92,7 @@ module Snowflake
                       schedule.cross_site_allowed = true if appointment['crossofficeappt'].present? && appointment['crossofficeappt'].split('/').count>1
                       schedule.service_address_id = client.addresses&.by_service_address&.find_by(city: appointment['clientcity'], zipcode: appointment['clientzip'])&.id
                       schedule.save(validate: false)
-                      if schedule.id==nil
+                      if schedule.id.nil?
                         Loggers::SnowflakeSchedulingLoggerService.call(i, 'Schedule cannot be saved.')
                       else
                         Loggers::SnowflakeSchedulingLoggerService.call(i, 'Schedule is saved.')
@@ -181,7 +181,7 @@ module Snowflake
                     schedule.cross_site_allowed = true if appointment['crossofficeappt'].present? && appointment['crossofficeappt'].split('/').count>1
                     schedule.service_address_id = client.addresses&.by_service_address&.find_by(city: appointment['clientcity'], zipcode: appointment['clientzip'])&.id
                     schedule.save(validate: false)
-                    if schedule.id==nil
+                    if schedule.id.nil?
                       Loggers::SnowflakeSchedulingLoggerService.call(i, 'Schedule cannot be saved.')
                     else
                       Loggers::SnowflakeSchedulingLoggerService.call(i, 'Schedule is saved.')

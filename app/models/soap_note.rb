@@ -1,6 +1,5 @@
 class SoapNote < ApplicationRecord
-  attr_accessor :caregiver_sign
-  attr_accessor :user
+  attr_accessor :caregiver_sign, :user
 
   belongs_to :scheduling, optional: true
   has_one_attached :signature_file
@@ -40,7 +39,8 @@ class SoapNote < ApplicationRecord
 
   def validate_signatures
     if self.scheduling.present?
-      if scheduling.staff.role_name=='bcba'
+      case scheduling.staff.role_name
+      when 'bcba'
         if user.role_name=='rbt' && self.rbt_signature==true && self.rbt_signature_author_name=="#{user.first_name} #{user.last_name}"
           errors.add(:rbt_signature, 'must not be present for appointment created for bcba.')
         end
@@ -49,7 +49,7 @@ class SoapNote < ApplicationRecord
             errors.add(:bcba_signature, 'cannot be done by bcba that is not in authorization.')
           end
         end
-      elsif scheduling.staff.role_name=='rbt'
+      when 'rbt'
         if user.role_name=='rbt' && self.rbt_signature==true && self.rbt_signature_author_name=="#{user.first_name} #{user.last_name}"
           errors.add(:rbt_signature, 'cannot be done by rbt that is not in appointment. Please update appointment to let another rbt sign.') if self.scheduling.staff!=user
         elsif user.role_name=='bcba' && self.rbt_signature==true && self.rbt_signature_author_name=="#{user.first_name} #{user.last_name}"

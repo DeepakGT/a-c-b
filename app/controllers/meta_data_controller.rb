@@ -2,7 +2,7 @@ class MetaDataController < ApplicationController
   before_action :authenticate_user!
 
   def selectable_options
-    @selectable_options = get_selectable_options_data
+    @selectable_options = selectable_options_data
   end
 
   def clinics_list
@@ -28,7 +28,7 @@ class MetaDataController < ApplicationController
 
   private
 
-  def get_selectable_options_data
+  def selectable_options_data
     selectable_options = { countries: country_list,
                            preferred_languages: Client.preferred_languages,
                            dq_reasons: Client.dq_reasons, 

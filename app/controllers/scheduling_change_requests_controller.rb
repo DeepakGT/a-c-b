@@ -8,7 +8,7 @@ class SchedulingChangeRequestsController < ApplicationController
     @change_request = @schedule.scheduling_change_requests.create(change_request_params)
     if params[:status]&.to_s=='Client_No_Show' && @schedule.scheduling_change_requests.where(status: 'Client_No_Show').count<=1
       @schedule.scheduling_change_requests.by_approval_status.update(approval_status: 'declined')
-      set_approval_status('approved')
+      change_approval_status('approved')
       @schedule.user = current_user
       update_scheduling
     end
@@ -17,11 +17,11 @@ class SchedulingChangeRequestsController < ApplicationController
   def update
     case params[:approval_status]&.to_s
     when 'approve'
-      set_approval_status('approved')
+      change_approval_status('approved')
       @schedule.user = current_user
       update_scheduling
     when 'decline'
-      set_approval_status('declined')
+      change_approval_status('declined')
     end
   end
 
@@ -43,7 +43,7 @@ class SchedulingChangeRequestsController < ApplicationController
     @change_request = SchedulingChangeRequest.find(params[:id])
   end
 
-  def set_approval_status(approval_status)
+  def change_approval_status(approval_status)
     @change_request.approval_status = approval_status
     @change_request.save
   end

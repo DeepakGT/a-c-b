@@ -4,9 +4,9 @@ RSpec.describe ClientEnrollment, type: :model do
   describe "#associations" do
     subject {build :client_enrollment}
     # it { should belong_to(:client) } 
-    it { ClientEnrollment.reflect_on_association(:client).macro.should  eq(:belongs_to) }
+    it { ClientEnrollment.reflect_on_association(:client).macro.should eq(:belongs_to) }
     # it { should belong_to(:funding_source).optional } 
-    it { ClientEnrollment.reflect_on_association(:funding_source).macro.should  eq(:belongs_to) }
+    it { ClientEnrollment.reflect_on_association(:funding_source).macro.should eq(:belongs_to) }
     it { should have_many(:client_enrollment_services).dependent(:destroy) } 
   end
 

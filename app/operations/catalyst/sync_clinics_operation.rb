@@ -14,9 +14,7 @@ module Catalyst
         clinic_data_array.each_index do |i|
           clinic_data = clinic_data_array[i]
           clinic = Clinic.find_by(name: clinic_data['name'])
-          if clinic_data['name'] == 'Portsmouth, NH'
-            clinic = Clinic.find_by(name: 'Porthsmouth, NH')
-          end
+          clinic = Clinic.find_by(name: 'Porthsmouth, NH') if clinic_data['name'] == 'Portsmouth, NH'
           if clinic.present?
             clinic.catalyst_clinic_id = clinic_data['siteId']
             clinic.save(validate: false)

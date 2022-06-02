@@ -16,21 +16,13 @@ module ClientEnrollmentServices
           used_units = 0 if used_units.blank?
           scheduled_units = scheduled_schedules.with_units.pluck(:units).sum
           scheduled_units = 0 if scheduled_units.blank?
-          left_units = if client_enrollment_service.units.present?
-            client_enrollment_service.units - (used_units + scheduled_units) 
-          else
-            0
-          end
+          left_units = client_enrollment_service.units.present? ? (client_enrollment_service.units-(used_units+scheduled_units)) : 0
 
           used_minutes = completed_schedules.with_minutes.pluck(:minutes).sum
           used_minutes = 0 if used_minutes.blank?
           scheduled_minutes = scheduled_schedules.with_minutes.pluck(:minutes).sum
           scheduled_minutes = 0 if scheduled_minutes.blank?
-          left_minutes = if client_enrollment_service.minutes.present?
-            client_enrollment_service.minutes - (used_minutes + scheduled_minutes)
-          else
-            0
-          end
+          left_minutes = client_enrollment_service.minutes.present? ? (client_enrollment_service.minutes-(used_minutes+scheduled_minutes)) : 0
 
           client_enrollment_service.left_units = left_units
           client_enrollment_service.used_units = used_units
