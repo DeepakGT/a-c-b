@@ -32,6 +32,8 @@ class ClientEnrollmentService < ApplicationRecord
   scope :active, ->{ where('end_date >= ?', Time.current.strftime('%Y-%m-%d')) }
   scope :before_date, ->(date){ where('start_date < ?', date.to_time.strftime('%Y-%m-%d')) }
   scope :expired, ->{ where('end_date < ?', Time.current.strftime('%Y-%m-%d'))}
+  scope :by_unassigned_appointments_allowed, -> { where('services.is_unassigned_appointment_allowed = ?', true)}
+  
   private
 
   def validate_service_providers
