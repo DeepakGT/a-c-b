@@ -94,8 +94,8 @@ class SchedulingMetaDataController < ApplicationController
     else
       clients = Client.by_clinic(params[:location_id])
     end
-    @clients = clients&.uniq&.sort_by(&:first_name)
-    @staff = Staff.by_home_clinic(params[:location_id])
+    @clients = clients&.active&.uniq&.sort_by(&:first_name)
+    @staff = Staff.by_home_clinic(params[:location_id]).active
     @services =  Service.order(:name)
   end
 
