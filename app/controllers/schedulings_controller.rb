@@ -88,7 +88,7 @@ class SchedulingsController < ApplicationController
   def do_filter
     if params[:staff_ids].present? || params[:client_ids].present? || params[:service_ids].present? || current_user.role_name=='rbt' || current_user.role_name=='bcba' || params[:default_location_id].present?
       if !(params[:show_inactive].present? && (params[:show_inactive]==1 || params[:show_inactive]=="1"))
-        schedules = Scheduling.includes(staff: :staff_clinics, client_enrollment_service: [:service, {client_enrollment: :client}]).with_active_client
+        schedules = Scheduling.left_outer_joins(staff: :staff_clinics, client_enrollment_service: [:service, {client_enrollment: :client}]).with_active_client
       else
         schedules = Scheduling.includes(staff: :staff_clinics, client_enrollment_service: [:service, {client_enrollment: :client}])
       end
