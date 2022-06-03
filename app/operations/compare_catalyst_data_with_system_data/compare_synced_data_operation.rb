@@ -27,7 +27,7 @@ module CompareCatalystDataWithSystemData
         end
         # schedules = Scheduling.by_client_ids(client&.id).by_staff_ids(staff&.id).on_date(catalyst_data.date)
         if staff.present?
-          schedules = Scheduling.joins(client_enrollment_service: :client_enrollment).by_client_ids(client&.id).by_staff_ids(staff&.id).on_date(catalyst_data.date).with_staff
+          schedules = Scheduling.joins(client_enrollment_service: :client_enrollment).by_client_ids(client&.id).by_staff_ids(staff&.id).on_date(catalyst_data.date)
 
           if schedules.count==1
             schedule = schedules.first
@@ -39,7 +39,8 @@ module CompareCatalystDataWithSystemData
             max_units = (catalyst_data.units+1)
 
             if schedule.is_rendered.to_bool.true?
-              schedule.catalyst_data_ids = schedule.catalyst_data_ids | ["#{catalyst_data.id}"]
+              # schedule.catalyst_data_ids = schedule.catalyst_data_ids | ["#{catalyst_data.id}"]
+              schedule.catalyst_data_ids.push(catalyst_data.id) if !schedule.catalyst_data_ids.include?("#{catalyst_data.id}")
               schedule.save(validate: false)
               if schedule.catalyst_data_ids.include?("#{catalyst_data.id}")
                 Loggers::Catalyst::SyncSoapNotesLoggerService.call(schedule.id, "In appointment, catalyst data id is saved.")
@@ -68,7 +69,8 @@ module CompareCatalystDataWithSystemData
                 schedule.update(start_time: catalyst_data.start_time, end_time: catalyst_data.end_time)
                 schedule.units = catalyst_data.units
                 schedule.minutes = catalyst_data.minutes
-                schedule.catalyst_data_ids = schedule.catalyst_data_ids | ["#{catalyst_data.id}"]
+                # schedule.catalyst_data_ids = schedule.catalyst_data_ids | ["#{catalyst_data.id}"]
+                schedule.catalyst_data_ids.push(catalyst_data.id) if !schedule.catalyst_data_ids.include?("#{catalyst_data.id}")
                 schedule.save(validate: false)
                 if schedule.catalyst_data_ids.include?("#{catalyst_data.id}")
                   Loggers::Catalyst::SyncSoapNotesLoggerService.call(schedule.id, "In appointment, catalyst data id is saved.")
@@ -94,7 +96,8 @@ module CompareCatalystDataWithSystemData
                 response_data_hash = {}
               else
                 schedule.unrendered_reason = ['units_does_not_match']
-                schedule.catalyst_data_ids = schedule.catalyst_data_ids | ["#{catalyst_data.id}"]
+                # schedule.catalyst_data_ids = schedule.catalyst_data_ids | ["#{catalyst_data.id}"]
+                schedule.catalyst_data_ids.push(catalyst_data.id) if !schedule.catalyst_data_ids.include?("#{catalyst_data.id}")
                 schedule.save(validate: false)
                 if schedule.catalyst_data_ids.include?("#{catalyst_data.id}")
                   Loggers::Catalyst::SyncSoapNotesLoggerService.call(schedule.id, "In appointment, catalyst data id is saved.")
@@ -119,7 +122,7 @@ module CompareCatalystDataWithSystemData
             end
             catalyst_data.system_scheduling_id = schedule.id
             catalyst_data.is_appointment_found = true
-            catalyst_data.save
+            catalyst_data.save(validate: false)
             if catalyst_data.system_scheduling_id.present?
               Loggers::Catalyst::SyncSoapNotesLoggerService.call(catalyst_data.id, "In catalyst data, scheduling id is updated.")
             else

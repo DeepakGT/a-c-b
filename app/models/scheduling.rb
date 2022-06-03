@@ -35,6 +35,7 @@ class Scheduling < ApplicationRecord
   scope :by_service_ids, ->(service_ids){ where('client_enrollment_service.service_id': service_ids) }
   scope :by_client_clinic, ->(location_id) { where('clients.clinic_id': location_id) }
   scope :by_staff_clinic, ->(location_id) { where('staff_clinics.clinic_id': location_id) }
+  scope :by_staff_home_clinic, ->(location_id) { where('staff_clinics.clinic_id = ? AND staff_clinics.is_home_clinic = ?', location_id, true) }
   scope :on_date, ->(date){ where(date: date) }
   scope :exceeded_24_h_scheduling, ->{ where('date < ? OR (date = ? AND end_time < ?)', Time.current.to_date-1, Time.current.to_date-1, Time.current.strftime('%H:%M')) }
   scope :exceeded_3_days_scheduling, ->{ where('date < ? OR (date = ? AND end_time < ?)', Time.current.to_date-3, Time.current.to_date-3, Time.current.strftime('%H:%M')) }

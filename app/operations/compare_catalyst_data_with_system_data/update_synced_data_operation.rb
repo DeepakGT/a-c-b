@@ -15,6 +15,8 @@ module CompareCatalystDataWithSystemData
             catalyst_data.save(validate: false)
             response_data_hash = CompareCatalystDataWithSystemData::CompareSyncedDataOperation.call(catalyst_data)
           else
+            schedule.unrendered_reason = []
+            schedule.save(validate: false)
             min_start_time = (catalyst_data.start_time.to_time-15.minutes)
             max_start_time = (catalyst_data.start_time.to_time+15.minutes)
             min_end_time = (catalyst_data.end_time.to_time-15.minutes)
@@ -70,7 +72,7 @@ module CompareCatalystDataWithSystemData
               schedule.update(start_time: catalyst_data.start_time, end_time: catalyst_data.end_time)
               schedule.units = catalyst_data.units
               schedule.minutes = catalyst_data.minutes
-              schedule.catalyst_data_ids.push(catalyst_data.id)
+              schedule.catalyst_data_ids = schedule.catalyst_data_ids | ["#{catalyst_data.id}"]
               schedule.save(validate: false)
               if schedule.catalyst_data_ids.include?("#{catalyst_data.id}")
                 Loggers::Catalyst::SyncSoapNotesLoggerService.call(schedule.id, "In appointment, catalyst data id is saved.")

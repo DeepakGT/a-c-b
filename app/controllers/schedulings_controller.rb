@@ -99,7 +99,7 @@ class SchedulingsController < ApplicationController
 
     if params[:default_location_id].present? && current_user.role_name!='rbt' && current_user.role_name!='bcba'
       location_id = params[:default_location_id]
-      schedules = schedules.by_client_clinic(location_id).or(schedules.by_staff_clinic(location_id))
+      schedules = schedules.by_client_clinic(location_id).or(schedules.by_staff_home_clinic(location_id))
     end
     schedules = schedules.uniq.sort_by(&:date)
     schedules = schedules.paginate(page: params[:page]) if params[:page].present?
