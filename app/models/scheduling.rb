@@ -44,6 +44,7 @@ class Scheduling < ApplicationRecord
   scope :past_60_days_schedules, ->{ where('date>=? AND date<?', (Time.current-60.days).strftime('%Y-%m-%d'), Time.current.strftime('%Y-%m-%d')) }
   scope :without_staff, ->{ where(staff_id: nil) }
   scope :with_staff, ->{ where.not(staff_id: nil) }
+  scope :with_active_client, ->{ where('clients.status = ?', 0) }
 
   private
 
