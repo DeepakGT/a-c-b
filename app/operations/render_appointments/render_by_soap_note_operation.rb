@@ -24,7 +24,8 @@ module RenderAppointments
           schedule.unrendered_reason = schedule.unrendered_reason | ['rbt_signature_absent']
           schedule.save(validate: false)
         end
-        if !soap_note.signature_file.attached? && soap_note.caregiver_signature!=true
+        service_ids = Service.where(display_code: '99999').ids
+        if !soap_note.signature_file.attached? && soap_note.caregiver_signature!=true && service_ids.include?(soap_note&.scheduling&.client_enrollment_service&.service_id)
           schedule.unrendered_reason = schedule.unrendered_reason | ['caregiver_signature_absent']
           schedule.save(validate: false)
         end
