@@ -21,5 +21,11 @@ json.data do
   json.synced_with_catalyst @soap_note.synced_with_catalyst
   if @soap_note.synced_with_catalyst.to_bool.true?
     json.caregiver_sign_present @soap_note.caregiver_signature
+    catalyst_data = CatalystData.find_by(id: @soap_note.catalyst_data_id)
+    json.location catalyst_data.session_location
+    json.cordinates catalyst_data.location
+  else
+    json.location nil
+    json.cordinates nil
   end
 end
