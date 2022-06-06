@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_06_02_094157) do
+ActiveRecord::Schema.define(version: 2022_06_06_075701) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -93,6 +93,8 @@ ActiveRecord::Schema.define(version: 2022_06_02_094157) do
     t.datetime "date_revision_made"
     t.string "catalyst_patient_id"
     t.string "catalyst_user_id"
+    t.string "location"
+    t.string "session_location"
     t.index ["is_appointment_found"], name: "index_catalyst_data_on_is_appointment_found"
     t.index ["multiple_schedulings_ids"], name: "index_catalyst_data_on_multiple_schedulings_ids"
     t.index ["system_scheduling_id"], name: "index_catalyst_data_on_system_scheduling_id"
