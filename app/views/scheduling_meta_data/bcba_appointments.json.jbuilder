@@ -135,6 +135,8 @@ json.data do
               json.units "#{catalyst_data.units}"
               json.minutes "#{catalyst_data.minutes}"
               json.note catalyst_data.note
+              json.location catalyst_data.session_location
+              json.cordinates catalyst_data.location
             end
           end
         end
@@ -233,6 +235,8 @@ json.data do
       json.units "#{catalyst_datum.units}"
       json.minutes "#{catalyst_datum.minutes}"
       json.note catalyst_datum.note
+      json.location catalyst_data.session_location
+      json.cordinates catalyst_data.location
       if catalyst_datum.is_appointment_found==false
         json.unrendered_reasons ["no_appointment_found"]
       else
