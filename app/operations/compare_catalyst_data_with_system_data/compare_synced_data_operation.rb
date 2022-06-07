@@ -28,7 +28,6 @@ module CompareCatalystDataWithSystemData
         # schedules = Scheduling.by_client_ids(client&.id).by_staff_ids(staff&.id).on_date(catalyst_data.date)
         if staff.present?
           schedules = Scheduling.joins(client_enrollment_service: :client_enrollment).by_client_ids(client&.id).by_staff_ids(staff&.id).on_date(catalyst_data.date)
-
           if schedules.count==1
             schedule = schedules.first
             min_start_time = (catalyst_data.start_time.to_time-15.minutes)
