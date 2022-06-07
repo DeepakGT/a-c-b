@@ -26,6 +26,11 @@ class SchedulingMetaDataController < ApplicationController
                                  .and(CatalystData.with_multiple_appointments.or(CatalystData.with_no_appointments))
                                  .select("catalyst_data.*,'CatalystData' AS type").first(30)
     @action_items_array = past_schedules.to_a.concat(catalyst_data)
+    if params[:sortSoapNoteByDate] == "1"
+      @action_items_array.sort_by! &:date 
+    else
+      @action_items_array.sort_by!{|a| a[:date] }.reverse!
+    end
     # sql = "(SELECT id, 'Upcoming Schedule' AS type FROM schedulings WHERE staff_id = #{current_user.id} AND status = 'Scheduled' AND date>=CURRENT_TIMESTAMP ORDER BY date LIMIT 10) UNION (SELECT id, 'Past Schedule' AS type FROM schedulings WHERE staff_id = #{current_user.id} AND status = 'Scheduled' AND date<CURRENT_TIMESTAMP AND date>=(CURRENT_TIMESTAMP + INTERVAL '-2 month') AND is_rendered=false ORDER BY date DESC) UNION (SELECT id,'Catalyst Data' AS type FROM catalyst_data WHERE system_scheduling_id IS NULL LIMIT 30);"
     # @appointments = ActiveRecord::Base.connection.exec_query(sql)&.rows
   end
