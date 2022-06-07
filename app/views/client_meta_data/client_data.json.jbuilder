@@ -18,6 +18,7 @@ json.data do
   json.disqualified @client.disqualified
   json.disqualified_reason @client.dq_reason if @client.disqualified?
   json.payor_status @client.payor_status
+  json.created_date @client.created_at&.strftime('%Y-%m-%d')
   if primary_client_enrollment.present?
     if primary_client_enrollment.source_of_payment=='self_pay' || primary_client_enrollment.funding_source.blank?
       json.payor nil
@@ -146,6 +147,7 @@ json.data do
         json.scheduling_id soap_note.scheduling_id
         json.note soap_note.note
         json.add_date soap_note.add_date
+        json.add_time soap_note.add_time
         json.rbt_sign soap_note.rbt_signature
         json.rbt_sign_name soap_note.rbt_signature_author_name
         json.rbt_sign_date soap_note.rbt_signature_date

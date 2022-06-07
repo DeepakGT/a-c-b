@@ -50,7 +50,7 @@ class SoapNotesController < ApplicationController
   end
 
   def soap_note_params
-    params.permit(:note, :add_date, :caregiver_sign)
+    params.permit(:note, :add_date, :caregiver_sign, :add_time)
   end
 
   def set_signature
