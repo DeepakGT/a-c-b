@@ -26,11 +26,18 @@ class SchedulingMetaDataController < ApplicationController
                                  .and(CatalystData.with_multiple_appointments.or(CatalystData.with_no_appointments))
                                  .select("catalyst_data.*,'CatalystData' AS type").first(30)
     @action_items_array = past_schedules.to_a.concat(catalyst_data)
+    if params[:sortSoapNoteByClient] == "1"
+      @action_items_array.sort_by! {|b| b.type=="Schedule" ? b.client_enrollment_service.client_enrollment.client.first_name : Client.where(catalyst_patient_id: b.catalyst_patient_id).first.first_name }
+    else
+      @action_items_array.sort_by! {|b| b.type=="Schedule" ? b.client_enrollment_service.client_enrollment.client.first_name : Client.where(catalyst_patient_id: b.catalyst_patient_id).first.first_name }.reverse
+    end
     if params[:sortSoapNoteByDate] == "1"
       @action_items_array.sort_by! &:date 
     else
       @action_items_array.sort_by!{|a| a[:date] }.reverse!
     end
+
+
     # sql = "(SELECT id, 'Upcoming Schedule' AS type FROM schedulings WHERE staff_id = #{current_user.id} AND status = 'Scheduled' AND date>=CURRENT_TIMESTAMP ORDER BY date LIMIT 10) UNION (SELECT id, 'Past Schedule' AS type FROM schedulings WHERE staff_id = #{current_user.id} AND status = 'Scheduled' AND date<CURRENT_TIMESTAMP AND date>=(CURRENT_TIMESTAMP + INTERVAL '-2 month') AND is_rendered=false ORDER BY date DESC) UNION (SELECT id,'Catalyst Data' AS type FROM catalyst_data WHERE system_scheduling_id IS NULL LIMIT 30);"
     # @appointments = ActiveRecord::Base.connection.exec_query(sql)&.rows
   end
@@ -53,6 +60,17 @@ class SchedulingMetaDataController < ApplicationController
                                  .and(CatalystData.with_multiple_appointments.or(CatalystData.with_no_appointments))
                                  .select("catalyst_data.*,'CatalystData' AS type").first(30)
     @action_items_array = past_schedules.to_a.concat(catalyst_data)
+    if params[:sortSoapNoteByClient] == "1"
+      @action_items_array.sort_by! {|b| b.type=="Schedule" ? b.client_enrollment_service.client_enrollment.client.first_name : Client.where(catalyst_patient_id: b.catalyst_patient_id).first.first_name }
+    else
+      @action_items_array.sort_by! {|b| b.type=="Schedule" ? b.client_enrollment_service.client_enrollment.client.first_name : Client.where(catalyst_patient_id: b.catalyst_patient_id).first.first_name }.reverse
+    end
+    if params[:sortSoapNoteByDate] == "1"
+      @action_items_array.sort_by! &:date 
+    else
+      @action_items_array.sort_by!{|a| a[:date] }.reverse!
+    end
+
     # sql = "(SELECT id, 'Upcoming Schedule' AS type FROM schedulings WHERE staff_id = #{current_user.id} AND status = 'Scheduled' AND date>=CURRENT_TIMESTAMP ORDER BY date LIMIT 20) UNION (SELECT id, 'Past Schedule' AS type FROM schedulings WHERE staff_id = #{current_user.id} AND status = 'Scheduled' AND date<CURRENT_TIMESTAMP AND date>=(CURRENT_TIMESTAMP + INTERVAL '-2 month') AND is_rendered=false ORDER BY date DESC) UNION (SELECT client_enrollment_services.id, 'client_enrollment_services' AS type FROM client_enrollment_services INNER JOIN client_enrollments ON client_enrollments.id=client_enrollment_services.client_enrollment_id INNER JOIN clients ON clients.id=client_enrollments.client_id WHERE clients.bcba_id = #{current_user.id} AND client_enrollment_services.end_date >= CURRENT_TIMESTAMP AND client_enrollment_services.end_date <= (CURRENT_TIMESTAMP + INTERVAL '9 day')) UNION (SELECT id,'Catalyst Data' AS type FROM catalyst_data WHERE system_scheduling_id IS NULL LIMIT 30);"
     # @data = ActiveRecord::Base.connection.exec_query(sql)&.rows
   end
@@ -80,6 +98,17 @@ class SchedulingMetaDataController < ApplicationController
                                  .and(CatalystData.with_multiple_appointments.or(CatalystData.with_no_appointments))
                                  .select("catalyst_data.*,'CatalystData' AS type").first(30)
     @action_items_array = past_schedules.to_a.concat(catalyst_data)
+    if params[:sortSoapNoteByClient] == "1"
+      @action_items_array.sort_by! {|b| b.type=="Schedule" ? b.client_enrollment_service.client_enrollment.client.first_name : Client.where(catalyst_patient_id: b.catalyst_patient_id).first.first_name }
+    else
+      @action_items_array.sort_by! {|b| b.type=="Schedule" ? b.client_enrollment_service.client_enrollment.client.first_name : Client.where(catalyst_patient_id: b.catalyst_patient_id).first.first_name }.reverse
+    end
+    if params[:sortSoapNoteByDate] == "1"
+      @action_items_array.sort_by! &:date 
+    else
+      @action_items_array.sort_by!{|a| a[:date] }.reverse!
+    end
+
     @unassigned_appointments = schedules.scheduled_scheduling.without_staff
   end
 
