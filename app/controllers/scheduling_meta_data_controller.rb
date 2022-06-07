@@ -67,12 +67,13 @@ class SchedulingMetaDataController < ApplicationController
     schedules = Scheduling.includes(:soap_notes, :staff, client_enrollment_service: [:service, {client_enrollment: :client}])
     schedules = schedules.by_client_ids(client_ids)
     @todays_appointments = schedules.by_status.todays_schedulings.last(10)
-    case current_user.role_name
-    when 'executive_director', 'client_care_coordinator', 'Clinical Director'
-      @past_schedules = schedules.by_status.past_60_days_schedules.exceeded_24_h_scheduling.unrendered_schedulings.order(date: :desc)
-    when 'super_admin', 'administrator'
-      @past_schedules = schedules.by_status.past_60_days_schedules.exceeded_3_days_scheduling.unrendered_schedulings.order(date: :desc)
-    end
+    # case current_user.role_name
+    # when 'executive_director', 'client_care_coordinator', 'Clinical Director'
+    #   @past_schedules = schedules.by_status.past_60_days_schedules.exceeded_24_h_scheduling.unrendered_schedulings.order(date: :desc)
+    # when 'super_admin', 'administrator'
+    #   @past_schedules = schedules.by_status.past_60_days_schedules.exceeded_3_days_scheduling.unrendered_schedulings.order(date: :desc)
+    # end
+    @past_schedules = schedules.by_status.past_60_days_schedules.unrendered_schedulings.order(date: :desc)
     # past_schedules = past_schedules.select("schedulings.*, 'Schedule' AS type")
     # @past_schedules = past_schedules
     @client_enrollment_services = ClientEnrollmentService.by_client(client_ids).and(ClientEnrollmentService.about_to_expire.or(ClientEnrollmentService.expired))
