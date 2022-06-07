@@ -5,6 +5,7 @@ json.data do
   json.scheduling_id @soap_note.scheduling_id
   json.note @soap_note.note
   json.add_date @soap_note.add_date
+  json.add_time @soap_note.add_time&.strftime('%H:%M')
   json.rbt_sign @soap_note.rbt_signature
   json.rbt_sign_name @soap_note.rbt_signature_author_name
   json.rbt_sign_date @soap_note.rbt_signature_date
