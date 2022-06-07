@@ -19,8 +19,13 @@ class SchedulingMetaDataController < ApplicationController
     rbt_schedules = Scheduling.includes(:staff, client_enrollment_service: [:service, {client_enrollment: :client}]).by_staff_ids(current_user.id).by_status
     # @upcoming_schedules = rbt_schedules.scheduled_scheduling.order(:date).first(10)
     @todays_appointments = rbt_schedules.todays_schedulings.order(:start_time).last(10)
-    @past_schedules = rbt_schedules.past_60_days_schedules.unrendered_schedulings.order(date: :desc)
-    @catalyst_data = CatalystData.after_live_date.past_60_days_catalyst_data.by_catalyst_user_id(current_user.id).and(CatalystData.with_multiple_appointments.or(CatalystData.with_no_appointments)).first(30)
+    past_schedules = rbt_schedules.past_60_days_schedules.unrendered_schedulings.order(date: :desc)
+    past_schedules = past_schedules.select("schedulings.*, 'Schedule' AS type")
+    @past_schedules = past_schedules
+    catalyst_data = CatalystData.after_live_date.past_60_days_catalyst_data.by_catalyst_user_id(current_user.id)
+                                 .and(CatalystData.with_multiple_appointments.or(CatalystData.with_no_appointments))
+                                 .select("catalyst_data.*,'CatalystData' AS type").first(30)
+    @action_items_array = past_schedules.to_a.concat(catalyst_data)
     # sql = "(SELECT id, 'Upcoming Schedule' AS type FROM schedulings WHERE staff_id = #{current_user.id} AND status = 'Scheduled' AND date>=CURRENT_TIMESTAMP ORDER BY date LIMIT 10) UNION (SELECT id, 'Past Schedule' AS type FROM schedulings WHERE staff_id = #{current_user.id} AND status = 'Scheduled' AND date<CURRENT_TIMESTAMP AND date>=(CURRENT_TIMESTAMP + INTERVAL '-2 month') AND is_rendered=false ORDER BY date DESC) UNION (SELECT id,'Catalyst Data' AS type FROM catalyst_data WHERE system_scheduling_id IS NULL LIMIT 30);"
     # @appointments = ActiveRecord::Base.connection.exec_query(sql)&.rows
   end
@@ -30,17 +35,19 @@ class SchedulingMetaDataController < ApplicationController
     bcba_schedules = Scheduling.includes(:staff, client_enrollment_service: [:service, {client_enrollment: :client}]).by_staff_ids(current_user.id).by_status
     # @upcoming_schedules = bcba_schedules.scheduled_scheduling.order(:date).first(10)
     @todays_appointments = bcba_schedules.todays_schedulings.order(:start_time).last(10)
-    @past_schedules = bcba_schedules.past_60_days_schedules.unrendered_schedulings.order(date: :desc)
+    past_schedules = bcba_schedules.past_60_days_schedules.unrendered_schedulings.order(date: :desc)
+    past_schedules = past_schedules.select("schedulings.*, 'Schedule' AS type")
+    @past_schedules = past_schedules
     @client_enrollment_services = ClientEnrollmentService.by_bcba_ids(current_user.id)
                                                          .and(ClientEnrollmentService.about_to_expire.or(ClientEnrollmentService.expired))
                                                          .includes(:client_enrollment, client_enrollment: :client)
     # change_requests = SchedulingChangeRequest.by_approval_status
     # @change_requests = change_requests.by_bcba_ids(current_user.id)
     #                                   .or(change_requests.by_staff_ids(current_user.id)).left_outer_joins(:scheduling)
-    @catalyst_data = CatalystData.after_live_date.past_60_days_catalyst_data.by_catalyst_user_id(current_user.id)
-                                 .and(CatalystData.with_multiple_appointments.or(CatalystData.with_no_appointments)).first(30)
-
-                                 
+    catalyst_data = CatalystData.after_live_date.past_60_days_catalyst_data.by_catalyst_user_id(current_user.id)
+                                 .and(CatalystData.with_multiple_appointments.or(CatalystData.with_no_appointments))
+                                 .select("catalyst_data.*,'CatalystData' AS type").first(30)
+    @action_items_array = past_schedules.to_a.concat(catalyst_data)
     # sql = "(SELECT id, 'Upcoming Schedule' AS type FROM schedulings WHERE staff_id = #{current_user.id} AND status = 'Scheduled' AND date>=CURRENT_TIMESTAMP ORDER BY date LIMIT 20) UNION (SELECT id, 'Past Schedule' AS type FROM schedulings WHERE staff_id = #{current_user.id} AND status = 'Scheduled' AND date<CURRENT_TIMESTAMP AND date>=(CURRENT_TIMESTAMP + INTERVAL '-2 month') AND is_rendered=false ORDER BY date DESC) UNION (SELECT client_enrollment_services.id, 'client_enrollment_services' AS type FROM client_enrollment_services INNER JOIN client_enrollments ON client_enrollments.id=client_enrollment_services.client_enrollment_id INNER JOIN clients ON clients.id=client_enrollments.client_id WHERE clients.bcba_id = #{current_user.id} AND client_enrollment_services.end_date >= CURRENT_TIMESTAMP AND client_enrollment_services.end_date <= (CURRENT_TIMESTAMP + INTERVAL '9 day')) UNION (SELECT id,'Catalyst Data' AS type FROM catalyst_data WHERE system_scheduling_id IS NULL LIMIT 30);"
     # @data = ActiveRecord::Base.connection.exec_query(sql)&.rows
   end
@@ -53,17 +60,21 @@ class SchedulingMetaDataController < ApplicationController
     @todays_appointments = schedules.by_status.todays_schedulings.last(10)
     case current_user.role_name
     when 'executive_director', 'client_care_coordinator', 'Clinical Director'
-      @past_schedules = schedules.by_status.past_60_days_schedules.exceeded_24_h_scheduling.unrendered_schedulings.order(date: :desc)
+      past_schedules = schedules.by_status.past_60_days_schedules.exceeded_24_h_scheduling.unrendered_schedulings.order(date: :desc)
     when 'super_admin', 'administrator'
-      @past_schedules = schedules.by_status.past_60_days_schedules.exceeded_3_days_scheduling.unrendered_schedulings.order(date: :desc)
+      past_schedules = schedules.by_status.past_60_days_schedules.exceeded_3_days_scheduling.unrendered_schedulings.order(date: :desc)
     end
+    past_schedules = past_schedules.select("schedulings.*, 'Schedule' AS type")
+    @past_schedules = past_schedules
     @client_enrollment_services = ClientEnrollmentService.by_client(client_ids).and(ClientEnrollmentService.about_to_expire.or(ClientEnrollmentService.expired))
                                                          .includes(:service, :staff, :service_providers, :client_enrollment, client_enrollment: %i[client funding_source]).uniq
     change_requests = SchedulingChangeRequest.by_approval_status
     @change_requests = change_requests.by_client_ids(client_ids)
     catalyst_patient_ids = Client.where(id: client_ids).pluck(:catalyst_patient_id).compact!
-    @catalyst_data = CatalystData.after_live_date.past_60_days_catalyst_data.by_catalyst_patient_ids(catalyst_patient_ids)
-                                 .and(CatalystData.with_multiple_appointments.or(CatalystData.with_no_appointments)).first(30)
+    catalyst_data = CatalystData.after_live_date.past_60_days_catalyst_data.by_catalyst_patient_ids(catalyst_patient_ids)
+                                 .and(CatalystData.with_multiple_appointments.or(CatalystData.with_no_appointments))
+                                 .select("catalyst_data.*,'CatalystData' AS type").first(30)
+    @action_items_array = past_schedules.to_a.concat(catalyst_data)
     @unassigned_appointments = schedules.scheduled_scheduling.without_staff
   end
 
