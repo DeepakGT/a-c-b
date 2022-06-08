@@ -14,6 +14,10 @@ module Catalyst
           schedules = Scheduling.where(id: scheduling_ids).completed_scheduling.unrendered_schedulings
           if schedules.any?
             schedules.each do |schedule|
+              if schedule.unrendered_reason.include?('units_does_not_match') && schedule.catalyst_data_ids.blank?
+                schedule.unrendered_reason = []
+                schedule.save(validate: false)
+              end
               if !schedule.unrendered_reason.include?('units_does_not_match')
                 RenderAppointments::RenderScheduleOperation.call(schedule.id)
                 if schedule.is_rendered.to_bool.true?

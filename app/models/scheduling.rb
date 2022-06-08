@@ -65,7 +65,7 @@ class Scheduling < ApplicationRecord
   def validate_past_appointments
     return if self.user.role_name=='super_admin'
 
-    if self.user.role_name=='executive_director' && self.date.present?
+    if (self.user.role_name=='executive_director' || self.user.role_name=='client_care_coordinator' || self.user.role_name=='Clinical Director') && self.date.present?
       errors.add(:scheduling, 'You are not authorized to create appointments for 3 days ago.') if self.date<(Time.current.to_date-3)
     elsif self.date.present?
       errors.add(:scheduling, 'You are not authorized to create appointment in past.') if self.date<Time.current.to_date || (self.date==Time.current.to_date && self.start_time<=Time.current.strftime('%H:%M'))
