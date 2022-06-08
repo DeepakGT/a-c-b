@@ -5,4 +5,5 @@ class CatalystData < ApplicationRecord
   scope :after_live_date, ->{where('date >= ?', Date.strptime("05-20-2022", "%m-%d-%Y").to_date)}
   scope :by_catalyst_user_id, ->(user_id){ where(catalyst_user_id: User.find(user_id).catalyst_user_id) }
   scope :by_catalyst_patient_ids, ->(catalyst_patient_ids){ where(catalyst_patient_id: catalyst_patient_ids) }
+  scope :by_active_clients, ->{ where('clients.status = ?', 0) }
 end
