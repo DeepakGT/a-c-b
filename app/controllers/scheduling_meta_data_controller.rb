@@ -22,9 +22,9 @@ class SchedulingMetaDataController < ApplicationController
     past_schedules = rbt_schedules.past_60_days_schedules.unrendered_schedulings.order(date: :desc)
     past_schedules = past_schedules.select("schedulings.*, 'Schedule' AS type")
     @past_schedules = past_schedules
-    catalyst_data = CatalystData.after_live_date.past_60_days_catalyst_data.by_catalyst_user_id(current_user.id)
+    catalyst_data = CatalystData.select("catalyst_data.*,clients.*,'CatalystData' AS type").joins("LEFT JOIN clients ON (clients.catalyst_patient_id = catalyst_data.catalyst_patient_id)").after_live_date.past_60_days_catalyst_data.by_catalyst_user_id(current_user.id)
                                  .and(CatalystData.with_multiple_appointments.or(CatalystData.with_no_appointments))
-                                 .select("catalyst_data.*,'CatalystData' AS type").first(30)
+                                 .first(30)
     @action_items_array = past_schedules.to_a.concat(catalyst_data)
     @action_items_array = sort_action_items(@action_items_array)
 
@@ -46,9 +46,9 @@ class SchedulingMetaDataController < ApplicationController
     # change_requests = SchedulingChangeRequest.by_approval_status
     # @change_requests = change_requests.by_bcba_ids(current_user.id)
     #                                   .or(change_requests.by_staff_ids(current_user.id)).left_outer_joins(:scheduling)
-    catalyst_data = CatalystData.after_live_date.past_60_days_catalyst_data.by_catalyst_user_id(current_user.id)
+    catalyst_data = CatalystData.select("catalyst_data.*,clients.*,'CatalystData' AS type").joins("LEFT JOIN clients ON (clients.catalyst_patient_id = catalyst_data.catalyst_patient_id)").after_live_date.past_60_days_catalyst_data.by_catalyst_user_id(current_user.id)
                                  .and(CatalystData.with_multiple_appointments.or(CatalystData.with_no_appointments))
-                                 .select("catalyst_data.*,'CatalystData' AS type").first(30)
+                                 .first(30)
     @action_items_array = past_schedules.to_a.concat(catalyst_data)
     @action_items_array = sort_action_items(@action_items_array)
 
