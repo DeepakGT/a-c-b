@@ -173,7 +173,8 @@ class SchedulingMetaDataController < ApplicationController
       items.sort_by! {|b| b.type=="Schedule" ? b.client_enrollment_service.client_enrollment.client.first_name+b.client_enrollment_service.client_enrollment.client.last_name : b.first_name+b.last_name }
     elsif params[:sortSoapNoteByClient] == "0" || params[:sortSoapNoteByClient] == 0
       items.sort_by! {|b| b.type=="Schedule" ? b.client_enrollment_service.client_enrollment.client.first_name+b.client_enrollment_service.client_enrollment.client.last_name : b.first_name+b.last_name }.reverse!
-    elsif params[:sortSoapNoteByDate] == "1" || params[:sortSoapNoteByDate] == 1 
+    end
+    if params[:sortSoapNoteByDate] == "1" || params[:sortSoapNoteByDate] == 1 
       items.sort_by! &:date
     elsif params[:sortSoapNoteByDate] == "0" || params[:sortSoapNoteByDate] == 0
       items.sort_by!(&:date).reverse!
