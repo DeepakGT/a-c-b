@@ -169,14 +169,14 @@ class SchedulingMetaDataController < ApplicationController
   end
 
   def sort_action_items(items)
-    if params[:sortSoapNoteByClient] == "1"
+    if params[:sortSoapNoteByClient] == "1" || params[:sortSoapNoteByClient] == 1
       items.sort_by! {|b| b.type=="Schedule" ? b.client_enrollment_service.client_enrollment.client.first_name : b.first_name }
-    elsif params[:sortSoapNoteByClient] == "0"
+    elsif params[:sortSoapNoteByClient] == "0" || params[:sortSoapNoteByClient] == 0
       items.sort_by! {|b| b.type=="Schedule" ? b.client_enrollment_service.client_enrollment.client.first_name : b.first_name }.reverse!
-    elsif params[:sortSoapNoteByDate] == "1" 
+    elsif params[:sortSoapNoteByDate] == "1" || params[:sortSoapNoteByDate] == 1 
       items.sort_by! &:date
-    elsif params[:sortSoapNoteByDate] == "0"
-      items.sort_by! {|b| b.type=="Schedule" ? b.client_enrollment_service.client_enrollment.client.first_name : b.first_name }.reverse!
+    elsif params[:sortSoapNoteByDate] == "0" || params[:sortSoapNoteByDate] == 0
+      items.sort_by!(&:date).reverse!
     end
     items
   end
