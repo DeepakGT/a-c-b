@@ -226,7 +226,7 @@ module CsvImport
           when 'Unavailable'
             schedule.status = 'Unavailable'
           when 'Staff Cancellation'
-            schedule.status = 'Staff_Cancellation'
+            schedule.status = 'Staff_Cancellation due to illness'
           when 'Client Cancel Less Than 24 Hours'
             schedule.status = 'Client_Cancel_Less_than_24_h'
           when 'Client Cancel Greater Than 24 Hours'

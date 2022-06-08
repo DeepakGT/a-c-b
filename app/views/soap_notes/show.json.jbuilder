@@ -5,6 +5,7 @@ json.data do
   json.scheduling_id @soap_note.scheduling_id
   json.note @soap_note.note
   json.add_date @soap_note.add_date
+  json.add_time @soap_note.add_time&.strftime('%H:%M')
   json.rbt_sign @soap_note.rbt_signature
   json.rbt_sign_name @soap_note.rbt_signature_author_name
   json.rbt_sign_date @soap_note.rbt_signature_date
@@ -22,8 +23,8 @@ json.data do
   if @soap_note.synced_with_catalyst.to_bool.true?
     json.caregiver_sign_present @soap_note.caregiver_signature
     catalyst_data = CatalystData.find_by(id: @soap_note.catalyst_data_id)
-    json.location catalyst_data.session_location
-    json.cordinates catalyst_data.location
+    json.location catalyst_data&.session_location
+    json.cordinates catalyst_data&.location
   else
     json.location nil
     json.cordinates nil

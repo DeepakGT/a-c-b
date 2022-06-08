@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_06_06_075701) do
+ActiveRecord::Schema.define(version: 2022_06_07_074708) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -371,6 +371,7 @@ ActiveRecord::Schema.define(version: 2022_06_06_075701) do
     t.boolean "synced_with_catalyst", default: false
     t.string "catalyst_data_id"
     t.bigint "client_id"
+    t.datetime "add_time"
     t.index ["client_id"], name: "index_soap_notes_on_client_id"
     t.index ["creator_id"], name: "index_soap_notes_on_creator_id"
     t.index ["scheduling_id"], name: "index_soap_notes_on_scheduling_id"
