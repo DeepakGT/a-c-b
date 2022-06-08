@@ -15,7 +15,6 @@ class SyncWithCatalystWorker
 
   def sync_data(start_date, end_date)
     Loggers::Catalyst::SyncSoapNotesLoggerService.call(nil, "Syncing catalyst soap notes from #{start_date} to #{end_date} at #{Time.current} has started.")
-    response_data_array = Catalyst::SyncDataOperation.call(start_date, end_date)
 
     batch_start_date = start_date
     while batch_start_date < end_date
