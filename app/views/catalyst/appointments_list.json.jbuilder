@@ -53,6 +53,24 @@ json.data do
       json.unrendered_reasons schedule.unrendered_reason
       json.units schedule.units
       json.minutes schedule.minutes
+      soap_note = schedule.soap_notes&.order(add_date: :desc, add_time: :desc)
+      if soap_note.present?
+        json.soap_note do
+          json.id soap_note.id
+          json.note soap_note.note
+          json.add_date soap_note.add_date
+          json.add_time soap_note.add_time&.strftime('%H:%M')
+          json.synced_with_catalyst soap_note.synced_with_catalyst
+          if soap_note.synced_with_catalyst.to_bool.true?
+            catalyst_data = CatalystData.find_by(id: soap_note.catalyst_data_id)
+            json.location catalyst_data&.session_location
+            json.cordinates catalyst_data&.location
+          else
+            json.location nil
+            json.cordinates nil
+          end
+        end
+      end
     end
   end
 end
