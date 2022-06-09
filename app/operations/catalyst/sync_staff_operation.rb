@@ -15,7 +15,13 @@ module Catalyst
 
         staff_data_array.each_index do |i|
           staff_data = staff_data_array[i]
+          if staff_data['firstName']=='Jacques' && staff_data['lastName']=='Edmond' && staff_data['email']=='jedmond@abacentersfl.com'
+            staff_data['firstName']='Jacques '
+          end
           staff = Staff.find_by(first_name: staff_data['firstName'], last_name: staff_data['lastName'], email: staff_data['email'])
+          if staff.blank?
+            staff = Staff.where('email = ?', staff_data['email']&.downcase).find_by(first_name: staff_data['firstName'], last_name: staff_data['lastName'])
+          end
           if staff.present?
             staff.catalyst_user_id = staff_data['userId']
             staff.save(validate: false)

@@ -32,14 +32,14 @@ class SchedulingsController < ApplicationController
 
       update_scheduling 
     when 'bcba'
-      if @schedule.date>Time.current.to_date || (@schedule.date==Time.current.to_date && @schedule.start_time > Time.current.strftime('%H:%M')) 
-        update_scheduling_when_bcba
-      else
-        update_render_service if params[:status]=='Rendered'
-        return if !is_renderable
+      # if @schedule.date>Time.current.to_date || (@schedule.date==Time.current.to_date && @schedule.start_time > Time.current.strftime('%H:%M')) 
+      update_scheduling_when_bcba
+      # else
+      #   update_render_service if params[:status]=='Rendered'
+      #   return if !is_renderable
 
-        @schedule.update(status: params[:status]) if params[:status].present?
-      end
+      #   @schedule.update(status: params[:status]) if params[:status].present?
+      # end
     end
     update_units_columns(@schedule.client_enrollment_service)
   end
