@@ -53,7 +53,7 @@ json.data do
       json.unrendered_reasons schedule.unrendered_reason
       json.units schedule.units
       json.minutes schedule.minutes
-      soap_note = schedule.soap_notes&.order(add_date: :desc, add_time: :desc)
+      soap_note = schedule.soap_notes&.order(add_date: :desc, add_time: :desc).first
       if soap_note.present?
         json.soap_note do
           json.id soap_note.id
