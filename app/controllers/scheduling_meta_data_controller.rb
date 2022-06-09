@@ -169,15 +169,20 @@ class SchedulingMetaDataController < ApplicationController
   end
 
   def sort_action_items(items)
-    if params[:sortSoapNoteByClient] == "1" || params[:sortSoapNoteByClient] == 1
-      items.sort_by! {|b| b.type=="Schedule" ? b.client_enrollment_service.client_enrollment.client.first_name+b.client_enrollment_service.client_enrollment.client.last_name : b.first_name+b.last_name }
-    elsif params[:sortSoapNoteByClient] == "0" || params[:sortSoapNoteByClient] == 0
-      items.sort_by! {|b| b.type=="Schedule" ? b.client_enrollment_service.client_enrollment.client.first_name+b.client_enrollment_service.client_enrollment.client.last_name : b.first_name+b.last_name }.reverse!
-    end
-    if params[:sortSoapNoteByDate] == "1" || params[:sortSoapNoteByDate] == 1 
-      items.sort_by! &:date
-    elsif params[:sortSoapNoteByDate] == "0" || params[:sortSoapNoteByDate] == 0
-      items.sort_by!(&:date).reverse!
+    if params[:sortSoapNoteByClient].present? && params[:sortSoapNoteByDate].present?
+      items.sort_by! {|b| b.type=="Schedule" ? [b.client_enrollment_service.client_enrollment.client.first_name+b.client_enrollment_service.client_enrollment.client.last_name,b.date] : [b.first_name+b.last_name,b.date] }
+    elsif params[:sortSoapNoteByClient].present? && !params[:sortSoapNoteByDate].present?
+      if params[:sortSoapNoteByClient] == "1" || params[:sortSoapNoteByClient] == 1
+        items.sort_by! {|b| b.type=="Schedule" ? b.client_enrollment_service.client_enrollment.client.first_name+b.client_enrollment_service.client_enrollment.client.last_name : b.first_name+b.last_name }
+      elsif params[:sortSoapNoteByClient] == "0" || params[:sortSoapNoteByClient] == 0
+        items.sort_by! {|b| b.type=="Schedule" ? b.client_enrollment_service.client_enrollment.client.first_name+b.client_enrollment_service.client_enrollment.client.last_name : b.first_name+b.last_name }.reverse!
+      end
+    elsif !params[:sortSoapNoteByClient].present? && params[:sortSoapNoteByDate].present?
+      if params[:sortSoapNoteByDate] == "1" || params[:sortSoapNoteByDate] == 1 
+        items.sort_by! &:date
+      elsif params[:sortSoapNoteByDate] == "0" || params[:sortSoapNoteByDate] == 0
+        items.sort_by!(&:date).reverse!
+      end
     end
     items
   end
