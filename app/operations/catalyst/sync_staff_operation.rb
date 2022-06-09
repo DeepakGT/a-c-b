@@ -17,6 +17,8 @@ module Catalyst
           staff_data = staff_data_array[i]
           if staff_data['firstName']=='Jacques' && staff_data['lastName']=='Edmond' && staff_data['email']=='jedmond@abacentersfl.com'
             staff_data['firstName']='Jacques '
+          elsif staff_data['firstName']=='Maria' && staff_data['lastName']=='Perdomo' && staff_data['email']=='mperdomo@abacentersfl.com'
+            staff_data['firstName']='Maria '
           end
           staff = Staff.find_by(first_name: staff_data['firstName'], last_name: staff_data['lastName'], email: staff_data['email'])
           if staff.blank?
