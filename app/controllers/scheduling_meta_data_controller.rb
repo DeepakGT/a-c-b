@@ -16,7 +16,7 @@ class SchedulingMetaDataController < ApplicationController
 
   def rbt_appointments
     authorize :appointment, :rbt_appointments?
-    rbt_schedules = Scheduling.includes(:staff, client_enrollment_service: [:service, {client_enrollment: :client}]).by_staff_ids(current_user.id).by_status.with_active_client
+    rbt_schedules = Scheduling.left_outer_joins(:staff, client_enrollment_service: [:service, {client_enrollment: :client}]).by_staff_ids(current_user.id).by_status.with_active_client
     # @upcoming_schedules = rbt_schedules.scheduled_scheduling.order(:date).first(10)
     @todays_appointments = rbt_schedules.todays_schedulings.order(:start_time).last(10)
     past_schedules = rbt_schedules.past_60_days_schedules.unrendered_schedulings.order(date: :desc)
@@ -34,7 +34,7 @@ class SchedulingMetaDataController < ApplicationController
 
   def bcba_appointments
     authorize :appointment, :bcba_appointments?
-    bcba_schedules = Scheduling.includes(:staff, client_enrollment_service: [:service, {client_enrollment: :client}]).by_staff_ids(current_user.id).by_status.with_active_client
+    bcba_schedules = Scheduling.left_outer_joins(:staff, client_enrollment_service: [:service, {client_enrollment: :client}]).by_staff_ids(current_user.id).by_status.with_active_client
     # @upcoming_schedules = bcba_schedules.scheduled_scheduling.order(:date).first(10)
     @todays_appointments = bcba_schedules.todays_schedulings.order(:start_time).last(10)
     past_schedules = bcba_schedules.past_60_days_schedules.unrendered_schedulings.order(date: :desc)
@@ -59,7 +59,7 @@ class SchedulingMetaDataController < ApplicationController
   def executive_director_appointments
     authorize :appointment, :executive_director_appointments?
     client_ids = Clinic.find(params[:default_location_id]).clients.active.pluck(:id)
-    schedules = Scheduling.includes(:soap_notes, :staff, client_enrollment_service: [:service, {client_enrollment: :client}])
+    schedules = Scheduling.left_outer_joins(:soap_notes, :staff, client_enrollment_service: [:service, {client_enrollment: :client}])
     schedules = schedules.by_client_ids(client_ids)
     @todays_appointments = schedules.by_status.todays_schedulings.last(10)
     past_schedules = schedules.by_status.past_60_days_schedules.unrendered_schedulings.order(date: :desc)
