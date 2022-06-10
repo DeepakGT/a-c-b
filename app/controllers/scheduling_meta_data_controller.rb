@@ -25,7 +25,7 @@ class SchedulingMetaDataController < ApplicationController
     catalyst_data = CatalystData.select("catalyst_data.*,clients.id AS client_id, clients.first_name, clients.last_name,'CatalystData' AS type").joins("LEFT JOIN clients ON (clients.catalyst_patient_id = catalyst_data.catalyst_patient_id)").by_active_clients.after_live_date.past_60_days_catalyst_data.by_catalyst_user_id(current_user.id)
                                  .and(CatalystData.with_multiple_appointments.or(CatalystData.with_no_appointments))
                                  .first(30)
-    @action_items_array = past_schedules.to_a.concat(catalyst_data)
+    @action_items_array = past_schedules.uniq.concat(catalyst_data)
     @action_items_array = sort_action_items(@action_items_array)
 
     # sql = "(SELECT id, 'Upcoming Schedule' AS type FROM schedulings WHERE staff_id = #{current_user.id} AND status = 'Scheduled' AND date>=CURRENT_TIMESTAMP ORDER BY date LIMIT 10) UNION (SELECT id, 'Past Schedule' AS type FROM schedulings WHERE staff_id = #{current_user.id} AND status = 'Scheduled' AND date<CURRENT_TIMESTAMP AND date>=(CURRENT_TIMESTAMP + INTERVAL '-2 month') AND is_rendered=false ORDER BY date DESC) UNION (SELECT id,'Catalyst Data' AS type FROM catalyst_data WHERE system_scheduling_id IS NULL LIMIT 30);"
@@ -49,7 +49,7 @@ class SchedulingMetaDataController < ApplicationController
     catalyst_data = CatalystData.select("catalyst_data.*,clients.id AS client_id, clients.first_name, clients.last_name,'CatalystData' AS type").joins("LEFT JOIN clients ON (clients.catalyst_patient_id = catalyst_data.catalyst_patient_id)").by_active_clients.after_live_date.past_60_days_catalyst_data.by_catalyst_user_id(current_user.id)
                                  .and(CatalystData.with_multiple_appointments.or(CatalystData.with_no_appointments))
                                  .first(30)
-    @action_items_array = past_schedules.to_a.concat(catalyst_data)
+    @action_items_array = past_schedules.uniq.concat(catalyst_data)
     @action_items_array = sort_action_items(@action_items_array)
 
     # sql = "(SELECT id, 'Upcoming Schedule' AS type FROM schedulings WHERE staff_id = #{current_user.id} AND status = 'Scheduled' AND date>=CURRENT_TIMESTAMP ORDER BY date LIMIT 20) UNION (SELECT id, 'Past Schedule' AS type FROM schedulings WHERE staff_id = #{current_user.id} AND status = 'Scheduled' AND date<CURRENT_TIMESTAMP AND date>=(CURRENT_TIMESTAMP + INTERVAL '-2 month') AND is_rendered=false ORDER BY date DESC) UNION (SELECT client_enrollment_services.id, 'client_enrollment_services' AS type FROM client_enrollment_services INNER JOIN client_enrollments ON client_enrollments.id=client_enrollment_services.client_enrollment_id INNER JOIN clients ON clients.id=client_enrollments.client_id WHERE clients.bcba_id = #{current_user.id} AND client_enrollment_services.end_date >= CURRENT_TIMESTAMP AND client_enrollment_services.end_date <= (CURRENT_TIMESTAMP + INTERVAL '9 day')) UNION (SELECT id,'Catalyst Data' AS type FROM catalyst_data WHERE system_scheduling_id IS NULL LIMIT 30);"
@@ -73,7 +73,7 @@ class SchedulingMetaDataController < ApplicationController
     catalyst_data = CatalystData.select("catalyst_data.*,clients.id AS client_id, clients.first_name, clients.last_name,'CatalystData' AS type").joins("LEFT JOIN clients ON (clients.catalyst_patient_id = catalyst_data.catalyst_patient_id)").after_live_date.past_60_days_catalyst_data.by_catalyst_patient_ids(catalyst_patient_ids)
                                  .and(CatalystData.with_multiple_appointments.or(CatalystData.with_no_appointments))
                                  .first(30)
-    @action_items_array = past_schedules.to_a.concat(catalyst_data)
+    @action_items_array = past_schedules.uniq.concat(catalyst_data)
     @action_items_array = sort_action_items(@action_items_array)
     @unassigned_appointments = schedules.scheduled_scheduling.without_staff
   end
