@@ -32,12 +32,12 @@ module Catalyst
             catalyst_data.start_time = data['startTime'].to_time.strftime('%H:%M')
             catalyst_data.end_time = data['endTime'].to_time.strftime('%H:%M')
             catalyst_data.date_revision_made = data['dateRevisionMade']
-            location = data.select {|res| res["questionText"] == "Location" && res["type"] == "Location"}.first
-            loc = location.present? ? location["answer"] : ""
-            session_location = data.select {|res| res["questionText"] == "Session Location" && res["type"] == "StaticList"}.first
-            session_loc = session_location.present? ? session_location["answer"] : ""
-            catalyst_data.location = loc
-            catalyst_data.session_location = session_loc
+            # location = data.select {|res| res["questionText"] == "Location" && res["type"] == "Location"}.first
+            # loc = location.present? ? location["answer"] : ""
+            # session_location = data.select {|res| res["questionText"] == "Session Location" && res["type"] == "StaticList"}.first
+            # session_loc = session_location.present? ? session_location["answer"] : ""
+            # catalyst_data.location = loc
+            # catalyst_data.session_location = session_loc
             data['responses'].each do |response|
               case response['questionText']
               when 'BCBA Signature'
@@ -50,6 +50,10 @@ module Catalyst
                 catalyst_data.caregiver_signature = response['answer'] if response['answer'].present?
               when 'Provider Signature'
                 catalyst_data.provider_signature = response['answer']
+              when 'Location'
+                catalyst_data.location = response['answer']
+              when 'Session Location'
+                catalyst_data.session_location = response['answer']
               end
             end
             catalyst_data.minutes = (catalyst_data.end_time.to_time - catalyst_data.start_time.to_time)/60
