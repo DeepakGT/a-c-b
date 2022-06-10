@@ -17,6 +17,14 @@ module Catalyst
               if schedule.unrendered_reason.include?('units_does_not_match') && schedule.catalyst_data_ids.blank?
                 schedule.unrendered_reason = []
                 schedule.save(validate: false)
+              else
+                schedule.catalyst_data_ids.each do |catalyst_id|
+                  catalyst_data = CatalystData.find_by(id: catalyst_id)
+                  if catalyst_data.present?
+                    CompareCatalystDataWithSystemData::CompareSyncedDataOperation.call(catalyst_data)
+                    RenderAppointments::RenderScheduleOperation.call(schedule.id) if !schedule.unrendered_reason.include?('units_does_not_match')
+                  end
+                end
               end
               if !schedule.unrendered_reason.include?('units_does_not_match')
                 RenderAppointments::RenderScheduleOperation.call(schedule.id)
