@@ -346,8 +346,9 @@ json.data do
             json.caregiver_sign_date soap_note.caregiver_signature_datetime
             json.synced_with_catalyst soap_note.synced_with_catalyst
           end
-        elsif action_item.catalyst_data_ids.present?
-          catalyst_datas = CatalystData.where(id: action_item.catalyst_data_ids).where(system_scheduling_id: action_item.id)
+        end
+        if action_item.catalyst_data_ids.present?
+          catalyst_datas = CatalystData.where(id: action_item.catalyst_data_ids)#.where(system_scheduling_id: action_item.id)
           if catalyst_datas.present?
             json.catalyst_data do
               json.array! catalyst_datas do |catalyst_data|

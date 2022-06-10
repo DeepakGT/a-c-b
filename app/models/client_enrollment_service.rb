@@ -74,6 +74,7 @@ class ClientEnrollmentService < ApplicationRecord
                                                         .where.not(id: self.id)
     client_enrollment_services = client_enrollment_services.where('start_date <= ? AND end_date >= ?', self.start_date, self.start_date)
                                                            .or(client_enrollment_services.where('start_date >= ? AND start_date <= ?', self.start_date, self.end_date))
+    client_enrollment_services = client_enrollment_services.where('left_units > ?', 0)
     errors.add(:client_enrollment_service, 'cannot be created for given start date and end date.') if client_enrollment_services.any?
   end
   # end of private
