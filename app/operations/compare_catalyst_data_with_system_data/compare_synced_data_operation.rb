@@ -30,7 +30,9 @@ module CompareCatalystDataWithSystemData
           schedules = Scheduling.joins(client_enrollment_service: :client_enrollment).by_client_ids(client&.id).by_staff_ids(staff&.id).on_date(catalyst_data.date)
           if schedules.count==1
             schedule = schedules.first
-            if ((catalyst_data.end_time>=schedule.start_time && catalyst_data.end_time<=schedule.end_time) || (catalyst_data.start_time>=schedule.start_time && catalyst_data.start_time<=schedule.end_time))
+            start_time = DateTime.strptime(schedule.start_time, '%H:%M') 
+            end_time = DateTime.strptime(schedule.end_time, '%H:%M') 
+            if catalyst_data.start_time>=(start_time-15.minutes).strftime('%H:%M') && catalyst_data.end_time<=(end_time+15.minutes).strftime('%H:%M')
               min_start_time = (catalyst_data.start_time.to_time-15.minutes)
               max_start_time = (catalyst_data.start_time.to_time+15.minutes)
               min_end_time = (catalyst_data.end_time.to_time-15.minutes)
@@ -135,7 +137,9 @@ module CompareCatalystDataWithSystemData
             end
           elsif schedules.any?
             schedules.each do |appointment|
-              if ((catalyst_data.end_time>=appointment.start_time && catalyst_data.end_time<=appointment.end_time) || (catalyst_data.start_time>=appointment.start_time && catalyst_data.start_time<=appointment.end_time))
+              start_time = DateTime.strptime(appointment.start_time, '%H:%M') 
+              end_time = DateTime.strptime(appointment.end_time, '%H:%M') 
+              if catalyst_data.start_time>=(start_time-15.minutes).strftime('%H:%M') && catalyst_data.end_time<=(end_time+15.minutes).strftime('%H:%M')
                 min_start_time = (catalyst_data.start_time.to_time-15.minutes)
                 max_start_time = (catalyst_data.start_time.to_time+15.minutes)
                 min_end_time = (catalyst_data.end_time.to_time-15.minutes)
