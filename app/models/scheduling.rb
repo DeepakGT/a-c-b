@@ -12,7 +12,7 @@ class Scheduling < ApplicationRecord
 
   # validate :validate_time
   validate :validate_past_appointments, on: :create
-  validate :validate_units
+  validate :validate_units, on: :create
   # validate :validate_staff, on: :create
   # validate :validate_units_and_minutes
 

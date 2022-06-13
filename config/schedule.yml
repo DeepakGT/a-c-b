@@ -8,18 +8,10 @@ render_service_worker:
 
 sync_soap_notes_with_catalyst_one_month_worker_at_10_pm:
   cron: '0 22 * * *'
-  class: "SyncWithCatalystOneMonthWorker"
+  class: "SyncWithCatalystTwoMonthsWorker"
 
-sync_soap_notes_with_catalyst_at_11_am:
-  cron: '0 11 * * *'
-  class: "SyncWithCatalystWorker"
-
-sync_soap_notes_with_catalyst_at_3_pm:
-  cron: '0 15 * * *'
-  class: "SyncWithCatalystWorker"
-
-sync_soap_notes_with_catalyst_at_9_pm:
-  cron: '0 21 * * *'
+sync_soap_notes_with_catalyst_every_2_hours:
+  cron: '0 */2 * * *'
   class: "SyncWithCatalystWorker"
 
 sync_staff_and_client_with_catalyst_at_10_am:
