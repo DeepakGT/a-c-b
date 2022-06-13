@@ -59,6 +59,7 @@ class User < ActiveRecord::Base
                .merge({role: Role.find_by(name: self.role_name)})
 
     response.merge!({organization_id: self.organization&.id}) if self.role_name=='executive_director'
+    response.merge!({default_location_id: self.staff_clinics&.home_clinic&.first&.id}) if self.type=='Staff'
     response
   end
 
