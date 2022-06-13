@@ -30,7 +30,9 @@ module CompareCatalystDataWithSystemData
           schedules = Scheduling.joins(client_enrollment_service: :client_enrollment).by_client_ids(client&.id).by_staff_ids(staff&.id).on_date(catalyst_data.date)
           if schedules.count==1
             schedule = schedules.first
-            if ((catalyst_data.end_time>=schedule.start_time && catalyst_data.end_time<=schedule.end_time) || (catalyst_data.start_time>=schedule.start_time && catalyst_data.start_time<=schedule.end_time))
+            start_time = (DateTime.strptime(schedule.start_time, '%H:%M') - 15.minutes).strftime('%H:%M')
+            end_time = (DateTime.strptime(schedule.end_time, '%H:%M') + 15.minutes).strftime('%H:%M')
+            if ((catalyst_data.end_time>=start_time && catalyst_data.end_time<=end_time) || (catalyst_data.start_time>=start_time && catalyst_data.start_time<=end_time))
               min_start_time = (catalyst_data.start_time.to_time-15.minutes)
               max_start_time = (catalyst_data.start_time.to_time+15.minutes)
               min_end_time = (catalyst_data.end_time.to_time-15.minutes)
@@ -135,11 +137,13 @@ module CompareCatalystDataWithSystemData
             end
           elsif schedules.any?
             schedules.each do |appointment|
-              if ((catalyst_data.end_time>=appointment.start_time && catalyst_data.end_time<=appointment.end_time) || (catalyst_data.start_time>=appointment.start_time && catalyst_data.start_time<=appointment.end_time))
-                min_start_time = (catalyst_data.start_time.to_time-15.minutes)
-                max_start_time = (catalyst_data.start_time.to_time+15.minutes)
-                min_end_time = (catalyst_data.end_time.to_time-15.minutes)
-                max_end_time = (catalyst_data.end_time.to_time+15.minutes)
+              start_time = (DateTime.strptime(appointment.start_time, '%H:%M') - 15.minutes).strftime('%H:%M')
+              end_time = (DateTime.strptime(appointment.end_time, '%H:%M') + 15.minutes).strftime('%H:%M')
+              if ((catalyst_data.end_time>=start_time && catalyst_data.end_time<=end_time) || (catalyst_data.start_time>=start_time && catalyst_data.start_time<=end_time))
+                # min_start_time = (catalyst_data.start_time.to_time-15.minutes)
+                # max_start_time = (catalyst_data.start_time.to_time+15.minutes)
+                # min_end_time = (catalyst_data.end_time.to_time-15.minutes)
+                # max_end_time = (catalyst_data.end_time.to_time+15.minutes)
                 # if (min_start_time..max_start_time).include?(appointment.start_time.to_time) && (min_end_time..max_end_time).include?(appointment.end_time.to_time)
                 #   if appointment.is_rendered.to_bool.false?
                 #     appointment.update(start_time: catalyst_data.start_time, end_time: catalyst_data.end_time)

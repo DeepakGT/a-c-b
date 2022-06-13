@@ -25,6 +25,8 @@ class SchedulingsController < ApplicationController
 
   def update
     @schedule.user = current_user
+    change_status = check_units
+    return if change_status==-1
     case current_user.role_name
     when 'super_admin', 'administrator', 'executive_director', 'Clinical Director', 'client_care_coordinator'
       update_render_service if params[:status]=='Rendered'
@@ -32,25 +34,23 @@ class SchedulingsController < ApplicationController
 
       update_scheduling 
     when 'bcba'
-      # if @schedule.date>Time.current.to_date || (@schedule.date==Time.current.to_date && @schedule.start_time > Time.current.strftime('%H:%M')) 
-      update_scheduling_when_bcba
-      # else
-      #   update_render_service if params[:status]=='Rendered'
-      #   return if !is_renderable
+      update_render_service if params[:status]=='Rendered'
+      return if !is_renderable
 
-      #   @schedule.update(status: params[:status]) if params[:status].present?
-      # end
+      update_scheduling_when_bcba
     end
-    update_units_columns(@schedule.client_enrollment_service)
+    update_units_columns(@schedule.client_enrollment_service) if change_status==1
   end
 
   def destroy
+    client_enrollment_service = @schedule.client_enrollment_services
     case current_user.role_name
     when 'super_admin'
       delete_scheduling
     when 'bcba', 'executive_director', 'client_care_coordinator', 'Clinical Director', 'administrator'
       delete_scheduling if @schedule.created_at.strftime('%Y-%m-%d')>=(Time.current-1.day).strftime('%Y-%m-%d')
     end
+    update_units_columns(@schedule.client_enrollment_service)
   end
 
   def create_without_staff
@@ -182,6 +182,22 @@ class SchedulingsController < ApplicationController
       catalyst_datum.save
     end
     @schedule.destroy
+  end
+
+  def check_units
+    return if params[:status].blank? || @schedule.status==params[:status]
+
+    if @schedule.status=='Scheduled'
+      return 1 if params[:status]!='Rendered'
+    else
+      if params[:status]=='Scheduled' && @schedule.client_enrollment_service.left_units<@schedule.units
+        @schedule.errors.add(:units, 'left in authorization are not enough to update this cancelled appointment to scheduled.')
+        return -1
+      else
+        return 1
+      end
+    end
+    return 0
   end
   # end of private
 end
