@@ -12,5 +12,5 @@ class StaffClinic < ApplicationRecord
   #   message: 'can have only one home clinic.' 
 
   scope :except_ids, ->(ids){ where.not(id: ids) }
-  scope :home_cinic, ->{ where(is_home_clinic: true) }
+  scope :home_clinic, ->{ where(is_home_clinic: true) }
 end
