@@ -18,6 +18,8 @@ class SyncWithCatalystWorker
     response_data_array = Catalyst::SyncDataOperation.call(start_time, end_time)
     Loggers::Catalyst::SyncSoapNotesLoggerService.call(nil, "Syncing catalyst soap notes from #{start_time} to #{end_time} is completed.")
 
+    RenderAppointments::MultipleSoapNotesOperation.call
+
     Loggers::Catalyst::SyncSoapNotesLoggerService.call(nil, "Rendering catalyst synced appointments from #{start_time} to #{end_time} has started.")
     result = Catalyst::RenderAppointmentsOperation.call
     Loggers::Catalyst::SyncSoapNotesLoggerService.call(nil, "Rendering catalyst synced appointments from #{start_time} to #{end_time} is completed.")
