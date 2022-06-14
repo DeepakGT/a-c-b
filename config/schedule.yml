@@ -1,27 +1,34 @@
 update_user_status_worker:
   cron: '1 0 * * *'
   class: "UpdateUserStatusWorker"
+  queue: UpdateUserStatus
 
 render_service_worker:
   cron: '1 0 * * *'
   class: "RenderAppointmentsWorker"
+  queue: RenderAppointments
 
-sync_soap_notes_with_catalyst_one_month_worker_at_10_pm:
+sync_soap_notes_with_catalyst_two_months_worker_at_10_pm:
   cron: '0 22 * * *'
   class: "SyncWithCatalystTwoMonthsWorker"
+  queue: SyncWithCatalystTwoMonths
 
 sync_soap_notes_with_catalyst_every_2_hours:
   cron: '0 */2 * * *'
   class: "SyncWithCatalystWorker"
+  queue: SyncWithCatalyst
 
 sync_staff_and_client_with_catalyst_at_10_am:
   cron: '0 10 * * *'
   class: "SyncStaffAndClientWithCatalystWorker"
+  queue: SyncStaffAndClientWithCatalyst
 
 sync_staff_and_client_with_catalyst_at_7_pm:
   cron: '0 19 * * *'
   class: "SyncStaffAndClientWithCatalystWorker"
+  queue: SyncStaffAndClientWithCatalyst
 
 destroy_unassigned_past_appointments:
   cron: '5 0 * * *'
   class: "DestroyUnassignedAppointmentsWorker"
+  queue: DestroyUnassignedAppointments
