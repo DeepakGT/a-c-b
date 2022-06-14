@@ -57,6 +57,16 @@ class CatalystController < ApplicationController
     end
   end
 
+  def appointment_with_multiple_soap_notes
+    @schedule = Scheduling.find(params[:scheduling_id])
+    @selected_catalyst_data = CatalystData.where(id: params[:selected_catalyst_data_ids])
+    update_selected_catalyst_data
+    update_unselected_catalyst_data
+    soap_notes = SoapNote.where(catalyst_data_id: @selected_catalyst_data&.ids)
+    soap_notes.update_all(scheduling_id: @schedule.id, client_id: @schedule.client_enrollment_service.client_enrollment.client_id)
+    re_render_appointment
+  end
+
   private
 
   def authorize_user
@@ -133,6 +143,41 @@ class CatalystController < ApplicationController
     else
       @schedule.unrendered_reason.push('units_does_not_match')
       @schedule.save(validate: false)
+    end
+  end
+
+  def re_render_appointment
+    total_units = @selected_catalyst_data.pluck(:units)&.sum
+    @schedule.catalyst_data_ids = @selected_catalyst_data.ids
+    @schedule.unrendered_reason = []
+    @schedule.is_soap_notes_assigned = true
+    @schedule.save(validate: false)
+    if @schedule.units!=total_units
+      @schedule.unrendered_reason = ['units_does_not_match']
+      @schedule.save(validate: false)
+    end
+    if !@schedule.unrendered_reason.include?('units_does_not_match') && !@schedule.unrendered_reason.include?('multiple_soap_notes_found') && !@schedule.unrendered_reason.include?('multiple_soap_notes_of_different_locations_found')
+      RenderAppointments::RenderScheduleOperation.call(@schedule.id)
+    end
+  end
+
+  def update_unselected_catalyst_data
+    unselected_catalyst_data_ids = @schedule.catalyst_data_ids - @selected_catalyst_data.ids.map(&:to_s)
+    unselected_catalyst_data = CatalystData.where(id: unselected_catalyst_data_ids)
+    unselected_catalyst_data.each do |catalyst_data|
+      catalyst_data.multiple_schedulings_ids = catalyst_data.multiple_schedulings_ids.uniq
+      catalyst_data.multiple_schedulings_ids.delete(@schedule.id)
+      catalyst_data.is_appointment_found = false if catalyst_data.multiple_schedulings_ids.blank?
+      catalyst_data.save(validate: false)
+    end
+  end
+
+  def update_selected_catalyst_data
+    @selected_catalyst_data.each do |catalyst_data|
+      catalyst_data.multiple_schedulings_ids = []
+      catalyst_data.system_scheduling_id = @schedule.id
+      catalyst_data.is_appointment_found = true
+      catalyst_data.save(validate: false)
     end
   end
 end

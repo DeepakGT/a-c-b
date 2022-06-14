@@ -18,6 +18,8 @@ class SyncWithCatalystTwoMonthsWorker
     Catalyst::SyncSoapNotesInTwelveHoursChunkService.call(start_date, end_date)
     Loggers::Catalyst::SyncSoapNotesLoggerService.call(nil, "Syncing catalyst soap notes from #{start_date} to #{end_date} at #{Time.current} is completed.")
 
+    RenderAppointments::MultipleSoapNotesOperation.call
+    
     Loggers::Catalyst::SyncSoapNotesLoggerService.call(nil, "Rendering catalyst synced appointments from #{start_date} to #{end_date} at #{Time.current} has started.")
     result = Catalyst::RenderAppointmentsOperation.call
     Loggers::Catalyst::SyncSoapNotesLoggerService.call(nil, "Rendering catalyst synced appointments from #{start_date} to #{end_date} at #{Time.current} is completed.")
