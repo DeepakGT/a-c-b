@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_06_07_074708) do
+ActiveRecord::Schema.define(version: 2022_06_14_062016) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -316,6 +316,7 @@ ActiveRecord::Schema.define(version: 2022_06_07_074708) do
     t.datetime "rendered_at"
     t.string "snowflake_appointment_id"
     t.boolean "is_manual_render", default: false
+    t.boolean "is_soap_notes_assigned", default: false
     t.index ["client_enrollment_service_id"], name: "index_schedulings_on_client_enrollment_service_id"
     t.index ["creator_id"], name: "index_schedulings_on_creator_id"
     t.index ["date"], name: "index_schedulings_on_date"

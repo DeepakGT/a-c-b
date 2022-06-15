@@ -26,7 +26,7 @@ module Catalyst
               #     end
               #   end
               end
-              if !schedule.unrendered_reason.include?('units_does_not_match')
+              if !schedule.unrendered_reason.include?('units_does_not_match') && !schedule.unrendered_reason.include?('multiple_soap_notes_found') && !schedule.unrendered_reason.include?('multiple_soap_notes_of_different_locations_found')
                 RenderAppointments::RenderScheduleOperation.call(schedule.id)
                 if schedule.is_rendered.to_bool.true?
                   Loggers::Catalyst::SyncSoapNotesLoggerService.call(schedule.id, "Schedule has been rendered successfully.")

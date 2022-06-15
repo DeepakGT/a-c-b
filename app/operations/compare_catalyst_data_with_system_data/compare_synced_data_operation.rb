@@ -137,6 +137,28 @@ module CompareCatalystDataWithSystemData
             end
           elsif schedules.any?
             schedules.each do |appointment|
+<<<<<<< HEAD
+              start_time = DateTime.strptime(appointment.start_time, '%H:%M') 
+              end_time = DateTime.strptime(appointment.end_time, '%H:%M') 
+              if catalyst_data.start_time>=(start_time-15.minutes).strftime('%H:%M') && catalyst_data.end_time<=(end_time+15.minutes).strftime('%H:%M')
+                min_start_time = (catalyst_data.start_time.to_time-15.minutes)
+                max_start_time = (catalyst_data.start_time.to_time+15.minutes)
+                min_end_time = (catalyst_data.end_time.to_time-15.minutes)
+                max_end_time = (catalyst_data.end_time.to_time+15.minutes)
+                if (min_start_time..max_start_time).include?(appointment.start_time.to_time) && (min_end_time..max_end_time).include?(appointment.end_time.to_time)
+                  if appointment.is_rendered.to_bool.false?
+                    appointment.update(start_time: catalyst_data.start_time, end_time: catalyst_data.end_time)
+                    appointment.units = catalyst_data.units
+                    appointment.minutes = catalyst_data.minutes
+                  end
+                  appointment.catalyst_data_ids.push(catalyst_data.id)
+                  appointment.save(validate: false)
+                  if appointment.catalyst_data_ids.include?("#{catalyst_data.id}")
+                    Loggers::Catalyst::SyncSoapNotesLoggerService.call(appointment.id, "In appointment, catalyst data id is saved.")
+                  else
+                    Loggers::Catalyst::SyncSoapNotesLoggerService.call(appointment.id, "In appointment, catalyst data id cannot be saved.")
+                  end
+=======
               start_time = (DateTime.strptime(appointment.start_time, '%H:%M') - 15.minutes).strftime('%H:%M')
               end_time = (DateTime.strptime(appointment.end_time, '%H:%M') + 15.minutes).strftime('%H:%M')
               if ((catalyst_data.end_time>=start_time && catalyst_data.end_time<=end_time) || (catalyst_data.start_time>=start_time && catalyst_data.start_time<=end_time))
@@ -157,6 +179,7 @@ module CompareCatalystDataWithSystemData
                 #   else
                 #     Loggers::Catalyst::SyncSoapNotesLoggerService.call(appointment.id, "In appointment, catalyst data id cannot be saved.")
                 #   end
+>>>>>>> bcb91eb62f62e998b432536e5923be6019af7645
 
                 #   if appointment.staff&.role_name=='rbt' && catalyst_data.provider_signature.present?
                 #     soap_note.rbt_signature = true
