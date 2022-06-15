@@ -166,10 +166,13 @@ class SchedulingsController < ApplicationController
     @schedule.minutes = catalyst_data.minutes if catalyst_data.minutes.present?
     @schedule.date = catalyst_data.date
     @schedule.catalyst_data_ids.push(catalyst_data.id)
-    @schedule.save(validate: false)
-    create_or_update_soap_note(catalyst_data)
-    catalyst_data.update(system_scheduling_id: @schedule.id, is_appointment_found: true, multiple_schedulings_ids: [])
-    RenderAppointments::RenderScheduleOperation.call(@schedule.id)
+    @schedule.catalyst_data_ids.uniq!
+    @schedule.save
+    if @schedule.save
+      create_or_update_soap_note(catalyst_data)
+      catalyst_data.update(system_scheduling_id: @schedule.id, is_appointment_found: true, multiple_schedulings_ids: [])
+      RenderAppointments::RenderScheduleOperation.call(@schedule.id)
+    end
   end
 
   def create_or_update_soap_note(catalyst_data)
