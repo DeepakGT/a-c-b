@@ -142,7 +142,7 @@ json.data do
   if @soap_notes.present?
     json.soap_notes do
       json.array! @soap_notes do |soap_note|
-        user = User.find(soap_note.creator_id)
+        user = User.find_by(id: soap_note.creator_id)
         json.id soap_note.id
         json.scheduling_id soap_note.scheduling_id
         json.note soap_note.note
