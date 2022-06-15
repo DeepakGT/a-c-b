@@ -66,8 +66,10 @@ module Catalyst
               Loggers::Catalyst::SyncSoapNotesLoggerService.call(catalyst_data.id, "Catalyst soap note with id #{data['soapNoteId']} is saved.")
               Loggers::Catalyst::SyncSoapNotesLoggerService.call(catalyst_data.id, "#{catalyst_data.attributes}")
             end
-
-            response_data_hash = CompareCatalystDataWithSystemData::CompareSyncedDataOperation.call(catalyst_data)
+            
+            if !(catalyst_data.system_scheduling_id.present? && Scheduling.find_by(id: catalyst_data.system_scheduling_id)&.is_rendered==true)
+              response_data_hash = CompareCatalystDataWithSystemData::CompareSyncedDataOperation.call(catalyst_data)
+            end
             # elsif catalyst_data.date_revision_made!=data['dateRevisionMade']
             #   Loggers::Catalyst::SyncSoapNotesLoggerService.call(catalyst_data.id, "#{catalyst_data.attributes}")
             #   data['responses'].each do |response|
