@@ -166,8 +166,31 @@ class SchedulingsController < ApplicationController
     @schedule.minutes = catalyst_data.minutes if catalyst_data.minutes.present?
     @schedule.date = catalyst_data.date
     @schedule.catalyst_data_ids.push(catalyst_data.id)
-    @schedule.save(validate: false)
-    catalyst_data.update(system_scheduling_id: @schedule.id, is_appointment_found: true, multiple_schedulings_ids: [])
+    @schedule.catalyst_data_ids.uniq!
+    @schedule.save
+    if @schedule.save
+      create_or_update_soap_note(catalyst_data)
+      catalyst_data.update(system_scheduling_id: @schedule.id, is_appointment_found: true, multiple_schedulings_ids: [])
+      RenderAppointments::RenderScheduleOperation.call(@schedule.id)
+    end
+  end
+
+  def create_or_update_soap_note(catalyst_data)
+    soap_note = SoapNote.find_by(catalyst_data_id: catalyst_data.id)
+    if soap_note.blank?
+      soap_note = SoapNote.new(catalyst_data_id: catalyst_data.id)
+      soap_note.add_date = catalyst_data.date
+      soap_note.note = catalyst_data.note
+      soap_note.creator_id = Staff.find_by(catalyst_user_id: catalyst_data.catalyst_user_id)&.id
+      soap_note.synced_with_catalyst = true
+      soap_note.bcba_signature = true if catalyst_data.bcba_signature.present?
+      soap_note.clinical_director_signature = true if catalyst_data.clinical_director_signature.present?
+      soap_note.caregiver_signature = true if catalyst_data.caregiver_signature.present?
+      soap_note.save(validate: false)
+    end
+    soap_note.client_id = @schedule.client_enrollment_service.client_enrollment.client_id
+    soap_note.scheduling_id = @schedule.id
+    soap_note.save(validate: false)
   end
   
   def update_units_columns(client_enrollment_service)

@@ -1,2 +1,8 @@
 :queues:
   - default
+  - SyncStaffAndClientWithCatalyst
+  - SyncWithCatalyst
+  - RenderAppointments
+  - SyncWithCatalystTwoMonths
+  - UpdateUserStatus
+  - DestroyUnassignedAppointments
