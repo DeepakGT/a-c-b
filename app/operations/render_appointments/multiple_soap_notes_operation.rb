@@ -14,7 +14,7 @@ module RenderAppointments
           schedule.save(validate: false)
         end
 
-        schedules = schedules.select('schedulings.*').group('.id').having('catalyst_data_ids.count >= ?', 2)
+        schedules = schedules.select('schedulings.*').group('id').having('catalyst_data_ids.count >= ?', 2)
         schedules = schedules.where(is_soap_notes_assigned: false)
         schedules.each do |schedule|
           catalyst_datas = CatalystData.where(id: schedule.catalyst_data_ids)
