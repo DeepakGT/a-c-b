@@ -60,9 +60,9 @@ class User < ActiveRecord::Base
 
     response.merge!({organization_id: self.organization&.id}) if self.role_name=='executive_director'
     if self.type=='Staff'
-      response.merge!({default_location_id: self.staff_clinics&.home_clinic&.first&.clinic_id}) 
+      response.merge!({default_location_id: self.staff_clinics&.home_clinic&.first&.clinic_id})
     else
-      response.merge!({default_location_id: 1}) 
+      response.merge!({default_location_id: 1})
     end
     response
   end
