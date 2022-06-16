@@ -20,6 +20,7 @@ class CatalystController < ApplicationController
     @schedule = Scheduling.find(params[:scheduling_id])
     @catalyst_data = CatalystData.find(params[:catalyst_data_id])
     @schedule.catalyst_data_ids.push(@catalyst_data.id)
+    @schedule.catalyst_data_ids.uniq!
     @schedule.save(validate: false)
     temp_var = 0
     temp_var = 1 if @schedule.unrendered_reason.include?('units_does_not_match')
@@ -135,10 +136,10 @@ class CatalystController < ApplicationController
     min_end_time = (@catalyst_data.end_time.to_time-15.minutes)
     max_end_time = (@catalyst_data.end_time.to_time+15.minutes)
     if (min_start_time..max_start_time).include?(@schedule.start_time.to_time) && (min_end_time..max_end_time).include?(@schedule.end_time.to_time)
-      @schedule.start_time = catalyst_data.start_time 
-      @schedule.end_time = catalyst_data.end_time 
-      @schedule.units = catalyst_data.units if @schedule.units.present?
-      @schedule.minutes = catalyst_data.minutes if @schedule.minutes.present?
+      @schedule.start_time = @catalyst_data.start_time 
+      @schedule.end_time = @catalyst_data.end_time 
+      @schedule.units = @catalyst_data.units if @schedule.units.present?
+      @schedule.minutes = @catalyst_data.minutes if @schedule.minutes.present?
       @schedule.save(validate: false)
     else
       @schedule.unrendered_reason.push('units_does_not_match')
