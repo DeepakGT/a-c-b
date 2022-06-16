@@ -30,7 +30,9 @@ class CatalystController < ApplicationController
     check_units if @catalyst_data.id == @schedule.catalyst_data_ids.max.to_i
     # if (!(@schedule.unrendered_reason.include?('units_does_not_match')) && @checked_units==false && temp_var==0) || temp_var==1
     update_soap_note
-    RenderAppointments::RenderScheduleOperation.call(@schedule.id) if @schedule.date<Time.current.to_date && (!(@schedule.unrendered_reason.include?('units_does_not_match'))
+    if (@schedule.date<Time.current.to_date && (!(@schedule.unrendered_reason.include?('units_does_not_match')))
+      RenderAppointments::RenderScheduleOperation.call(@schedule.id) 
+    end
     # end
   end
 
