@@ -27,7 +27,7 @@ class CatalystController < ApplicationController
     # temp_var = 1 if @schedule.unrendered_reason.include?('units_does_not_match')
     @catalyst_data.update(is_appointment_found: true, system_scheduling_id: @schedule.id, multiple_schedulings_ids: [])
     # @checked_units = false
-    check_units if @catalyst_data.id == @schedule.catalyst_data_ids.max.to_i
+    check_units #if @catalyst_data.id == @schedule.catalyst_data_ids.max.to_i
     # if (!(@schedule.unrendered_reason.include?('units_does_not_match')) && @checked_units==false && temp_var==0) || temp_var==1
     update_soap_note
     if (@schedule.date<Time.current.to_date && (!(@schedule.unrendered_reason.include?('units_does_not_match')))
