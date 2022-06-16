@@ -50,11 +50,11 @@ module CompareCatalystDataWithSystemData
               end
             else
               schedules.each do |appointment|
-                min_start_time = (catalyst_data.start_time.to_time-15.minutes)
-                max_start_time = (catalyst_data.start_time.to_time+15.minutes)
-                min_end_time = (catalyst_data.end_time.to_time-15.minutes)
-                max_end_time = (catalyst_data.end_time.to_time+15.minutes)
-                if (min_start_time..max_start_time).include?(appointment.start_time.to_time) && (min_end_time..max_end_time).include?(appointment.end_time.to_time)
+                min_start_time = (appointment.start_time.to_time-15.minutes)
+                max_start_time = (appointment.start_time.to_time+15.minutes)
+                min_end_time = (appointment.end_time.to_time-15.minutes)
+                max_end_time = (appointment.end_time.to_time+15.minutes)
+                if (min_start_time..max_start_time).include?(catalyst_data.start_time.to_time) && (min_end_time..max_end_time).include?(catalyst_data.end_time.to_time)
                   catalyst_data.multiple_schedulings_ids.push("#{appointment.id}")
                   catalyst_data.multiple_schedulings_ids.uniq!
                   catalyst_data.is_appointment_found = true
