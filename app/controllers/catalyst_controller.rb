@@ -19,7 +19,7 @@ class CatalystController < ApplicationController
   def assign_catalyst_note
     @schedule = Scheduling.find(params[:scheduling_id])
     @catalyst_data = CatalystData.find(params[:catalyst_data_id])
-    @schedule.catalyst_data_ids.push("#{@catalyst_data.id}") if @schedule.catalyst_data_ids.include?("#{@catalyst_data.id}")
+    @schedule.catalyst_data_ids.push("#{@catalyst_data.id}") if !@schedule.catalyst_data_ids.include?("#{@catalyst_data.id}")
     @schedule.save(validate: false)
     update_catalyst_data_ids
     # temp_var = 0
@@ -154,7 +154,6 @@ class CatalystController < ApplicationController
     appointments = appointments.where('catalyst_data_ids @> ?', "{#{@catalyst_data.id}}")
     appointments.each do |appointment|
       appointment.catalyst_data_ids.uniq!
-      appointment.save(validate: false)
       appointment.catalyst_data_ids.delete("#{@catalyst_data.id}")
       appointment.save(validate: false)
     end
