@@ -167,6 +167,7 @@ class SchedulingsController < ApplicationController
     @schedule.date = catalyst_data.date
     @schedule.catalyst_data_ids.push(catalyst_data.id)
     @schedule.catalyst_data_ids.uniq!
+    @schedule.id = Scheduling.last.id + 1
     @schedule.save
     if @schedule.save
       create_or_update_soap_note(catalyst_data)
