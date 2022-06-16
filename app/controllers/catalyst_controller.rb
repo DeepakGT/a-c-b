@@ -20,7 +20,7 @@ class CatalystController < ApplicationController
     @schedule = Scheduling.find(params[:scheduling_id])
     @catalyst_data = CatalystData.find(params[:catalyst_data_id])
     @schedule.catalyst_data_ids.push(@catalyst_data.id)
-    @schedule.catalyst_data_ids.uniq!
+    @schedule.catalyst_data_ids = @schedule.catalyst_data_ids.uniq
     @schedule.save(validate: false)
     update_catalyst_data_ids
     # temp_var = 0
