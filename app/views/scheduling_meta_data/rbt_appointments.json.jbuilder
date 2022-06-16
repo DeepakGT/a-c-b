@@ -474,7 +474,7 @@ json.data do
         if action_item.is_appointment_found==false
           json.unrendered_reasons ["no_appointment_found"]
         else
-          json.unrendered_reasons ["multiple_soap_notes_found"]
+          json.unrendered_reasons ["multiple_appointments_found"]
         end
       end
     end
