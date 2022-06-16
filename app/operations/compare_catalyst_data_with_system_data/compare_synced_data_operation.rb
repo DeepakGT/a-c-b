@@ -32,11 +32,11 @@ module CompareCatalystDataWithSystemData
           schedules = Scheduling.joins(client_enrollment_service: :client_enrollment).by_client_ids(client&.id).by_staff_ids(staff&.id).on_date(catalyst_data.date)
           if schedules.count==1
             schedule = schedules.first
-            set_appointment(catalyst_data, schedule)
+            set_appointment(catalyst_data, schedule, soap_note)
           elsif schedules.any?
             filtered_schedules = schedules.where(start_time: catalyst_data.start_time, end_time: catalyst_data.end_time, units: catalyst_data.units)
             if filtered_schedules.count == 1
-              set_appointment(catalyst_data, filtered_schedules.first)
+              set_appointment(catalyst_data, filtered_schedules.first, soap_note)
             elsif filtered_schedules.count>1
               catalyst_data.multiple_schedulings_ids = filtered_schedules.pluck(:id)
               catalyst_data.system_scheduling_id = nil
@@ -81,6 +81,8 @@ module CompareCatalystDataWithSystemData
                 end
 
                 schedule = Scheduling.find_by(id: catalyst_data.system_scheduling_id)
+                schedule.catalyst_data_ids.push(catalyst_data.id)
+                schedule.save(validate: false)
                 if schedule.staff&.role_name=='rbt' && catalyst_data.provider_signature.present?
                   soap_note.rbt_signature = true
                 elsif schedule.staff&.role_name=='bcba' && catalyst_data.provider_signature.present?
@@ -116,7 +118,7 @@ module CompareCatalystDataWithSystemData
         response_data_hash
       end
 
-      def set_appointment(catalyst_data, schedule)
+      def set_appointment(catalyst_data, schedule, soap_note)
         min_start_time = (catalyst_data.start_time.to_time-15.minutes)
         max_start_time = (catalyst_data.start_time.to_time+15.minutes)
         min_end_time = (catalyst_data.end_time.to_time-15.minutes)
