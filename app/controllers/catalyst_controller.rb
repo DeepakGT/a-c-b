@@ -169,6 +169,13 @@ class CatalystController < ApplicationController
       catalyst_data.multiple_schedulings_ids.delete(@schedule.id)
       catalyst_data.is_appointment_found = false if catalyst_data.multiple_schedulings_ids.blank?
       catalyst_data.save(validate: false)
+      soap_note = SoapNote.where(catalyst_data_id: catalyst_data.id)
+      if soap_note.present?
+        soap_note = soap_note.first
+        soap_note.client_id = nil
+        soap_note.scheduling_id = nil
+        soap_note.save(validate: false)
+      end
     end
   end
 
