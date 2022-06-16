@@ -32,11 +32,11 @@ module CompareCatalystDataWithSystemData
           schedules = Scheduling.joins(client_enrollment_service: :client_enrollment).by_client_ids(client&.id).by_staff_ids(staff&.id).on_date(catalyst_data.date)
           if schedules.count==1
             schedule = schedules.first
-            set_appointment(catalyst_data, schedule, soap_note)
+            response_data_hash = set_appointment(catalyst_data, schedule, soap_note)
           elsif schedules.any?
             filtered_schedules = schedules.where(start_time: catalyst_data.start_time, end_time: catalyst_data.end_time, units: catalyst_data.units)
             if filtered_schedules.count == 1
-              set_appointment(catalyst_data, filtered_schedules.first, soap_note)
+              response_data_hash = set_appointment(catalyst_data, filtered_schedules.first, soap_note)
             elsif filtered_schedules.count>1
               catalyst_data.multiple_schedulings_ids = filtered_schedules.pluck(:id)
               catalyst_data.system_scheduling_id = nil
@@ -119,6 +119,7 @@ module CompareCatalystDataWithSystemData
       end
 
       def set_appointment(catalyst_data, schedule, soap_note)
+        response_data_hash = {}
         min_start_time = (catalyst_data.start_time.to_time-15.minutes)
         max_start_time = (catalyst_data.start_time.to_time+15.minutes)
         min_end_time = (catalyst_data.end_time.to_time-15.minutes)
@@ -216,6 +217,7 @@ module CompareCatalystDataWithSystemData
         else
           Loggers::Catalyst::SyncSoapNotesLoggerService.call(catalyst_data.id, "In catalyst data, scheduling id cannot be updated.")
         end
+        response_data_hash
       end
     end
   end
