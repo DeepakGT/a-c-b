@@ -180,10 +180,12 @@ class CatalystController < ApplicationController
     unselected_catalyst_data.each do |catalyst_data|
       catalyst_data.multiple_schedulings_ids = catalyst_data.multiple_schedulings_ids.uniq
       catalyst_data.multiple_schedulings_ids.delete(@schedule.id)
-      catalyst_data.is_appointment_found = false if catalyst_data.multiple_schedulings_ids.blank?
+      catalyst_data.system_scheduling_id = nil if catalyst_data.system_scheduling_id==@schedule.id
+      catalyst_data.save(validate: false)
+      catalyst_data.is_appointment_found = false if catalyst_data.multiple_schedulings_ids.blank? && catalyst_data.system_scheduling_id.blank?
       catalyst_data.save(validate: false)
       soap_note = SoapNote.where(catalyst_data_id: catalyst_data.id)
-      if soap_note.present?
+      if soap_note.present? && soap_note.scheduling_id==@schedule.id
         soap_note = soap_note.first
         soap_note.client_id = nil
         soap_note.scheduling_id = nil
