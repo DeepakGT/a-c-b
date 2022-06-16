@@ -150,9 +150,11 @@ class CatalystController < ApplicationController
   end
 
   def update_catalyst_data_ids
-    appointments = Scheduling.where.not(id: @schedule.id).where('catalyst_data_ids @> ?', "{#{@catalyst_data.id}}")
+    appointments = Scheduling.where.not(id: @schedule.id)
+    appointments = appointments.where('catalyst_data_ids @> ?', "{#{@catalyst_data.id}}")
     appointments.each do |appointment|
       appointment.catalyst_data_ids.uniq!
+      appointment.save(validate: false)
       appointment.catalyst_data_ids.delete("#{@catalyst_data.id}")
       appointment.save(validate: false)
     end
