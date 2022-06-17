@@ -33,6 +33,7 @@ class ClientEnrollmentService < ApplicationRecord
   scope :before_date, ->(date){ where('start_date < ?', date.to_time.strftime('%Y-%m-%d')) }
   scope :expired, ->{ where('end_date < ?', Time.current.strftime('%Y-%m-%d'))}
   scope :by_unassigned_appointments_allowed, -> { where('services.is_unassigned_appointment_allowed = ?', true)}
+  scope :excluding_early_codes, -> { joins(:service).where.not('services.display_code': ['99998', '99999', '99997', '98888'])}
   
   private
 
