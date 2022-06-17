@@ -19,6 +19,10 @@ class SoapNotesController < ApplicationController
       @soap_note.client_id = @scheduling.client_enrollment_service.client_enrollment.client.id
       @soap_note.add_time = params[:add_time].to_datetime&.in_time_zone('Eastern Time (US & Canada)') + 4.hours
       @soap_note.save
+      if @scheduling.unrendered_reason==['soap_notes_not_found']
+        @scheduling.unrendered_reason=[]
+        @scheduling.save(validate: false)
+      end
       RenderAppointments::RenderBySoapNoteOperation.call(@soap_note.id) if @scheduling.date<Time.current.to_date
     end
   end
@@ -29,6 +33,10 @@ class SoapNotesController < ApplicationController
       @soap_note.user = current_user
       @soap_note.add_time = params[:add_time].to_datetime&.in_time_zone('Eastern Time (US & Canada)') + 4.hours
       @soap_note.update(soap_note_params)
+      if @scheduling.unrendered_reason==['soap_notes_not_found']
+        @scheduling.unrendered_reason=[]
+        @scheduling.save(validate: false)
+      end
       RenderAppointments::RenderBySoapNoteOperation.call(@soap_note.id) if @scheduling.date<Time.current.to_date
     end
   end
