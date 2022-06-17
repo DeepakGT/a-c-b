@@ -55,7 +55,10 @@ end
 class Array
   def to_human_string
     arr = Array.new(self)
-    last = arr.pop
-    arr.join(", ") + " and " + last.to_s
+    if arr.count>1
+      last = arr.pop
+      return arr.join(", ") + " and " + last.to_s
+    end
+    arr.first
   end
 end
