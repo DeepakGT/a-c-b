@@ -188,7 +188,7 @@ class CatalystController < ApplicationController
       catalyst_data.save(validate: false)
       catalyst_data.is_appointment_found = false if catalyst_data.multiple_schedulings_ids.blank? && catalyst_data.system_scheduling_id.blank?
       catalyst_data.save(validate: false)
-      soap_note = SoapNote.where(catalyst_data_id: catalyst_data.id)
+      soap_note = SoapNote.find_by(catalyst_data_id: catalyst_data.id)
       if soap_note.present? && soap_note.scheduling_id==@schedule.id
         soap_note = soap_note.first
         soap_note.client_id = nil
