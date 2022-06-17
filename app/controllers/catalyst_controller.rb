@@ -190,7 +190,6 @@ class CatalystController < ApplicationController
       catalyst_data.save(validate: false)
       soap_note = SoapNote.find_by(catalyst_data_id: catalyst_data.id)
       if soap_note.present? && soap_note.scheduling_id==@schedule.id
-        soap_note = soap_note.first
         soap_note.client_id = nil
         soap_note.scheduling_id = nil
         soap_note.save(validate: false)
