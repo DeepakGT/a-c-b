@@ -24,6 +24,10 @@ class CatalystController < ApplicationController
     update_catalyst_data_ids
     # temp_var = 0
     # temp_var = 1 if @schedule.unrendered_reason.include?('units_does_not_match')
+    schedules = Scheduling.where(id: @catalyst_data.multiple_schedulings_ids).where.not(id: @schedule.id)
+    schedules.each do |schedule|
+      RenderAppointments::RenderScheduleOperation.call(schedule.id) if schedule.present? && !schedule.unrendered_reason.include?('units_does_not_match')
+    end
     @catalyst_data.update(is_appointment_found: true, system_scheduling_id: @schedule.id, multiple_schedulings_ids: [])
     # @checked_units = false
     check_units #if @catalyst_data.id == @schedule.catalyst_data_ids.max.to_i
