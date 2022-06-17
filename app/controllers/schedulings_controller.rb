@@ -160,6 +160,10 @@ class SchedulingsController < ApplicationController
 
   def update_data
     catalyst_data = CatalystData.find(params[:catalyst_data_id])
+    schedules = Scheduling.where(id: catalyst_data.multiple_schedulings_ids).where.not(id: @schedule.id)
+    schedules.each do |schedule|
+      RenderAppointments::RenderScheduleOperation.call(schedule.id) if !schedule.unrendered_reason.include?('units_does_not_match')
+    end
     @schedule.start_time = catalyst_data.start_time
     @schedule.end_time = catalyst_data.end_time
     @schedule.units = catalyst_data.units if catalyst_data.units.present?
