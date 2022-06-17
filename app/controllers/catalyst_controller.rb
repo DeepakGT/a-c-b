@@ -26,14 +26,14 @@ class CatalystController < ApplicationController
     # temp_var = 1 if @schedule.unrendered_reason.include?('units_does_not_match')
     schedules = Scheduling.where(id: @catalyst_data.multiple_schedulings_ids).where.not(id: @schedule.id)
     schedules.each do |schedule|
-      RenderAppointments::RenderScheduleOperation.call(schedule.id) if schedule.present? && !schedule.unrendered_reason.include?('units_does_not_match')
+      RenderAppointments::RenderScheduleOperation.call(schedule.id) if schedule.present? && !(schedule.unrendered_reason.include?('units_does_not_match'))
     end
     @catalyst_data.update(is_appointment_found: true, system_scheduling_id: @schedule.id, multiple_schedulings_ids: [])
     # @checked_units = false
     check_units #if @catalyst_data.id == @schedule.catalyst_data_ids.max.to_i
     # if (!(@schedule.unrendered_reason.include?('units_does_not_match')) && @checked_units==false && temp_var==0) || temp_var==1
     update_soap_note
-    if (@schedule.date<Time.current.to_date && (!(@schedule.unrendered_reason.include?('units_does_not_match'))))
+    if (schedule.date<Time.current.to_date) && !(schedule.unrendered_reason.include?('units_does_not_match'))
       RenderAppointments::RenderScheduleOperation.call(@schedule.id) 
     end
     # end
@@ -148,7 +148,7 @@ class CatalystController < ApplicationController
       @schedule.minutes = @catalyst_data.minutes if @schedule.minutes.present?
       @schedule.save(validate: false)
     else
-      @schedule.unrendered_reason.push('units_does_not_match')
+      @schedule.unrendered_reason = ['units_does_not_match']
       @schedule.save(validate: false)
     end
   end
