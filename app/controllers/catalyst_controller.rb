@@ -20,23 +20,19 @@ class CatalystController < ApplicationController
     @schedule = Scheduling.find(params[:scheduling_id])
     @catalyst_data = CatalystData.find(params[:catalyst_data_id])
     @schedule.catalyst_data_ids.push("#{@catalyst_data.id}") if !@schedule.catalyst_data_ids.include?("#{@catalyst_data.id}")
+    @schedule.catalyst_data_ids.uniq!
     @schedule.save(validate: false)
     update_catalyst_data_ids
-    # temp_var = 0
-    # temp_var = 1 if @schedule.unrendered_reason.include?('units_does_not_match')
     schedules = Scheduling.where(id: @catalyst_data.multiple_schedulings_ids).where.not(id: @schedule.id)
     schedules.each do |schedule|
       RenderAppointments::RenderScheduleOperation.call(schedule.id) if schedule.present? && !(schedule.unrendered_reason.include?('units_does_not_match'))
     end
     @catalyst_data.update(is_appointment_found: true, system_scheduling_id: @schedule.id, multiple_schedulings_ids: [])
-    # @checked_units = false
-    check_units #if @catalyst_data.id == @schedule.catalyst_data_ids.max.to_i
-    # if (!(@schedule.unrendered_reason.include?('units_does_not_match')) && @checked_units==false && temp_var==0) || temp_var==1
+    check_units
     update_soap_note
     if (@schedule.date<Time.current.to_date) && !(@schedule.unrendered_reason.include?('units_does_not_match'))
       RenderAppointments::RenderScheduleOperation.call(@schedule.id) 
     end
-    # end
   end
 
   def catalyst_data_with_multiple_appointments
@@ -81,8 +77,8 @@ class CatalystController < ApplicationController
   end
 
   def use_catalyst_units
-    @schedule.units = @catalyst_data.units if @schedule.units.present?
-    @schedule.minutes = @catalyst_data.minutes if @schedule.minutes.present?
+    @schedule.units = @catalyst_data.units
+    @schedule.minutes = @catalyst_data.minutes
     @schedule.start_time = @catalyst_data.start_time
     @schedule.end_time = @catalyst_data.end_time
     @schedule.unrendered_reason = []
@@ -102,7 +98,7 @@ class CatalystController < ApplicationController
     @schedule.unrendered_reason = []
     if params[:units].present? && params[:minutes].blank?
       @schedule.minutes = @schedule.units*15
-    elsif params[:minutes].present? && params[:minutes].blank?
+    elsif params[:minutes].present? && params[:units].blank?
       rem = @schedule.minutes%15
       if rem == 0
         @schedule.units = @schedule.minutes/15
@@ -122,6 +118,7 @@ class CatalystController < ApplicationController
     soap_note.creator_id = @schedule.staff_id
     soap_note.synced_with_catalyst = true
     soap_note.scheduling_id = @schedule.id
+    soap_note.client_id = @schedule.client_enrollment_service.client_enrollment.client_id
     soap_note.bcba_signature = true if @catalyst_data.bcba_signature.present?
     soap_note.clinical_director_signature = true if @catalyst_data.clinical_director_signature.present?
     soap_note.caregiver_signature = true if @catalyst_data.caregiver_signature.present?
@@ -134,8 +131,8 @@ class CatalystController < ApplicationController
   end
 
   def check_units
-    @checked_units = true
     @schedule.is_rendered = false
+    @schedule.status = 'Scheduled'
     @schedule.save(validate: false)
     min_start_time = (@catalyst_data.start_time.to_time-15.minutes)
     max_start_time = (@catalyst_data.start_time.to_time+15.minutes)
@@ -179,11 +176,11 @@ class CatalystController < ApplicationController
   end
 
   def update_unselected_catalyst_data
-    unselected_catalyst_data_ids = @schedule.catalyst_data_ids - @selected_catalyst_data.ids.map(&:to_s)
+    unselected_catalyst_data_ids = (@schedule.catalyst_data_ids - @selected_catalyst_data.ids.map(&:to_s)).uniq
     unselected_catalyst_data = CatalystData.where(id: unselected_catalyst_data_ids)
     unselected_catalyst_data.each do |catalyst_data|
       catalyst_data.multiple_schedulings_ids = catalyst_data.multiple_schedulings_ids.uniq
-      catalyst_data.multiple_schedulings_ids.delete(@schedule.id)
+      catalyst_data.multiple_schedulings_ids.delete(@schedule.id) if (catalyst_data.multiple_schedulings_ids.present? && catalyst_data.multiple_schedulings_ids.include?(@schedule.id))
       catalyst_data.system_scheduling_id = nil if catalyst_data.system_scheduling_id==@schedule.id
       catalyst_data.save(validate: false)
       catalyst_data.is_appointment_found = false if catalyst_data.multiple_schedulings_ids.blank? && catalyst_data.system_scheduling_id.blank?
