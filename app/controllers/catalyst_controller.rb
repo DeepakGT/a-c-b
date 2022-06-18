@@ -134,17 +134,9 @@ class CatalystController < ApplicationController
     @schedule.is_rendered = false
     @schedule.status = 'Scheduled'
     @schedule.save(validate: false)
-    min_start_time = (@catalyst_data.start_time.to_time-15.minutes)
-    max_start_time = (@catalyst_data.start_time.to_time+15.minutes)
-    min_end_time = (@catalyst_data.end_time.to_time-15.minutes)
-    max_end_time = (@catalyst_data.end_time.to_time+15.minutes)
-    if (min_start_time..max_start_time).include?(@schedule.start_time.to_time) && (min_end_time..max_end_time).include?(@schedule.end_time.to_time)
-      @schedule.start_time = @catalyst_data.start_time 
-      @schedule.end_time = @catalyst_data.end_time 
-      @schedule.units = @catalyst_data.units if @schedule.units.present?
-      @schedule.minutes = @catalyst_data.minutes if @schedule.minutes.present?
-      @schedule.save(validate: false)
-    else
+    catalyst_data = CatalystData.where(id: @schedule.catalyst_data_ids.uniq)
+    total_units = catalyst_data.pluck(:units).sum
+    if @schedule.units != total_units
       @schedule.unrendered_reason = ['units_does_not_match']
       @schedule.save(validate: false)
     end
@@ -161,11 +153,13 @@ class CatalystController < ApplicationController
   end
 
   def re_render_appointment
-    total_units = @selected_catalyst_data.pluck(:units)&.sum
-    @schedule.catalyst_data_ids = @selected_catalyst_data.ids
+    @schedule.catalyst_data_ids.push(@selected_catalyst_data.ids)
+    @schedule.catalyst_data_ids = @schedule.catalyst_data_ids.flatten.uniq
     @schedule.unrendered_reason = []
     @schedule.is_soap_notes_assigned = true
     @schedule.save(validate: false)
+    catalyst_data = CatalystData.where(id: @schedule.catalyst_data_ids)
+    total_units = catalyst_data.pluck(:units).sum
     if @schedule.units!=total_units
       @schedule.unrendered_reason = ['units_does_not_match']
       @schedule.save(validate: false)
