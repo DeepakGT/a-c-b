@@ -59,8 +59,8 @@ json.data do
   json.service_display_code service&.display_code 
   json.status @schedule.status
   json.date @schedule.date
-  json.start_time @schedule.start_time
-  json.end_time @schedule.end_time
+  json.start_time @schedule.start_time.to_time.strftime('%H:%M')
+  json.end_time @schedule.end_time.to_time.strftime('%H:%M')
   json.is_rendered @schedule.is_rendered
   json.is_manual_render @schedule.is_manual_render
   json.unrendered_reasons @schedule.unrendered_reason
