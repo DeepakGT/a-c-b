@@ -162,6 +162,9 @@ class SchedulingsController < ApplicationController
     catalyst_data = CatalystData.find(params[:catalyst_data_id])
     schedules = Scheduling.where(id: catalyst_data.multiple_schedulings_ids).where.not(id: @schedule.id)
     schedules.each do |schedule|
+      schedule.catalyst_data_ids = schedule.catalyst_data_ids.uniq
+      schedule.catalyst_data_ids.delete(catalyst_data.id) if (schedule.catalyst_data_ids.present? && schedule.catalyst_data_ids.include?(catalyst_data.id))
+      schedule.save(validate: false)
       RenderAppointments::RenderScheduleOperation.call(schedule.id) if !schedule.unrendered_reason.include?('units_does_not_match')
     end
     @schedule.start_time = catalyst_data.start_time
