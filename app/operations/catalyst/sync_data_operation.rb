@@ -61,9 +61,9 @@ module Catalyst
                 catalyst_data.units = (catalyst_data.minutes + 15 - rem)/15
               end 
               # comment below three lines after deploying on production
-              catalyst_data.system_scheduling_id = nil
-              catalyst_data.multiple_schedulings_ids = []
-              catalyst_data.is_appointment_found = nil
+              # catalyst_data.system_scheduling_id = nil
+              # catalyst_data.multiple_schedulings_ids = []
+              # catalyst_data.is_appointment_found = nil
               catalyst_data.save(validate: false)
               if catalyst_data.id.nil?
                 Loggers::Catalyst::SyncSoapNotesLoggerService.call(catalyst_data.id, "Catalyst soap note with id #{data['soapNoteId']} cannot be saved.")
@@ -72,9 +72,9 @@ module Catalyst
                 Loggers::Catalyst::SyncSoapNotesLoggerService.call(catalyst_data.id, "#{catalyst_data.attributes}")
               end
 
-              # if catalyst_data.system_scheduling_id.blank?
-              response_data_hash = CompareCatalystDataWithSystemData::CompareSyncedDataOperation.call(catalyst_data)
-              # end
+              if catalyst_data.system_scheduling_id.blank?
+                response_data_hash = CompareCatalystDataWithSystemData::CompareSyncedDataOperation.call(catalyst_data)
+              end
               # elsif catalyst_data.date_revision_made!=data['dateRevisionMade']
               #   Loggers::Catalyst::SyncSoapNotesLoggerService.call(catalyst_data.id, "#{catalyst_data.attributes}")
               #   data['responses'].each do |response|
