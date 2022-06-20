@@ -364,30 +364,9 @@ json.data do
         json.unrendered_reasons action_item.unrendered_reason
         json.units action_item.units
         json.minutes action_item.minutes
-        if action_item.soap_notes.present? && action_item.soap_notes.last.catalyst_data_id.nil?
-          json.soap_note do 
-            soap_note = action_item.soap_notes.last
-            json.id soap_note.id
-            json.scheduling_id soap_note.scheduling_id
-            json.note soap_note.note
-            json.add_date soap_note.add_date
-            json.rbt_sign soap_note.rbt_signature
-            json.rbt_sign_name soap_note.rbt_signature_author_name
-            json.rbt_sign_date soap_note.rbt_signature_date
-            json.bcba_sign soap_note.bcba_signature
-            json.bcba_sign_name soap_note.bcba_signature_author_name
-            json.bcba_sign_date soap_note.bcba_signature_date&.strftime('%Y-%m-%d %H:%M')
-            json.clinical_director_sign soap_note.clinical_director_signature
-            json.clinical_director_sign_name soap_note.clinical_director_signature_author_name
-            json.clinical_director_sign_date soap_note.clinical_director_signature_date
-            json.caregiver_sign soap_note.signature_file&.blob&.service_url
-            json.caregiver_sign_date soap_note.caregiver_signature_datetime
-            json.synced_with_catalyst soap_note.synced_with_catalyst
-          end
-        end
-        if action_item.catalyst_data_ids.present?
-          catalyst_datas = CatalystData.where(id: action_item.catalyst_data_ids)#.where(system_scheduling_id: action_item.id)
-          if catalyst_datas.present?
+        if action_item.is_soap_notes_assigned==true
+          if action_item.unrendered_reason.include?('units_does_not_match')
+            catalyst_datas = CatalystData.where(id: action_item.catalyst_data_ids)
             json.catalyst_data do
               json.array! catalyst_datas do |catalyst_data|
                 staff = Staff.find_by(catalyst_user_id: catalyst_data.catalyst_user_id)
@@ -403,6 +382,72 @@ json.data do
                 json.note catalyst_data.note
                 json.location catalyst_data.session_location
                 json.cordinates catalyst_data.location
+              end
+            end
+          else
+            soap_note = action_item.soap_notes.last
+            if soap_note.present?
+              json.soap_note do 
+                json.id soap_note.id
+                json.scheduling_id soap_note.scheduling_id
+                json.note soap_note.note
+                json.add_date soap_note.add_date
+                json.rbt_sign soap_note.rbt_signature
+                json.rbt_sign_name soap_note.rbt_signature_author_name
+                json.rbt_sign_date soap_note.rbt_signature_date
+                json.bcba_sign soap_note.bcba_signature
+                json.bcba_sign_name soap_note.bcba_signature_author_name
+                json.bcba_sign_date soap_note.bcba_signature_date&.strftime('%Y-%m-%d %H:%M')
+                json.clinical_director_sign soap_note.clinical_director_signature
+                json.clinical_director_sign_name soap_note.clinical_director_signature_author_name
+                json.clinical_director_sign_date soap_note.clinical_director_signature_date
+                json.caregiver_sign soap_note.signature_file&.blob&.service_url
+                json.caregiver_sign_date soap_note.caregiver_signature_datetime
+                json.synced_with_catalyst soap_note.synced_with_catalyst
+              end
+            end
+          end
+        else
+          if action_item.soap_notes.where(synced_with_catalyst: false).present?
+            json.soap_note do 
+              soap_note = action_item.soap_notes.where(synced_with_catalyst: false).last
+              json.id soap_note.id
+              json.scheduling_id soap_note.scheduling_id
+              json.note soap_note.note
+              json.add_date soap_note.add_date
+              json.rbt_sign soap_note.rbt_signature
+              json.rbt_sign_name soap_note.rbt_signature_author_name
+              json.rbt_sign_date soap_note.rbt_signature_date
+              json.bcba_sign soap_note.bcba_signature
+              json.bcba_sign_name soap_note.bcba_signature_author_name
+              json.bcba_sign_date soap_note.bcba_signature_date&.strftime('%Y-%m-%d %H:%M')
+              json.clinical_director_sign soap_note.clinical_director_signature
+              json.clinical_director_sign_name soap_note.clinical_director_signature_author_name
+              json.clinical_director_sign_date soap_note.clinical_director_signature_date
+              json.caregiver_sign soap_note.signature_file&.blob&.service_url
+              json.caregiver_sign_date soap_note.caregiver_signature_datetime
+              json.synced_with_catalyst soap_note.synced_with_catalyst
+            end
+          end
+          if action_item.catalyst_data_ids.present?
+            catalyst_datas = CatalystData.where(id: action_item.catalyst_data_ids)#.where(system_scheduling_id: action_item.id)
+            if catalyst_datas.present?
+              json.catalyst_data do
+                json.array! catalyst_datas do |catalyst_data|
+                  staff = Staff.find_by(catalyst_user_id: catalyst_data.catalyst_user_id)
+                  client = Client.find_by(catalyst_patient_id: catalyst_data.catalyst_patient_id)
+                  json.id catalyst_data.id
+                  json.client_name "#{client&.first_name} #{client&.last_name}"
+                  json.staff_name "#{staff&.first_name} #{staff&.last_name}"
+                  json.date "#{catalyst_data.date}"
+                  json.start_time "#{catalyst_data.start_time}"
+                  json.end_time "#{catalyst_data.end_time}"
+                  json.units "#{catalyst_data.units}"
+                  json.minutes "#{catalyst_data.minutes}"
+                  json.note catalyst_data.note
+                  json.location catalyst_data.session_location
+                  json.cordinates catalyst_data.location
+                end
               end
             end
           end
@@ -431,7 +476,7 @@ json.data do
         if action_item.is_appointment_found==false
           json.unrendered_reasons ["no_appointment_found"]
         else
-          json.unrendered_reasons ["multiple_soap_notes_found"]
+          json.unrendered_reasons ["multiple_appointments_found"]
         end
       end
     end

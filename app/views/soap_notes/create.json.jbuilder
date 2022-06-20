@@ -1,6 +1,6 @@
 json.status @soap_note.errors.any? ? 'failure' : 'success'
 json.data do
-  user = User.find(@soap_note.creator_id)
+  user = User.find_by(id: @soap_note.creator_id)
   json.id @soap_note.id
   json.scheduling_id @soap_note.scheduling_id
   json.note @soap_note.note
@@ -18,7 +18,7 @@ json.data do
   json.caregiver_sign_date @soap_note.caregiver_signature_datetime
   json.creator_id user&.id
   json.creator "#{user&.first_name} #{user&.last_name}"
-  if @soap_note.scheduling.is_rendered==true
+  if @soap_note.scheduling.reload.is_rendered==true
     json.rendered_message "Soap note has been created and Appointment has been rendered successfully."
   elsif @soap_note.scheduling.unrendered_reason.present?
     message = "Appointment has been updated but cannot be rendered because #{@soap_note.scheduling.unrendered_reason.to_human_string}"

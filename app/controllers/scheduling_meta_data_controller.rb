@@ -20,6 +20,9 @@ class SchedulingMetaDataController < ApplicationController
     # @upcoming_schedules = rbt_schedules.scheduled_scheduling.order(:date).first(10)
     @todays_appointments = rbt_schedules.todays_schedulings.order(:start_time).last(10)
     past_schedules = rbt_schedules.past_60_days_schedules.unrendered_schedulings.order(date: :desc)
+    past_schedules.where(unrendered_reason: []).each do |schedule|
+      RenderAppointments::RenderScheduleOperation.call(schedule.id)
+    end
     past_schedules = past_schedules.select("schedulings.*, 'Schedule' AS type")
     @past_schedules = past_schedules
     catalyst_data = CatalystData.select("catalyst_data.*,clients.id AS client_id, clients.first_name, clients.last_name,'CatalystData' AS type").joins("LEFT JOIN clients ON (clients.catalyst_patient_id = catalyst_data.catalyst_patient_id)").by_active_clients.after_live_date.past_60_days_catalyst_data.by_catalyst_user_id(current_user.id)
@@ -38,9 +41,12 @@ class SchedulingMetaDataController < ApplicationController
     # @upcoming_schedules = bcba_schedules.scheduled_scheduling.order(:date).first(10)
     @todays_appointments = bcba_schedules.todays_schedulings.order(:start_time).last(10)
     past_schedules = bcba_schedules.past_60_days_schedules.unrendered_schedulings.order(date: :desc)
+    past_schedules.where(unrendered_reason: []).each do |schedule|
+      RenderAppointments::RenderScheduleOperation.call(schedule.id)
+    end
     past_schedules = past_schedules.select("schedulings.*, 'Schedule' AS type")
     @past_schedules = past_schedules
-    @client_enrollment_services = ClientEnrollmentService.by_bcba_ids(current_user.id)
+    @client_enrollment_services = ClientEnrollmentService.by_bcba_ids(current_user.id).excluding_early_codes
                                                          .and(ClientEnrollmentService.about_to_expire.or(ClientEnrollmentService.expired))
                                                          .includes(:client_enrollment, client_enrollment: :client)
     # change_requests = SchedulingChangeRequest.by_approval_status
@@ -63,9 +69,12 @@ class SchedulingMetaDataController < ApplicationController
     schedules = schedules.by_client_ids(client_ids)
     @todays_appointments = schedules.by_status.todays_schedulings.last(10)
     past_schedules = schedules.by_status.past_60_days_schedules.unrendered_schedulings.order(date: :desc)
+    past_schedules.where(unrendered_reason: []).each do |schedule|
+      RenderAppointments::RenderScheduleOperation.call(schedule.id)
+    end
     past_schedules = past_schedules.select("schedulings.*, 'Schedule' AS type")
     @past_schedules = past_schedules
-    @client_enrollment_services = ClientEnrollmentService.by_client(client_ids).and(ClientEnrollmentService.about_to_expire.or(ClientEnrollmentService.expired))
+    @client_enrollment_services = ClientEnrollmentService.by_client(client_ids).excluding_early_codes.and(ClientEnrollmentService.about_to_expire.or(ClientEnrollmentService.expired))
                                                          .includes(:service, :staff, :service_providers, :client_enrollment, client_enrollment: %i[client funding_source]).uniq
     change_requests = SchedulingChangeRequest.by_approval_status
     @change_requests = change_requests.by_client_ids(client_ids)
@@ -79,7 +88,7 @@ class SchedulingMetaDataController < ApplicationController
   end
 
   def billing_dashboard
-    @authorizations_expire_in_5_days = ClientEnrollmentService.expire_in_5_days
+    @authorizations_expire_in_5_days = ClientEnrollmentService.expire_in_5_days.excluding_early_codes
     @authorizations_renewal_in_5_to_20_days = authorization_renewals_in_5_to_20_days
     @authorizations_renewal_in_21_to_60_days = authorization_renewals_in_21_to_60_days
     @client_with_no_authorizations = Client.with_no_authorizations

@@ -160,6 +160,13 @@ class SchedulingsController < ApplicationController
 
   def update_data
     catalyst_data = CatalystData.find(params[:catalyst_data_id])
+    schedules = Scheduling.where(id: catalyst_data.multiple_schedulings_ids).where.not(id: @schedule.id)
+    schedules.each do |schedule|
+      schedule.catalyst_data_ids = schedule.catalyst_data_ids.uniq
+      schedule.catalyst_data_ids.delete(catalyst_data.id) if (schedule.catalyst_data_ids.present? && schedule.catalyst_data_ids.include?(catalyst_data.id))
+      schedule.save(validate: false)
+      RenderAppointments::RenderScheduleOperation.call(schedule.id) if !schedule.unrendered_reason.include?('units_does_not_match')
+    end
     @schedule.start_time = catalyst_data.start_time
     @schedule.end_time = catalyst_data.end_time
     @schedule.units = catalyst_data.units if catalyst_data.units.present?
@@ -167,11 +174,19 @@ class SchedulingsController < ApplicationController
     @schedule.date = catalyst_data.date
     @schedule.catalyst_data_ids.push(catalyst_data.id)
     @schedule.catalyst_data_ids.uniq!
-    @schedule.save
-    if @schedule.save
+    @schedule.id = Scheduling.last.id + 1
+    if current_user.role_name=='super_admin' || current_user.role_name=='executive_director' || current_user.role_name=='client_care_coordinator' || current_user.role_name=='Clinical Director'
+      @schedule.save(validate: false)
       create_or_update_soap_note(catalyst_data)
       catalyst_data.update(system_scheduling_id: @schedule.id, is_appointment_found: true, multiple_schedulings_ids: [])
       RenderAppointments::RenderScheduleOperation.call(@schedule.id)
+    else
+      @schedule.save
+      if @schedule.save
+        create_or_update_soap_note(catalyst_data)
+        catalyst_data.update(system_scheduling_id: @schedule.id, is_appointment_found: true, multiple_schedulings_ids: [])
+        RenderAppointments::RenderScheduleOperation.call(@schedule.id)
+      end
     end
   end
 

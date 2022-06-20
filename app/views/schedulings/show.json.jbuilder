@@ -59,8 +59,8 @@ json.data do
   json.service_display_code service&.display_code 
   json.status @schedule.status
   json.date @schedule.date
-  json.start_time @schedule.start_time
-  json.end_time @schedule.end_time
+  json.start_time @schedule.start_time.to_time.strftime('%H:%M')
+  json.end_time @schedule.end_time.to_time.strftime('%H:%M')
   json.is_rendered @schedule.is_rendered
   json.is_manual_render @schedule.is_manual_render
   json.unrendered_reasons @schedule.unrendered_reason
@@ -77,7 +77,7 @@ json.data do
     end
   end
   if @schedule.creator_id.present?
-    creator = User.find(@schedule.creator_id)
+    creator = User.find_by(id: @schedule.creator_id)
     json.creator_id @schedule.creator_id
     json.creator_name "#{creator&.first_name} #{creator&.last_name}"
   else
@@ -85,7 +85,7 @@ json.data do
     json.creator_name nil
   end
   if @schedule.updator_id.present?
-    updator = User.find(@schedule.updator_id)
+    updator = User.find_by(id: @schedule.updator_id)
     json.updator_id @schedule.updator_id
     json.updator_name "#{updator&.first_name} #{updator&.last_name}"
   else

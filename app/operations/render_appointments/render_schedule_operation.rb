@@ -12,10 +12,8 @@ module RenderAppointments
         schedule.unrendered_reason = []
         schedule.save(validate: false)
         if schedule.soap_notes.present?
-          schedule.soap_notes.each do |soap_note|
-            RenderAppointments::RenderBySoapNoteOperation.call(soap_note.id)
-            break if schedule.is_rendered.to_bool.true?
-          end
+          soap_note = schedule.soap_notes.last
+          RenderAppointments::RenderBySoapNoteOperation.call(soap_note.id)
         else
           schedule.unrendered_reason = schedule.unrendered_reason | ['soap_note_absent']
           schedule.save(validate: false)

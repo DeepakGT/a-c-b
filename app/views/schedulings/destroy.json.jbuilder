@@ -37,7 +37,7 @@ json.data do
   json.units @schedule.units
   json.minutes @schedule.minutes
   if @schedule.creator_id.present?
-    creator = User.find(@schedule.creator_id)
+    creator = User.find_by(id: @schedule.creator_id)
     json.creator_id @schedule.creator_id
     json.creator_name "#{creator&.first_name} #{creator&.last_name}"
   else
@@ -45,7 +45,7 @@ json.data do
     json.creator_name nil
   end
   if @schedule.updator_id.present?
-    updator = User.find(@schedule.updator_id)
+    updator = User.find_by(id: @schedule.updator_id)
     json.updator_id @schedule.updator_id
     json.updator_name "#{updator&.first_name} #{updator&.last_name}"
   else

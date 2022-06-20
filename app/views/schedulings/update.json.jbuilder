@@ -36,18 +36,20 @@ json.data do
   json.is_rendered @schedule.is_rendered
   json.unrendered_reasons @schedule.unrendered_reason
   json.rendered_at @schedule.rendered_at
-  if @schedule.is_rendered==true
-    json.rendered_message "Appointment has been updated and rendered successfully."
-  elsif @schedule.unrendered_reason.present?
-    message = "Appointment has been updated but cannot be rendered because #{@schedule.unrendered_reason.to_human_string}"
-    message.gsub!('absent', 'not found')
-    message.gsub!('_',' ')
-    json.rendered_message message
+  if @schedule.status=='Scheduled' || @schedule.status=='Rendered'
+    if @schedule.is_rendered==true
+      json.rendered_message "Appointment has been updated and rendered successfully."
+    elsif @schedule.unrendered_reason.present?
+      message = "Appointment has been updated but cannot be rendered because #{@schedule.unrendered_reason.to_human_string}"
+      message.gsub!('absent', 'not found')
+      message.gsub!('_',' ')
+      json.rendered_message message
+    end
   end
   json.units @schedule.units
   json.minutes @schedule.minutes
   if @schedule.creator_id.present?
-    creator = User.find(@schedule.creator_id)
+    creator = User.find_by(id: @schedule.creator_id)
     json.creator_id @schedule.creator_id
     json.creator_name "#{creator&.first_name} #{creator&.last_name}"
   else
@@ -55,7 +57,7 @@ json.data do
     json.creator_name nil
   end
   if @schedule.updator_id.present?
-    updator = User.find(@schedule.updator_id)
+    updator = User.find_by(id: @schedule.updator_id)
     json.updator_id @schedule.updator_id
     json.updator_name "#{updator&.first_name} #{updator&.last_name}"
   else
