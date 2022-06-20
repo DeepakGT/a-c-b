@@ -11,7 +11,7 @@ module Catalyst
         scheduling_ids = Scheduling.where.not(catalyst_data_ids: []).ids
         if scheduling_ids.present?
           Loggers::Catalyst::SyncSoapNotesLoggerService.call(scheduling_ids.count, "Rendering #{scheduling_ids.count} appointments started.")
-          schedules = Scheduling.where(id: scheduling_ids).completed_scheduling.unrendered_schedulings
+          schedules = Scheduling.where(id: scheduling_ids).completed_scheduling.unrendered_schedulings.by_status
           if schedules.any?
             schedules.each do |schedule|
               schedule.catalyst_data_ids.uniq!

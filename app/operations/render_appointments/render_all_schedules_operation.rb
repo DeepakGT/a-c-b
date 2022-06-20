@@ -8,7 +8,7 @@ module RenderAppointments
       private
 
       def render_schedulings
-        schedules = Scheduling.completed_scheduling.where(is_rendered: false).where(catalyst_data_ids: [])
+        schedules = Scheduling.completed_scheduling.where(is_rendered: false).where(catalyst_data_ids: []).by_status
         schedules.each do |schedule|
           RenderAppointments::RenderScheduleOperation.call(schedule.id) if !schedule.unrendered_reason.include?('units_does_not_match')
           if schedule.is_rendered.to_bool.true?

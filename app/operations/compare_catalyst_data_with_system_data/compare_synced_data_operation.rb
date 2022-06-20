@@ -29,7 +29,7 @@ module CompareCatalystDataWithSystemData
         end
         # schedules = Scheduling.by_client_ids(client&.id).by_staff_ids(staff&.id).on_date(catalyst_data.date)
         if staff.present?
-          schedules = Scheduling.joins(client_enrollment_service: :client_enrollment).by_client_ids(client&.id).by_staff_ids(staff&.id).on_date(catalyst_data.date)
+          schedules = Scheduling.joins(client_enrollment_service: :client_enrollment).by_client_ids(client&.id).by_staff_ids(staff&.id).on_date(catalyst_data.date).by_status
           if schedules.count==1
             schedule = schedules.first
             response_data_hash = set_appointment(catalyst_data, schedule, soap_note)
@@ -216,6 +216,13 @@ module CompareCatalystDataWithSystemData
           Loggers::Catalyst::SyncSoapNotesLoggerService.call(catalyst_data.id, "In catalyst data, scheduling id is updated.")
         else
           Loggers::Catalyst::SyncSoapNotesLoggerService.call(catalyst_data.id, "In catalyst data, scheduling id cannot be updated.")
+        end
+        if catalyst_data.system_scheduling_id.present? || catalyst_data.multiple_schedulings_ids.present?
+          catalyst_data.is_appointment_found = true
+          catalyst_data.save(validate: false)
+        else
+          catalyst_data.is_appointment_found = false
+          catalyst_data.save(validate: false)
         end
         response_data_hash
       end
