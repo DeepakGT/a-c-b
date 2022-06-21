@@ -212,11 +212,10 @@ class SchedulingsController < ApplicationController
 
   def check_units
     update_units_columns(@schedule.client_enrollment_service)
-    new_units = params[:units].present? ? JSON.parse(params[:units]) : @schedule.units
-    if (params[:status]=='Scheduled' && @schedule.status!='Scheduled' && @schedule.status!='Rendered') && @schedule.client_enrollment_service.left_units<new_units
+    if (params[:status]=='Scheduled' && @schedule.status!='Scheduled' && @schedule.status!='Rendered') && @schedule.client_enrollment_service.left_units<params[:units]
       @schedule.errors.add(:units, 'left in authorization are not enough to update this cancelled appointment to scheduled.')
       return false
-    elsif params[:units].present? && JSON.parse(params[:units])>@schedule.units && @schedule.client_enrollment_service.left_units<(JSON.parse(params[:units])-@schedule.units)
+    elsif params[:units].present? && params[:units]>@schedule.units && @schedule.client_enrollment_service.left_units<(params[:units]-@schedule.units)
       @schedule.errors.add(:units, 'left in authorization are not enough to update the units of appointment.')
       return false
     end
