@@ -9,12 +9,22 @@ module CompareCatalystDataWithSystemData
 
       def compare_synced_data(catalyst_data)
         response_data_hash = {}
-        staff = Staff.find_by(catalyst_user_id: catalyst_data.catalyst_user_id)
-        client = Client.find_by(catalyst_patient_id: catalyst_data.catalyst_patient_id)
+        staff = Staff.where(catalyst_user_id: catalyst_data.catalyst_user_id)
+        if staff.count==1
+          staff = staff.first
+        elsif staff.count>1
+          staff = staff.find_by(status: 'active')
+        end
+        client = Client.where(catalyst_patient_id: catalyst_data.catalyst_patient_id)
+        if client.count==1
+          client = client.first
+        elsif client.count>1
+          client = client.find_by(status: 'active')
+        end
         soap_note = SoapNote.find_or_initialize_by(catalyst_data_id: catalyst_data.id)
         soap_note.add_date = catalyst_data.date
         soap_note.note = catalyst_data.note
-        soap_note.creator_id = Staff.find_by(catalyst_user_id: catalyst_data.catalyst_user_id)&.id
+        soap_note.creator_id = staff&.id
         soap_note.synced_with_catalyst = true
         soap_note.bcba_signature = true if catalyst_data.bcba_signature.present?
         soap_note.clinical_director_signature = true if catalyst_data.clinical_director_signature.present?

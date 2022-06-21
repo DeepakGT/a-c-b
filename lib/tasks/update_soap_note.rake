@@ -7,7 +7,12 @@ namespace :update_soap_note do
         soap_note.save(validate: false)
       elsif soap_note.catalyst_data_id.present?
         catalyst_patient_id = CatalystData.find(soap_note.catalyst_data_id).catalyst_patient_id
-        client = Client.find_by(catalyst_patient_id: catalyst_patient_id)
+        client = Client.where(catalyst_patient_id: catalyst_patient_id)
+        if client.count==1
+          client = client.first
+        elsif client.count>1
+          client = client.find_by(status: 'active')
+        end
         if client.present?
           soap_note.client_id = client.id
           soap_note.save(validate: false)

@@ -8,8 +8,18 @@ namespace :scheduling do
         schedule.catalyst_data_ids.each do |catalyst_data_id|
           catalyst_data = CatalystData.find_by(id: catalyst_data_id)
           if catalyst_data.present?
-            staff = Staff.find_by(catalyst_user_id: catalyst_data.catalyst_user_id)
-            client = Client.find_by(catalyst_patient_id: catalyst_data.catalyst_patient_id)
+            staff = Staff.where(catalyst_user_id: catalyst_data.catalyst_user_id)
+            if staff.count==1
+              staff = staff.first
+            elsif staff.count>1
+              staff = staff.find_by(status: 'active')
+            end
+            client = Client.where(catalyst_patient_id: catalyst_data.catalyst_patient_id)
+            if client.count==1
+              client = client.first
+            elsif client.count>1
+              client = client.find_by(status: 'active')
+            end
             if (client.present? && client!=schedule.client_enrollment_service.client_enrollment.client) || (staff.present? && schedule.staff.present? && staff!=schedule.staff)
               schedule.catalyst_data_ids.delete("#{catalyst_data.id}")
               schedule.save(validate: false)
