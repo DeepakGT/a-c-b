@@ -25,21 +25,9 @@ class SchedulingsController < ApplicationController
 
   def update
     @schedule.user = current_user
-    change_status = check_units
-    return if change_status==-1
-    case current_user.role_name
-    when 'super_admin', 'administrator', 'executive_director', 'Clinical Director', 'client_care_coordinator'
-      update_render_service if params[:status]=='Rendered'
-      return if !is_renderable
-
-      update_scheduling 
-    when 'bcba'
-      update_render_service if params[:status]=='Rendered'
-      return if !is_renderable
-
-      update_scheduling_when_bcba
-    end
-    update_units_columns(@schedule.client_enrollment_service) if change_status==1
+    return if !check_units
+    update_status if params[:status].present?
+    update_units_columns(@schedule.client_enrollment_service)
   end
 
   def destroy
@@ -122,15 +110,15 @@ class SchedulingsController < ApplicationController
     @schedule.save
   end
 
-  def is_renderable
-    @schedule.reload
-    if params[:status]=='Rendered' && @schedule.date<Time.current.to_date && @schedule.is_rendered==false
-      @schedule.errors.add(:status, message: "Scheduling could not be rendered.")
-      return false 
-    end
+  # def is_renderable
+  #   @schedule.reload
+  #   if params[:status]=='Rendered' && @schedule.date<Time.current.to_date && @schedule.is_rendered==false
+  #     @schedule.errors.add(:status, message: "Scheduling could not be rendered.")
+  #     return false 
+  #   end
     
-    true
-  end 
+  #   true
+  # end 
 
   def update_render_service
     RenderAppointments::RenderScheduleManualOperation.call(@schedule.id, params[:catalyst_soap_note_id]) if (params[:is_rendered].to_bool.true? || params[:status]=='Rendered') && @schedule.date<Time.current.to_date
@@ -223,19 +211,45 @@ class SchedulingsController < ApplicationController
   end
 
   def check_units
-    return if params[:status].blank? || @schedule.status==params[:status]
+    update_units_columns(@schedule.client_enrollment_service)
+    if (params[:status]=='Scheduled' && @schedule.status!='Scheduled' && @schedule.status!='Rendered') && @schedule.client_enrollment_service.left_units<params[:units]
+      @schedule.errors.add(:units, 'left in authorization are not enough to update this cancelled appointment to scheduled.')
+      return false
+    elsif params[:units].present? && params[:units]>@schedule.units && @schedule.client_enrollment_service.left_units<(params[:units]-@schedule.units)
+      @schedule.errors.add(:units, 'left in authorization are not enough to update the units of appointment.')
+      return false
+    end
+    true
+  end
 
-    if @schedule.status=='Scheduled'
-      return 1 if params[:status]!='Rendered'
-    else
-      if params[:status]=='Scheduled' && @schedule.client_enrollment_service.left_units<@schedule.units
-        @schedule.errors.add(:units, 'left in authorization are not enough to update this cancelled appointment to scheduled.')
-        return -1
+  def update_status
+    if params[:status]=='Rendered'
+      if current_user.role_name=='super_admin'
+        update_scheduling 
+        update_render_service
       else
-        return 1
+        @schedule.errors.add(:schedule, 'You are not authorized to render appointment manually.')
+        return false
+      end
+    elsif @schedule.status=='Rendered' && params[:status]!='Rendered'
+      if current_user.role_name=='super_admin'
+        update_scheduling 
+        @schedule.is_rendered = false
+        @schedule.rendered_at = nil
+        @schedule.save
+      else
+        @schedule.errors.add(:schedule, 'You are not authorized to unrender appointment.')
+        return false
+      end
+    else
+      case current_user.role_name
+      when 'administrator', 'executive_director', 'Clinical Director', 'client_care_coordinator', 'super_admin'
+        update_scheduling 
+      when 'bcba'
+        update_scheduling_when_bcba
       end
     end
-    return 0
+    true
   end
   # end of private
 end
