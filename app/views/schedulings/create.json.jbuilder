@@ -33,10 +33,15 @@ json.data do
   json.date @schedule.date
   json.start_time @schedule.start_time
   json.end_time @schedule.end_time
-  json.is_rendered @schedule.is_rendered
+  # json.is_rendered @schedule.is_rendered
+  if @schedule.rendered_at.present?
+    json.is_rendered true
+  else
+    json.is_rendered false
+  end
   json.unrendered_reasons @schedule.unrendered_reason
   json.rendered_at @schedule.rendered_at
-  if @schedule.is_rendered==true
+  if @schedule.rendered_at.present?
     json.rendered_message "Appointment has been created and rendered successfully."
   elsif @schedule.unrendered_reason.present?
     message = "Appointment has been updated but cannot be rendered because #{@schedule.unrendered_reason.to_human_string}"

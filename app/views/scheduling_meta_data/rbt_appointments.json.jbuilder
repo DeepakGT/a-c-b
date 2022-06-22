@@ -185,7 +185,12 @@ json.data do
       json.date schedule.date
       json.start_time schedule.start_time
       json.end_time schedule.end_time
-      json.is_rendered schedule.is_rendered
+      # json.is_rendered schedule.is_rendered
+      if schedule.rendered_at.present?
+        json.is_rendered true
+      else
+        json.is_rendered false
+      end
       json.units schedule.units
       json.minutes schedule.minutes
       # if schedule.scheduling_change_requests.by_approval_status.any?
@@ -359,7 +364,12 @@ json.data do
         json.date action_item.date
         json.start_time action_item.start_time
         json.end_time action_item.end_time
-        json.is_rendered action_item.is_rendered
+        # json.is_rendered action_item.is_rendered
+        if action_item.rendered_at.present?
+          json.is_rendered true
+        else
+          json.is_rendered false
+        end
         json.rendered_at action_item.rendered_at
         json.unrendered_reasons action_item.unrendered_reason
         json.units action_item.units
