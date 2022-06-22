@@ -42,15 +42,21 @@ class CatalystController < ApplicationController
 
   def appointments_list
     @catalyst_data = CatalystData.find(params[:catalyst_data_id])
-    if @catalyst_data.multiple_schedulings_ids.present?
-      schedules = Scheduling.where(id: @catalyst_data.multiple_schedulings_ids)
-    else
-      client = Client.find_by(catalyst_patient_id: @catalyst_data.catalyst_patient_id)
-      staff = Staff.find_by(catalyst_user_id: @catalyst_data.catalyst_user_id)
-      # schedules = Scheduling.on_date(@catalyst_data.date)
-      schedules = Scheduling.joins(client_enrollment_service: :client_enrollment).by_client_ids(client&.id).by_staff_ids(staff&.id).on_date(@catalyst_data.date).by_status
-      # schedules = schedules.joins(client_enrollment_service: {client_enrollment: :client}).by_client_clinic(params[:location_id]) if params[:location_id].present?
+    client = Client.where(catalyst_patient_id: @catalyst_data.catalyst_patient_id)
+    if client.count==1
+      client = client.first
+    elsif client.count>1
+      client = client.find_by(status: 'active')
     end
+    staff = Staff.where(catalyst_user_id: @catalyst_data.catalyst_user_id)
+    if staff.count==1
+      staff = staff.first
+    elsif staff.count>1
+      staff = staff.find_by(status: 'active')
+    end
+    # schedules = Scheduling.on_date(@catalyst_data.date)
+    schedules = Scheduling.joins(client_enrollment_service: :client_enrollment).by_client_ids(client&.id).by_staff_ids(staff&.id).on_date(@catalyst_data.date)
+    # schedules = schedules.joins(client_enrollment_service: {client_enrollment: :client}).by_client_clinic(params[:location_id]) if params[:location_id].present?
     @schedules = schedules.order(:start_time)
   end
 

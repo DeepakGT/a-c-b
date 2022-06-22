@@ -369,8 +369,18 @@ json.data do
             catalyst_datas = CatalystData.where(id: action_item.catalyst_data_ids)
             json.catalyst_data do
               json.array! catalyst_datas do |catalyst_data|
-                staff = Staff.find_by(catalyst_user_id: catalyst_data.catalyst_user_id)
-                client = Client.find_by(catalyst_patient_id: catalyst_data.catalyst_patient_id)
+                staff = Staff.where(catalyst_user_id: catalyst_data.catalyst_user_id)
+                if staff.count==1
+                  staff = staff.first
+                elsif staff.count>1
+                  staff = staff.find_by(status: 'active')
+                end
+                client = Client.where(catalyst_patient_id: catalyst_data.catalyst_patient_id)
+                if client.count==1
+                  client = client.first
+                elsif client.count>1
+                  client = client.find_by(status: 'active')
+                end
                 json.id catalyst_data.id
                 json.client_name "#{client&.first_name} #{client&.last_name}"
                 json.staff_name "#{staff&.first_name} #{staff&.last_name}"
@@ -434,8 +444,18 @@ json.data do
             if catalyst_datas.present?
               json.catalyst_data do
                 json.array! catalyst_datas do |catalyst_data|
-                  staff = Staff.find_by(catalyst_user_id: catalyst_data.catalyst_user_id)
-                  client = Client.find_by(catalyst_patient_id: catalyst_data.catalyst_patient_id)
+                  staff = Staff.where(catalyst_user_id: catalyst_data.catalyst_user_id)
+                  if staff.count==1
+                    staff = staff.first
+                  elsif staff.count>1
+                    staff = staff.find_by(status: 'active')
+                  end
+                  client = Client.where(catalyst_patient_id: catalyst_data.catalyst_patient_id)
+                  if client.count==1
+                    client = client.first
+                  elsif client.count>1
+                    client = client.find_by(status: 'active')
+                  end
                   json.id catalyst_data.id
                   json.client_name "#{client&.first_name} #{client&.last_name}"
                   json.staff_name "#{staff&.first_name} #{staff&.last_name}"
@@ -457,8 +477,18 @@ json.data do
           json.synced_with_catalyst action_item.soap_notes.last.synced_with_catalyst if action_item.soap_notes.present?
         end
       else
-        staff = Staff.find_by(catalyst_user_id: action_item.catalyst_user_id)
-        client = Client.find_by(catalyst_patient_id: action_item.catalyst_patient_id)
+        staff = Staff.where(catalyst_user_id: action_item.catalyst_user_id)
+        if staff.count==1
+          staff = staff.first
+        elsif staff.count>1
+          staff = staff.find_by(status: 'active')
+        end
+        client = Client.where(catalyst_patient_id: action_item.catalyst_patient_id)
+        if client.count==1
+          client = client.first
+        elsif client.count>1
+          client = client.find_by(status: 'active')
+        end
         json.id action_item.id
         json.type 'catalyst_data'
         json.client_name "#{client&.first_name} #{client&.last_name}"
