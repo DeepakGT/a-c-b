@@ -72,14 +72,25 @@ module Catalyst
                 Loggers::Catalyst::SyncSoapNotesLoggerService.call(catalyst_data.id, "#{catalyst_data.attributes}")
               end
 
+              staff = Staff.where(catalyst_user_id: catalyst_data.catalyst_user_id)
+              if staff.count==1
+                staff = staff.first
+              elsif staff.count>1
+                staff = staff.find_by(status: 'active')
+              end
               soap_note = SoapNote.find_or_initialize_by(catalyst_data_id: catalyst_data.id)
               soap_note.add_date = catalyst_data.date
               soap_note.note = catalyst_data.note
-              # soap_note.creator_id = staff&.id
+              soap_note.creator_id = staff&.id
               soap_note.synced_with_catalyst = true
               soap_note.bcba_signature = true if catalyst_data.bcba_signature.present?
               soap_note.clinical_director_signature = true if catalyst_data.clinical_director_signature.present?
               soap_note.caregiver_signature = true if catalyst_data.caregiver_signature.present?
+              if catalyst_data.provider_signature.present? && staff&.role_name=='bcba'
+                soap_note.bcba_signature = true
+              elsif catalyst_data.provider_signature.present? && (staff&.role_name=='rbt' || staff&.role_name=='Lead RBT')
+                soap_note.rbt_signature = true
+              end
               soap_note.save(validate: false)
 
               if catalyst_data.system_scheduling_id.blank?
