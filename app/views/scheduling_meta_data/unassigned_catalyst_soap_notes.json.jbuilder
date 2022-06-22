@@ -1,7 +1,12 @@
 json.status 'success'
 json.data do
   json.array! @unassigned_notes do |unassigned_note|
-    staff = Staff.find_by(catalyst_user_id: unassigned_note.catalyst_user_id)
+    staff = Staff.where(catalyst_user_id: unassigned_note.catalyst_user_id)
+    if staff.count==1
+      staff = staff.first
+    elsif staff.count>1
+      staff = staff.find_by(status: 'active')
+    end
     json.id unassigned_note.id
     json.note unassigned_note.note
     json.catalyst_soap_note_id unassigned_note.catalyst_soap_note_id
