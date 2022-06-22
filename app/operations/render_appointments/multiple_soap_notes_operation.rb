@@ -14,7 +14,7 @@ module RenderAppointments
           schedule.save(validate: false)
         end
 
-        schedules = schedules.where(is_soap_notes_assigned: false)
+        schedules = schedules.unrendered_schedulings.completed_scheduling.where(is_soap_notes_assigned: false)
         schedules = schedules.map{|schedule| schedule if schedule.catalyst_data_ids.count>=2}.compact!
         schedules.each do |schedule|
           catalyst_datas = CatalystData.where(id: schedule.catalyst_data_ids)
