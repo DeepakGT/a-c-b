@@ -130,7 +130,7 @@ module CompareCatalystDataWithSystemData
           min_units = (catalyst_data.units-1)
           max_units = (catalyst_data.units+1)
 
-          if schedule.is_rendered.to_bool.true?
+          if schedule.rendered_at.present?
             schedule.catalyst_data_ids.push("#{catalyst_data.id}") if !schedule.catalyst_data_ids.include?("#{catalyst_data.id}")
             schedule.save(validate: false)
             if schedule.catalyst_data_ids.include?("#{catalyst_data.id}")

@@ -112,7 +112,7 @@ class SchedulingsController < ApplicationController
 
   # def is_renderable
   #   @schedule.reload
-  #   if params[:status]=='Rendered' && @schedule.date<Time.current.to_date && @schedule.is_rendered==false
+  #   if params[:status]=='Rendered' && @schedule.date<Time.current.to_date && @schedule.rendered_at.present?
   #     @schedule.errors.add(:status, message: "Scheduling could not be rendered.")
   #     return false 
   #   end
