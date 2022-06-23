@@ -27,7 +27,8 @@ class CatalystController < ApplicationController
     schedules.each do |schedule|
       RenderAppointments::RenderScheduleOperation.call(schedule.id) if schedule.present? && !(schedule.unrendered_reason.include?('units_does_not_match'))
     end
-    @catalyst_data.update(is_appointment_found: true, system_scheduling_id: @schedule.id, multiple_schedulings_ids: [])
+    # @catalyst_data.update(is_appointment_found: true, system_scheduling_id: @schedule.id, multiple_schedulings_ids: [])
+    @catalyst_data.update(system_scheduling_id: @schedule.id, multiple_schedulings_ids: [])
     check_units
     update_soap_note
     if (@schedule.date<Time.current.to_date) && !(@schedule.unrendered_reason.include?('units_does_not_match'))
@@ -188,7 +189,7 @@ class CatalystController < ApplicationController
       catalyst_data.multiple_schedulings_ids.delete(@schedule.id) if (catalyst_data.multiple_schedulings_ids.present? && catalyst_data.multiple_schedulings_ids.include?(@schedule.id))
       catalyst_data.system_scheduling_id = nil if catalyst_data.system_scheduling_id==@schedule.id
       catalyst_data.save(validate: false)
-      catalyst_data.is_appointment_found = false if catalyst_data.multiple_schedulings_ids.blank? && catalyst_data.system_scheduling_id.blank?
+      # catalyst_data.is_appointment_found = false if catalyst_data.multiple_schedulings_ids.blank? && catalyst_data.system_scheduling_id.blank?
       catalyst_data.save(validate: false)
       soap_note = SoapNote.find_by(catalyst_data_id: catalyst_data.id)
       if soap_note.present? && soap_note.scheduling_id==@schedule.id
@@ -203,7 +204,7 @@ class CatalystController < ApplicationController
     @selected_catalyst_data.each do |catalyst_data|
       catalyst_data.multiple_schedulings_ids = []
       catalyst_data.system_scheduling_id = @schedule.id
-      catalyst_data.is_appointment_found = true
+      # catalyst_data.is_appointment_found = true
       catalyst_data.save(validate: false)
     end
   end

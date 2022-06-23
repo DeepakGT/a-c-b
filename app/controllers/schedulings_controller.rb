@@ -168,13 +168,15 @@ class SchedulingsController < ApplicationController
     if current_user.role_name=='super_admin' || current_user.role_name=='executive_director' || current_user.role_name=='client_care_coordinator' || current_user.role_name=='Clinical Director'
       @schedule.save(validate: false)
       create_or_update_soap_note(catalyst_data)
-      catalyst_data.update(system_scheduling_id: @schedule.id, is_appointment_found: true, multiple_schedulings_ids: [])
+      # catalyst_data.update(system_scheduling_id: @schedule.id, is_appointment_found: true, multiple_schedulings_ids: [])
+      catalyst_data.update(system_scheduling_id: @schedule.id, multiple_schedulings_ids: [])
       RenderAppointments::RenderScheduleOperation.call(@schedule.id)
     else
       @schedule.save
       if @schedule.save
         create_or_update_soap_note(catalyst_data)
-        catalyst_data.update(system_scheduling_id: @schedule.id, is_appointment_found: true, multiple_schedulings_ids: [])
+        # catalyst_data.update(system_scheduling_id: @schedule.id, is_appointment_found: true, multiple_schedulings_ids: [])
+        catalyst_data.update(system_scheduling_id: @schedule.id, multiple_schedulings_ids: [])
         RenderAppointments::RenderScheduleOperation.call(@schedule.id)
       end
     end
