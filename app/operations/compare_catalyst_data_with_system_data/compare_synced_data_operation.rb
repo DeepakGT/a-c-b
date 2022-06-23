@@ -46,12 +46,12 @@ module CompareCatalystDataWithSystemData
             response_data_hash = set_appointment(catalyst_data, schedule, soap_note)
           elsif schedules.any?
             filtered_schedules = schedules.where(start_time: catalyst_data.start_time, end_time: catalyst_data.end_time, units: catalyst_data.units)
-            if filtered_schedules.count==1
+            if filtered_schedules.length==1
               set_appointment(catalyst_data, filtered_schedules.first, soap_note)
-            elsif filtered_schedules.count>1
+            elsif filtered_schedules.length>1
               service_display_code = catalyst_data.response['templateName'][-10..-6]
               filtered_schedules = filtered_schedules.joins(client_enrollment_service: :service).where('services.display_code': service_display_code)
-              if filtered_schedules.count==1
+              if filtered_schedules.length==1
                 set_appointment(catalyst_data, filtered_schedules.first, soap_note)
               else
                 Loggers::Catalyst::SyncSoapNotesLoggerService.call(catalyst_data.id, "In catalyst data, no appointment found.")
@@ -67,14 +67,14 @@ module CompareCatalystDataWithSystemData
                   filtered_schedules.push(appointment)
                 end
               end
-              if filtered_schedules.count==1
+              if filtered_schedules.length==1
                 set_appointment(catalyst_data, filtered_schedules.first, soap_note)
-              elsif filtered_schedules.count>1
+              elsif filtered_schedules.length>1
                 service_display_code = catalyst_data.response['templateName'][-10..-6]
                 filtered_schedules = filtered_schedules.joins(client_enrollment_service: :service).where('services.display_code': service_display_code)
-                if filtered_schedules.count==1
+                if filtered_schedules.length==1
                   set_appointment(catalyst_data, filtered_schedules.first, soap_note)
-                elsif filtered_schedules.count>1
+                elsif filtered_schedules.length>1
                   filtered_schedules = filtered_schedules.order(:minutes)
                   set_appointment(catalyst_data, filtered_schedules.last, soap_note)
                 end
