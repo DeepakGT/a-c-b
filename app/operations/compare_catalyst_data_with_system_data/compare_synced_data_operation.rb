@@ -33,8 +33,8 @@ module CompareCatalystDataWithSystemData
         end
         # schedules = Scheduling.by_client_ids(client&.id).by_staff_ids(staff&.id).on_date(catalyst_data.date)
         if staff.present?
-          catalyst_data.multiple_schedulings_ids = []
-          catalyst_data.save(validate: false)
+          # catalyst_data.multiple_schedulings_ids = []
+          # catalyst_data.save(validate: false)
           schedules = Scheduling.joins(client_enrollment_service: :client_enrollment).by_client_ids(client&.id).by_staff_ids(staff&.id).on_date(catalyst_data.date).by_status
           if schedules.count==1
             schedule = schedules.first
@@ -44,7 +44,7 @@ module CompareCatalystDataWithSystemData
             if filtered_schedules.count == 1
               response_data_hash = set_appointment(catalyst_data, filtered_schedules.first, soap_note)
             elsif filtered_schedules.count>1
-              catalyst_data.multiple_schedulings_ids = filtered_schedules.pluck(:id)
+              # catalyst_data.multiple_schedulings_ids = filtered_schedules.pluck(:id)
               catalyst_data.system_scheduling_id = nil
               catalyst_data.is_appointment_found = true
               catalyst_data.save(validate: false)
@@ -61,52 +61,52 @@ module CompareCatalystDataWithSystemData
                 min_end_time = (appointment.end_time.to_time-15.minutes)
                 max_end_time = (appointment.end_time.to_time+15.minutes)
                 if (min_start_time..max_start_time).include?(catalyst_data.start_time.to_time) && (min_end_time..max_end_time).include?(catalyst_data.end_time.to_time)
-                  catalyst_data.multiple_schedulings_ids.push("#{appointment.id}")
-                  catalyst_data.multiple_schedulings_ids.uniq!
+                  # catalyst_data.multiple_schedulings_ids.push("#{appointment.id}")
+                  # catalyst_data.multiple_schedulings_ids.uniq!
                   catalyst_data.is_appointment_found = true
                   catalyst_data.system_scheduling_id = nil
                   catalyst_data.save(validate: false)
-                  if catalyst_data.multiple_schedulings_ids.include?("#{appointment.id}")
-                    Loggers::Catalyst::SyncSoapNotesLoggerService.call(catalyst_data.id, "In catalyst data, multiple scheduling id is updated.")
-                  else
-                    Loggers::Catalyst::SyncSoapNotesLoggerService.call(catalyst_data.id, "In catalyst data, scheduling id cannot be updated.")
-                  end
+                  # if catalyst_data.multiple_schedulings_ids.include?("#{appointment.id}")
+                  #   Loggers::Catalyst::SyncSoapNotesLoggerService.call(catalyst_data.id, "In catalyst data, multiple scheduling id is updated.")
+                  # else
+                  #   Loggers::Catalyst::SyncSoapNotesLoggerService.call(catalyst_data.id, "In catalyst data, scheduling id cannot be updated.")
+                  # end
                   response_data_hash[:system_data] = appointment.attributes
                   response_data_hash[:catalyst_data] = catalyst_data.attributes
                 end
               end
-              if catalyst_data.multiple_schedulings_ids.count == 1
-                catalyst_data.system_scheduling_id = catalyst_data.multiple_schedulings_ids.first.to_i
-                catalyst_data.multiple_schedulings_ids = []
-                catalyst_data.is_appointment_found = true
-                catalyst_data.save(validate: false)
-                if catalyst_data.system_scheduling_id.present?
-                  Loggers::Catalyst::SyncSoapNotesLoggerService.call(catalyst_data.id, "In catalyst data, scheduling id is updated.")
-                else
-                  Loggers::Catalyst::SyncSoapNotesLoggerService.call(catalyst_data.id, "In catalyst data, scheduling id cannot be updated.")
-                end
+              # if catalyst_data.multiple_schedulings_ids.count == 1
+              #   catalyst_data.system_scheduling_id = catalyst_data.multiple_schedulings_ids.first.to_i
+              #   catalyst_data.multiple_schedulings_ids = []
+              #   catalyst_data.is_appointment_found = true
+              #   catalyst_data.save(validate: false)
+              #   if catalyst_data.system_scheduling_id.present?
+              #     Loggers::Catalyst::SyncSoapNotesLoggerService.call(catalyst_data.id, "In catalyst data, scheduling id is updated.")
+              #   else
+              #     Loggers::Catalyst::SyncSoapNotesLoggerService.call(catalyst_data.id, "In catalyst data, scheduling id cannot be updated.")
+              #   end
 
-                schedule = Scheduling.find_by(id: catalyst_data.system_scheduling_id)
-                schedule.catalyst_data_ids.push(catalyst_data.id)
-                schedule.save(validate: false)
-                if schedule.staff&.role_name=='rbt' && catalyst_data.provider_signature.present?
-                  soap_note.rbt_signature = true
-                elsif schedule.staff&.role_name=='bcba' && catalyst_data.provider_signature.present?
-                  soap_note.bcba_signature = true
-                end
-                soap_note.scheduling_id = schedule.id
-                soap_note.client_id = schedule.client_enrollment_service.client_enrollment.client_id
-                soap_note.creator_id = schedule.staff_id
-                soap_note.save(validate: false)
-                if soap_note.client_id.present?
-                  Loggers::Catalyst::SyncSoapNotesLoggerService.call(soap_note.id, "Soap note's client id is updated.")
-                else
-                  Loggers::Catalyst::SyncSoapNotesLoggerService.call(soap_note.id, "Soap note's client id cannot be updated.")
-                end
+              #   schedule = Scheduling.find_by(id: catalyst_data.system_scheduling_id)
+              #   schedule.catalyst_data_ids.push(catalyst_data.id)
+              #   schedule.save(validate: false)
+              #   if schedule.staff&.role_name=='rbt' && catalyst_data.provider_signature.present?
+              #     soap_note.rbt_signature = true
+              #   elsif schedule.staff&.role_name=='bcba' && catalyst_data.provider_signature.present?
+              #     soap_note.bcba_signature = true
+              #   end
+              #   soap_note.scheduling_id = schedule.id
+              #   soap_note.client_id = schedule.client_enrollment_service.client_enrollment.client_id
+              #   soap_note.creator_id = schedule.staff_id
+              #   soap_note.save(validate: false)
+              #   if soap_note.client_id.present?
+              #     Loggers::Catalyst::SyncSoapNotesLoggerService.call(soap_note.id, "Soap note's client id is updated.")
+              #   else
+              #     Loggers::Catalyst::SyncSoapNotesLoggerService.call(soap_note.id, "Soap note's client id cannot be updated.")
+              #   end
       
-                response_data_hash = {}
-              end
-              if catalyst_data.system_scheduling_id.present? || catalyst_data.multiple_schedulings_ids.present?
+              #   response_data_hash = {}
+              # end
+              if catalyst_data.system_scheduling_id.present? #|| catalyst_data.multiple_schedulings_ids.present?
                 catalyst_data.is_appointment_found = true
               else
                 catalyst_data.is_appointment_found = false
@@ -218,7 +218,7 @@ module CompareCatalystDataWithSystemData
             end
           end
           catalyst_data.system_scheduling_id = schedule.id
-          catalyst_data.multiple_schedulings_ids = []
+          # catalyst_data.multiple_schedulings_ids = []
           catalyst_data.is_appointment_found = true
           catalyst_data.save(validate: false)
           if catalyst_data.system_scheduling_id.present?
@@ -226,7 +226,7 @@ module CompareCatalystDataWithSystemData
           else
             Loggers::Catalyst::SyncSoapNotesLoggerService.call(catalyst_data.id, "In catalyst data, scheduling id cannot be updated.")
           end
-          if catalyst_data.system_scheduling_id.present? || catalyst_data.multiple_schedulings_ids.present?
+          if catalyst_data.system_scheduling_id.present? #|| catalyst_data.multiple_schedulings_ids.present?
             catalyst_data.is_appointment_found = true
             catalyst_data.save(validate: false)
           else
@@ -235,7 +235,7 @@ module CompareCatalystDataWithSystemData
           end
         else
           catalyst_data.is_appointment_found = false
-          catalyst_data.multiple_schedulings_ids = []
+          # catalyst_data.multiple_schedulings_ids = []
           catalyst_data.system_scheduling_id = nil
           catalyst_data.save(validate: false)
         end
