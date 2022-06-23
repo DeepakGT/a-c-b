@@ -56,7 +56,7 @@ class CatalystController < ApplicationController
       staff = Staff.find_by(catalyst_user_id: @catalyst_data.catalyst_user_id)
     end
     # schedules = Scheduling.on_date(@catalyst_data.date)
-    schedules = Scheduling.joins(client_enrollment_service: :client_enrollment).by_client_ids(client&.id).by_staff_ids(staff&.id).on_date(@catalyst_data.date)
+    schedules = Scheduling.joins(client_enrollment_service: :client_enrollment).by_client_ids(client&.id).by_staff_ids(staff&.id).on_date(@catalyst_data.date).by_status
     # schedules = schedules.joins(client_enrollment_service: {client_enrollment: :client}).by_client_clinic(params[:location_id]) if params[:location_id].present?
     @schedules = schedules.order(:start_time)
   end
