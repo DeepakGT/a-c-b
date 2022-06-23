@@ -467,12 +467,16 @@ json.data do
           staff = staff.first
         elsif staff.count>1
           staff = staff.find_by(status: 'active')
+        else
+          staff = Staff.find_by(catalyst_user_id: action_item.catalyst_user_id)
         end
         client = Client.where(catalyst_patient_id: action_item.catalyst_patient_id)
         if client.count==1
           client = client.first
         elsif client.count>1
           client = client.find_by(status: 'active')
+        else
+          client = Client.find_by(catalyst_patient_id: action_item.catalyst_patient_id)
         end
         json.id action_item.id
         json.type 'catalyst_data'
