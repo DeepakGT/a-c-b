@@ -38,7 +38,12 @@ json.data do
       json.date schedule.date
       json.start_time schedule.start_time
       json.end_time schedule.end_time
-      json.is_rendered schedule.is_rendered
+      # json.is_rendered schedule.is_rendered
+      if schedule.rendered_at.present?
+        json.is_rendered true
+      else
+        json.is_rendered false
+      end
       json.units schedule.units
       json.minutes schedule.minutes
     end
@@ -264,7 +269,12 @@ json.data do
         json.date action_item.date
         json.start_time action_item.start_time
         json.end_time action_item.end_time
-        json.is_rendered action_item.is_rendered
+        # json.is_rendered action_item.is_rendered
+        if action_item.rendered_at.present?
+          json.is_rendered true
+        else
+          json.is_rendered false
+        end
         json.rendered_at action_item.rendered_at
         json.unrendered_reasons action_item.unrendered_reason
         json.units action_item.units
@@ -279,12 +289,16 @@ json.data do
                   staff = staff.first
                 elsif staff.count>1
                   staff = staff.find_by(status: 'active')
+                else
+                  staff = Staff.find_by(catalyst_user_id: catalyst_data.catalyst_user_id)
                 end
                 client = Client.where(catalyst_patient_id: catalyst_data.catalyst_patient_id)
                 if client.count==1
                   client = client.first
                 elsif client.count>1
                   client = client.find_by(status: 'active')
+                else
+                  client = Client.find_by(catalyst_patient_id: catalyst_data.catalyst_patient_id)
                 end
                 json.id catalyst_data.id
                 json.client_name "#{client&.first_name} #{client&.last_name}"
@@ -354,12 +368,16 @@ json.data do
                     staff = staff.first
                   elsif staff.count>1
                     staff = staff.find_by(status: 'active')
+                  else
+                    staff = Staff.find_by(catalyst_user_id: catalyst_data.catalyst_user_id)
                   end
                   client = Client.where(catalyst_patient_id: catalyst_data.catalyst_patient_id)
                   if client.count==1
                     client = client.first
                   elsif client.count>1
                     client = client.find_by(status: 'active')
+                  else
+                    client = Client.find_by(catalyst_patient_id: catalyst_data.catalyst_patient_id)
                   end
                   json.id catalyst_data.id
                   json.client_name "#{client&.first_name} #{client&.last_name}"
@@ -387,12 +405,16 @@ json.data do
           staff = staff.first
         elsif staff.count>1
           staff = staff.find_by(status: 'active')
+        else
+          staff = Staff.find_by(catalyst_user_id: action_item.catalyst_user_id)
         end
         client = Client.where(catalyst_patient_id: action_item.catalyst_patient_id)
         if client.count==1
           client = client.first
         elsif client.count>1
           client = client.find_by(status: 'active')
+        else
+          client = Client.find_by(catalyst_patient_id: action_item.catalyst_patient_id)
         end
         json.id action_item.id
         json.type 'catalyst_data'
@@ -408,11 +430,16 @@ json.data do
         json.note action_item.note
         json.location action_item.session_location
         json.cordinates action_item.location
-        if action_item.is_appointment_found==false
-          json.unrendered_reasons ["no_appointment_found"]
-        else
+        if action_item.multiple_schedulings_ids.present? 
           json.unrendered_reasons ["multiple_appointments_found"]
+        elsif action_item.system_scheduling_id.blank?
+          json.unrendered_reasons ["no_appointment_found"]
         end
+        # if action_item.is_appointment_found==false
+        #   json.unrendered_reasons ["no_appointment_found"]
+        # else
+        #   json.unrendered_reasons ["multiple_appointments_found"]
+        # end
       end
     end
   end

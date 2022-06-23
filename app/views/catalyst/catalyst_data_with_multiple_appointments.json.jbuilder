@@ -5,12 +5,16 @@ json.data do
     staff = staff.first
   elsif staff.count>1
     staff = staff.find_by(status: 'active')
+  else
+    staff = Staff.find_by(catalyst_user_id: @catalyst_data.catalyst_user_id)
   end
   client = Client.where(catalyst_patient_id: @catalyst_data.catalyst_patient_id)
   if client.count==1
     client = client.first
   elsif client.count>1
     client = client.find_by(status: 'active')
+  else
+    client = Client.find_by(catalyst_patient_id: @catalyst_data.catalyst_patient_id)
   end
   json.id @catalyst_data.id
   json.client_name "#{client&.first_name} #{client&.last_name}"
@@ -59,7 +63,12 @@ json.data do
       json.date schedule.date
       json.start_time schedule.start_time
       json.end_time schedule.end_time
-      json.is_rendered schedule.is_rendered
+      # json.is_rendered schedule.is_rendered
+      if schedule.rendered_at.present?
+        json.is_rendered true
+      else
+        json.is_rendered false
+      end
       json.unrendered_reasons schedule.unrendered_reason
       json.units schedule.units
       json.minutes schedule.minutes

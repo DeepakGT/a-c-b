@@ -23,7 +23,7 @@ class CatalystController < ApplicationController
     @schedule.catalyst_data_ids.uniq!
     @schedule.save(validate: false)
     update_catalyst_data_ids
-    @catalyst_data.update(is_appointment_found: true, system_scheduling_id: @schedule.id)
+    @catalyst_data.update(system_scheduling_id: @schedule.id)
     check_units
     update_soap_note
     if (@schedule.date<Time.current.to_date) && !(@schedule.unrendered_reason.include?('units_does_not_match'))
@@ -44,12 +44,16 @@ class CatalystController < ApplicationController
       client = client.first
     elsif client.count>1
       client = client.find_by(status: 'active')
+    else
+      client = Client.find_by(catalyst_patient_id: @catalyst_data.catalyst_patient_id)
     end
     staff = Staff.where(catalyst_user_id: @catalyst_data.catalyst_user_id)
     if staff.count==1
       staff = staff.first
     elsif staff.count>1
       staff = staff.find_by(status: 'active')
+    else
+      staff = Staff.find_by(catalyst_user_id: @catalyst_data.catalyst_user_id)
     end
     # schedules = Scheduling.on_date(@catalyst_data.date)
     schedules = Scheduling.joins(client_enrollment_service: :client_enrollment).by_client_ids(client&.id).by_staff_ids(staff&.id).on_date(@catalyst_data.date)
@@ -138,7 +142,8 @@ class CatalystController < ApplicationController
   end
 
   def check_units
-    @schedule.is_rendered = false
+    # @schedule.is_rendered = false
+    @schedule.rendered_at = nil
     @schedule.status = 'Scheduled'
     @schedule.save(validate: false)
     catalyst_data = CatalystData.where(id: @schedule.catalyst_data_ids.uniq)
@@ -184,7 +189,7 @@ class CatalystController < ApplicationController
       # catalyst_data.multiple_schedulings_ids.delete(@schedule.id) if (catalyst_data.multiple_schedulings_ids.present? && catalyst_data.multiple_schedulings_ids.include?(@schedule.id))
       catalyst_data.system_scheduling_id = nil if catalyst_data.system_scheduling_id==@schedule.id
       catalyst_data.save(validate: false)
-      catalyst_data.is_appointment_found = false if catalyst_data.system_scheduling_id.blank?
+      # catalyst_data.is_appointment_found = false if catalyst_data.multiple_schedulings_ids.blank? && catalyst_data.system_scheduling_id.blank?
       catalyst_data.save(validate: false)
       soap_note = SoapNote.find_by(catalyst_data_id: catalyst_data.id)
       if soap_note.present? && soap_note.scheduling_id==@schedule.id
@@ -199,7 +204,7 @@ class CatalystController < ApplicationController
     @selected_catalyst_data.each do |catalyst_data|
       # catalyst_data.multiple_schedulings_ids = []
       catalyst_data.system_scheduling_id = @schedule.id
-      catalyst_data.is_appointment_found = true
+      # catalyst_data.is_appointment_found = true
       catalyst_data.save(validate: false)
     end
   end

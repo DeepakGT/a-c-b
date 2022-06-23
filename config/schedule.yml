@@ -13,8 +13,8 @@ sync_soap_notes_with_catalyst_two_months_worker_at_10_pm:
   class: "SyncWithCatalystTwoMonthsWorker"
   queue: SyncWithCatalystTwoMonths
 
-sync_soap_notes_with_catalyst_every_2_hours:
-  cron: '0 */2 * * *'
+sync_soap_notes_with_catalyst_every_1_hours:
+  cron: '0 */1 * * *'
   class: "SyncWithCatalystWorker"
   queue: SyncWithCatalyst
 

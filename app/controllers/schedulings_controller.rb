@@ -15,6 +15,7 @@ class SchedulingsController < ApplicationController
     @schedule = @client_enrollment_service.schedulings.new(scheduling_params)
     @schedule.creator_id = current_user.id
     @schedule.user = current_user
+    @schedule.id = Scheduling.last.id + 1
     if is_create_request_via_catalyst_data
       update_data 
     else
@@ -46,6 +47,7 @@ class SchedulingsController < ApplicationController
     @schedule.status = 'Non-Billable' if params[:status].blank?
     @schedule.creator_id = current_user.id
     @schedule.user = current_user
+    @schedule.id = Scheduling.last.id + 1
     @schedule.save
   end
 
@@ -112,7 +114,7 @@ class SchedulingsController < ApplicationController
 
   # def is_renderable
   #   @schedule.reload
-  #   if params[:status]=='Rendered' && @schedule.date<Time.current.to_date && @schedule.is_rendered==false
+  #   if params[:status]=='Rendered' && @schedule.date<Time.current.to_date && @schedule.rendered_at.present?
   #     @schedule.errors.add(:status, message: "Scheduling could not be rendered.")
   #     return false 
   #   end
@@ -166,13 +168,13 @@ class SchedulingsController < ApplicationController
     if current_user.role_name=='super_admin' || current_user.role_name=='executive_director' || current_user.role_name=='client_care_coordinator' || current_user.role_name=='Clinical Director'
       @schedule.save(validate: false)
       create_or_update_soap_note(catalyst_data)
-      catalyst_data.update(system_scheduling_id: @schedule.id, is_appointment_found: true)
+      catalyst_data.update(system_scheduling_id: @schedule.id)
       RenderAppointments::RenderScheduleOperation.call(@schedule.id)
     else
       @schedule.save
       if @schedule.save
         create_or_update_soap_note(catalyst_data)
-        catalyst_data.update(system_scheduling_id: @schedule.id, is_appointment_found: true)
+        catalyst_data.update(system_scheduling_id: @schedule.id)
         RenderAppointments::RenderScheduleOperation.call(@schedule.id)
       end
     end

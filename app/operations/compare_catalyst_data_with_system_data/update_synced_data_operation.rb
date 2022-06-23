@@ -25,7 +25,7 @@ module CompareCatalystDataWithSystemData
             max_units = (catalyst_data.units+1)
             response_data_hash = {}
 
-            if schedule.is_rendered.to_bool.true?
+            if schedule.rendered_at.present?
               schedule.catalyst_data_ids = schedule.catalyst_data_ids | ["#{catalyst_data.id}"]
               schedule.save(validate: false)
               if schedule.catalyst_data_ids.include?("#{catalyst_data.id}")
