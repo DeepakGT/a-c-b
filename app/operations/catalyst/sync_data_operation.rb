@@ -77,6 +77,8 @@ module Catalyst
                 staff = staff.first
               elsif staff.count>1
                 staff = staff.find_by(status: 'active')
+              else
+                staff = Staff.find_by(catalyst_user_id: catalyst_data.catalyst_user_id)
               end
               soap_note = SoapNote.find_or_initialize_by(catalyst_data_id: catalyst_data.id)
               soap_note.add_date = catalyst_data.date
