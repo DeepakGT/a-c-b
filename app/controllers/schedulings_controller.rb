@@ -150,10 +150,10 @@ class SchedulingsController < ApplicationController
 
   def update_data
     catalyst_data = CatalystData.find(params[:catalyst_data_id])
-    schedules = Scheduling.where(id: catalyst_data.multiple_schedulings_ids).where.not(id: @schedule.id)
+    schedules = Scheduling.where('catalyst_data_ids @> ?', "{#{catalyst_data.id}}").where.not(id: @schedule.id)
     schedules.each do |schedule|
       schedule.catalyst_data_ids = schedule.catalyst_data_ids.uniq
-      schedule.catalyst_data_ids.delete(catalyst_data.id) if (schedule.catalyst_data_ids.present? && schedule.catalyst_data_ids.include?(catalyst_data.id))
+      schedule.catalyst_data_ids.delete(catalyst_data.id) #if (schedule.catalyst_data_ids.present? && schedule.catalyst_data_ids.include?(catalyst_data.id))
       schedule.save(validate: false)
       RenderAppointments::RenderScheduleOperation.call(schedule.id) if !schedule.unrendered_reason.include?('units_does_not_match')
     end
@@ -168,15 +168,13 @@ class SchedulingsController < ApplicationController
     if current_user.role_name=='super_admin' || current_user.role_name=='executive_director' || current_user.role_name=='client_care_coordinator' || current_user.role_name=='Clinical Director'
       @schedule.save(validate: false)
       create_or_update_soap_note(catalyst_data)
-      # catalyst_data.update(system_scheduling_id: @schedule.id, is_appointment_found: true, multiple_schedulings_ids: [])
-      catalyst_data.update(system_scheduling_id: @schedule.id, multiple_schedulings_ids: [])
+      catalyst_data.update(system_scheduling_id: @schedule.id)
       RenderAppointments::RenderScheduleOperation.call(@schedule.id)
     else
       @schedule.save
       if @schedule.save
         create_or_update_soap_note(catalyst_data)
-        # catalyst_data.update(system_scheduling_id: @schedule.id, is_appointment_found: true, multiple_schedulings_ids: [])
-        catalyst_data.update(system_scheduling_id: @schedule.id, multiple_schedulings_ids: [])
+        catalyst_data.update(system_scheduling_id: @schedule.id)
         RenderAppointments::RenderScheduleOperation.call(@schedule.id)
       end
     end
@@ -211,11 +209,11 @@ class SchedulingsController < ApplicationController
 
   def delete_scheduling
     CatalystData.where(system_scheduling_id: @schedule.id).update_all(system_scheduling_id: nil)
-    catalyst_data = CatalystData.where('multiple_schedulings_ids @> ?', "{#{@schedule.id}}")
-    catalyst_data.each do |catalyst_datum| 
-      catalyst_datum.multiple_schedulings_ids.delete("#{@schedule.id}")
-      catalyst_datum.save
-    end
+    # catalyst_data = CatalystData.where('multiple_schedulings_ids @> ?', "{#{@schedule.id}}")
+    # catalyst_data.each do |catalyst_datum| 
+    #   catalyst_datum.multiple_schedulings_ids.delete("#{@schedule.id}")
+    #   catalyst_datum.save
+    # end
     @schedule.destroy
   end
 

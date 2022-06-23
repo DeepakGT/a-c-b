@@ -20,7 +20,7 @@ module RenderAppointments
             create_soap_note(schedule, catalyst_note)
             # catalyst_note.is_appointment_found = true
             catalyst_note.system_scheduling_id = schedule.id
-            catalyst_note.multiple_schedulings_ids = []
+            # catalyst_note.multiple_schedulings_ids = []
             catalyst_note.save(validate: false)
           end
         end
