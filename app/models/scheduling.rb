@@ -26,7 +26,7 @@ class Scheduling < ApplicationRecord
   scope :completed_scheduling, ->{ where('date < ?',Time.current.to_date) }
   scope :todays_schedulings, ->{ where('date = ?',Time.current.to_date) }
   scope :scheduled_scheduling, ->{ where('date >= ?',Time.current.to_date) }
-  scope :unrendered_schedulings, ->{ where(is_rendered: false) }
+  scope :unrendered_schedulings, ->{ where(rendered_at: nil) }
   scope :with_units, ->{ where.not(units: nil) }
   scope :with_minutes, ->{ where.not(minutes: nil) }
   scope :by_client_and_service, ->(client_id, service_id){ joins(client_enrollment_service: :client_enrollment).where('client_enrollments.client_id': client_id, 'client_enrollment_service.service_id': service_id)}
@@ -40,7 +40,7 @@ class Scheduling < ApplicationRecord
   scope :exceeded_24_h_scheduling, ->{ where('date < ? OR (date = ? AND end_time < ?)', Time.current.to_date-1, Time.current.to_date-1, Time.current.strftime('%H:%M')) }
   scope :exceeded_3_days_scheduling, ->{ where('date < ? OR (date = ? AND end_time < ?)', Time.current.to_date-3, Time.current.to_date-3, Time.current.strftime('%H:%M')) }
   scope :exceeded_5_days_scheduling, ->{ where('date < ? OR (date = ? AND end_time < ?)', Time.current.to_date-5, Time.current.to_date-5, Time.current.strftime('%H:%M')) }
-  scope :partially_rendered_schedules, ->{ where(is_rendered: true).where.not(status: 'Rendered')}
+  scope :partially_rendered_schedules, ->{ where.not(status: 'Rendered', rendered_at: nil)}
   scope :past_60_days_schedules, ->{ where('date>=? AND date<?', (Time.current-60.days).strftime('%Y-%m-%d'), Time.current.strftime('%Y-%m-%d')) }
   scope :without_staff, ->{ where(staff_id: nil) }
   scope :with_staff, ->{ where.not(staff_id: nil) }

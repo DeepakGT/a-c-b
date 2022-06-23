@@ -15,6 +15,7 @@ class SchedulingsController < ApplicationController
     @schedule = @client_enrollment_service.schedulings.new(scheduling_params)
     @schedule.creator_id = current_user.id
     @schedule.user = current_user
+    @schedule.id = Scheduling.last.id + 1
     if is_create_request_via_catalyst_data
       update_data 
     else
@@ -46,6 +47,7 @@ class SchedulingsController < ApplicationController
     @schedule.status = 'Non-Billable' if params[:status].blank?
     @schedule.creator_id = current_user.id
     @schedule.user = current_user
+    @schedule.id = Scheduling.last.id + 1
     @schedule.save
   end
 
@@ -112,7 +114,7 @@ class SchedulingsController < ApplicationController
 
   # def is_renderable
   #   @schedule.reload
-  #   if params[:status]=='Rendered' && @schedule.date<Time.current.to_date && @schedule.is_rendered==false
+  #   if params[:status]=='Rendered' && @schedule.date<Time.current.to_date && @schedule.rendered_at.present?
   #     @schedule.errors.add(:status, message: "Scheduling could not be rendered.")
   #     return false 
   #   end
@@ -186,11 +188,16 @@ class SchedulingsController < ApplicationController
       soap_note = SoapNote.new(catalyst_data_id: catalyst_data.id)
       soap_note.add_date = catalyst_data.date
       soap_note.note = catalyst_data.note
-      soap_note.creator_id = Staff.find_by(catalyst_user_id: catalyst_data.catalyst_user_id)&.id
+      soap_note.creator_id = @schedule.staff_id
       soap_note.synced_with_catalyst = true
       soap_note.bcba_signature = true if catalyst_data.bcba_signature.present?
       soap_note.clinical_director_signature = true if catalyst_data.clinical_director_signature.present?
       soap_note.caregiver_signature = true if catalyst_data.caregiver_signature.present?
+      if @schedule.staff&.role_name=='rbt' && catalyst_data.provider_signature.present?
+        soap_note.rbt_signature = true
+      elsif @schedule.staff&.role_name=='bcba' && catalyst_data.provider_signature.present?
+        soap_note.bcba_signature = true
+      end
       soap_note.save(validate: false)
     end
     soap_note.client_id = @schedule.client_enrollment_service.client_enrollment.client_id

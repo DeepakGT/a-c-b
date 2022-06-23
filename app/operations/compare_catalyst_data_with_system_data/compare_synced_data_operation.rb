@@ -9,18 +9,22 @@ module CompareCatalystDataWithSystemData
 
       def compare_synced_data(catalyst_data)
         response_data_hash = {}
-        staff = Staff.find_by(catalyst_user_id: catalyst_data.catalyst_user_id)
-        client = Client.find_by(catalyst_patient_id: catalyst_data.catalyst_patient_id)
+        staff = Staff.where(catalyst_user_id: catalyst_data.catalyst_user_id)
+        if staff.count==1
+          staff = staff.first
+        elsif staff.count>1
+          staff = staff.find_by(status: 'active')
+        end
+        client = Client.where(catalyst_patient_id: catalyst_data.catalyst_patient_id)
+        if client.count==1
+          client = client.first
+        elsif client.count>1
+          client = client.find_by(status: 'active')
+        end
         soap_note = SoapNote.find_or_initialize_by(catalyst_data_id: catalyst_data.id)
-        soap_note.add_date = catalyst_data.date
-        soap_note.note = catalyst_data.note
-        soap_note.creator_id = Staff.find_by(catalyst_user_id: catalyst_data.catalyst_user_id)&.id
-        soap_note.synced_with_catalyst = true
-        soap_note.bcba_signature = true if catalyst_data.bcba_signature.present?
-        soap_note.clinical_director_signature = true if catalyst_data.clinical_director_signature.present?
-        soap_note.caregiver_signature = true if catalyst_data.caregiver_signature.present?
         soap_note.client_id = nil
         soap_note.scheduling_id = nil
+        soap_note.creator_id = staff&.id
         soap_note.save(validate: false)
         if soap_note.present? && !soap_note.id.nil?
           Loggers::Catalyst::SyncSoapNotesLoggerService.call(catalyst_data.id, "Soap note with catalyst soap note id #{catalyst_data.catalyst_soap_note_id} is saved.")
@@ -29,6 +33,8 @@ module CompareCatalystDataWithSystemData
         end
         # schedules = Scheduling.by_client_ids(client&.id).by_staff_ids(staff&.id).on_date(catalyst_data.date)
         if staff.present?
+          catalyst_data.multiple_schedulings_ids = []
+          catalyst_data.save(validate: false)
           schedules = Scheduling.joins(client_enrollment_service: :client_enrollment).by_client_ids(client&.id).by_staff_ids(staff&.id).on_date(catalyst_data.date).by_status
           if schedules.count==1
             schedule = schedules.first
@@ -130,7 +136,7 @@ module CompareCatalystDataWithSystemData
           min_units = (catalyst_data.units-1)
           max_units = (catalyst_data.units+1)
 
-          if schedule.is_rendered.to_bool.true?
+          if schedule.rendered_at.present?
             schedule.catalyst_data_ids.push("#{catalyst_data.id}") if !schedule.catalyst_data_ids.include?("#{catalyst_data.id}")
             schedule.save(validate: false)
             if schedule.catalyst_data_ids.include?("#{catalyst_data.id}")

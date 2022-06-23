@@ -9,7 +9,7 @@ module RenderAppointments
 
       def manual_render_appointment(schedule_id, catalyst_notes_ids)
         schedule = Scheduling.find(schedule_id)
-        schedule.is_rendered = true
+        # schedule.is_rendered = true
         schedule.is_manual_render = true
         schedule.status = 'Rendered' if schedule.client_enrollment_service&.client_enrollment&.funding_source&.name!='ABA Centers of America'
         schedule.unrendered_reason = []
