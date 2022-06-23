@@ -47,6 +47,7 @@ class SchedulingsController < ApplicationController
     @schedule.status = 'Non-Billable' if params[:status].blank?
     @schedule.creator_id = current_user.id
     @schedule.user = current_user
+    @schedule.id = Scheduling.last.id + 1
     @schedule.save
   end
 
