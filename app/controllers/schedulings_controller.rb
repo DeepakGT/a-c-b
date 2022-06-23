@@ -15,6 +15,7 @@ class SchedulingsController < ApplicationController
     @schedule = @client_enrollment_service.schedulings.new(scheduling_params)
     @schedule.creator_id = current_user.id
     @schedule.user = current_user
+    @schedule.id = Scheduling.last.id + 1
     if is_create_request_via_catalyst_data
       update_data 
     else
