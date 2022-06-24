@@ -71,7 +71,8 @@ module CompareCatalystDataWithSystemData
                 set_appointment(catalyst_data, filtered_schedules.first, soap_note)
               elsif filtered_schedules.length>1
                 service_display_code = catalyst_data.response['templateName'][-10..-6]
-                filtered_schedules = filtered_schedules.joins(client_enrollment_service: :service).where('services.display_code': service_display_code)
+                # filtered_schedules = filtered_schedules.joins(client_enrollment_service: :service).where('services.display_code': service_display_code)
+                filtered_schedules = filtered_schedules.map{|schedule| schedule if schedule.client_enrollment_service.service.display_code==service_display_code}.compact
                 if filtered_schedules.length==1
                   set_appointment(catalyst_data, filtered_schedules.first, soap_note)
                 elsif filtered_schedules.length>1
