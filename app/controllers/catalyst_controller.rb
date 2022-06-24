@@ -165,8 +165,7 @@ class CatalystController < ApplicationController
   end
 
   def re_render_appointment
-    @schedule.catalyst_data_ids.push(@selected_catalyst_data.ids)
-    @schedule.catalyst_data_ids = @schedule.catalyst_data_ids.flatten.uniq
+    @schedule.catalyst_data_ids = @selected_catalyst_data.ids
     @schedule.unrendered_reason = []
     @schedule.is_soap_notes_assigned = true
     @schedule.save(validate: false)
