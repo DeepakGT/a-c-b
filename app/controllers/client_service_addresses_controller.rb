@@ -10,14 +10,14 @@ class ClientServiceAddressesController < ApplicationController
   def create
     @service_address = @client.addresses.new(service_address_params)
     @service_address.address_type = 'service_address'
-    set_default
+    set_default if params[:is_default].present?
     @service_address.save
   end
 
   def show; end
 
   def update
-    set_default
+    set_default if params[:is_default].present?
     @service_address.update(service_address_params)
   end
 
