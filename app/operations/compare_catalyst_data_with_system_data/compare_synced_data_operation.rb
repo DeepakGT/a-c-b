@@ -39,7 +39,8 @@ module CompareCatalystDataWithSystemData
         if staff.present?
           catalyst_data.multiple_schedulings_ids = []
           catalyst_data.save(validate: false)
-          schedules = Scheduling.joins(client_enrollment_service: :client_enrollment).by_client_ids(client&.id).by_staff_ids(staff&.id).on_date(catalyst_data.date).by_status
+          schedules = Scheduling.left_outer_joins(:soap_notes).select("schedulings.*").group("schedulings.id").having("count(soap_notes.*) = ?",0)
+          schedules = schedules.joins(client_enrollment_service: :client_enrollment).by_client_ids(client&.id).by_staff_ids(staff&.id).on_date(catalyst_data.date).by_status
           if schedules.count==1
             schedule = schedules.first
             response_data_hash = set_appointment(catalyst_data, schedule, soap_note)
