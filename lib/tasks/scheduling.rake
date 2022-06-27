@@ -29,7 +29,7 @@ namespace :scheduling do
               schedule.save(validate: false)
               SoapNote.where(catalyst_data_id: catalyst_data.id)&.update_all(client_id: nil, scheduling_id: nil)
               catalyst_data.system_scheduling_id = nil if catalyst_data.system_scheduling_id==schedule.id
-              catalyst_data.multiple_schedulings_ids.delete("#{schedule.id}") if catalyst_data.multiple_schedulings_ids.include?(schedule.id)
+              # catalyst_data.multiple_schedulings_ids.delete("#{schedule.id}") if catalyst_data.multiple_schedulings_ids.include?(schedule.id)
               catalyst_data.save(validate: false)
               response_data_hash = CompareCatalystDataWithSystemData::CompareSyncedDataOperation.call(catalyst_data)
             end
