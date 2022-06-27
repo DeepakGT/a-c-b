@@ -145,7 +145,8 @@ class CatalystController < ApplicationController
   end
 
   def check_units
-    @schedule.is_rendered = false
+    # @schedule.is_rendered = false
+    @schedule.rendered_at = nil
     @schedule.status = 'Scheduled'
     @schedule.save(validate: false)
     catalyst_data = CatalystData.where(id: @schedule.catalyst_data_ids.uniq)
