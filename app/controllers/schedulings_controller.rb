@@ -105,7 +105,8 @@ class SchedulingsController < ApplicationController
         schedules = schedules.joins(client_enrollment_service: {client_enrollment: :client}).with_active_client
       end
     end
-    # schedules = schedules.and(Scheduling.by_staff_ids(current_user.id).without_client)
+    schedules = schedules.or(Scheduling.by_staff_ids(current_user.id).without_client)
+    #schedules = schedules + Scheduling.by_staff_ids(current_user.id).without_client
     schedules = schedules.by_staff_ids(string_to_array(params[:staff_ids])) if params[:staff_ids].present?
     schedules = schedules.by_client_ids(string_to_array(params[:client_ids])) if params[:client_ids].present?
     schedules = schedules.by_service_ids(string_to_array(params[:service_ids])) if params[:service_ids].present?
