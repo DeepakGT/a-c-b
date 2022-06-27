@@ -2,7 +2,7 @@ require 'will_paginate/array'
 class SchedulingsController < ApplicationController
   before_action :authenticate_user!
   before_action :authorize_user
-  before_action :set_scheduling, only: %i[show update destroy]
+  before_action :set_scheduling, only: %i[show update destroy update_without_client]
   before_action :set_client_enrollment_service, only: %i[create create_without_staff]
 
   def index
@@ -51,6 +51,19 @@ class SchedulingsController < ApplicationController
     @schedule.save
   end
 
+  def create_without_client
+    @schedule = Scheduling.new(create_without_client_params)
+    @schedule.status = 'Non-Billable'
+    @schedule.creator_id = current_user.id
+    @schedule.user = current_user
+    @schedule.id = Scheduling.last.id + 1
+    @schedule.save
+  end
+
+  def update_without_client
+    @schedule.update(create_without_client_params)
+  end
+
   private
 
   def authorize_user
@@ -67,6 +80,10 @@ class SchedulingsController < ApplicationController
     params.permit(arr)
   end
 
+  def create_without_client_params
+    params.permit(:staff_id, :date, :start_time, :end_time, :non_billable_reason)
+  end
+
   def scheduling_params_when_bcba
     params.permit(%i[ status date start_time end_time units minutes])
   end
@@ -80,14 +97,15 @@ class SchedulingsController < ApplicationController
       if !(params[:show_inactive].present? && (params[:show_inactive]==1 || params[:show_inactive]=="1"))
         schedules = Scheduling.left_outer_joins(staff: :staff_clinics, client_enrollment_service: [:service, {client_enrollment: :client}]).with_active_client
       else
-        schedules = Scheduling.includes(staff: :staff_clinics, client_enrollment_service: [:service, {client_enrollment: :client}])
+        schedules = Scheduling.includes(staff: :staff_clinics, client_enrollment_service: [:service, {client_enrollment: :client}]).with_client
       end
     else
-      schedules = Scheduling.all
+      schedules = Scheduling.with_client
       if !(params[:show_inactive].present? && (params[:show_inactive]==1 || params[:show_inactive]=="1"))
         schedules = schedules.joins(client_enrollment_service: {client_enrollment: :client}).with_active_client
       end
     end
+    schedules = schedules.and(Scheduling.by_staff_ids(current_user.id).without_client)
     schedules = schedules.by_staff_ids(string_to_array(params[:staff_ids])) if params[:staff_ids].present?
     schedules = schedules.by_client_ids(string_to_array(params[:client_ids])) if params[:client_ids].present?
     schedules = schedules.by_service_ids(string_to_array(params[:service_ids])) if params[:service_ids].present?
