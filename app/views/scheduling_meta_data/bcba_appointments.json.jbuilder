@@ -430,11 +430,16 @@ json.data do
         json.note action_item.note
         json.location action_item.session_location
         json.cordinates action_item.location
-        if action_item.is_appointment_found==false
-          json.unrendered_reasons ["no_appointment_found"]
-        else
+        if action_item.multiple_schedulings_ids.present? 
           json.unrendered_reasons ["multiple_appointments_found"]
+        elsif action_item.system_scheduling_id.blank?
+          json.unrendered_reasons ["no_appointment_found"]
         end
+        # if action_item.is_appointment_found==false
+        #   json.unrendered_reasons ["no_appointment_found"]
+        # else
+        #   json.unrendered_reasons ["multiple_appointments_found"]
+        # end
       end
     end
   end
