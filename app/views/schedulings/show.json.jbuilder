@@ -27,6 +27,7 @@ json.data do
     json.scheduled_minutes @schedule.client_enrollment_service.scheduled_minutes
     json.left_minutes @schedule.client_enrollment_service.left_minutes
   end
+  json.non_billable_reason @schedule.non_billable_reason
   # if @schedule.client_enrollment_service.minutes.present?
   #   json.left_minutes @schedule.client_enrollment_service.minutes - (used_minutes + scheduled_minutes)
   # else
