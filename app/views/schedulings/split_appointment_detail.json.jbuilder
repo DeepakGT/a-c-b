@@ -110,6 +110,7 @@ json.data do
         json.end_time "#{data.end_time}"
         json.units "#{data.units}"
         json.minutes "#{data.minutes}"
+        json.location "#{data.session_location}"
         json.note data.note
       end
     end
