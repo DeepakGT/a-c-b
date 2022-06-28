@@ -23,6 +23,21 @@ class SchedulingsController < ApplicationController
     end
     update_units_columns(@schedule.client_enrollment_service)
   end
+  # if is_create_request_for_split_appointment
+  #   create_split_appointment
+  # els
+
+  # def create_split_appointment
+  #   schedules = params[:schedules]
+  #   schedules.each do |schedule|
+  #     @schedule = @client_enrollment_service.schedulings.new(scheduling_params)
+  #     @schedule.creator_id = current_user.id
+  #     @schedule.user = current_user
+  #     @schedule.id = Scheduling.last.id + 1
+  #     @schedule.catalyst_data_ids = []
+  #     @schedule.save(validate: false)
+  #   end
+  # end
 
   def update
     @schedule.user = current_user
@@ -49,6 +64,24 @@ class SchedulingsController < ApplicationController
     @schedule.user = current_user
     @schedule.id = Scheduling.last.id + 1
     @schedule.save
+  end
+
+  def create_without_client
+    @schedule = Scheduling.new(create_without_client_params)
+    @schedule.status = 'Non-Billable'
+    @schedule.creator_id = current_user.id
+    @schedule.user = current_user
+    @schedule.id = Scheduling.last.id + 1
+    @schedule.save
+  end
+
+  def update_without_client
+    @schedule.update(create_without_client_params)
+  end
+
+  # GET all the details of the appointment along with soap notes
+  def split_appointment_detail
+    @schedule = Scheduling.find(params[:id])
   end
 
   private
@@ -258,5 +291,11 @@ class SchedulingsController < ApplicationController
     end
     true
   end
+
+  # def update_catalyst_data_and_soap_notes_for_split_appointment(catalyst_data_id)
+  #   catalyst_data = CatalystData.find(catalyst_data_id)
+  #   catalyst_data.update(system_scheduling_id: @schedule.id)
+  #   create_or_update_soap_note(catalyst_data)
+  # end
   # end of private
 end
