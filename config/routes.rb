@@ -84,6 +84,8 @@ Rails.application.routes.draw do
     get '/schedulings/split_appointment_detail/:id', to: 'schedulings#split_appointment_detail'
     resources :schedulings do
       post '/create_without_staff', to: 'schedulings#create_without_staff', on: :collection
+      post '/create_without_client', to: 'schedulings#create_without_client', on: :collection
+      put '/update_without_client/:id', to: 'schedulings#update_without_client', on: :collection
       resources :soap_notes
       resources :change_requests, controller: 'scheduling_change_requests', only: %i[create update]
     end

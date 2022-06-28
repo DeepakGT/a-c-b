@@ -1,6 +1,6 @@
 class Scheduling < ApplicationRecord
   belongs_to :staff, optional: true
-  belongs_to :client_enrollment_service
+  belongs_to :client_enrollment_service, optional: true
   has_many :soap_notes, dependent: :destroy
   has_many :scheduling_change_requests, dependent: :destroy
 
@@ -44,6 +44,8 @@ class Scheduling < ApplicationRecord
   scope :past_60_days_schedules, ->{ where('date>=? AND date<?', (Time.current-60.days).strftime('%Y-%m-%d'), Time.current.strftime('%Y-%m-%d')) }
   scope :without_staff, ->{ where(staff_id: nil) }
   scope :with_staff, ->{ where.not(staff_id: nil) }
+  scope :with_client, ->{ where.not(client_enrollment_service_id: nil) }
+  scope :without_client, ->{ where(client_enrollment_service_id: nil) }
   scope :with_active_client, ->{ where('clients.status = ?', 0) }
 
   private
@@ -65,9 +67,9 @@ class Scheduling < ApplicationRecord
   def validate_past_appointments
     return if self.user.role_name=='super_admin' || self.date.blank?
 
-    if self.user.role_name=='executive_director' || self.user.role_name=='Clinical Director'
+    if self.user.role_name=='executive_director' || self.user.role_name=='Clinical Director' || self.user.role_name=='client_care_coordinator'
       errors.add(:scheduling, 'You are not authorized to create appointments for 3 days ago.') if self.date<(Time.current.to_date-3)
-    elsif (self.user.role_name=='bcba' || self.user.role_name=='client_care_coordinator')
+    elsif self.user.role_name=='bcba'
       errors.add(:scheduling, 'You are not authorized to create appointment past 24 hrs.') if self.date<(Time.current-1.day).to_date || (self.date==(Time.current-1.day).to_date && self.start_time<Time.current.strftime('%H:%M'))
     elsif (self.date<Time.current.to_date || (self.date==Time.current.to_date && self.start_time<=Time.current.strftime('%H:%M')))
       errors.add(:scheduling, 'You are not authorized to create appointment in past.')
