@@ -82,6 +82,7 @@ Rails.application.routes.draw do
     get '/schedulings/clients_and_staff_list', to: 'scheduling_meta_data#clients_and_staff_list_for_filter'
     put '/schedulings/assign_multiple_soap_notes_of_same_location', to: 'catalyst#appointment_with_multiple_soap_notes'
     get '/schedulings/split_appointment_detail/:id', to: 'schedulings#split_appointment_detail'
+    post '/schedulings/create_split_appointment', to: 'schedulings#create_split_appointment'
     resources :schedulings do
       post '/create_without_staff', to: 'schedulings#create_without_staff', on: :collection
       post '/create_without_client', to: 'schedulings#create_without_client', on: :collection

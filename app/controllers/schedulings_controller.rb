@@ -23,21 +23,24 @@ class SchedulingsController < ApplicationController
     end
     update_units_columns(@schedule.client_enrollment_service)
   end
-  # if is_create_request_for_split_appointment
-  #   create_split_appointment
-  # els
 
-  # def create_split_appointment
-  #   schedules = params[:schedules]
-  #   schedules.each do |schedule|
-  #     @schedule = @client_enrollment_service.schedulings.new(scheduling_params)
-  #     @schedule.creator_id = current_user.id
-  #     @schedule.user = current_user
-  #     @schedule.id = Scheduling.last.id + 1
-  #     @schedule.catalyst_data_ids = []
-  #     @schedule.save(validate: false)
-  #   end
-  # end
+  # Creating split appointments
+  def create_split_appointment
+    ids = []
+    schedule_hash = build_schedule_hash
+    params[:split_schedules].each do |schedule|
+      schedule_details_hash = build_schedule_details_hash(schedule)
+      schedule_params = schedule_hash.merge!(schedule_details_hash)
+      @schedule = Scheduling.new(schedule_params)
+      @schedule.id = Scheduling.last.id + 1
+      @schedule.save(validate:false)
+      update_units_columns(@schedule.client_enrollment_service)
+      update_catalyst_data_and_soap_notes_for_split_appointment(schedule)
+      ids.push @schedule.id
+    end
+    delete_old_schedule(params[:schedule_id])
+    @schedules = Scheduling.find(ids)
+  end
 
   def update
     @schedule.user = current_user
@@ -98,6 +101,41 @@ class SchedulingsController < ApplicationController
     arr.concat(%i[staff_id]) if params[:action] == 'update'
 
     params.permit(arr)
+  end
+
+  # Building info common for both splitted appointments
+  def build_schedule_hash
+    {
+      date: params[:date],
+      client_enrollment_service_id: params[:client_enrollment_service_id],
+      creator_id: @current_user.id,
+      staff_id: params[:staff_id],
+      user: @current_user
+    }
+  end
+
+  # Building appointment specific hash for split appointment
+  def build_schedule_details_hash(schedule)
+    {
+      start_time: schedule[:start_time],
+      end_time: schedule[:end_time],
+      units: schedule[:units],
+      service_address_id: schedule[:service_address_id],
+      catalyst_data_ids: schedule[:catalyst_data_id].to_s.split(' ')
+    }
+  end
+
+  # Once splitted appointment is created update the respective catalyst data and soap notes with the scheduling id
+  def update_catalyst_data_and_soap_notes_for_split_appointment(schedule)
+    catalyst_data = CatalystData.find(schedule[:catalyst_data_id])
+    catalyst_data.update(system_scheduling_id: @schedule.id)
+    create_or_update_soap_note(catalyst_data)
+  end
+
+  # remove the appoitment after creating split appointments
+  def delete_old_schedule(schedule_id)
+    CatalystData.where(system_scheduling_id: schedule_id).update_all(system_scheduling_id: nil)
+    Scheduling.find(schedule_id).destroy
   end
 
   def create_without_client_params
@@ -297,11 +335,5 @@ class SchedulingsController < ApplicationController
     end
     true
   end
-
-  # def update_catalyst_data_and_soap_notes_for_split_appointment(catalyst_data_id)
-  #   catalyst_data = CatalystData.find(catalyst_data_id)
-  #   catalyst_data.update(system_scheduling_id: @schedule.id)
-  #   create_or_update_soap_note(catalyst_data)
-  # end
   # end of private
 end
