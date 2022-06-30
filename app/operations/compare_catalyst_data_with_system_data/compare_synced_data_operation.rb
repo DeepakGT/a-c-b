@@ -71,7 +71,7 @@ module CompareCatalystDataWithSystemData
                 if filtered_schedules.length==1
                   set_appointment(catalyst_data, filtered_schedules.first, soap_note)
                 elsif filtered_schedules.length>1
-                  filtered_schedules = filtered_schedules.order(:minutes)
+                  filtered_schedules = filtered_schedules.sort_by(&:minutes)
                   set_appointment(catalyst_data, filtered_schedules.last, soap_note)
                 end
               end
