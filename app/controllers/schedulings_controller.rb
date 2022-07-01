@@ -267,12 +267,7 @@ class SchedulingsController < ApplicationController
 
   # Render an appointment manually
   def manual_rendering
-    @schedule.update(status: 'Rendered',
-                    rendered_at: Time.current,
-                    is_manual_render: true,
-                    rendered_by: "#{@current_user.first_name} #{@current_user.last_name}",
-                    user: @current_user
-    )
+    @schedule.update(status: 'Rendered',rendered_at: Time.current,is_manual_render: true,rendered_by: "#{@current_user.first_name} #{@current_user.last_name}",user: @current_user)
   end
   # end of private
 end
