@@ -74,6 +74,7 @@ Rails.application.routes.draw do
     get '/catalyst/sync_data', to: 'catalyst#sync_data'
     put '/catalyst/update_appointment_units', to: 'catalyst#update_appointment_units'
     put '/catalyst/assign_catalyst_note', to: 'catalyst#assign_catalyst_note'
+    put '/catalyst/delete_catalyst_soap_note', to: 'catalyst#delete_catalyst_soap_note'
     get '/catalyst/catalyst_data/:id', to: 'catalyst#catalyst_data_with_multiple_appointments'
     get '/catalyst/:catalyst_data_id/appointments_list', to: 'catalyst#appointments_list'
     get '/billing_dashboard', to: 'scheduling_meta_data#billing_dashboard'

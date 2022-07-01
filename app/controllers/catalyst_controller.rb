@@ -82,6 +82,11 @@ class CatalystController < ApplicationController
     re_render_appointment
   end
 
+  def delete_catalyst_soap_note
+    @catalyst_data = CatalystData.find(params[:catalyst_data_id])
+    @catalyst_data.update(is_deleted_from_connect: true)
+  end
+
   private
 
   def authorize_user
