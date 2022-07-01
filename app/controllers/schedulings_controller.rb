@@ -51,6 +51,12 @@ class SchedulingsController < ApplicationController
     @schedule.save
   end
 
+  # Render Appointment manually upon user request
+  def render_appointment
+    @schedule = Scheduling.find(params[:scheduling_id])
+    manual_rendering
+  end
+
   private
 
   def authorize_user
@@ -257,6 +263,16 @@ class SchedulingsController < ApplicationController
       end
     end
     true
+  end
+
+  # Render an appointment manually
+  def manual_rendering
+    @schedule.update(status: 'Rendered',
+                    rendered_at: Time.current,
+                    is_manual_render: true,
+                    rendered_by: "#{@current_user.first_name} #{@current_user.last_name}",
+                    user: @current_user
+    )
   end
   # end of private
 end
