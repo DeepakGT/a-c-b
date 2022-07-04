@@ -32,7 +32,7 @@ class ClientServiceAddressesController < ApplicationController
   end
 
   def service_address_params
-    params.permit(:line1, :line2, :line3, :zipcode, :city, :state, :country, :is_default, :address_name)
+    params.permit(:line1, :line2, :line3, :zipcode, :city, :state, :country, :is_default, :address_name, :is_hidden)
   end
 
   def set_default
