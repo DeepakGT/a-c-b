@@ -56,7 +56,8 @@ class CatalystController < ApplicationController
       staff = Staff.find_by(catalyst_user_id: @catalyst_data.catalyst_user_id)
     end
     # schedules = Scheduling.on_date(@catalyst_data.date)
-    schedules = Scheduling.joins(client_enrollment_service: :client_enrollment).by_client_ids(client&.id).by_staff_ids(staff&.id).on_date(@catalyst_data.date).by_status
+    schedules = Scheduling.joins(client_enrollment_service: :client_enrollment).by_client_ids(client&.id).by_staff_ids(staff&.id).on_date(@catalyst_data.date)
+    schedules = schedules.left_outer_joins(:soap_notes).group('schedulings.id').having('count(soap_notes.*) = ?', 0).where(status: "Rendered").where.not(rendered_at: nil)
     # schedules = schedules.joins(client_enrollment_service: {client_enrollment: :client}).by_client_clinic(params[:location_id]) if params[:location_id].present?
     @schedules = schedules.order(:start_time)
   end
@@ -79,6 +80,11 @@ class CatalystController < ApplicationController
     soap_notes = SoapNote.where(catalyst_data_id: @selected_catalyst_data&.ids)
     soap_notes.update_all(scheduling_id: @schedule.id, client_id: @schedule.client_enrollment_service.client_enrollment.client_id)
     re_render_appointment
+  end
+
+  def delete_catalyst_soap_note
+    @catalyst_data = CatalystData.find(params[:catalyst_data_id])
+    @catalyst_data.update(is_deleted_from_connect: true)
   end
 
   private

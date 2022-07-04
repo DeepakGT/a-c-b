@@ -12,22 +12,19 @@ json.data do
   # scheduled_minutes = scheduled_schedules.with_minutes.pluck(:minutes).sum
   json.id @schedule.id
   json.client_enrollment_service_id @schedule.client_enrollment_service_id
-  if @schedule.client_enrollment_service_id.present?
-    json.total_units @schedule.client_enrollment_service.units
-    json.used_units @schedule.client_enrollment_service.used_units
-    json.scheduled_units @schedule.client_enrollment_service.scheduled_units
-    json.left_units @schedule.client_enrollment_service.left_units
-    # if @schedule.client_enrollment_service.units.present?
-    #   json.left_units @schedule.client_enrollment_service.units - (used_units + scheduled_units) 
-    # else
-    #   json.left_units 0
-    # end
-    json.total_minutes @schedule.client_enrollment_service.minutes
-    json.used_minutes @schedule.client_enrollment_service.used_minutes
-    json.scheduled_minutes @schedule.client_enrollment_service.scheduled_minutes
-    json.left_minutes @schedule.client_enrollment_service.left_minutes
-  end
-  json.non_billable_reason @schedule.non_billable_reason
+  json.total_units @schedule.client_enrollment_service.units
+  json.used_units @schedule.client_enrollment_service.used_units
+  json.scheduled_units @schedule.client_enrollment_service.scheduled_units
+  json.left_units @schedule.client_enrollment_service.left_units
+  # if @schedule.client_enrollment_service.units.present?
+  #   json.left_units @schedule.client_enrollment_service.units - (used_units + scheduled_units) 
+  # else
+  #   json.left_units 0
+  # end
+  json.total_minutes @schedule.client_enrollment_service.minutes
+  json.used_minutes @schedule.client_enrollment_service.used_minutes
+  json.scheduled_minutes @schedule.client_enrollment_service.scheduled_minutes
+  json.left_minutes @schedule.client_enrollment_service.left_minutes
   # if @schedule.client_enrollment_service.minutes.present?
   #   json.left_minutes @schedule.client_enrollment_service.minutes - (used_minutes + scheduled_minutes)
   # else
@@ -71,9 +68,9 @@ json.data do
     json.is_rendered false
   end
   json.is_manual_render @schedule.is_manual_render
-  json.rendered_by @schedule.rendered_by
   json.unrendered_reasons @schedule.unrendered_reason
   json.rendered_at @schedule.rendered_at
+  json.rendered_by @schedule.rendered_by
   json.units @schedule.units
   json.minutes @schedule.minutes
   if @schedule.client_enrollment_service.present? && @schedule.client_enrollment_service.staff.present?
