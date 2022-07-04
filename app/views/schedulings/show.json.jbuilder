@@ -71,6 +71,7 @@ json.data do
     json.is_rendered false
   end
   json.is_manual_render @schedule.is_manual_render
+  json.rendered_by @schedule.rendered_by
   json.unrendered_reasons @schedule.unrendered_reason
   json.rendered_at @schedule.rendered_at
   json.units @schedule.units
