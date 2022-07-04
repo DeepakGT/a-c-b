@@ -2,14 +2,6 @@ json.status 'success'
 json.data do
   client = @schedule.client_enrollment_service&.client_enrollment&.client
   service = @schedule.client_enrollment_service&.service
-  # schedules = Scheduling.by_client_and_service(@schedule.client_enrollment_service.client_enrollment.client_id, @schedule.client_enrollment_service.service_id)
-  # schedules = schedules.with_rendered_or_scheduled_as_status
-  # completed_schedules = schedules.completed_scheduling
-  # scheduled_schedules = schedules.scheduled_scheduling
-  # used_units = completed_schedules.with_units.pluck(:units).sum
-  # scheduled_units = scheduled_schedules.with_units.pluck(:units).sum
-  # used_minutes = completed_schedules.with_minutes.pluck(:minutes).sum
-  # scheduled_minutes = scheduled_schedules.with_minutes.pluck(:minutes).sum
   json.id @schedule.id
   json.client_enrollment_service_id @schedule.client_enrollment_service_id
   if @schedule.client_enrollment_service_id.present?
@@ -17,22 +9,11 @@ json.data do
     json.used_units @schedule.client_enrollment_service.used_units
     json.scheduled_units @schedule.client_enrollment_service.scheduled_units
     json.left_units @schedule.client_enrollment_service.left_units
-    # if @schedule.client_enrollment_service.units.present?
-    #   json.left_units @schedule.client_enrollment_service.units - (used_units + scheduled_units) 
-    # else
-    #   json.left_units 0
-    # end
     json.total_minutes @schedule.client_enrollment_service.minutes
     json.used_minutes @schedule.client_enrollment_service.used_minutes
     json.scheduled_minutes @schedule.client_enrollment_service.scheduled_minutes
     json.left_minutes @schedule.client_enrollment_service.left_minutes
   end
-  json.non_billable_reason @schedule.non_billable_reason
-  # if @schedule.client_enrollment_service.minutes.present?
-  #   json.left_minutes @schedule.client_enrollment_service.minutes - (used_minutes + scheduled_minutes)
-  # else
-  #   json.left_minutes 0
-  # end
   json.cross_site_allowed @schedule.cross_site_allowed
   json.client_id client&.id
   json.client_name "#{client.first_name} #{client.last_name}" if client.present?
@@ -64,7 +45,6 @@ json.data do
   json.date @schedule.date
   json.start_time @schedule.start_time.to_time.strftime('%H:%M')
   json.end_time @schedule.end_time.to_time.strftime('%H:%M')
-  # json.is_rendered @schedule.is_rendered
   if @schedule.rendered_at.present?
     json.is_rendered true
   else
@@ -99,5 +79,40 @@ json.data do
   else
     json.updator_id nil
     json.updator_name nil
+  end
+  if @schedule.catalyst_data_ids.present?
+    json.catalyst_data do
+      catalyst_datas = CatalystData.where(id: @schedule.catalyst_data_ids)
+      json.array! catalyst_datas do |data|
+        user = Staff.where(catalyst_user_id: data.catalyst_user_id)
+        if user.count==1
+            user = user.first
+        elsif user.count>1
+            user = user.find_by(status: 'active')
+        else
+            user = Staff.find_by(catalyst_user_id: data.catalyst_user_id)
+        end
+        patient = Client.where(catalyst_patient_id: data.catalyst_patient_id)
+        if patient.count==1
+            patient = patient.first
+        elsif patient.count>1
+            patient = patient.find_by(status: 'active')
+        else
+            patient = patient.find_by(catalyst_patient_id: data.catalyst_patient_id)
+        end
+        json.id data.id
+        json.client_name "#{patient&.first_name} #{patient&.last_name}"
+        json.client_id patient&.id
+        json.staff_name "#{user&.first_name} #{user&.last_name}"
+        json.staff_id user&.id
+        json.date "#{data.date}"
+        json.start_time "#{data.start_time}"
+        json.end_time "#{data.end_time}"
+        json.units "#{data.units}"
+        json.minutes "#{data.minutes}"
+        json.location "#{data.session_location}"
+        json.note data.note
+      end
+    end
   end
 end
