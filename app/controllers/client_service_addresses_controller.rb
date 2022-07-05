@@ -17,14 +17,13 @@ class ClientServiceAddressesController < ApplicationController
   def show; end
 
   def update
-    # authorize :client_serivce_address, :update?
     authorize @service_address
     set_default if params[:is_default].present?
     @service_address.update(service_address_params)
   end
 
   def destroy
-    authorize :client_serivce_address, :destroy?
+    authorize @service_address
     @service_address.destroy
   end
 

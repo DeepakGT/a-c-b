@@ -1,4 +1,4 @@
-class ClientServiceAddressPolicy < ApplicationPolicy
+class AddressPolicy < ApplicationPolicy
   def update?
     return true if user.role_name=='super_admin' || Scheduling.where(service_address_id: @record.id).blank?
 
