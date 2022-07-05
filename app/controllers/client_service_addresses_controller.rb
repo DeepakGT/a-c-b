@@ -28,6 +28,10 @@ class ClientServiceAddressesController < ApplicationController
     @service_address.destroy
   end
 
+  def create_office_address
+    @office_address = create_office_address_for_client
+  end
+
   private
 
   def set_client
@@ -48,5 +52,20 @@ class ClientServiceAddressesController < ApplicationController
 
   def set_service_address
     @service_address = @client.addresses.find(params[:id])
+  end
+
+  def create_office_address_for_client
+    office_address = @client.addresses.new(address_name: 'Office', address_type: 'service_address', is_default: false, is_hidden: false)
+    if @client.clinic.address.present?
+      office_address.line1 = @client.clinic.address.line1
+      office_address.line2 = @client.clinic.address.line2
+      office_address.line3 = @client.clinic.address.line3
+      office_address.city = @client.clinic.address.city
+      office_address.state = @client.clinic.address.state
+      office_address.country = @client.clinic.address.country
+      office_address.zipcode = @client.clinic.address.zipcode
+    end
+    office_address.save
+    office_address
   end
 end
