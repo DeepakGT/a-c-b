@@ -68,7 +68,8 @@ json.data do
     json.is_rendered false
   end
   json.is_manual_render @schedule.is_manual_render
-  json.rendered_by @schedule.rendered_by
+  rendered_by_staff = User.find_by(id: @schedule.rendered_by_id)
+  json.rendered_by "#{rendered_by_staff&.first_name} #{rendered_by_staff&.last_name}"
   json.unrendered_reasons @schedule.unrendered_reason
   json.rendered_at @schedule.rendered_at
   json.units @schedule.units
