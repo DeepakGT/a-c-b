@@ -1,5 +1,6 @@
 class ClientServiceAddressesController < ApplicationController
   before_action :authenticate_user!
+  before_action :authorize_user, only: %i[index show create]
   before_action :set_client
   before_action :set_service_address, only: %i[show update destroy]
 
@@ -66,5 +67,9 @@ class ClientServiceAddressesController < ApplicationController
     end
     office_address.save
     office_address
+  end
+
+  def authorize_user
+    authorize Address if current_user.role_name!='super_admin'
   end
 end
