@@ -57,9 +57,11 @@ class CatalystController < ApplicationController
     end
     # schedules = Scheduling.on_date(@catalyst_data.date)
     schedules = Scheduling.joins(client_enrollment_service: :client_enrollment).by_client_ids(client&.id).by_staff_ids(staff&.id).on_date(@catalyst_data.date)
-    schedules = schedules.left_outer_joins(:soap_notes).group('schedulings.id').having('count(soap_notes.*) = ?', 0).where(status: "Rendered").where.not(rendered_at: nil)
+    # schedules = schedules.left_outer_joins(:soap_notes).group('schedulings.id').having('count(soap_notes.*) = ?', 0).where(status: "Rendered").where.not(rendered_at: nil)
+    schedules = schedules.left_outer_joins(:soap_notes).group('schedulings.id').having('count(soap_notes.*) = ?', 0)
+    schedules = schedules.by_status.or(schedules.where.not(rendered_at: nil).where(is_manual_render: true))
     # schedules = schedules.joins(client_enrollment_service: {client_enrollment: :client}).by_client_clinic(params[:location_id]) if params[:location_id].present?
-    @schedules = schedules.order(:start_time)
+    @schedules = schedules.uniq.sort_by(&:start_time)
   end
 
   def sync_soap_notes
