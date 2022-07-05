@@ -12,4 +12,10 @@ json.data do
   json.country @service_address.country
   json.is_default @service_address.is_default
   json.address_name @service_address.address_name
+  json.is_hidden @service_address.is_hidden
+  if Scheduling.where(service_address_id: @service_address.id).blank?
+    json.associated_with_appointment false
+  else
+    json.associated_with_appointment true
+  end
 end
