@@ -114,9 +114,9 @@ class SchedulingsController < ApplicationController
     {
       date: params[:date],
       client_enrollment_service_id: params[:client_enrollment_service_id],
-      creator_id: @current_user.id,
+      creator_id: current_user.id,
       staff_id: params[:staff_id],
-      user: @current_user
+      user: current_user
     }
   end
 
@@ -344,7 +344,7 @@ class SchedulingsController < ApplicationController
 
   # Render an appointment manually
   def manual_rendering
-    @schedule.update(status: 'Rendered',rendered_at: Time.current,is_manual_render: true, rendered_by_id: current_user.id, user: @current_user)
+    @schedule.update(status: 'Rendered',rendered_at: Time.current,is_manual_render: true, rendered_by_id: current_user.id, user: current_user)
   end
   # end of private
 end
