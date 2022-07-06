@@ -114,7 +114,7 @@ class CatalystController < ApplicationController
       max_start_time = (appointment.start_time.to_time+15.minutes)
       min_end_time = (appointment.end_time.to_time-15.minutes)
       max_end_time = (appointment.end_time.to_time+15.minutes)
-      if (min_start_time..max_start_time).include?(catalyst_data.start_time.to_time) && (min_end_time..max_end_time).include?(catalyst_data.end_time.to_time)
+      if (min_start_time..max_start_time).include?(@catalyst_data.start_time.to_time) && (min_end_time..max_end_time).include?(@catalyst_data.end_time.to_time)
         filtered_schedules.push(appointment)
       end
     end
