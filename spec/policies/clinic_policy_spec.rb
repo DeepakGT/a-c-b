@@ -8,12 +8,9 @@ RSpec.describe ClinicPolicy, type: :policy do
   subject { described_class }
 
   permissions :index? do
-    it "denies access if permission is not included" do
-      expect(subject).not_to permit(user1)
-    end
-
-    it "grants access if permission is included" do
+    it "grants access to all users" do
       expect(subject).to permit(user2)
+      expect(subject).to permit(user1)
     end
   end
 
