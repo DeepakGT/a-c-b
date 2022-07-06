@@ -2,6 +2,7 @@ json.status 'success'
 json.data do
   client = @schedule.client_enrollment_service&.client_enrollment&.client
   service = @schedule.client_enrollment_service&.service
+  json.id @schedule.id
   json.client_enrollment_service_id @schedule.client_enrollment_service_id
   if @schedule.client_enrollment_service_id.present?
     json.total_units @schedule.client_enrollment_service.units
