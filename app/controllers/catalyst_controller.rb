@@ -64,7 +64,7 @@ class CatalystController < ApplicationController
 
   def sync_soap_notes
     workers = Sidekiq::Workers.new
-    if workers.empty?
+    if workers.nil?
       SyncClientSoapNotesJob.perform_later
       @success = true
     else
