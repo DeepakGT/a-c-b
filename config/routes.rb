@@ -99,6 +99,5 @@ Rails.application.routes.draw do
 
     get '/setting', to: 'settings#show'
     put '/setting', to: 'settings#update'
-
   end
 end

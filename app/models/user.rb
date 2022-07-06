@@ -91,9 +91,7 @@ class User < ActiveRecord::Base
 
   def validate_status
     # errors.add(:status, 'For an active user, terminated date must be blank.') if self.active? && self.terminated_on.present?
-    if self.type != 'Client' && self.inactive? && self.terminated_on.blank?
-      errors.add(:status, 'For an inactive user, terminated date must be present.')
-    end
+    errors.add(:status, 'For an inactive user, terminated date must be present.') if (self.type != 'Client' && self.inactive? && self.terminated_on.blank?)
   end
   # end of private
   

@@ -37,7 +37,7 @@ class AddColumns < ActiveRecord::Migration[6.1]
 
   def update_catalyst_data
     CatalystData.all.each do |catalyst_data|
-      catalyst_data.date_revision_made = catalyst_data&.date.to_datetime
+      catalyst_data.date_revision_made = catalyst_data&.date&.to_datetime
       catalyst_data.catalyst_patient_id = catalyst_data.response['patientId'] if catalyst_data.response.present?
       catalyst_data.catalyst_user_id = catalyst_data.response['userId'] if catalyst_data.response.present?
       catalyst_data.save(validate: false)
