@@ -85,6 +85,7 @@ Rails.application.routes.draw do
     put '/schedulings/render_appointment', to: 'schedulings#render_appointment'
     get '/schedulings/split_appointment_detail/:id', to: 'schedulings#split_appointment_detail'
     post '/schedulings/create_split_appointment', to: 'schedulings#create_split_appointment'
+    get '/catalyst/:catalyst_data_id/matching_appointments_list', to: 'catalyst#matching_appointments_list'
     resources :schedulings do
       post '/create_without_staff', to: 'schedulings#create_without_staff', on: :collection
       post '/create_without_client', to: 'schedulings#create_without_client', on: :collection
