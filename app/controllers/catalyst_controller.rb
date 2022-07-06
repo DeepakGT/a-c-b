@@ -13,6 +13,7 @@ class CatalystController < ApplicationController
     use_abac_units if params[:use_abac_units].to_bool.true?
     use_custom_units if params[:use_custom_units].to_bool.true?
     update_soap_note
+    ClientEnrollmentServices::UpdateUnitsColumnsOperation.call(@schedule.client_enrollment_service) if @schedule.client_enrollment_service.present?
     RenderAppointments::RenderScheduleOperation.call(@schedule.id) if @schedule.date<Time.current.to_date
   end
 
@@ -66,7 +67,7 @@ class CatalystController < ApplicationController
 
   def sync_soap_notes
     workers = Sidekiq::Workers.new
-    if workers.empty?
+    if workers.nil?
       SyncClientSoapNotesJob.perform_later
       @success = true
     else
