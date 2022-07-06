@@ -27,7 +27,7 @@ class SyncClientSoapNotesJob < ApplicationJob
     response_data_array = Catalyst::SyncDataOperation.call(start_date, end_date)
     result = Catalyst::RenderAppointmentsOperation.call
     ClientEnrollmentService.all.each do |client_enrollment_service|
-      ClientEnrollmentServices::UpdateUnitsColumnsOperation.call(@schedule.client_enrollment_service)
+      ClientEnrollmentServices::UpdateUnitsColumnsOperation.call(client_enrollment_service)
     end
   end
 end
