@@ -89,6 +89,38 @@ class CatalystController < ApplicationController
     @catalyst_data.update(is_deleted_from_connect: true)
   end
 
+  def matching_appointments_list
+    @catalyst_data = CatalystData.find(params[:catalyst_data_id])
+    client = Client.where(catalyst_patient_id: @catalyst_data.catalyst_patient_id)
+    if client.count==1
+      client = client.first
+    elsif client.count>1
+      client = client.find_by(status: 'active')
+    else
+      client = Client.find_by(catalyst_patient_id: @catalyst_data.catalyst_patient_id)
+    end
+    staff = Staff.where(catalyst_user_id: @catalyst_data.catalyst_user_id)
+    if staff.count==1
+      staff = staff.first
+    elsif staff.count>1
+      staff = staff.find_by(status: 'active')
+    else
+      staff = Staff.find_by(catalyst_user_id: @catalyst_data.catalyst_user_id)
+    end
+    schedules = Scheduling.joins(client_enrollment_service: :client_enrollment).by_client_ids(client&.id).by_staff_ids(staff&.id).on_date(@catalyst_data.date)
+    filtered_schedules = []
+    schedules.each do |appointment|
+      min_start_time = (appointment.start_time.to_time-15.minutes)
+      max_start_time = (appointment.start_time.to_time+15.minutes)
+      min_end_time = (appointment.end_time.to_time-15.minutes)
+      max_end_time = (appointment.end_time.to_time+15.minutes)
+      if (min_start_time..max_start_time).include?(catalyst_data.start_time.to_time) && (min_end_time..max_end_time).include?(catalyst_data.end_time.to_time)
+        filtered_schedules.push(appointment)
+      end
+    end
+    @schedules = filtered_schedules.uniq.sort_by(&:start_time)
+  end
+
   private
 
   def authorize_user
