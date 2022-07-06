@@ -109,3 +109,4 @@ if @schedules.present?
 else
   json.matching_appointments_found false
 end
+json.message "Best match appointment already present. Do you still wants to add new one ?"
