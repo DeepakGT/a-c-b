@@ -1,10 +1,5 @@
 json.status 'success'
 json.data do
-  if @service_addresses.where(address_name: 'Office').present?
-    json.office_address true
-  else
-    json.office_address false
-  end
   json.array! @service_addresses do |address|
     json.id address.id
     json.client_id address.addressable_id
@@ -25,4 +20,9 @@ json.data do
     end
     json.address_name address.address_name
   end
+end
+if @service_addresses.where(address_name: 'Office').present?
+  json.office_address true
+else
+  json.office_address false
 end
