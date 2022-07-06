@@ -23,6 +23,10 @@ class SyncWithCatalystWorker
     Loggers::Catalyst::SyncSoapNotesLoggerService.call(nil, "Rendering catalyst synced appointments from #{start_time} to #{end_time} has started.")
     result = Catalyst::RenderAppointmentsOperation.call
     Loggers::Catalyst::SyncSoapNotesLoggerService.call(nil, "Rendering catalyst synced appointments from #{start_time} to #{end_time} is completed.")
+  
+    ClientEnrollmentService.all.each do |client_enrollment_service|
+      ClientEnrollmentServices::UpdateUnitsColumnsOperation.call(@schedule.client_enrollment_service)
+    end
   end
   # end of private
 end
