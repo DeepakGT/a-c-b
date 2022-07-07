@@ -33,7 +33,7 @@ class SchedulingsController < ApplicationController
       schedule_params = schedule_hash.merge!(schedule_details_hash)
       @schedule = Scheduling.new(schedule_params)
       @schedule.id = Scheduling.last.id + 1
-      @schedule.save(validate:false)
+      @schedule.save_with_auditing(validate:false)
       update_units_columns(@schedule.client_enrollment_service)
       update_catalyst_data_and_soap_notes_for_split_appointment(schedule)
       ids.push @schedule.id
@@ -43,6 +43,7 @@ class SchedulingsController < ApplicationController
   end
 
   def update
+    Scheduling.auditing_enabled = false
     @schedule.user = current_user
     return if !check_units
     update_status if params[:status].present?
@@ -79,6 +80,7 @@ class SchedulingsController < ApplicationController
   end
 
   def update_without_client
+    Scheduling.auditing_enabled = false
     @schedule.update(create_without_client_params)
   end
 
