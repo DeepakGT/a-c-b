@@ -39,7 +39,8 @@ class CatalystController < ApplicationController
 
   def appointments_list
     @catalyst_data = CatalystData.find(params[:catalyst_data_id])
-    @schedules = matching_existing_appointments_list
+    schedules = matching_existing_appointments_list
+    @schedules = schedules.uniq.sort_by(&:start_time)
   end
 
   def sync_soap_notes
@@ -220,7 +221,7 @@ class CatalystController < ApplicationController
     schedules = Scheduling.joins(client_enrollment_service: :client_enrollment).by_client_ids(client&.id).by_staff_ids(staff&.id).on_date(@catalyst_data.date)
     schedules = schedules.where.not(rendered_at: nil).where(is_manual_render: true).left_outer_joins(:soap_notes).group('schedulings.id').having('count(soap_notes.*) = ?', 0)
                          .or(schedules.by_status)
-    schedules = schedules.uniq.sort_by(&:start_time)
+    schedules
   end
 
   def best_match_appointment(schedules)
