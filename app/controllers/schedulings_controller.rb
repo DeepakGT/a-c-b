@@ -241,7 +241,7 @@ class SchedulingsController < ApplicationController
     elsif @schedule.status=='Rendered' && params[:status]!='Rendered'
       if current_user.role_name=='super_admin'
         update_scheduling 
-        @schedule.is_rendered = false
+        # @schedule.is_rendered = false
         @schedule.rendered_at = nil
         @schedule.save
       else
