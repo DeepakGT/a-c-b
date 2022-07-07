@@ -73,8 +73,7 @@ class CatalystController < ApplicationController
     @catalyst_data = CatalystData.find(params[:catalyst_data_id])
     schedules = matching_existing_appointments_list
     schedule = best_match_appointment(schedules)
-    @schedules = []
-    @schedules.push(schedule)
+    @schedules = Array.new(1, schedule).compact
   end
 
   private
