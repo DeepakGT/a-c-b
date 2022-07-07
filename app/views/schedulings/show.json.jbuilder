@@ -100,4 +100,12 @@ json.data do
     json.updator_id nil
     json.updator_name nil
   end
+  json.audits do
+    json.array! @schedule.audits do |audit|
+      auditor = User.find_by(id: audit.user_id) if audit.user_type=='User'
+      json.audited_changes audit.audited_changes
+      json.auditor_name "#{auditor&.first_name} #{auditor&.last_name}"
+      json.audited_at audit.created_at
+    end
+  end
 end
