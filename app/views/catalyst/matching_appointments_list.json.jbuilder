@@ -27,18 +27,18 @@ json.data do
   json.units "#{@catalyst_data.units}"
   json.minutes "#{@catalyst_data.minutes}"
   json.note @catalyst_data.note
-  json.appointments do
-    json.array! @schedules do |schedule|
-      client = schedule.client_enrollment_service&.client_enrollment&.client
-      service = schedule.client_enrollment_service&.service
-      json.id schedule.id
-      json.client_enrollment_service_id schedule.client_enrollment_service_id
-      json.cross_site_allowed schedule.cross_site_allowed
+  if @schedule.present?
+    json.appointment do
+      client = @schedule.client_enrollment_service&.client_enrollment&.client
+      service = @schedule.client_enrollment_service&.service
+      json.id @schedule.id
+      json.client_enrollment_service_id @schedule.client_enrollment_service_id
+      json.cross_site_allowed @schedule.cross_site_allowed
       json.client_id client&.id
       json.client_name "#{client.first_name} #{client.last_name}" if client.present?
-      json.service_address_id schedule.service_address_id
-      if schedule.service_address_id.present?
-        service_address = Address.find_by(id: schedule.service_address_id)
+      json.service_address_id @schedule.service_address_id
+      if @schedule.service_address_id.present?
+        service_address = Address.find_by(id: @schedule.service_address_id)
         if service_address.present?
           json.service_address do
             json.line1 service_address.line1
@@ -53,25 +53,25 @@ json.data do
           end
         end
       end
-      json.staff_id schedule.staff_id
-      json.staff_name "#{schedule.staff.first_name} #{schedule.staff.last_name}" if schedule.staff.present?
-      json.staff_role schedule.staff.role_name if schedule.staff.present?
+      json.staff_id @schedule.staff_id
+      json.staff_name "#{@schedule.staff.first_name} #{@schedule.staff.last_name}" if @schedule.staff.present?
+      json.staff_role @schedule.staff.role_name if @schedule.staff.present?
       json.service_id service&.id
       json.service_name service&.name
       json.service_display_code service&.display_code 
-      json.status schedule.status
-      json.date schedule.date
-      json.start_time schedule.start_time
-      json.end_time schedule.end_time
-      if schedule.rendered_at.present?
+      json.status @schedule.status
+      json.date @schedule.date
+      json.start_time @schedule.start_time
+      json.end_time @schedule.end_time
+      if @schedule.rendered_at.present?
         json.is_rendered true
       else
         json.is_rendered false
       end
-      json.unrendered_reasons schedule.unrendered_reason
-      json.units schedule.units
-      json.minutes schedule.minutes
-      soap_note = schedule.soap_notes&.order(add_date: :desc, add_time: :desc).first
+      json.unrendered_reasons @schedule.unrendered_reason
+      json.units @schedule.units
+      json.minutes @schedule.minutes
+      soap_note = @schedule.soap_notes&.order(add_date: :desc, add_time: :desc).first
       if soap_note.present?
         json.soap_note do
           json.id soap_note.id
@@ -104,7 +104,7 @@ json.data do
     end
   end
 end
-if @schedules.present?
+if @schedule.present?
   json.matching_appointments_found true
   json.message "Best match appointment already present. Do you still wants to add new one ?"
 else
