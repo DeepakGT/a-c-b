@@ -21,14 +21,14 @@ class SchedulingsController < ApplicationController
     else
       @schedule.save
     end
-    update_units_columns(@schedule.client_enrollment_service)
+    #update_units_columns(@schedule.client_enrollment_service)
   end
 
   def update
     @schedule.user = current_user
     return if !check_units
     update_status if params[:status].present?
-    update_units_columns(@schedule.client_enrollment_service)
+    #update_units_columns(@schedule.client_enrollment_service)
   end
 
   def destroy
@@ -39,7 +39,7 @@ class SchedulingsController < ApplicationController
     when 'bcba', 'executive_director', 'client_care_coordinator', 'Clinical Director', 'administrator'
       delete_scheduling if @schedule.created_at.strftime('%Y-%m-%d')>=(Time.current-1.day).strftime('%Y-%m-%d')
     end
-    update_units_columns(@schedule.client_enrollment_service)
+    #update_units_columns(@schedule.client_enrollment_service)
   end
 
   def create_without_staff
@@ -204,7 +204,7 @@ class SchedulingsController < ApplicationController
   end
   
   def update_units_columns(client_enrollment_service)
-    ClientEnrollmentServices::UpdateUnitsColumnsOperation.call(client_enrollment_service)
+    # ClientEnrollmentServices::UpdateUnitsColumnsOperation.call(client_enrollment_service)
   end
 
   def delete_scheduling
@@ -218,7 +218,7 @@ class SchedulingsController < ApplicationController
   end
 
   def check_units
-    update_units_columns(@schedule.client_enrollment_service)
+    #update_units_columns(@schedule.client_enrollment_service)
     if (params[:status]=='Scheduled' && @schedule.status!='Scheduled' && @schedule.status!='Rendered') && @schedule.client_enrollment_service.left_units<params[:units]
       @schedule.errors.add(:units, 'left in authorization are not enough to update this cancelled appointment to scheduled.')
       return false
