@@ -27,8 +27,8 @@ json.data do
   json.units "#{@catalyst_data.units}"
   json.minutes "#{@catalyst_data.minutes}"
   json.note @catalyst_data.note
-  if @schedule.present?
-    json.appointment do
+  if @schedules.present?
+    json.appointments do
       json.array! @schedules do |schedule|
         client = schedule.client_enrollment_service&.client_enrollment&.client
         service = schedule.client_enrollment_service&.service
@@ -106,7 +106,7 @@ json.data do
     end
   end
 end
-if @schedule.present?
+if @schedules.present?
   json.matching_appointments_found true
   json.message "Best match appointment already present. Do you still wants to add new one ?"
 else
