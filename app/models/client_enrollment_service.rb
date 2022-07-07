@@ -35,6 +35,66 @@ class ClientEnrollmentService < ApplicationRecord
   scope :by_unassigned_appointments_allowed, -> { where('services.is_unassigned_appointment_allowed = ?', true)}
   scope :excluding_early_codes, -> { joins(:service).where.not('services.display_code': ['99998', '99999', '99997', '98888'])}
   
+  def used_units
+    schedules = self.schedulings.with_rendered_or_scheduled_as_status
+    if schedules.any?
+      completed_schedules = schedules.completed_scheduling
+      used_units = completed_schedules.with_units.pluck(:units).sum.to_f
+      used_units = 0 if used_units.blank?
+    else
+      used_units = 0
+    end
+    used_units
+  end
+
+  def used_minutes
+    schedules = self.schedulings.with_rendered_or_scheduled_as_status
+    if schedules.any?
+      completed_schedules = schedules.completed_scheduling
+      used_minutes = completed_schedules.with_minutes.pluck(:minutes).sum.to_f
+      used_minutes = 0 if used_minutes.blank?
+    else
+      used_minutes = 0
+    end
+    used_minutes
+  end
+
+  def scheduled_units
+    schedules = self.schedulings.with_rendered_or_scheduled_as_status
+    if schedules.any?
+      scheduled_schedules = schedules.scheduled_scheduling
+      scheduled_units = scheduled_schedules.with_units.pluck(:units).sum.to_f
+      scheduled_units = 0 if scheduled_units.blank?
+    else
+      scheduled_units = 0
+    end
+    scheduled_units
+  end
+
+  def scheduled_minutes
+    schedules = self.schedulings.with_rendered_or_scheduled_as_status
+    if schedules.any?
+      scheduled_schedules = schedules.scheduled_scheduling
+      scheduled_minutes = scheduled_schedules.with_minutes.pluck(:minutes).sum.to_f
+      scheduled_minutes = 0 if scheduled_minutes.blank?
+    else
+      scheduled_minutes = 0
+    end
+    scheduled_minutes
+  end
+
+  def left_units
+    used_units = self.used_units.present? ? self.used_units.to_f : 0
+    scheduled_units = self.scheduled_units.present? ? self.scheduled_units.to_f : 0
+    self.units.present? ? (self.units-(used_units+scheduled_units)).to_f : 0
+  end
+
+  def left_minutes
+    used_minutes = self.used_minutes.present? ? self.used_minutes.to_f : 0
+    scheduled_minutes = self.scheduled_minutes.present? ? self.scheduled_minutes.to_f : 0
+    self.minutes.present? ? (self.minutes-(used_minutes+scheduled_minutes)).to_f : 0
+  end
+
   private
 
   def validate_service_providers
