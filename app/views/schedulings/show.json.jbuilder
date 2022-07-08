@@ -120,6 +120,7 @@ json.data do
       json.audited_changes audit.audited_changes
       json.auditor_name "#{auditor&.first_name} #{auditor&.last_name}"
       json.audited_at audit.created_at
+      json.action audit.action
     end
   end
 end
