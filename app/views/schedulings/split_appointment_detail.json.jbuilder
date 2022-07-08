@@ -14,7 +14,6 @@ json.data do
     json.scheduled_minutes @schedule.client_enrollment_service.scheduled_minutes
     json.left_minutes @schedule.client_enrollment_service.left_minutes
   end
-  json.non_billable_reason @schedule.non_billable_reason
   json.cross_site_allowed @schedule.cross_site_allowed
   json.client_id client&.id
   json.client_name "#{client.first_name} #{client.last_name}" if client.present?
@@ -46,15 +45,12 @@ json.data do
   json.date @schedule.date
   json.start_time @schedule.start_time.to_time.strftime('%H:%M')
   json.end_time @schedule.end_time.to_time.strftime('%H:%M')
-  # json.is_rendered @schedule.is_rendered
-  if @schedule.rendered_at.present? && @schedule.status == 'Rendered'
+  if @schedule.rendered_at.present?
     json.is_rendered true
   else
     json.is_rendered false
   end
   json.is_manual_render @schedule.is_manual_render
-  rendered_by_staff = User.find_by(id: @schedule.rendered_by_id)
-  json.rendered_by "#{rendered_by_staff&.first_name} #{rendered_by_staff&.last_name}"
   json.unrendered_reasons @schedule.unrendered_reason
   json.rendered_at @schedule.rendered_at
   json.units @schedule.units
@@ -76,7 +72,6 @@ json.data do
     json.creator_id nil
     json.creator_name nil
   end
-  json.created_at @schedule.created_at
   if @schedule.updator_id.present?
     updator = User.find_by(id: @schedule.updator_id)
     json.updator_id @schedule.updator_id
@@ -85,42 +80,39 @@ json.data do
     json.updator_id nil
     json.updator_name nil
   end
-  if @schedule.soap_notes.present?
-    json.soap_notes do
-      json.array! @schedule.soap_notes do |soap_note|
-        user = User.find_by(id: soap_note.creator_id)
-        json.id soap_note.id
-        json.scheduling_id soap_note.scheduling_id
-        json.note soap_note.note
-        json.add_date soap_note.add_date
-        json.add_time soap_note.add_time&.strftime('%H:%M')
-        json.rbt_sign soap_note.rbt_signature
-        json.rbt_sign_name soap_note.rbt_signature_author_name
-        json.rbt_sign_date soap_note.rbt_signature_date
-        json.bcba_sign soap_note.bcba_signature
-        json.bcba_sign_name soap_note.bcba_signature_author_name
-        json.bcba_sign_date soap_note.bcba_signature_date&.strftime('%Y-%m-%d %H:%M')
-        json.clinical_director_sign soap_note.clinical_director_signature
-        json.clinical_director_sign_name soap_note.clinical_director_signature_author_name
-        json.clinical_director_sign_date soap_note.clinical_director_signature_date
-        json.caregiver_sign soap_note.signature_file&.blob&.service_url
-        json.caregiver_sign_date soap_note.caregiver_signature_datetime
-        json.creator_id user&.id
-        json.creator "#{user&.first_name} #{user&.last_name}"
-        json.synced_with_catalyst soap_note.synced_with_catalyst
-        if soap_note.synced_with_catalyst.to_bool.true?
-          json.caregiver_sign_present soap_note.caregiver_signature
+  if @schedule.catalyst_data_ids.present?
+    json.catalyst_data do
+      catalyst_datas = CatalystData.where(id: @schedule.catalyst_data_ids)
+      json.array! catalyst_datas do |data|
+        user = Staff.where(catalyst_user_id: data.catalyst_user_id)
+        if user.count==1
+            user = user.first
+        elsif user.count>1
+            user = user.find_by(status: 'active')
+        else
+            user = Staff.find_by(catalyst_user_id: data.catalyst_user_id)
         end
+        patient = Client.where(catalyst_patient_id: data.catalyst_patient_id)
+        if patient.count==1
+            patient = patient.first
+        elsif patient.count>1
+            patient = patient.find_by(status: 'active')
+        else
+            patient = patient.find_by(catalyst_patient_id: data.catalyst_patient_id)
+        end
+        json.id data.id
+        json.client_name "#{patient&.first_name} #{patient&.last_name}"
+        json.client_id patient&.id
+        json.staff_name "#{user&.first_name} #{user&.last_name}"
+        json.staff_id user&.id
+        json.date "#{data.date}"
+        json.start_time "#{data.start_time}"
+        json.end_time "#{data.end_time}"
+        json.units "#{data.units}"
+        json.minutes "#{data.minutes}"
+        json.location "#{data.session_location}"
+        json.note data.note
       end
-    end
-  end
-  json.audits do
-    json.array! @schedule.audits do |audit|
-      auditor = User.find_by(id: audit.user_id) if audit.user_type=='User'
-      json.audited_changes audit.audited_changes
-      json.auditor_name "#{auditor&.first_name} #{auditor&.last_name}"
-      json.audited_at audit.created_at
-      json.action audit.action
     end
   end
 end

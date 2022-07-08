@@ -373,6 +373,7 @@ json.data do
                 json.note catalyst_data.note
                 json.location catalyst_data.session_location
                 json.cordinates catalyst_data.location
+                json.is_deleted_from_connect catalyst_data.is_deleted_from_connect
               end
             end
           else
@@ -452,6 +453,7 @@ json.data do
                   json.note catalyst_data.note
                   json.location catalyst_data.session_location
                   json.cordinates catalyst_data.location
+                  json.is_deleted_from_connect catalyst_data.is_deleted_from_connect
                 end
               end
             end
@@ -491,6 +493,7 @@ json.data do
         json.minutes "#{action_item.minutes}"
         json.note action_item.note
         json.location action_item.session_location
+        json.is_deleted_from_connect action_item.is_deleted_from_connect
         json.cordinates action_item.location
         if action_item.system_scheduling_id.blank?
           json.unrendered_reasons ["no_appointment_found"]

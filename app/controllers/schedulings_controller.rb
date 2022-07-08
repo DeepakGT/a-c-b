@@ -1,8 +1,9 @@
 require 'will_paginate/array'
+
 class SchedulingsController < ApplicationController
   before_action :authenticate_user!
-  before_action :authorize_user
-  before_action :set_scheduling, only: %i[show update destroy]
+  before_action :authorize_user, except: %i[update_without_client render_appointment split_appointment_detail create_split_appointment create_without_staff create_without_client]
+  before_action :set_scheduling, only: %i[show update destroy update_without_client]
   before_action :set_client_enrollment_service, only: %i[create create_without_staff]
 
   def index
@@ -21,14 +22,38 @@ class SchedulingsController < ApplicationController
     else
       @schedule.save
     end
-    update_units_columns(@schedule.client_enrollment_service)
+    #update_units_columns(@schedule.client_enrollment_service)
+  end
+
+  # Creating split appointments
+  def create_split_appointment
+    ids = []
+    schedule_hash = build_schedule_hash
+    parent_schedule = Scheduling.find(params[:schedule_id])
+    params[:split_schedules].each do |schedule|
+      schedule_details_hash = build_schedule_details_hash(schedule)
+      schedule_params = schedule_hash.merge!(schedule_details_hash)
+      @schedule = Scheduling.new(schedule_params)
+      @schedule.id = Scheduling.last.id + 1
+      @schedule.save(validate: false)
+      update_units_columns(@schedule.client_enrollment_service)
+      update_catalyst_data_and_soap_notes_for_split_appointment(schedule)
+      ids.push @schedule.id
+      audit = @schedule.audits.new(action: 'split_appointment', user_id: current_user.id, user_type: 'User',username: "#{current_user.first_name} #{current_user.last_name}", audited_changes: {})
+      audit.audited_changes["start_time"] = ["#{parent_schedule.start_time}", "#{@schedule.start_time}"] if parent_schedule.start_time!=@schedule.start_time
+      audit.audited_changes["end_time"] = ["#{parent_schedule.end_time}", "#{@schedule.end_time}"] if parent_schedule.end_time!=@schedule.end_time
+      audit.audited_changes["units"] = [parent_schedule.units, @schedule.units] if parent_schedule.units!=@schedule.units
+      audit.save
+    end
+    delete_old_schedule(params[:schedule_id])
+    @schedules = Scheduling.find(ids)
   end
 
   def update
     @schedule.user = current_user
     return if !check_units
     update_status if params[:status].present?
-    update_units_columns(@schedule.client_enrollment_service)
+    #update_units_columns(@schedule.client_enrollment_service)
   end
 
   def destroy
@@ -39,7 +64,7 @@ class SchedulingsController < ApplicationController
     when 'bcba', 'executive_director', 'client_care_coordinator', 'Clinical Director', 'administrator'
       delete_scheduling if @schedule.created_at.strftime('%Y-%m-%d')>=(Time.current-1.day).strftime('%Y-%m-%d')
     end
-    update_units_columns(@schedule.client_enrollment_service)
+    #update_units_columns(@schedule.client_enrollment_service)
   end
 
   def create_without_staff
@@ -49,6 +74,30 @@ class SchedulingsController < ApplicationController
     @schedule.user = current_user
     @schedule.id = Scheduling.last.id + 1
     @schedule.save
+  end
+
+  # Render Appointment manually upon user request
+  def render_appointment
+    @schedule = Scheduling.find(params[:scheduling_id])
+    manual_rendering
+  end
+  
+  def create_without_client
+    @schedule = Scheduling.new(create_without_client_params)
+    @schedule.status = 'Non-Billable'
+    @schedule.creator_id = current_user.id
+    @schedule.user = current_user
+    @schedule.id = Scheduling.last.id + 1
+    @schedule.save
+  end
+
+  def update_without_client
+    @schedule.update(create_without_client_params)
+  end
+
+  # GET all the details of the appointment along with soap notes
+  def split_appointment_detail
+    @schedule = Scheduling.find(params[:id])
   end
 
   private
@@ -67,6 +116,45 @@ class SchedulingsController < ApplicationController
     params.permit(arr)
   end
 
+  # Building info common for both splitted appointments
+  def build_schedule_hash
+    {
+      date: params[:date],
+      client_enrollment_service_id: params[:client_enrollment_service_id],
+      creator_id: current_user.id,
+      staff_id: params[:staff_id],
+      user: current_user
+    }
+  end
+
+  # Building appointment specific hash for split appointment
+  def build_schedule_details_hash(schedule)
+    {
+      start_time: schedule[:start_time],
+      end_time: schedule[:end_time],
+      units: schedule[:units],
+      service_address_id: schedule[:service_address_id],
+      catalyst_data_ids: schedule[:catalyst_data_id].to_s.split(' ')
+    }
+  end
+
+  # Once splitted appointment is created update the respective catalyst data and soap notes with the scheduling id
+  def update_catalyst_data_and_soap_notes_for_split_appointment(schedule)
+    catalyst_data = CatalystData.find(schedule[:catalyst_data_id])
+    catalyst_data.update(system_scheduling_id: @schedule.id)
+    create_or_update_soap_note(catalyst_data)
+  end
+
+  # remove the appoitment after creating split appointments
+  def delete_old_schedule(schedule_id)
+    CatalystData.where(system_scheduling_id: schedule_id).update_all(system_scheduling_id: nil)
+    Scheduling.find(schedule_id).destroy
+  end
+
+  def create_without_client_params
+    params.permit(:staff_id, :date, :start_time, :end_time, :non_billable_reason)
+  end
+
   def scheduling_params_when_bcba
     params.permit(%i[ status date start_time end_time units minutes])
   end
@@ -80,14 +168,16 @@ class SchedulingsController < ApplicationController
       if !(params[:show_inactive].present? && (params[:show_inactive]==1 || params[:show_inactive]=="1"))
         schedules = Scheduling.left_outer_joins(staff: :staff_clinics, client_enrollment_service: [:service, {client_enrollment: :client}]).with_active_client
       else
-        schedules = Scheduling.includes(staff: :staff_clinics, client_enrollment_service: [:service, {client_enrollment: :client}])
+        schedules = Scheduling.includes(staff: :staff_clinics, client_enrollment_service: [:service, {client_enrollment: :client}]).with_client
       end
     else
-      schedules = Scheduling.all
+      schedules = Scheduling.with_client
       if !(params[:show_inactive].present? && (params[:show_inactive]==1 || params[:show_inactive]=="1"))
         schedules = schedules.joins(client_enrollment_service: {client_enrollment: :client}).with_active_client
       end
     end
+    schedules = schedules.or(Scheduling.by_staff_ids(current_user.id).without_client)
+    #schedules = schedules + Scheduling.by_staff_ids(current_user.id).without_client
     schedules = schedules.by_staff_ids(string_to_array(params[:staff_ids])) if params[:staff_ids].present?
     schedules = schedules.by_client_ids(string_to_array(params[:client_ids])) if params[:client_ids].present?
     schedules = schedules.by_service_ids(string_to_array(params[:service_ids])) if params[:service_ids].present?
@@ -204,7 +294,7 @@ class SchedulingsController < ApplicationController
   end
   
   def update_units_columns(client_enrollment_service)
-    ClientEnrollmentServices::UpdateUnitsColumnsOperation.call(client_enrollment_service)
+    # ClientEnrollmentServices::UpdateUnitsColumnsOperation.call(client_enrollment_service)
   end
 
   def delete_scheduling
@@ -218,7 +308,7 @@ class SchedulingsController < ApplicationController
   end
 
   def check_units
-    update_units_columns(@schedule.client_enrollment_service)
+    #update_units_columns(@schedule.client_enrollment_service)
     if (params[:status]=='Scheduled' && @schedule.status!='Scheduled' && @schedule.status!='Rendered') && @schedule.client_enrollment_service.left_units<params[:units]
       @schedule.errors.add(:units, 'left in authorization are not enough to update this cancelled appointment to scheduled.')
       return false
@@ -257,6 +347,11 @@ class SchedulingsController < ApplicationController
       end
     end
     true
+  end
+
+  # Render an appointment manually
+  def manual_rendering
+    @schedule.update(status: 'Rendered',rendered_at: Time.current,is_manual_render: true, rendered_by_id: current_user.id, user: current_user)
   end
   # end of private
 end

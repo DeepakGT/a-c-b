@@ -1,6 +1,9 @@
+require 'audited.rb'
 class Scheduling < ApplicationRecord
+  audited only: %i[start_time end_time units date], on: :update
+
   belongs_to :staff, optional: true
-  belongs_to :client_enrollment_service
+  belongs_to :client_enrollment_service, optional: true
   has_many :soap_notes, dependent: :destroy
   has_many :scheduling_change_requests, dependent: :destroy
 
@@ -44,6 +47,8 @@ class Scheduling < ApplicationRecord
   scope :past_60_days_schedules, ->{ where('date>=? AND date<?', (Time.current-60.days).strftime('%Y-%m-%d'), Time.current.strftime('%Y-%m-%d')) }
   scope :without_staff, ->{ where(staff_id: nil) }
   scope :with_staff, ->{ where.not(staff_id: nil) }
+  scope :with_client, ->{ where.not(client_enrollment_service_id: nil) }
+  scope :without_client, ->{ where(client_enrollment_service_id: nil) }
   scope :with_active_client, ->{ where('clients.status = ?', 0) }
 
   private
