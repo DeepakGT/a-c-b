@@ -7,7 +7,6 @@ class CatalystController < ApplicationController
   end
 
   def update_appointment_units
-    Scheduling.auditing_enabled = false
     @schedule = Scheduling.find(params[:scheduling_id])
     @catalyst_data = CatalystData.find(params[:catalyst_data_id])
     use_catalyst_units if params[:use_catalyst_units].to_bool.true?
@@ -19,7 +18,6 @@ class CatalystController < ApplicationController
   end
 
   def assign_catalyst_note
-    Scheduling.auditing_enabled = false
     @schedule = Scheduling.find(params[:scheduling_id])
     @catalyst_data = CatalystData.find(params[:catalyst_data_id])
     @schedule.catalyst_data_ids.push("#{@catalyst_data.id}") if !@schedule.catalyst_data_ids.include?("#{@catalyst_data.id}")
@@ -57,7 +55,6 @@ class CatalystController < ApplicationController
   end
 
   def appointment_with_multiple_soap_notes
-    Scheduling.auditing_enabled = false
     @schedule = Scheduling.find(params[:scheduling_id])
     @selected_catalyst_data = CatalystData.where(id: params[:selected_catalyst_data_ids])
     update_selected_catalyst_data

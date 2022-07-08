@@ -50,7 +50,6 @@ class SchedulingsController < ApplicationController
   end
 
   def update
-    Scheduling.auditing_enabled = false
     @schedule.user = current_user
     return if !check_units
     update_status if params[:status].present?
@@ -93,7 +92,6 @@ class SchedulingsController < ApplicationController
   end
 
   def update_without_client
-    Scheduling.auditing_enabled = false
     @schedule.update(create_without_client_params)
   end
 
