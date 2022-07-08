@@ -47,6 +47,7 @@ Rails.application.routes.draw do
       get '/soap_notes', to: 'client_meta_data#soap_notes'
       get '/soap_notes/:id', to: 'client_meta_data#soap_note_detail'
       resources :service_addresses, controller: 'client_service_addresses'
+      post '/create_office_address', to: 'client_service_addresses#create_office_address'
     end
     
     resources :credentials, controller: 'qualifications' do
@@ -74,6 +75,7 @@ Rails.application.routes.draw do
     get '/catalyst/sync_data', to: 'catalyst#sync_data'
     put '/catalyst/update_appointment_units', to: 'catalyst#update_appointment_units'
     put '/catalyst/assign_catalyst_note', to: 'catalyst#assign_catalyst_note'
+    put '/catalyst/delete_catalyst_soap_note', to: 'catalyst#delete_catalyst_soap_note'
     get '/catalyst/catalyst_data/:id', to: 'catalyst#catalyst_data_with_multiple_appointments'
     get '/catalyst/:catalyst_data_id/appointments_list', to: 'catalyst#appointments_list'
     get '/billing_dashboard', to: 'scheduling_meta_data#billing_dashboard'
@@ -81,8 +83,10 @@ Rails.application.routes.draw do
     get '/unassigned_catalyst_soap_notes', to: 'scheduling_meta_data#unassigned_catalyst_soap_notes'
     get '/schedulings/clients_and_staff_list', to: 'scheduling_meta_data#clients_and_staff_list_for_filter'
     put '/schedulings/assign_multiple_soap_notes_of_same_location', to: 'catalyst#appointment_with_multiple_soap_notes'
+    put '/schedulings/render_appointment', to: 'schedulings#render_appointment'
     get '/schedulings/split_appointment_detail/:id', to: 'schedulings#split_appointment_detail'
     post '/schedulings/create_split_appointment', to: 'schedulings#create_split_appointment'
+    get '/catalyst/:catalyst_data_id/matching_appointments_list', to: 'catalyst#matching_appointments_list'
     resources :schedulings do
       post '/create_without_staff', to: 'schedulings#create_without_staff', on: :collection
       post '/create_without_client', to: 'schedulings#create_without_client', on: :collection

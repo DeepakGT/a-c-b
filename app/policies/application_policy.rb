@@ -3,9 +3,10 @@
 class ApplicationPolicy
   attr_reader :user, :permissions
 
-  def initialize(user, record)
+  def initialize(user, record, permissions = user.role.permissions)
     @user = user
-    @permissions = user.role.permissions
+    @record = record
+    @permissions = permissions
   end
 
   def index?

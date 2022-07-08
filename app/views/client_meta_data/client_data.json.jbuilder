@@ -38,7 +38,10 @@ json.data do
         json.city address.city
         json.state address.state
         json.country address.country
-        json.is_default address.is_default if address.address_type=='service_address'
+        if address.address_type=='service_address'
+          json.is_default address.is_default 
+          json.is_hidden address.is_hidden
+        end
       end
     end
   end
@@ -65,7 +68,7 @@ json.data do
         json.start_time schedule.start_time
         json.end_time schedule.end_time
         # json.is_rendered schedule.is_rendered
-        if schedule.rendered_at.present?
+        if schedule.rendered_at.present? && schedule.status == 'Rendered'
           json.is_rendered true
         else
           json.is_rendered false

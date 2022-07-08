@@ -12,6 +12,17 @@ json.data do
     json.state address.state
     json.country address.country
     json.is_default address.is_default
+    json.is_hidden address.is_hidden
+    if Scheduling.where(service_address_id: address.id).blank?
+      json.associated_with_appointment false
+    else
+      json.associated_with_appointment true
+    end
     json.address_name address.address_name
   end
+end
+if @service_addresses.where(address_name: 'Office').present?
+  json.office_address true
+else
+  json.office_address false
 end

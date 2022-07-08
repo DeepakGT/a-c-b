@@ -1,7 +1,7 @@
 require 'will_paginate/array'
 class SchedulingsController < ApplicationController
   before_action :authenticate_user!
-  before_action :authorize_user, except: %i[update_without_client]
+  before_action :authorize_user, except: %i[update_without_client render_appointment split_appointment_detail create_split_appointment create_without_staff create_without_client]
   before_action :set_scheduling, only: %i[show update destroy update_without_client]
   before_action :set_client_enrollment_service, only: %i[create create_without_staff]
 
@@ -21,7 +21,7 @@ class SchedulingsController < ApplicationController
     else
       @schedule.save
     end
-    update_units_columns(@schedule.client_enrollment_service)
+    #update_units_columns(@schedule.client_enrollment_service)
   end
 
   # Creating split appointments
@@ -53,7 +53,7 @@ class SchedulingsController < ApplicationController
     @schedule.user = current_user
     return if !check_units
     update_status if params[:status].present?
-    update_units_columns(@schedule.client_enrollment_service)
+    #update_units_columns(@schedule.client_enrollment_service)
   end
 
   def destroy
@@ -64,7 +64,7 @@ class SchedulingsController < ApplicationController
     when 'bcba', 'executive_director', 'client_care_coordinator', 'Clinical Director', 'administrator'
       delete_scheduling if @schedule.created_at.strftime('%Y-%m-%d')>=(Time.current-1.day).strftime('%Y-%m-%d')
     end
-    update_units_columns(@schedule.client_enrollment_service)
+    #update_units_columns(@schedule.client_enrollment_service)
   end
 
   def create_without_staff
@@ -76,6 +76,12 @@ class SchedulingsController < ApplicationController
     @schedule.save
   end
 
+  # Render Appointment manually upon user request
+  def render_appointment
+    @schedule = Scheduling.find(params[:scheduling_id])
+    manual_rendering
+  end
+  
   def create_without_client
     @schedule = Scheduling.new(create_without_client_params)
     @schedule.status = 'Non-Billable'
@@ -116,9 +122,9 @@ class SchedulingsController < ApplicationController
     {
       date: params[:date],
       client_enrollment_service_id: params[:client_enrollment_service_id],
-      creator_id: @current_user.id,
+      creator_id: current_user.id,
       staff_id: params[:staff_id],
-      user: @current_user
+      user: current_user
     }
   end
 
@@ -289,7 +295,7 @@ class SchedulingsController < ApplicationController
   end
   
   def update_units_columns(client_enrollment_service)
-    ClientEnrollmentServices::UpdateUnitsColumnsOperation.call(client_enrollment_service)
+    # ClientEnrollmentServices::UpdateUnitsColumnsOperation.call(client_enrollment_service)
   end
 
   def delete_scheduling
@@ -303,7 +309,7 @@ class SchedulingsController < ApplicationController
   end
 
   def check_units
-    update_units_columns(@schedule.client_enrollment_service)
+    #update_units_columns(@schedule.client_enrollment_service)
     if (params[:status]=='Scheduled' && @schedule.status!='Scheduled' && @schedule.status!='Rendered') && @schedule.client_enrollment_service.left_units<params[:units]
       @schedule.errors.add(:units, 'left in authorization are not enough to update this cancelled appointment to scheduled.')
       return false
@@ -326,7 +332,7 @@ class SchedulingsController < ApplicationController
     elsif @schedule.status=='Rendered' && params[:status]!='Rendered'
       if current_user.role_name=='super_admin'
         update_scheduling 
-        @schedule.is_rendered = false
+        # @schedule.is_rendered = false
         @schedule.rendered_at = nil
         @schedule.save
       else
@@ -342,6 +348,11 @@ class SchedulingsController < ApplicationController
       end
     end
     true
+  end
+
+  # Render an appointment manually
+  def manual_rendering
+    @schedule.update(status: 'Rendered',rendered_at: Time.current,is_manual_render: true, rendered_by_id: current_user.id, user: current_user)
   end
   # end of private
 end
