@@ -28,15 +28,21 @@ class SchedulingsController < ApplicationController
   def create_split_appointment
     ids = []
     schedule_hash = build_schedule_hash
+    parent_schedule = Scheduling.find(params[:schedule_id])
     params[:split_schedules].each do |schedule|
       schedule_details_hash = build_schedule_details_hash(schedule)
       schedule_params = schedule_hash.merge!(schedule_details_hash)
       @schedule = Scheduling.new(schedule_params)
       @schedule.id = Scheduling.last.id + 1
-      @schedule.save_with_auditing(validate:false)
+      @schedule.save(validate: false)
       update_units_columns(@schedule.client_enrollment_service)
       update_catalyst_data_and_soap_notes_for_split_appointment(schedule)
       ids.push @schedule.id
+      audit = @schedule.audits.new(action: 'update', user_id: current_user.id, user_type: 'User')
+      audit.audited_changes["start_time"] = ["#{parent_schedule.start_time}", "#{@schedule.start_time}"] if parent_schedule.start_time!=@schedule.start_time
+      audit.audited_changes["end_time"] = ["#{parent_schedule.end_time}", "#{@schedule.end_time}"] if parent_schedule.end_time!=@schedule.end_time
+      audit.audited_changes["units"] = [parent_schedule.units, @schedule.units] if parent_schedule.units!=@schedule.units
+      audit.save
     end
     delete_old_schedule(params[:schedule_id])
     @schedules = Scheduling.find(ids)
