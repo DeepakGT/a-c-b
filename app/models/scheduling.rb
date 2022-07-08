@@ -1,4 +1,7 @@
+require 'audited.rb'
 class Scheduling < ApplicationRecord
+  audited only: %i[start_time end_time units date], on: :update
+
   belongs_to :staff, optional: true
   belongs_to :client_enrollment_service, optional: true
   has_many :soap_notes, dependent: :destroy
