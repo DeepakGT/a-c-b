@@ -40,7 +40,7 @@ class Scheduling < ApplicationRecord
   scope :exceeded_24_h_scheduling, ->{ where('date < ? OR (date = ? AND end_time < ?)', Time.current.to_date-1, Time.current.to_date-1, Time.current.strftime('%H:%M')) }
   scope :exceeded_3_days_scheduling, ->{ where('date < ? OR (date = ? AND end_time < ?)', Time.current.to_date-3, Time.current.to_date-3, Time.current.strftime('%H:%M')) }
   scope :exceeded_5_days_scheduling, ->{ where('date < ? OR (date = ? AND end_time < ?)', Time.current.to_date-5, Time.current.to_date-5, Time.current.strftime('%H:%M')) }
-  scope :partially_rendered_schedules, ->{ where.not(status: 'Rendered', rendered_at: nil)}
+  scope :partially_rendered_schedules, ->{ where.not(rendered_at: nil)}
   scope :past_60_days_schedules, ->{ where('date>=? AND date<?', (Time.current-60.days).strftime('%Y-%m-%d'), Time.current.strftime('%Y-%m-%d')) }
   scope :without_staff, ->{ where(staff_id: nil) }
   scope :with_staff, ->{ where.not(staff_id: nil) }
