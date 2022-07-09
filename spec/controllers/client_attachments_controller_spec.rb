@@ -9,7 +9,7 @@ RSpec.describe ClientAttachmentsController, type: :controller do
     @request.env["devise.mapping"] = Devise.mappings[:user]
   end
   
-  let!(:role) { create(:role, name: 'aba_admin', permissions: ['client_attachments_view', 'client_attachments_update', 'client_attachments_delete'])}
+  let!(:role) { create(:role, name: 'executive_director', permissions: ['client_files_view', 'client_files_update', 'client_files_delete'])}
   let!(:user) { create(:user, :with_role, role_name: role.name) }
   let!(:auth_headers) { user.create_new_auth_token }
   let!(:organization) {create(:organization, name: 'test-organization', admin_id: user.id)}
@@ -18,7 +18,7 @@ RSpec.describe ClientAttachmentsController, type: :controller do
 
   describe "GET #index" do
     context "when sign in" do
-      let!(:client_attachments) { create_list(:attachment, 5, attachable_id: client.id, attachable_type: 'User') }
+      let!(:client_attachments) { create_list(:attachment, 5, attachable_id: client.id, attachable_type: 'Client') }
       it "should fetch client attachments list successfully" do
         set_auth_headers(auth_headers)
 
@@ -92,7 +92,7 @@ RSpec.describe ClientAttachmentsController, type: :controller do
 
   describe "GET #show" do
     context "when sign in" do
-      let(:client_attachment) { create(:attachment, attachable_id: client.id, attachable_type: 'User', category: 'image')}
+      let(:client_attachment) { create(:attachment, attachable_id: client.id, attachable_type: 'Client', category: 'image')}
       it "should fetch client attachment detail successfully" do
         set_auth_headers(auth_headers)
 
@@ -131,7 +131,7 @@ RSpec.describe ClientAttachmentsController, type: :controller do
 
   describe "PUT #update" do
     context "when sign in" do
-      let(:client_attachment) { create(:attachment, attachable_id: client.id, attachable_type: 'User', category: 'image')}
+      let(:client_attachment) { create(:attachment, attachable_id: client.id, attachable_type: 'Client', category: 'image')}
       let(:updated_category) { 'png' }
       it "should update client attachment successfully" do
         set_auth_headers(auth_headers)
@@ -171,7 +171,7 @@ RSpec.describe ClientAttachmentsController, type: :controller do
 
   describe "DELETE #destroy" do
     context "when sign in" do
-      let(:client_attachment) { create(:attachment, attachable_id: client.id, attachable_type: 'User', category: 'image')}
+      let(:client_attachment) { create(:attachment, attachable_id: client.id, attachable_type: 'Client', category: 'image')}
       it "should delete client attachment successfully" do
         set_auth_headers(auth_headers)
         delete :destroy, params: {client_id: client.id, id: client_attachment.id} 

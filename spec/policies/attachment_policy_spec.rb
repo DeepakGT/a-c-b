@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe AttachmentPolicy, type: :policy do
-  let!(:role1) { create(:role, name: 'aba_admin') }
+  let!(:role1) { create(:role, name: 'executive_director') }
   let!(:user1) { create(:user, :with_role, role_name: role1.name)}
   let!(:role2) { create(:role, name: 'administrator', permissions: ['client_files_view', 'client_files_update', 'client_files_delete']) }
   let!(:user2) { create(:user, :with_role, role_name: role2.name)}

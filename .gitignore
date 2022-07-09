@@ -32,3 +32,5 @@
 /bitbucket-pipelines.yml
 
 /config/credentials/staging.key
+
+/config/credentials/production.key

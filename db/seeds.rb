@@ -3,7 +3,7 @@ puts "Data seed is in progress..."
 ActiveRecord::Base.transaction do
   # Roles
   Role.find_or_create_by!(name: 'super_admin')
-  Role.find_or_create_by!(name: 'aba_admin')
+  Role.find_or_create_by!(name: 'executive_director')
   Role.find_or_create_by!(name: 'administrator')
   Role.find_or_create_by!(name: 'bcba')
   Role.find_or_create_by!(name: 'rbt')
@@ -18,8 +18,8 @@ ActiveRecord::Base.transaction do
     u.role = Role.find_by(name: 'super_admin')
   end
 
-  # create two users with each role, [aba_admin' and 'administrator]
-  Role.where(name: ['aba_admin', 'administrator']).each do |role|
+  # create two users with each role, [executive_director' and 'administrator]
+  Role.where(name: ['executive_director', 'administrator']).each do |role|
     User.where(email: "#{role.name}_user@yopmail.com").first_or_create! do |u|
       # This block will run only on create new records
       # i.e. if record found, this block would be skip
@@ -107,7 +107,7 @@ ActiveRecord::Base.transaction do
 
 
   # Organization
-  org = Organization.find_or_create_by!(name: 'org1', admin_id: Role.find_by(name: 'aba_admin').users.first.id)
+  org = Organization.find_or_create_by!(name: 'org1', admin_id: Role.find_by(name: 'executive_director').users.first.id)
 
   # Clinic
   clinic = Clinic.find_or_create_by!(name: 'clinic1', organization_id: org.id)

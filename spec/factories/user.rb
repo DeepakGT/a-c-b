@@ -7,7 +7,7 @@ FactoryBot.define do
     password { 'Abcd@123' }
 
     transient do
-      role_name {'aba_admin'}
+      role_name {'executive_director'}
     end
 
     trait :with_role do 

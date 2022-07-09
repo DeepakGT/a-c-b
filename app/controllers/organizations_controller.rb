@@ -11,6 +11,7 @@ class OrganizationsController < ApplicationController
 
   def create
     @organization = Organization.new(organization_params)
+    @organization.id = Organization.ids.max+1
     @organization.admin_id = current_user.id
     @organization.save
   end

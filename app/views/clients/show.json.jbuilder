@@ -7,10 +7,12 @@ json.data do
   json.email @client.email
   json.clinic_id @client.clinic_id
   json.clinic_name @client.clinic.name
-  json.email @client.email
+  json.bcba_id @client.bcba_id
+  json.bcba_name "#{@client.bcba&.first_name} #{@client.bcba&.last_name}"
   json.dob @client.dob
   json.gender @client.gender
   json.status @client.status
+  json.tracking_id @client.tracking_id
   json.preferred_language @client.preferred_language
   json.disqualified @client.disqualified
   json.disqualified_reason @client.dq_reason if @client.disqualified?
@@ -58,6 +60,10 @@ json.data do
         json.city address.city
         json.state address.state
         json.country address.country
+        if address.address_type=='service_address'
+          json.is_default address.is_default 
+          json.is_hidden address.is_hidden
+        end
       end
     end
   end

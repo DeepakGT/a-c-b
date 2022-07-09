@@ -1,6 +1,6 @@
 class Clinic < ApplicationRecord
-  has_one :address, as: :addressable, dependent: :destroy
-  has_one :phone_number, as: :phoneable, dependent: :destroy
+  has_one :address, as: :addressable, dependent: :destroy, inverse_of: :addressable
+  has_one :phone_number, as: :phoneable, dependent: :destroy, inverse_of: :phoneable
   has_many :staff_clinics, dependent: :destroy
   has_many :staff, through: :staff_clinics
   has_many :clients, dependent: :destroy

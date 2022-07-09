@@ -1,6 +1,6 @@
 json.status 'success'
 json.data do
-  user = User.find(@client_note.creator_id)
+  user = User.where(id: @client_note.creator_id)&.first
   json.id @client_note.id
   json.client_id @client_note.client_id
   json.note @client_note.note

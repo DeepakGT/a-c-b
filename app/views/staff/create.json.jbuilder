@@ -8,6 +8,7 @@ json.data do
   json.status @staff.status
   json.terminated_on @staff.terminated_on
   json.gender @staff.gender
+  json.job_type @staff.job_type
   json.supervisor_id @staff.supervisor_id
   json.phone_numbers do
     json.array! @staff.phone_numbers do |phone|
@@ -34,5 +35,13 @@ json.data do
       json.status @staff.rbt_supervision.status
     end
   end
+  if @staff.staff_clinics.present?
+    json.staff_clinics do
+      json.array! @staff.staff_clinics do |staff_clinic|
+        json.clinic_id staff_clinic.clinic_id
+        json.clinic_name staff_clinic.clinic.name
+      end
+    end
+  end
 end
-json.errors @staff.errors.full_messages
+json.errors @staff.errors.full_messages&.map{|x| x.gsub!('Address ', '')}

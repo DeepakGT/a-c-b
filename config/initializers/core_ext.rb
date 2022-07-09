@@ -51,3 +51,14 @@ class Integer
     to_s.to_bool
   end
 end
+
+class Array
+  def to_human_string
+    arr = Array.new(self)
+    if arr.count>1
+      last = arr.pop
+      return arr.join(", ") + " and " + last.to_s
+    end
+    arr.first
+  end
+end

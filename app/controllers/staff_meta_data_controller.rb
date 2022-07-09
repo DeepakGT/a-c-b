@@ -2,11 +2,15 @@ class StaffMetaDataController < ApplicationController
   before_action :authenticate_user!
 
   def clients_list
-    if current_user.role_name=='bcba' || current_user.role_name=='rbt'
-      clinic_ids = current_user.staff_clinics.pluck(:clinic_id) 
-      clients = Client.where(clinic_id: clinic_ids)
+    case current_user.role_name
+    when 'rbt'
+      clients = Client.by_staff_id_in_scheduling(current_user.id)
       clients = filter_by_location(clients) if params[:default_location_id].present?
-      @clients = clients
+      @clients = clients.uniq.sort_by(&:id)
+    when 'bcba'
+      clients = Client.by_staff_id_in_scheduling(current_user.id).or(Client.by_bcbas(current_user.id))
+      clients = filter_by_location(clients) if params[:default_location_id].present?
+      @clients = clients.uniq.sort_by(&:id)
     end
   end
 

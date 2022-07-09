@@ -7,6 +7,7 @@ json.data do
     json.last_name staff.last_name
     json.email staff.email
     json.title staff.role_name
+    json.job_type staff.job_type
     json.hired_at staff.hired_at
     json.terminated_on staff.terminated_on
     if staff_clinic.present?
@@ -41,6 +42,12 @@ json.data do
       end
     end
   end
+end
+if params[:show_inactive] == 1 || params[:show_inactive] == "1"
+  json.show_inactive params[:show_inactive]
+end
+if params[:search_cross_location] == 1 || params[:search_cross_location] == "1"
+  json.search_cross_location params[:search_cross_location]
 end
 json.total_records @staff.total_entries
 json.limit @staff.per_page

@@ -49,8 +49,7 @@ paths:
                   email: "testuser2@yopmail.com"
                   role: "ABA Admin"
                 errors:
-                  email: ["has already been taken"]
-                  full_messages: ["Email has already been taken"]
+                  ["Email has already been taken"]
     put:
       summary: User update
       parameters:
@@ -110,8 +109,8 @@ paths:
             application/json:
               example:
                 data:
-                  email: "aba_admin_user1@yopmail.com"
-                  uid: "aba_admin_user1@yopmail.com"
+                  email: "executive_director_user1@yopmail.com"
+                  uid: "executive_director_user1@yopmail.com"
                   first_name: "Cortez"
                   last_name: "Hermiston"
                   role: "ABA Admin"
@@ -207,8 +206,8 @@ paths:
               example:
                 success: true
                 data:
-                  email: "aba_admin_user1@yopmail.com"
-                  uid: "aba_admin_user1@yopmail.com"
+                  email: "executive_director_user1@yopmail.com"
+                  uid: "executive_director_user1@yopmail.com"
                   first_name: "Cortez"
                   last_name: "Hermiston"
                   role: "ABA Admin"
@@ -555,6 +554,7 @@ paths:
                     "last_name": "O'Connell",
                     "email": "bcba_staff1@yopmail.com",
                     "title": "bcba",
+                    "job_type": "full_time",
                     "organization_id": 1,
                     "organization_name": "org1",
                     "clinic_id": 1,
@@ -569,6 +569,7 @@ paths:
                     "last_name": "staff",
                     "email": "bcba_staff1@yopmail.com",
                     "title": "bcba",
+                    "job_type": "full_time",
                     "organization_id": 1,
                     "organization_name": "org1",
                     "clinic_id": 1,
@@ -614,7 +615,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/definitions/StaffCreateUpdateByAdminParameters"
+              $ref: "#/definitions/StaffCreateByAdminParameters"
       responses:
         "200":
           description: "Staff created"
@@ -631,6 +632,7 @@ paths:
                   "status": "active",
                   "terminated_on": null,
                   "gender": "male",
+                  "job_type": "full_time",
                   "supervisor_id": 1,
                   "phone_numbers": [
                     {
@@ -704,6 +706,7 @@ paths:
                   "status": "active",
                   "terminated_on": null,
                   "title": "bcba",
+                  "job_type": "full_time",
                   "gender": "male",
                   "organization_id": 1,
                   "organization_name": "org1",
@@ -770,7 +773,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/definitions/StaffCreateUpdateByAdminParameters"
+              $ref: "#/definitions/StaffUpdateByAdminParameters"
       responses:
         "200":
           description: "Staff Updated"
@@ -2089,6 +2092,8 @@ paths:
                     "email": "client7@yopmail.com",
                     "clinic_id": 1,
                     "clinic_name": "clinic1",
+                    "bcba_id": 4,
+                    "bcba_name": "The Hon.",
                     "email": "testc7@gmail.com",
                     "dob": "2012-12-12",
                     "gender": "male",
@@ -2104,6 +2109,8 @@ paths:
                     "email": "client1@yopmail.com",
                     "clinic_id": 1,
                     "clinic_name": "clinic1",
+                    "bcba_id": 4,
+                    "bcba_name": "The Hon.",
                     "email": "testc1@gmail.com",
                     "dob": "2012-12-12",
                     "gender": "male",
@@ -2164,7 +2171,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/definitions/ClientCreateParameters"
+              $ref: "#/definitions/ClientCreateUpdateParameters"
       responses:
         "200":
           description: "Created client"
@@ -2176,6 +2183,8 @@ paths:
                   "id": 10,
                   "first_name": "Test",
                   "last_name": "Client1",
+                  "bcba_id": 4,
+                  "bcba_name": "The Hon.",
                   "email": "testc1@gmail.com",
                   "dob": "2012-12-12",
                   "gender": "male",
@@ -2257,6 +2266,8 @@ paths:
                   "email": "client5@yopmail.com",
                   "clinic_id": 1,
                   "clinic_name": "clinic1",
+                  "bcba_id": 4,
+                  "bcba_name": "The Hon.",
                   "contact": {
                     "id": 2,
                     "first_name": "test",
@@ -2337,7 +2348,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/definitions/ClientUpdateParameters"
+              $ref: "#/definitions/ClientCreateUpdateParameters"
       responses:
         "200":
           description: "Updated client"
@@ -2349,6 +2360,8 @@ paths:
                   "id": 10,
                   "first_name": "Test",
                   "last_name": "Client1",
+                  "bcba_id": 4,
+                  "bcba_name": "The Hon.",
                   "email": "testc1@gmail.com",
                   "dob": "2012-12-12",
                   "gender": "male",
@@ -2425,6 +2438,8 @@ paths:
                   "id": 11,
                   "first_name": "Test",
                   "last_name": "Client1",
+                  "bcba_id": 4,
+                  "bcba_name": "The Hon.",
                   "email": "testc1@gmail.com",
                   "dob": "2012-12-12",
                   "gender": "male",
@@ -3145,7 +3160,7 @@ paths:
               example: [
                 {
                     "id": 1,
-                    "name": "aba_admin"
+                    "name": "executive_director"
                 },
                 {
                     "id": 2,
@@ -3359,7 +3374,7 @@ paths:
                   },
                   {
                     "id": 14,
-                    "name": "aba_admin",
+                    "name": "executive_director",
                     "permissions": []
                   },
                   {
@@ -3452,7 +3467,7 @@ paths:
                 "status": "success",
                 "data": {
                   "id": 2,
-                  "name": "aba_admin",
+                  "name": "executive_director",
                   "permissions": []
                 }
               }
@@ -3562,6 +3577,7 @@ paths:
                   "status": "active",
                   "terminated_on": null,
                   "gender": "male",
+                  "job_type": "full_time",
                   "supervisor_id": 3
                 }
               }
@@ -4459,6 +4475,139 @@ paths:
                 }
               }
 
+  /api/clients/{client_id}/soap_notes:
+    get:
+      summary: List client SOAP notes
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "Associated client ID"
+      - in: "query"
+        name: "page"
+        schema:
+          type: "integer"
+        description: "Page number to display"
+        required: false
+      - in: "query"
+        name: "per_page"
+        schema:
+          type: "integer"
+        description: "Number of records per page"
+        required: false
+      responses:
+        "200":
+          description: "List of SOAP notes with page meta data"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": [
+                  {
+                    "id": 33,
+                    "scheduling_id": 49,
+                    "note": "tester testing123 testing again",
+                    "add_date": null,
+                    "rbt_sign": true,
+                    "rbt_sign_name": "Tester RBT 12",
+                    "rbt_sign_date": "2022-05-04",
+                    "bcba_sign": null,
+                    "bcba_sign_name": null,
+                    "bcba_sign_date": null,
+                    "clinical_director_sign": null,
+                    "clinical_director_sign_name": null,
+                    "clinical_director_sign_date": null,
+                    "caregiver_sign": null,
+                    "caregiver_sign_date": null,
+                    "creator_id": 43,
+                    "creator": "Tester RBT 12"
+                  },
+                  {
+                    "id": 46,
+                    "scheduling_id": 49,
+                    "note": "test-note-10",
+                    "add_date": "2022-04-29",
+                    "rbt_sign": null,
+                    "rbt_sign_name": null,
+                    "rbt_sign_date": null,
+                    "bcba_sign": null,
+                    "bcba_sign_name": null,
+                    "bcba_sign_date": null,
+                    "clinical_director_sign": null,
+                    "clinical_director_sign_name": null,
+                    "clinical_director_sign_date": null,
+                    "caregiver_sign": null,
+                    "caregiver_sign_date": null,
+                    "creator_id": 12,
+                    "creator": "test Muller"
+                  }
+                ],
+                "total_records": 2,
+                "limit": 10,
+                "page": "1"
+              }
+
+  /api/clients/{client_id}/soap_notes/{id}:
+    get:
+      summary: List client SOAP notes
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "Associated client ID"
+      - in: "path"
+        name: "id"
+        description: "Associated SOAP Note ID"
+      responses:
+        "200":
+          description: "SOAP note"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 20,
+                  "scheduling_id": 17,
+                  "note": "testing 123345",
+                  "add_date": "2022-05-04",
+                  "rbt_sign": true,
+                  "rbt_sign_name": "test Muller",
+                  "rbt_sign_date": "2022-05-04",
+                  "bcba_sign": true,
+                  "bcba_sign_name": "test Muller",
+                  "bcba_sign_date": "2022-05-04 00:50",
+                  "clinical_director_sign": true,
+                  "clinical_director_sign_name": "test Muller",
+                  "clinical_director_sign_date": "2022-05-04",
+                  "caregiver_sign": "https://icbd-stage-files.s3.amazonaws.com/e2ncizg21tyevbakvxwngqiym2tn?response-content-disposition=inline%3B%20filename%3D%22signature%22%3B%20filename%2A%3DUTF-8%27%27signature&response-content-type=image%2Fpng&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIASS4SZPMBHMISC6Z3%2F20220511%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220511T045915Z&X-Amz-Expires=300&X-Amz-SignedHeaders=host&X-Amz-Signature=54d16b264cf1942400958c329aee45662c7ef5fe292cfa0384e1643b87cf1814",
+                  "caregiver_sign_date": "2022-05-04T00:50:25.308-04:00",
+                  "creator_id": 35,
+                  "creator": "Caalyst test RBT"
+                }
+              }
+
   /api/scheduling_meta_data:
     get:
       summary: Scheduling meta data selectable options list
@@ -4476,10 +4625,16 @@ paths:
         description: "Request headers"
         required: true
       - in: "query"
-        name: "clinic_id"
+        name: "location_id"
         schema:
           type: "integer"
         description: "Associated clinic id to filter"
+        required: false
+      - in: "query"
+        name: "cross_site_allowed"
+        schema:
+          type: "boolean"
+        description: "cross_site_allowed to filter staff"
         required: false
       responses:
         "200":
@@ -4584,6 +4739,18 @@ paths:
                     "id": 1,
                     "client_id": 16,
                     "client_name": "Test Client3",
+                    "service_address_id": 16,
+                    "service_address": {
+                      "line1": "PBS",
+                      "line2": null,
+                      "line3": null,
+                      "zipcode": null,
+                      "city": "Indore",
+                      "state": null,
+                      "country": null,
+                      "is_default": true,
+                      "address_name": null
+                    },
                     "staff_id": 20,
                     "staff_name": "May Dach",
                     "service_id": 28,
@@ -4597,20 +4764,47 @@ paths:
                     "minutes": "360"
                   },
                   {
-                    "id": 2,
-                    "client_id": 17,
-                    "client_name": "Test Client2",
-                    "staff_id": 24,
-                    "staff_name": "Fr. Dinorah",
-                    "service_id": 30,
+                    "id": 6,
+                    "client_enrollment_service_id": 3,
+                    "total_units": null,
+                    "used_units": 6.0,
+                    "scheduled_units": 0,
+                    "left_units": 0,
+                    "total_minutes": 900.0,
+                    "used_minutes": 0,
+                    "scheduled_minutes": 0,
+                    "left_minutes": 900.0,
+                    "cross_site_allowed": false,
+                    "client_id": 12,
+                    "client_name": "Test Client1",
+                    "service_address_id": 16,
+                    "service_address": {
+                      "line1": "PBS",
+                      "line2": null,
+                      "line3": null,
+                      "zipcode": null,
+                      "city": "Indore",
+                      "state": null,
+                      "country": null,
+                      "is_default": true,
+                      "address_name": null
+                    },
+                    "staff_id": 6,
+                    "staff_name": "Gov. Moon",
+                    "service_id": 6,
                     "service_name": "initial assessment",
-                    "status": "scheduled",
-                    "date": "2022-12-23",
-                    "start_time": "2022-02-23T18:27:57+05:30",
-                    "end_time": "2022-02-23T23:27:57+05:30",
+                    "service_display_code": "17",
+                    "status": "Scheduled",
+                    "date": "2022-03-17",
+                    "start_time": "14:00",
+                    "end_time": "15:00",
                     "is_rendered": false,
-                    "units": "6",
-                    "minutes": "360"
+                    "units": 2.0,
+                    "minutes": null,
+                    "creator_id": 1,
+                    "creator_name": "Jamel Casper",
+                    "updator_id": null,
+                    "updator_name": null
                   }
                 ],
                 "total_records": 2,
@@ -4645,20 +4839,47 @@ paths:
               example: {
                 "status": "success",
                 "data": {
-                  "id": 2,
-                  "client_id": 17,
-                  "client_name": "Test Client2",
-                  "staff_id": 24,
-                  "staff_name": "Fr. Dinorah",
-                  "service_id": 30,
+                  "id": 6,
+                  "client_enrollment_service_id": 3,
+                  "total_units": null,
+                  "used_units": 6.0,
+                  "scheduled_units": 0,
+                  "left_units": 0,
+                  "total_minutes": 900.0,
+                  "used_minutes": 0,
+                  "scheduled_minutes": 0,
+                  "left_minutes": 900.0,
+                  "cross_site_allowed": false,
+                  "client_id": 12,
+                  "client_name": "Test Client1",
+                  "service_address_id": 16,
+                  "service_address": {
+                    "line1": "PBS",
+                    "line2": null,
+                    "line3": null,
+                    "zipcode": null,
+                    "city": "Indore",
+                    "state": null,
+                    "country": null,
+                    "is_default": true,
+                    "address_name": null
+                  },
+                  "staff_id": 6,
+                  "staff_name": "Gov. Moon",
+                  "service_id": 6,
                   "service_name": "initial assessment",
-                  "status": "scheduled",
-                  "date": "2022-12-23",
-                  "start_time": "2022-02-23T18:27:57+05:30",
-                  "end_time": "2022-02-23T23:27:57+05:30",
+                  "service_display_code": "17",
+                  "status": "Scheduled",
+                  "date": "2022-03-17",
+                  "start_time": "14:00",
+                  "end_time": "15:00",
                   "is_rendered": false,
-                  "units": "6",
-                  "minutes": "360"
+                  "units": 2.0,
+                  "minutes": null,
+                  "creator_id": 1,
+                  "creator_name": "Jamel Casper",
+                  "updator_id": null,
+                  "updator_name": null
                 },
                 "errors": []
               }
@@ -4691,20 +4912,47 @@ paths:
               example: {
                 "status": "success",
                 "data": {
-                  "id": 1,
-                  "client_id": 16,
-                  "client_name": "Test Client3",
-                  "staff_id": 20,
-                  "staff_name": "May Dach",
-                  "service_id": 28,
-                  "service_name": "developmental test administration by physician",
-                  "status": "scheduled",
-                  "date": "2022-12-23",
-                  "start_time": null,
-                  "end_time": null,
+                  "id": 6,
+                  "client_enrollment_service_id": 3,
+                  "total_units": null,
+                  "used_units": 6.0,
+                  "scheduled_units": 0,
+                  "left_units": 0,
+                  "total_minutes": 900.0,
+                  "used_minutes": 0,
+                  "scheduled_minutes": 0,
+                  "left_minutes": 900.0,
+                  "cross_site_allowed": false,
+                  "client_id": 12,
+                  "client_name": "Test Client1",
+                  "service_address_id": 16,
+                  "service_address": {
+                    "line1": "PBS",
+                    "line2": null,
+                    "line3": null,
+                    "zipcode": null,
+                    "city": "Indore",
+                    "state": null,
+                    "country": null,
+                    "is_default": true,
+                    "address_name": null
+                  },
+                  "staff_id": 6,
+                  "staff_name": "Gov. Moon",
+                  "service_id": 6,
+                  "service_name": "initial assessment",
+                  "service_display_code": "17",
+                  "status": "Scheduled",
+                  "date": "2022-03-17",
+                  "start_time": "14:00",
+                  "end_time": "15:00",
                   "is_rendered": false,
-                  "units": "6",
-                  "minutes": "360"
+                  "units": 2.0,
+                  "minutes": null,
+                  "creator_id": 1,
+                  "creator_name": "Jamel Casper",
+                  "updator_id": null,
+                  "updator_name": null
                 }
               }
     put:
@@ -4739,20 +4987,47 @@ paths:
               example: {
                 "status": "success",
                 "data": {
-                  "id": 1,
-                  "client_id": 17,
-                  "client_name": "Test Client2",
-                  "staff_id": 24,
-                  "staff_name": "Fr. Dinorah",
-                  "service_id": 30,
+                  "id": 6,
+                  "client_enrollment_service_id": 3,
+                  "total_units": null,
+                  "used_units": 6.0,
+                  "scheduled_units": 0,
+                  "left_units": 0,
+                  "total_minutes": 900.0,
+                  "used_minutes": 0,
+                  "scheduled_minutes": 0,
+                  "left_minutes": 900.0,
+                  "cross_site_allowed": false,
+                  "client_id": 12,
+                  "client_name": "Test Client1",
+                  "service_address_id": 16,
+                  "service_address": {
+                    "line1": "PBS",
+                    "line2": null,
+                    "line3": null,
+                    "zipcode": null,
+                    "city": "Indore",
+                    "state": null,
+                    "country": null,
+                    "is_default": true,
+                    "address_name": null
+                  },
+                  "staff_id": 6,
+                  "staff_name": "Gov. Moon",
+                  "service_id": 6,
                   "service_name": "initial assessment",
-                  "status": "scheduled",
-                  "date": "2022-12-23",
-                  "start_time": "2022-02-23T18:27:57+05:30",
-                  "end_time": "2022-02-23T23:27:57+05:30",
+                  "service_display_code": "17",
+                  "status": "Scheduled",
+                  "date": "2022-03-17",
+                  "start_time": "14:00",
+                  "end_time": "15:00",
                   "is_rendered": false,
-                  "units": "6",
-                  "minutes": "360"
+                  "units": 2.0,
+                  "minutes": null,
+                  "creator_id": 1,
+                  "creator_name": "Jamel Casper",
+                  "updator_id": null,
+                  "updator_name": null
                 },
                 "errors": []
               }
@@ -4783,20 +5058,47 @@ paths:
               example: {
                 "status": "success",
                 "data": {
-                  "id": 1,
-                  "client_id": 16,
-                  "client_name": "Test Client3",
-                  "staff_id": 20,
-                  "staff_name": "May Dach",
-                  "service_id": 28,
-                  "service_name": "developmental test administration by physician",
-                  "status": "scheduled",
-                  "date": "2022-12-23",
-                  "start_time": null,
-                  "end_time": null,
+                  "id": 6,
+                  "client_enrollment_service_id": 3,
+                  "total_units": null,
+                  "used_units": 6.0,
+                  "scheduled_units": 0,
+                  "left_units": 0,
+                  "total_minutes": 900.0,
+                  "used_minutes": 0,
+                  "scheduled_minutes": 0,
+                  "left_minutes": 900.0,
+                  "cross_site_allowed": false,
+                  "client_id": 12,
+                  "client_name": "Test Client1",
+                  "service_address_id": 16,
+                  "service_address": {
+                    "line1": "PBS",
+                    "line2": null,
+                    "line3": null,
+                    "zipcode": null,
+                    "city": "Indore",
+                    "state": null,
+                    "country": null,
+                    "is_default": true,
+                    "address_name": null
+                  },
+                  "staff_id": 6,
+                  "staff_name": "Gov. Moon",
+                  "service_id": 6,
+                  "service_name": "initial assessment",
+                  "service_display_code": "17",
+                  "status": "Scheduled",
+                  "date": "2022-03-17",
+                  "start_time": "14:00",
+                  "end_time": "15:00",
                   "is_rendered": false,
-                  "units": "6",
-                  "minutes": "360"
+                  "units": 2.0,
+                  "minutes": null,
+                  "creator_id": 1,
+                  "creator_name": "Jamel Casper",
+                  "updator_id": null,
+                  "updator_name": null
                 }
               }
 
@@ -5340,6 +5642,1092 @@ paths:
                 ]
               }
 
+  /api/clients/{client_id}/service_addresses:
+    get:
+      summary: Client service addresses list
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "Associated Client id"
+        required: true
+      responses:
+        "200":
+          description: "Client service addresses list"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": [
+                  {
+                    "id": 12,
+                    "type": "service_address",
+                    "line1": "Orbit Mall",
+                    "line2": null,
+                    "line3": null,
+                    "zipcode": null,
+                    "city": "Delhi",
+                    "state": null,
+                    "country": null,
+                    "is_default": true,
+                    "address_name": "home"
+                  },
+                  {
+                    "id": 13,
+                    "type": "service_address",
+                    "line1": null,
+                    "line2": null,
+                    "line3": null,
+                    "zipcode": null,
+                    "city": "Indore",
+                    "state": null,
+                    "country": null,
+                    "is_default": false,
+                    "address_name": "home"
+                  }
+                ]
+              }
+    post:
+      summary: Client service address create
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "Associated client id"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/ClientServiceAddressCreateUpdateParameters"
+      responses:
+        "200":
+          description: "Created client service address"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 14,
+                  "type": "service_address",
+                  "line1": "A.B. Road",
+                  "line2": null,
+                  "line3": null,
+                  "zipcode": "584964",
+                  "city": "Bombay",
+                  "state": "Maharashtra",
+                  "country": "India",
+                  "is_default": false,
+                  "address_name": "home"
+                },
+                "errors": []
+              }
+
+  /api/clients/{client_id}/service_addresses/{id}:
+    get:
+      summary: Client service address detail
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "Associated Client id"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "Client service address id"
+        required: true
+      responses:
+        "200":
+          description: "client service address detail"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 13,
+                  "type": "service_address",
+                  "line1": "Princess Business Skypark ",
+                  "line2": "Opp. C21 Mall",
+                  "line3": "AB road",
+                  "zipcode": "450210",
+                  "city": "Indore",
+                  "state": "Madhya Pradesh",
+                  "country": "India",
+                  "is_default": true,
+                  "address_name": "home"
+                }
+              }
+    put:
+      summary: Client service address update
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "Associated Client id"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "Client service address id"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/ClientServiceAddressCreateUpdateParameters"
+      responses:
+        "200":
+          description: "Updated client service address"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 13,
+                  "type": "service_address",
+                  "line1": "Princess Business Skypark ",
+                  "line2": "Opp. C21 Mall",
+                  "line3": "AB road",
+                  "zipcode": "450210",
+                  "city": "Indore",
+                  "state": "Madhya Pradesh",
+                  "country": "India",
+                  "is_default": true,
+                  "address_name": "home"
+                },
+                "errors": []
+              }
+    delete:
+      summary: Client service address delete
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "Associated Client id"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "Client service address id"
+        required: true
+      responses:
+        "200":
+          description: "Deleted client service address"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 13,
+                  "type": "service_address",
+                  "line1": "Princess Business Skypark ",
+                  "line2": "Opp. C21 Mall",
+                  "line3": "AB road",
+                  "zipcode": "450210",
+                  "city": "Indore",
+                  "state": "Madhya Pradesh",
+                  "country": "India",
+                  "is_default": true,
+                  "address_name": "home"
+                }
+              }
+
+  /api/bcba_list:
+    get:
+      summary: bcba list
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "query"
+        name: "location_id"
+        schema:
+          type: "integer"
+        description: "Clinic id to filter bcba"
+        required: false
+      responses:
+        "200":
+          description: "bcba list"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": [
+                  {
+                    "id": 5,
+                    "first_name": "Chester",
+                    "last_name": "Waelchi",
+                    "email": "bcba_staff2@yopmail.com",
+                    "status": "inactive",
+                    "hired_at": null,
+                    "terminated_on": "2022-03-08",
+                    "title": "bcba",
+                    "gender": "male",
+                    "organization_id": 1,
+                    "organization_name": "org1",
+                    "clinic_id": 1,
+                    "clinic_name": "clinic1",
+                    "phone_numbers": []
+                  },
+                  {
+                    "id": 15,
+                    "first_name": "Test",
+                    "last_name": "Staff ",
+                    "email": "bcba_test3456@yopmail.com",
+                    "status": "active",
+                    "hired_at": "2022-03-01",
+                    "terminated_on": "2055-03-23",
+                    "title": "bcba",
+                    "gender": "male",
+                    "organization_id": 1,
+                    "organization_name": "org1",
+                    "clinic_id": 1,
+                    "clinic_name": "clinic1",
+                    "phone_numbers": []
+                  }
+                ]
+              }
+
+  /api/rbt_appointments:
+    get:
+      summary: rbt appointments list
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      responses:
+        "200":
+          description: "rbt appointments list"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "upcoming_schedules": [
+                    {
+                      "id": 17,
+                      "client_enrollment_service_id": 3,
+                      "cross_site_allowed": false,
+                      "client_id": 12,
+                      "client_name": "Test Client1",
+                      "service_address_id": null,
+                      "staff_id": 7,
+                      "staff_name": "Alethea Treutel",
+                      "staff_role": "rbt",
+                      "service_id": 6,
+                      "service_name": "initial assessment",
+                      "service_display_code": "17",
+                      "status": "Scheduled",
+                      "date": "2022-05-31",
+                      "start_time": "12:00",
+                      "end_time": "13:00",
+                      "is_rendered": false,
+                      "units": null,
+                      "minutes": null
+                    }
+                  ],
+                  "past_schedules": [
+                    {
+                      "id": 8,
+                      "client_enrollment_service_id": 3,
+                      "cross_site_allowed": false,
+                      "client_id": 12,
+                      "client_name": "Test Client1",
+                      "service_address_id": null,
+                      "staff_id": 7,
+                      "staff_name": "Alethea Treutel",
+                      "staff_role": "rbt",
+                      "service_id": 6,
+                      "service_name": "initial assessment",
+                      "service_display_code": "17",
+                      "status": "Scheduled",
+                      "date": "2022-03-17",
+                      "start_time": "14:00",
+                      "end_time": "15:00",
+                      "is_rendered": false,
+                      "units": 2.0,
+                      "minutes": null
+                    }
+                  ]
+                }
+              }
+
+  /api/bcba_appointments:
+    get:
+      summary: bcba appointments list
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      responses:
+        "200":
+          description: "bcba appointments list"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "upcoming_schedules": [
+                    {
+                      "id": 16,
+                      "client_enrollment_service_id": 4,
+                      "cross_site_allowed": false,
+                      "client_id": 12,
+                      "client_name": "Test Client1",
+                      "service_address_id": 16,
+                      "service_address": {
+                        "line1": "PBS",
+                        "line2": null,
+                        "line3": null,
+                        "zipcode": null,
+                        "city": "Indore",
+                        "state": null,
+                        "country": null,
+                        "is_default": true,
+                        "address_name": null
+                      },
+                      "staff_id": 4,
+                      "staff_name": "The Hon.",
+                      "staff_role": "bcba",
+                      "service_id": 4,
+                      "service_name": "developmental test administration by physician or",
+                      "service_display_code": "80",
+                      "status": "Scheduled",
+                      "date": "2022-04-30",
+                      "start_time": "12:00",
+                      "end_time": "13:00",
+                      "is_rendered": false,
+                      "units": 6.0,
+                      "minutes": null
+                    }
+                  ],
+                  "past_schedules": [
+                    {
+                      "id": 18,
+                      "client_enrollment_service_id": 4,
+                      "cross_site_allowed": false,
+                      "client_id": 12,
+                      "client_name": "Test Client1",
+                      "service_address_id": null,
+                      "staff_id": 4,
+                      "staff_name": "The Hon.",
+                      "staff_role": "bcba",
+                      "service_id": 4,
+                      "service_name": "developmental test administration by physician or",
+                      "service_display_code": "80",
+                      "status": "Scheduled",
+                      "date": "2022-03-29",
+                      "start_time": "17:00",
+                      "end_time": "17:30",
+                      "is_rendered": false,
+                      "units": 2.0,
+                      "minutes": null
+                    }
+                  ],
+                  "client_enrollment_services": [
+                    {
+                      "id": 6,
+                      "client_enrollment_id": 2,
+                      "funding_source_id": null,
+                      "funding_source": null,
+                      "service_id": 1,
+                      "service": "state service name\tdisplay code\tcategory default pay code",
+                      "is_service_provider_required": true,
+                      "start_date": "2022-03-01",
+                      "end_date": "2022-04-01",
+                      "units": 4.0,
+                      "used_units": 0,
+                      "scheduled_units": 0,
+                      "left_units": 4.0,
+                      "minutes": null,
+                      "used_minutes": 0,
+                      "scheduled_minutes": 0,
+                      "left_minutes": 0,
+                      "service_number": null,
+                      "service_providers": {
+                        "ids": [
+                          9
+                        ],
+                        "staff_ids": [
+                          5
+                        ],
+                        "names": [
+                          "Chester Waelchi"
+                        ]
+                      }
+                    }
+                  ],
+                  "change_requests": [
+                    {
+                      "id": 1,
+                      "date": null,
+                      "start_time": null,
+                      "end_time": null,
+                      "status": "client Cancel greater than 24 h",
+                      "approval_status": null,
+                      "scheduling_id": 6,
+                      "scheduling_date": "2022-03-17",
+                      "scheduling_start_time": "14:00",
+                      "scheduling_end_time": "15:00",
+                      "scheduling_status": "Scheduled",
+                      "staff_id": 6,
+                      "staff_name": "Gov. Moon",
+                      "staff_role": "rbt",
+                      "client_id": 12,
+                      "client_name": "Test Client1",
+                      "service_id": 6,
+                      "service_name": "initial assessment",
+                      "service_display_code": "17"
+                    }
+                  ]
+                }
+              }
+
+  /api/executive_director_appointments:
+    get:
+      summary: executive_director appointments list
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "query"
+        name: "default_location_id"
+        schema:
+          type: "integer"
+        description: "Location to display appointments"
+        required: true
+      responses:
+        "200":
+          description: "executive_director appointments list"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "todays_schedules": [
+                    {
+                      "id": 16,
+                      "client_enrollment_service_id": 4,
+                      "cross_site_allowed": false,
+                      "client_id": 12,
+                      "client_name": "Test Client1",
+                      "service_address_id": 16,
+                      "service_address": {
+                        "line1": "PBS",
+                        "line2": null,
+                        "line3": null,
+                        "zipcode": null,
+                        "city": "Indore",
+                        "state": null,
+                        "country": null,
+                        "is_default": true,
+                        "address_name": null
+                      },
+                      "staff_id": 4,
+                      "staff_name": "The Hon.",
+                      "staff_role": "bcba",
+                      "service_id": 4,
+                      "service_name": "developmental test administration by physician or",
+                      "service_display_code": "80",
+                      "status": "Scheduled",
+                      "date": "2022-04-30",
+                      "start_time": "12:00",
+                      "end_time": "13:00",
+                      "is_rendered": false,
+                      "units": 6.0,
+                      "minutes": null
+                    }
+                  ],
+                  "past_schedules": [
+                    {
+                      "id": 18,
+                      "client_enrollment_service_id": 4,
+                      "cross_site_allowed": false,
+                      "client_id": 12,
+                      "client_name": "Test Client1",
+                      "service_address_id": null,
+                      "staff_id": 4,
+                      "staff_name": "The Hon.",
+                      "staff_role": "bcba",
+                      "service_id": 4,
+                      "service_name": "developmental test administration by physician or",
+                      "service_display_code": "80",
+                      "status": "Scheduled",
+                      "date": "2022-03-29",
+                      "start_time": "17:00",
+                      "end_time": "17:30",
+                      "is_rendered": false,
+                      "units": 2.0,
+                      "minutes": null
+                    }
+                  ],
+                  "client_enrollment_services": [
+                    {
+                      "id": 6,
+                      "client_enrollment_id": 2,
+                      "funding_source_id": null,
+                      "funding_source": null,
+                      "service_id": 1,
+                      "service": "state service name\tdisplay code\tcategory default pay code",
+                      "is_service_provider_required": true,
+                      "start_date": "2022-03-01",
+                      "end_date": "2022-04-01",
+                      "units": 4.0,
+                      "used_units": 0,
+                      "scheduled_units": 0,
+                      "left_units": 4.0,
+                      "minutes": null,
+                      "used_minutes": 0,
+                      "scheduled_minutes": 0,
+                      "left_minutes": 0,
+                      "service_number": null,
+                      "service_providers": {
+                        "ids": [
+                          9
+                        ],
+                        "staff_ids": [
+                          5
+                        ],
+                        "names": [
+                          "Chester Waelchi"
+                        ]
+                      }
+                    }
+                  ],
+                  "change_requests": [
+                    {
+                      "id": 1,
+                      "date": null,
+                      "start_time": null,
+                      "end_time": null,
+                      "status": "client Cancel greater than 24 h",
+                      "approval_status": null,
+                      "scheduling_id": 6,
+                      "scheduling_date": "2022-03-17",
+                      "scheduling_start_time": "14:00",
+                      "scheduling_end_time": "15:00",
+                      "scheduling_status": "Scheduled",
+                      "staff_id": 6,
+                      "staff_name": "Gov. Moon",
+                      "staff_role": "rbt",
+                      "client_id": 12,
+                      "client_name": "Test Client1",
+                      "service_id": 6,
+                      "service_name": "initial assessment",
+                      "service_display_code": "17"
+                    }
+                  ]
+                }
+              }
+
+  /api/sync_soap_notes:
+    get:
+      summary: Enqueue SOAP note sync job
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      responses:
+        "200":
+          description: "SOAP note sync job was scheduled"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "message": "SOAP Notes syncing in progress."
+              }
+
+  /api/schedulings/{scheduling_id}/change_requests:
+    post:
+      summary: scheduling change request create
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "scheduling_id"
+        description: "Associated Scheduling Id"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/SchedulingChangerequestCreateParameters"
+      responses:
+        "200":
+          description: "Created scheduling change request"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 2,
+                  "date": null,
+                  "start_time": null,
+                  "end_time": "17:35",
+                  "status": "CLIENT NO SHOW",
+                  "scheduling_id": 17,
+                  "scheduling_date": null,
+                  "scheduling_start_time": null,
+                  "scheduling_end_time": "17:35",
+                  "scheduling_status": "CLIENT NO SHOW"
+                },
+                "errors": []
+              }
+
+  /api/schedulings/{scheduling_id}/change_requests/{id}:
+    put:
+      summary: scheduling change request update
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "scheduling_id"
+        description: "Associated Scheduling Id"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "Scheduling change request Id"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/SchedulingChangerequestUpdateParameters"
+      responses:
+        "200":
+          description: "Updated scheduling change request"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 2,
+                  "date": null,
+                  "start_time": null,
+                  "end_time": "17:35",
+                  "status": null,
+                  "scheduling_id": 17,
+                  "scheduling_date": "2022-05-31",
+                  "scheduling_start_time": "17:00",
+                  "scheduling_end_time": "17:35",
+                  "scheduling_status": "Scheduled"
+                },
+                "errors": []
+              }
+
+  /api/current_user_detail:
+    get:
+      summary: logged in user detail
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      responses:
+        "200":
+          description: "logged in user detail"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 1,
+                  "first_name": "Jamel",
+                  "last_name": "Casper",
+                  "email": "super_admin_user@yopmail.com",
+                  "status": "active",
+                  "title": "super_admin",
+                  "gender": "male",
+                  "phone_numbers": [
+                    {
+                      "id": 6,
+                      "phone_type": "mobile",
+                      "number": "9988998899"
+                    }
+                  ],
+                  "address": {
+                    "id": 18,
+                    "line1": null,
+                    "line2": null,
+                    "line3": null,
+                    "zipcode": null,
+                    "city": "Indore",
+                    "state": null,
+                    "country": null
+                  }
+                }
+              }
+
+  /api/billing_dashboard:
+    get:
+      summary: billing dashboard
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      responses:
+        "200":
+          description: "billing dashboard"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "authorizations_expire_in_5_days": [
+                    {
+                      "id": 1588,
+                      "client_id": 232,
+                      "client_enrollment_id": 1808,
+                      "funding_source_id": 2,
+                      "funding_source": "Ambetter nnhf",
+                      "service_id": 2,
+                      "service": "Re-Assessment",
+                      "service_display_code": "97151",
+                      "is_service_provider_required": true,
+                      "start_date": "2021-11-07",
+                      "end_date": "2022-05-06",
+                      "units": 40.0,
+                      "used_units": 0,
+                      "scheduled_units": 0,
+                      "left_units": 40.0,
+                      "minutes": 600.0,
+                      "used_minutes": 0,
+                      "scheduled_minutes": 0,
+                      "left_minutes": 600.0,
+                      "service_number": null,
+                      "service_providers": {
+                        "ids": [],
+                        "staff_ids": [],
+                        "names": []
+                      }
+                    }
+                  ],
+                  "authorizations_expire_in_6_to_20_days": [
+                    {
+                      "id": 1580,
+                      "client_id": 234,
+                      "client_enrollment_id": 1806,
+                      "funding_source_id": 7,
+                      "funding_source": "New Hampshire BCBS",
+                      "service_id": 2,
+                      "service": "Re-Assessment",
+                      "service_display_code": "97151",
+                      "is_service_provider_required": true,
+                      "start_date": "2021-11-19",
+                      "end_date": "2022-05-17",
+                      "units": 32.0,
+                      "used_units": 0,
+                      "scheduled_units": 0,
+                      "left_units": 32.0,
+                      "minutes": 480.0,
+                      "used_minutes": 0,
+                      "scheduled_minutes": 0,
+                      "left_minutes": 480.0,
+                      "service_number": null,
+                      "service_providers": {
+                        "ids": [],
+                        "staff_ids": [],
+                        "names": []
+                      }
+                    }
+                  ],
+                  "authorizations_expire_in_21_to_60_days": [
+                    {
+                      "id": 1576,
+                      "client_id": 238,
+                      "client_enrollment_id": 1805,
+                      "funding_source_id": 2,
+                      "funding_source": "Ambetter nnhf",
+                      "service_id": 2,
+                      "service": "Re-Assessment",
+                      "service_display_code": "97151",
+                      "is_service_provider_required": true,
+                      "start_date": "2022-01-03",
+                      "end_date": "2022-07-01",
+                      "units": 32.0,
+                      "used_units": 0,
+                      "scheduled_units": 0,
+                      "left_units": 32.0,
+                      "minutes": 480.0,
+                      "used_minutes": 0,
+                      "scheduled_minutes": 0,
+                      "left_minutes": 480.0,
+                      "service_number": null,
+                      "service_providers": {
+                        "ids": [],
+                        "staff_ids": [],
+                        "names": []
+                      }
+                    }
+                  ],
+                  "client_with_no_authorizations": [
+                    {
+                      "id": 243,
+                      "first_name": null,
+                      "last_name": null,
+                      "email": null,
+                      "clinic_id": 1,
+                      "clinic_name": "Bedford, NH",
+                      "bcba_id": null,
+                      "bcba_name": " ",
+                      "dob": null,
+                      "gender": null,
+                      "status": "active",
+                      "tracking_id": null,
+                      "preferred_language": "english",
+                      "disqualified": false,
+                      "payor_status": null,
+                      "payor": null,
+                      "addresses": [
+                        {
+                          "id": 1561,
+                          "type": "service_address",
+                          "line1": null,
+                          "line2": null,
+                          "line3": null,
+                          "zipcode": null,
+                          "city": null,
+                          "state": null,
+                          "country": null,
+                          "is_default": true
+                        }
+                      ]
+                    }
+                  ],
+                  "client_with_only_97151_service_authorization": [
+                    {
+                      "id": 266,
+                      "first_name": "Anthony",
+                      "last_name": "Martocci",
+                      "email": null,
+                      "clinic_id": 11,
+                      "clinic_name": "Wellesley, MA",
+                      "bcba_id": null,
+                      "bcba_name": " ",
+                      "dob": "2004-09-21",
+                      "gender": null,
+                      "status": "active",
+                      "tracking_id": null,
+                      "preferred_language": "english",
+                      "disqualified": false,
+                      "payor_status": null,
+                      "addresses": [
+                        {
+                          "id": 1584,
+                          "type": "service_address",
+                          "line1": null,
+                          "line2": null,
+                          "line3": null,
+                          "zipcode": "01545",
+                          "city": "Shrewsbury",
+                          "state": null,
+                          "country": null,
+                          "is_default": true
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+
+  /api/setting:
+    get:
+      summary: welcome note 
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      responses:
+        "200":
+          description: "welcome note"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 1,
+                  "welcome_note": "Welcome!"
+                }
+              }
+
+    put:
+      summary: welcome note update
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/SettingUpdateParameters"
+      responses:
+        "200":
+          description: "update welcome note"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 1,
+                  "welcome_note": "Welcome!"
+                },
+                "errors": []
+              }
+
 definitions:
   UserRegistrationParameters:
     type: "object"
@@ -5573,7 +6961,7 @@ definitions:
           country:
             type: "string"
 
-  StaffCreateUpdateByAdminParameters:
+  StaffCreateByAdminParameters:
     type: "object"
     properties:
       first_name:
@@ -5594,6 +6982,11 @@ definitions:
         type: "string"
       role_name:
         type: "string"
+      staff_location_id:
+        type: "integer"
+      job_type:
+        type: "string" 
+        enum: ["full_time", "part_time"]
       phone_numbers_attributes:
         type: "object"
         properties:
@@ -5633,72 +7026,70 @@ definitions:
           end_date:
             type: "string"
 
-  ClientCreateParameters:
+  StaffUpdateByAdminParameters:
     type: "object"
     properties:
       first_name:
         type: "string"
       last_name:
         type: "string"
-      disqualified:
-        type: "boolean"
-      dq_reason:
-        type: "string"
-        enum: [lost_contact, not_clinically_appropriate, insurance_denial, no_longer_interested, competitor, not_ready_to_move_forward, other]
-      preferred_language:
-        type: "string"
-        enum: [english, spanish]
-      status:
-        type: "string"
-        enum: [active, inactive]
-      gender:
-        type: "string"
-        enum: [male, female]
-      payor_status:
-        type: "string"
-      clinic_id:
-        type: "integer"
       email:
         type: "string"
       password:
         type: "string"
       password_confirmation:
         type: "string"
-      dob:
+      supervisor_id:
+        type: "integer"
+      hired_at:
         type: "string"
-      phone_number_attributes:
-        type: "object"
-        properties:
-          phone_type:
-            type: "string"
-            enum: [fax, home, mobile, pager, work, other]
-          number:
-            type: "string"
-      addresses_attributes:
+      terminated_on:
+        type: "string"
+      role_name:
+        type: "string"
+      job_type:
+        type: "string" 
+        enum: ["full_time", "part_time"]
+      phone_numbers_attributes:
         type: "object"
         properties:
           0:
             type: "object"
             properties:
-              line1:
+              phone_type:
                 type: "string"
-              line2:
-                type: "string"
-              line3:
-                type: "string"
-              zipcode:
-                type: "string"
-              city:
-                type: "string"
-              state:
-                type: "string"
-              country:
-                type: "string"
-              address_type:
-                type: "string"
-                enum: [office, insurance_address, service_address]
+                enum: [fax, home, mobile, pager, work, other]
+              number:
+                type: string
+      address_attributes:
+        type: "object"
+        properties:
+          line1:
+            type: "string"
+          line2:
+            type: "string"
+          line3:
+            type: "string"
+          zipcode:
+            type: "string"
+          city:
+            type: "string"
+          state:
+            type: "string"
+          country:
+            type: "string"
+      rbt_supervision_attributes:
+        type: "object"
+        properties:
+          status:
+            type: "string"
+            enum: [requires, provides, n_a]
+          start_date:
+            type: "string"
+          end_date:
+            type: "string"
 
-  ClientUpdateParameters:
+  ClientCreateUpdateParameters:
     type: "object"
     properties:
       first_name:
@@ -5716,6 +7107,8 @@ definitions:
       status:
         type: "string"
         enum: [active, inactive]
+      tracking_id:
+        type: "string"
       gender:
         type: "string"
         enum: [male, female]
@@ -5727,6 +7120,8 @@ definitions:
         type: "string"
       dob:
         type: "string"
+      bcba_id:
+        type: "integer"
       phone_number_attributes:
         type: "object"
         properties:
@@ -5741,8 +7136,6 @@ definitions:
           0:
             type: "object"
             properties:
-              id:
-                type: "integer"
               line1:
                 type: "string"
               line2:
@@ -6154,6 +7547,10 @@ definitions:
         type: "string"
       is_rendered:
         type: "boolean"
+      cross_site_allowed:
+        type: "boolean"
+      service_address_id:
+        type: "integer"
       
   SoapNoteCreateUpdateParameters:
     type: "object"
@@ -6170,3 +7567,49 @@ definitions:
         type: "boolean"
       caregiver_sign:
         type: string
+
+  ClientServiceAddressCreateUpdateParameters:
+    type: "object"
+    properties:
+      line1:
+        type: "string"
+      line2:
+        type: "string"
+      line3:
+        type: "string"
+      zipcode:
+        type: "string"
+      city:
+        type: "string"
+      state:
+        type: "string"
+      country:
+        type: "string"
+      is_default:
+        type: "boolean"
+      address_name:
+        type: "string"
+
+  SchedulingChangerequestCreateParameters:
+    type: "object"
+    properties:
+      date:
+        type: "string"
+      start_time:
+        type: "string"
+      end_time:
+        type: "string"
+      status:
+        type: "string"
+
+  SchedulingChangerequestUpdateParameters:
+    type: "object"
+    properties:
+      approval_status:
+        type: "string"
+
+  SettingUpdateParameters:
+    type: "object"
+    properties:
+      welcome_note:
+        type: "string"

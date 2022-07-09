@@ -8,17 +8,19 @@ AllCops:
 Style/FrozenStringLiteralComment:
   Enabled: false
 Metrics/LineLength:
-  Max: 170
+  Max: 1500
 Metrics/ModuleLength:
   Enabled: false
 Metrics/MethodLength:
-  Max: 60
+  Max: 200
 Style/GlobalVars:
   Enabled: false
 Style/GuardClause:
   Enabled: false
+# Style/IfUnlessModifier:
+#   Enabled: false
 Metrics/PerceivedComplexity:
-  Max: 15
+  Max: 200
 Metrics/ClassLength:
   Max: 300
 # Style/BracesAroundHashParameters:
@@ -27,6 +29,8 @@ Style/RedundantSelf:
   Enabled: false
 Layout/SpaceAfterComma:
   Enabled: false
+# Style/SymbolProc:
+#   Enabled: false
 Style/HashSyntax:
   Enabled: false
 # Rails/HasManyOrHasOneDependent:
@@ -62,7 +66,7 @@ Style/RedundantInterpolation:
 Style/StringLiterals:
   Enabled: false
 Metrics/CyclomaticComplexity:
-  Max: 20
+  Max: 200
 Style/ConditionalAssignment:
   Enabled: false
 Layout/HashAlignment:
@@ -76,7 +80,7 @@ Style/RescueStandardError:
 Metrics/ParameterLists:
   Enabled: false
 Metrics/AbcSize:
-  Max: 160
+  Max: 400
 Naming/VariableName:
   Enabled: false
 Style/CommentedKeyword:
@@ -112,8 +116,10 @@ Style/NumericPredicate:
 Naming/PredicateName:
   Enabled: false  
 Metrics/BlockLength:
-  Max: 60
+  Max: 400
 Style/RescueModifier:
   Enabled: false
 Style/SpecialGlobalVars:
   Enabled: false
+# Layout/LineLength:
+#   Max: 400

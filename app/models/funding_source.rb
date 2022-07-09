@@ -3,8 +3,8 @@ class FundingSource < ApplicationRecord
   # has_many :qualifications_credentials, through: :qualifications_credentials_funding_sources, dependent: :destroy
   # has_many :qualifications, through: :qualifications_credentials
 
-  has_one :phone_number, as: :phoneable, dependent: :destroy
-  has_one :address, as: :addressable, dependent: :destroy
+  has_one :phone_number, as: :phoneable, dependent: :destroy, inverse_of: :phoneable
+  has_one :address, as: :addressable, dependent: :destroy, inverse_of: :addressable
   has_many :client_enrollments, dependent: :nullify
   has_many :clients, through: :client_enrollments
   belongs_to :clinic

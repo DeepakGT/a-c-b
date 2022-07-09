@@ -5,13 +5,14 @@ class FundingSourcesController < ApplicationController
   before_action :set_funding_source, only: %i[show update destroy]
 
   def index
-    @funding_sources = @clinic.funding_sources.order(:created_at).paginate(page: params[:page])
+    @funding_sources = @clinic.funding_sources.order(:name).paginate(page: params[:page])
   end
 
   def show; end
 
   def create
     @funding_source = @clinic.funding_sources.new(funding_source_params)
+    @funding_source.id = FundingSource.ids.max+1 if FundingSource.ids.present?
     @funding_source.save
   end
 

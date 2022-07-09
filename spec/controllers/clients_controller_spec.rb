@@ -9,7 +9,7 @@ RSpec.describe ClientsController, type: :controller do
     @request.env["devise.mapping"] = Devise.mappings[:user]
   end
 
-  let!(:role) { create(:role, name: 'aba_admin', permissions: ['clients_view', 'clients_update'])}
+  let!(:role) { create(:role, name: 'executive_director', permissions: ['clients_view', 'clients_update'])}
   let!(:user) { create(:user, :with_role, role_name: role.name) }
   let!(:auth_headers) { user.create_new_auth_token }
   let!(:organization) {create(:organization, name: 'org1', admin_id: user.id)}
@@ -62,6 +62,21 @@ RSpec.describe ClientsController, type: :controller do
           expect(response.status).to eq(200)
           expect(response_body['status']).to eq('success')
           expect(response_body['data'].count).to eq(0)
+        end
+      end
+
+      context "when default_location_id is present" do
+        let!(:clinic1) { create(:clinic) }
+        let!(:client_list){ create_list(:client, 7, clinic_id: clinic1.id) }
+        it "should filter clients according to location" do
+          set_auth_headers(auth_headers)
+
+          get :index, params: {default_location_id: clinic1.id}
+          response_body = JSON.parse(response.body)
+
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data'].count).to eq(client_list.count)
         end
       end
     end

@@ -11,18 +11,33 @@ class StaffClinicsController < ApplicationController
   def show; end
   
   def create
-    @staff_clinic = @staff.staff_clinics.create(staff_clinic_params)
+    @staff_clinic = @staff.staff_clinics.new(staff_clinic_params)
+    remove_home_clinic if params[:is_home_clinic].to_bool.true?
+    @staff_clinic.save
   end
 
   def update
     StaffClinic.transaction do
-      remove_services if params[:staff_clinic_services_attributes].present?
+      remove_services # if params[:staff_clinic_services_attributes].present?
+      remove_home_clinic if params[:is_home_clinic].to_bool.true?
       @staff_clinic.update(staff_clinic_params)
     end
   end
 
   def destroy
-    @staff_clinic.destroy
+    if @staff_clinic.is_home_clinic.to_bool.true?
+      other_staff_clinics = @staff_clinic.staff.staff_clinics.except_ids(@staff_clinic.id)
+      if other_staff_clinics.any?
+        staff_clinic = other_staff_clinics.first
+        staff_clinic.is_home_clinic = true
+        staff_clinic.save(validate: false)
+        @staff_clinic.destroy
+      else
+        @staff_clinic.errors.add(:is_home_clinic, 'Please add another home location first.')
+      end
+    else
+      @staff_clinic.destroy
+    end
   end
 
   private
@@ -44,7 +59,12 @@ class StaffClinicsController < ApplicationController
   end
 
   def remove_services
-    @staff_clinic.services.destroy_all
+    @staff_clinic.staff_clinic_services.destroy_all
+  end
+
+  def remove_home_clinic
+    home_clinics = @staff.staff_clinics.where(is_home_clinic: true)
+    home_clinics.update_all(is_home_clinic: false) if home_clinics.present?
   end
   # end of private
 end

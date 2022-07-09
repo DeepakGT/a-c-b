@@ -9,7 +9,7 @@ RSpec.describe SoapNotesController, type: :controller do
     @request.env["devise.mapping"] = Devise.mappings[:user]
   end
 
-  let!(:role) { create(:role, name: 'aba_admin', permissions: ['soap_notes_view', 'soap_notes_update', 'soap_notes_delete'])}
+  let!(:role) { create(:role, name: 'executive_director', permissions: ['soap_notes_view', 'soap_notes_update', 'soap_notes_delete'])}
   let!(:user) { create(:user, :with_role, role_name: role.name) }
   let!(:auth_headers) { user.create_new_auth_token }
   let!(:organization) { create(:organization, name: 'org1', admin_id: user.id) }
@@ -23,7 +23,7 @@ RSpec.describe SoapNotesController, type: :controller do
 
   describe "GET #index" do
     context "when sign in" do
-      let!(:soap_notes) { create_list(:soap_note, 5, scheduling_id: scheduling.id)}
+      let!(:soap_notes) { create_list(:soap_note, 5, scheduling_id: scheduling.id, user: user)}
       it "should fetch soap notes list successfully" do
         set_auth_headers(auth_headers)
         
@@ -39,7 +39,7 @@ RSpec.describe SoapNotesController, type: :controller do
 
   describe "GET #show" do
     context "when sign in" do
-      let(:soap_note) { create(:soap_note, scheduling_id: scheduling.id, note: 'test-note', add_date: '2022-02-28') }
+      let(:soap_note) { create(:soap_note, scheduling_id: scheduling.id, note: 'test-note', add_date: '2022-02-28', user: user) }
       it "should fetch soap note detail successfully" do
         set_auth_headers(auth_headers)
 
@@ -62,7 +62,7 @@ RSpec.describe SoapNotesController, type: :controller do
         post :create, params: {
           scheduling_id: scheduling.id,
           note: 'test-note-1',
-          add_date: Time.now.to_date
+          add_date: Time.current.to_date
         }
         response_body = JSON.parse(response.body)
 
@@ -70,15 +70,15 @@ RSpec.describe SoapNotesController, type: :controller do
         expect(response_body['status']).to eq('success')
         expect(response_body['data']['scheduling_id']).to eq(scheduling.id)
         expect(response_body['data']['note']).to eq('test-note-1')
-        expect(response_body['data']['add_date']).to eq(Time.now.to_date.to_s)
+        expect(response_body['data']['add_date']).to eq(Time.current.to_date.to_s)
       end
     end
   end
 
   describe "PUT #update" do
     context "when sign in" do
-      let(:soap_note) { create(:soap_note, scheduling_id: scheduling.id, note: 'test-note-1', add_date: '2022-02-28') }
-      it "should fetch soap note detail successfully" do
+      let(:soap_note) { create(:soap_note, scheduling_id: scheduling.id, note: 'test-note-1', add_date: '2022-02-28', user: user) }
+      it "should update soap note detail successfully" do
         set_auth_headers(auth_headers)
 
         put :update, params: { scheduling_id: scheduling.id, id: soap_note.id, note: 'test-note', add_date: '2022-03-02' }
@@ -91,12 +91,31 @@ RSpec.describe SoapNotesController, type: :controller do
         expect(response_body['data']['note']).to eq('test-note')
         expect(response_body['data']['add_date']).to eq('2022-03-02')
       end
+
+      context "when user tries to update signature" do
+        let(:rbt_role){ create(:role, name: 'rbt', permissions: ['soap_notes_update'])}
+        let(:staff){ create(:staff, :with_role, role_name: rbt_role.name)}
+        let(:staff_auth_headers){ staff.create_new_auth_token }
+        it "should update signatures successfully" do
+          set_auth_headers(staff_auth_headers)
+  
+          put :update, params: { scheduling_id: scheduling.id, rbt_sign: true, id: soap_note.id }
+          response_body = JSON.parse(response.body)
+          
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data']['id']).to eq(soap_note.id)
+          expect(response_body['data']['scheduling_id']).to eq(scheduling.id)
+          expect(response_body['data']['rbt_sign']).to eq(true)
+          expect(response_body['data']['rbt_sign_name']).to eq("#{user.first_name} #{user.last_name}")
+        end
+      end
     end
   end
 
   describe "DELETE #destroy" do
     context "when sign in" do
-      let(:soap_note) { create(:soap_note, scheduling_id: scheduling.id, note: 'test-note', add_date: '2022-02-28') }
+      let(:soap_note) { create(:soap_note, scheduling_id: scheduling.id, note: 'test-note', add_date: '2022-02-28', user: user) }
       it "should fetch soap note detail successfully" do
         set_auth_headers(auth_headers)
 

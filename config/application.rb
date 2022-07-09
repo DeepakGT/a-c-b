@@ -38,5 +38,9 @@ module AbaCentreBe
     config.api_only = true
 
     config.active_job.queue_adapter = :sidekiq if ENV['CLOUD_PLATFORM']!='heroku'
+
+    config.time_zone = 'Eastern Time (US & Canada)'
+    
+    config.hosts << "abaconnectemr.com"
   end
 end

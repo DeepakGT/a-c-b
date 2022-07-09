@@ -7,7 +7,8 @@ class StaffController < ApplicationController
   def index
     staff = Staff.all
     staff = do_filter(staff) if params[:search_value].present?
-    staff = filter_by_location(staff) if params[:default_location_id].present?
+    staff = filter_by_status(staff)
+    staff = filter_by_location(staff) 
     @staff = staff.uniq.sort_by(&:first_name).paginate(page: params[:page])
   end
 
@@ -23,6 +24,7 @@ class StaffController < ApplicationController
     @staff = Staff.new(staff_params)
     set_role
     @staff.save
+    set_home_clinic if !@staff.id.nil?
   end
 
   def destroy
@@ -40,7 +42,7 @@ class StaffController < ApplicationController
   private
 
   def staff_params
-    arr = %i[first_name last_name hired_at terminated_on email supervisor_id]
+    arr = %i[first_name last_name hired_at terminated_on email supervisor_id job_type]
     
     arr.concat(%i[password password_confirmation]) if params[:action] == 'create'
     
@@ -67,21 +69,38 @@ class StaffController < ApplicationController
     @staff.password_confirmation = params[:password_confirmation]
   end
 
+  def set_home_clinic
+    return if params[:staff_location_id].blank?
+
+    @staff.staff_clinics.create(clinic_id: params[:staff_location_id], is_home_clinic: true)
+  end
+
   def do_filter(staff)
     if params[:search_by].present?
       case params[:search_by]
       when "name"
         fname, lname = params[:search_value].split(' ')
-        staff = staff.by_first_name(fname) if fname.present?
-        staff = staff.by_last_name(lname) if lname.present?
+        if fname.present? && lname.blank?
+          staff = staff.by_first_name(fname).or(staff.by_last_name(fname))
+        elsif fname.present? && lname.present?
+          staff = staff.by_first_name(fname)
+          staff = staff.by_last_name(lname)
+        else
+          staff = staff.by_first_name(fname) # if fname.present?
+          staff = staff.by_last_name(lname) # if lname.present?
+        end
         return staff
       when "organization"
         staff.joins(clinics: :organization).by_organization(params[:search_value])
-      when "title"
+      when "role"
         staff.joins(:role).by_role(params[:search_value])
       when "immediate_supervisor"
         fname, lname = params[:search_value].split
-        staff.by_supervisor_name(fname, lname)
+        if lname.present?
+          staff.by_supervisor_full_name(fname, lname)
+        else
+          staff.by_supervisor_first_name(fname).or(staff.by_supervisor_last_name(fname))
+        end
       when "location"
         staff.joins(:address).by_location(params[:search_value])
       else
@@ -96,11 +115,20 @@ class StaffController < ApplicationController
     staff = Staff.left_joins(:role, :address, clinics: :organization).all
     # formated_val = query.split.map{|x| "%#{x}%"}
     fname, lname = query.split
-    staff = staff.by_first_name(fname).by_last_name(lname)
-                 .or(staff.by_organization(query))
-                 .or(staff.by_role(query))
-                 .or(staff.by_supervisor_name(fname,lname))
-                 .or(staff.by_location(query))
+    if lname.present?
+      staff = staff.by_first_name(fname).by_last_name(lname)
+                   .or(staff.by_organization(query))
+                   .or(staff.by_role(query))
+                   .or(staff.by_supervisor_full_name(fname,lname))
+    else
+      staff = staff.by_first_name(fname)
+                   .or(staff.by_last_name(fname))
+                   .or(staff.by_organization(query))
+                   .or(staff.by_role(query))
+                   .or(staff.by_supervisor_first_name(fname))
+                   .or(staff.by_supervisor_last_name(fname))
+    end
+    staff
   end
 
   def authorize_user
@@ -108,8 +136,19 @@ class StaffController < ApplicationController
   end
 
   def filter_by_location(staff)
-    location_id = params[:default_location_id]
-    staff = staff.by_clinic(location_id)
+    if params[:default_location_id].present? && params[:search_cross_location]!=1 && params[:search_cross_location]!="1" 
+      location_id = params[:default_location_id]
+      staff = staff.by_home_clinic(location_id)
+    end
+    staff
+  end
+
+  def filter_by_status(staff)
+    if params[:show_inactive]=="1" || params[:show_inactive]==1
+      staff = staff.inactive
+    else
+      staff = staff.active
+    end
   end
   # end of private
 end

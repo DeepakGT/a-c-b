@@ -1,10 +1,10 @@
 class ClinicPolicy < ApplicationPolicy
   def index?
-    show? || update? || destroy?
+    true
   end
 
   def show?
-    return true if permissions.include?('location_view') || update? || destroy?
+    return true if permissions.include?('location_view') || update? || destroy? || user.role_name=='client_care_coordinator'
 
     false
   end

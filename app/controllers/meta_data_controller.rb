@@ -2,22 +2,33 @@ class MetaDataController < ApplicationController
   before_action :authenticate_user!
 
   def selectable_options
-    @selectable_options = get_selectable_options_data
+    @selectable_options = selectable_options_data
   end
 
   def clinics_list
     if current_user.role_name=='super_admin'
-      @clinics = Clinic.all 
+      @clinics = Clinic.order(:name)
     elsif current_user.type=="Staff"
-      @clinics = current_user.clinics
+      @clinics = current_user.clinics&.order(:name)
     else
-      @clinics = Clinic.where(id: current_user.clinic_id)
+      @clinics = Clinic.where(id: current_user&.clinic_id)&.order(:name)
     end
+  end
+
+  def bcba_list
+    # bcbas = Staff.joins(:role).by_role('bcba')
+    bcbas = Staff.joins(:role).by_roles(['bcba', 'Clinical Director', 'Lead RBT']).active
+    # bcbas = bcbas.by_clinic(params[:location_id]) if params[:location_id].present?
+    @bcbas = bcbas.order(:first_name, :last_name)
+  end
+
+  def rbt_list
+    @staff = Staff.active.by_roles('rbt')
   end
 
   private
 
-  def get_selectable_options_data
+  def selectable_options_data
     selectable_options = { countries: country_list,
                            preferred_languages: Client.preferred_languages,
                            dq_reasons: Client.dq_reasons, 

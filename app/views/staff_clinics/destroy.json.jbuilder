@@ -1,4 +1,4 @@
-json.status 'success'
+json.status @staff_clinic.errors.any? ? 'failure' : 'success'
 json.data do
   json.id @staff_clinic.id
   json.clinic_id @staff_clinic.clinic_id
@@ -13,3 +13,4 @@ json.data do
     end
   end
 end
+json.errors @staff_clinic.errors.full_messages&.map{|x| x.gsub!('Is home clinic ', '')}

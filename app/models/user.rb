@@ -16,15 +16,20 @@ class User < ActiveRecord::Base
 
   # Associations
   has_one :user_role, dependent: :destroy
+  has_one :address, as: :addressable, dependent: :destroy, inverse_of: :addressable
+  has_many :phone_numbers, as: :phoneable, dependent: :destroy, inverse_of: :phoneable
   has_one :rbt_supervision, dependent: :destroy
   
   has_one :role, through: :user_role
 
   accepts_nested_attributes_for :rbt_supervision, :update_only => true
+  accepts_nested_attributes_for :address, :update_only => true
+  accepts_nested_attributes_for :phone_numbers, :update_only => true
 
   # Enums
   enum status: {active: 0, inactive: 1}
   enum gender: {male: 0, female: 1}
+  enum job_type: {full_time: 'full_time', part_time: 'part_time'}
 
   # Validation
   validates_associated :role
@@ -39,9 +44,10 @@ class User < ActiveRecord::Base
   validate :validate_status
 
   # scopes
-  scope :by_first_name, ->(fname){ where('lower(first_name) LIKE ?',"%#{fname.downcase}%") }
-  scope :by_last_name, ->(lname){ where('lower(last_name) LIKE ?', "%#{lname&.downcase}%") }
-  scope :by_role, ->(title){ where('lower(roles.name) = ?', title&.downcase)}
+  scope :by_first_name, ->(fname){ where("first_name ILIKE '%#{fname}%'") }
+  scope :by_last_name, ->(lname){ where("last_name ILIKE '%#{lname}%'") }
+  scope :by_role, ->(title){ where("roles.name ILIKE '%#{title}%'")}
+  scope :by_roles, ->(role_names){ joins(:role).where('role.name': role_names) }
 
   # delegates
   delegate :name, to: :role, prefix: true, allow_nil: true
@@ -49,18 +55,27 @@ class User < ActiveRecord::Base
   # format response
   def as_json(options = {})
     response = super(options)
-               .select { |key| key.in?(['email', 'uid', 'first_name', 'last_name']) }
+               .select { |key| key.in?(['id', 'email', 'uid', 'first_name', 'last_name']) }
                .merge({role: Role.find_by(name: self.role_name)})
 
-    response.merge!({organization_id: self.organization&.id}) if self.role_name=='aba_admin'
+    response.merge!({organization_id: self.organization&.id}) if self.role_name=='executive_director'
+    if self.type=='Staff'
+      response.merge!({default_location_id: self.staff_clinics&.home_clinic&.first&.clinic_id})
+    else
+      response.merge!({default_location_id: 1})
+    end
     response
   end
 
   def organization
     return nil if self.role_name=='administrator' || self.role_name=='super_admin'
-    return Organization.find_by(admin_id: self.id) if self.role_name=='aba_admin'
+    return Organization.find_by(admin_id: self.id) if self.role_name=='executive_director'
 
     self.clinic.organization
+  end
+
+  def active_for_authentication?
+    super and self.active?
   end
 
   private

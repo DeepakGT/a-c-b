@@ -9,7 +9,7 @@ RSpec.describe FundingSourcesController, type: :controller do
     @request.env["devise.mapping"] = Devise.mappings[:user]
   end
 
-  let!(:role) { create(:role, name: 'aba_admin', permissions: ['funding_source_view', 'funding_source_update'])}
+  let!(:role) { create(:role, name: 'executive_director', permissions: ['funding_source_view', 'funding_source_update'])}
   let!(:user) { create(:user, :with_role, role_name: role.name) }
   let!(:auth_headers) { user.create_new_auth_token }
   let!(:organization) {create(:organization, name: 'org1')}

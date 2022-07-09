@@ -8,7 +8,9 @@ class ServicesController < ApplicationController
   end
 
   def create
-    @service = Service.create(service_params)
+    @service = Service.new(service_params)
+    @service.id = Service.ids.max+1
+    @service.save
   end
 
   def show; end
@@ -27,7 +29,7 @@ class ServicesController < ApplicationController
   private
 
   def service_params
-    params.permit(:name, :status, :display_code, :is_service_provider_required,
+    params.permit(:name, :status, :display_code, :is_service_provider_required, :is_unassigned_appointment_allowed,
                   service_qualifications_attributes: :qualification_id)
   end
 

@@ -20,7 +20,7 @@ RSpec.describe User, type: :model do
   end
 
   describe "#attr_accessor" do
-    let(:user){build :user, :with_role, role_name: 'aba_admin'}
+    let(:user){build :user, :with_role, role_name: 'executive_director'}
     RSpec::Matchers.define :have_attr_accessor do |role_id|
       match do |user|
         user.respond_to?(role_id) &&
@@ -46,7 +46,7 @@ RSpec.describe User, type: :model do
     it { should validate_presence_of(:email) }
     it { should validate_presence_of(:password).on(:create) }
     it { should validate_length_of(:password).is_at_least(6).is_at_most(128).on(:create) }
-    let(:user) {build :user, :with_role, role_name: 'aba_admin'}
+    let(:user) {build :user, :with_role, role_name: 'executive_director'}
     it 'should not allow passwords that do not fit the specified format' do
       invalid_passwords = %w[abcd abcde@12 ABCD@123 Abcd1234 ABCde@@]
       invalid_passwords.each do |invalid_password|
@@ -62,7 +62,7 @@ RSpec.describe User, type: :model do
 
   describe "#validate_status" do
     context "when user is inactive" do
-      let(:user) { build :user, :with_role, role_name: 'aba_admin', status: 'inactive' }
+      let(:user) { build :user, :with_role, role_name: 'executive_director', status: 'inactive' }
       it "termination date must be present" do
         user.validate
         expect(user.errors[:status]).to include('For an inactive user, terminated date must be present.')
@@ -76,9 +76,9 @@ RSpec.describe User, type: :model do
       expect(user.organization).to eq(nil)  
     end   
     
-    let(:user) { create(:user, :with_role, role_name: 'aba_admin') }
+    let(:user) { create(:user, :with_role, role_name: 'executive_director') }
     let(:organization) { create(:organization, name: 'test-2', admin_id: user.id)}
-    it "should be aba_admin" do
+    it "should be executive_director" do
       expect(Organization.where(admin_id: user.id)).not_to eq(nil)  
     end
   end

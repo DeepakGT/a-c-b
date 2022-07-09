@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_23_064421) do
+ActiveRecord::Schema.define(version: 2022_06_14_062016) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -56,7 +56,9 @@ ActiveRecord::Schema.define(version: 2022_03_23_064421) do
     t.bigint "addressable_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["addressable_id", "addressable_type", "address_type"], name: "index_on_address", unique: true
+    t.boolean "is_default", default: false
+    t.string "address_name"
+    t.index ["addressable_id", "addressable_type", "address_type"], name: "index_on_address", unique: true, where: "((address_type = 0) OR (address_type = 1))"
     t.index ["addressable_type", "addressable_id"], name: "index_addresses_on_addressable"
   end
 
@@ -68,6 +70,34 @@ ActiveRecord::Schema.define(version: 2022_03_23_064421) do
     t.datetime "updated_at", precision: 6, null: false
     t.string "file_name"
     t.index ["attachable_type", "attachable_id"], name: "index_attachments_on_attachable"
+  end
+
+  create_table "catalyst_data", force: :cascade do |t|
+    t.string "catalyst_soap_note_id"
+    t.date "date"
+    t.string "start_time"
+    t.string "end_time"
+    t.text "note"
+    t.text "bcba_signature"
+    t.text "clinical_director_signature"
+    t.json "response"
+    t.bigint "system_scheduling_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.text "caregiver_signature"
+    t.text "provider_signature"
+    t.float "units"
+    t.float "minutes"
+    t.boolean "is_appointment_found"
+    t.string "multiple_schedulings_ids", default: [], array: true
+    t.datetime "date_revision_made"
+    t.string "catalyst_patient_id"
+    t.string "catalyst_user_id"
+    t.string "location"
+    t.string "session_location"
+    t.index ["is_appointment_found"], name: "index_catalyst_data_on_is_appointment_found"
+    t.index ["multiple_schedulings_ids"], name: "index_catalyst_data_on_multiple_schedulings_ids"
+    t.index ["system_scheduling_id"], name: "index_catalyst_data_on_system_scheduling_id"
   end
 
   create_table "client_enrollment_service_providers", force: :cascade do |t|
@@ -89,6 +119,12 @@ ActiveRecord::Schema.define(version: 2022_03_23_064421) do
     t.bigint "service_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.float "left_units", default: 0.0
+    t.float "used_units", default: 0.0
+    t.float "scheduled_units", default: 0.0
+    t.float "left_minutes", default: 0.0
+    t.float "used_minutes", default: 0.0
+    t.float "scheduled_minutes", default: 0.0
     t.index ["client_enrollment_id"], name: "index_client_enrollment_services_on_client_enrollment_id"
     t.index ["service_id"], name: "index_client_enrollment_services_on_service_id"
   end
@@ -97,7 +133,6 @@ ActiveRecord::Schema.define(version: 2022_03_23_064421) do
     t.date "enrollment_date"
     t.date "terminated_on"
     t.text "notes"
-    t.bigint "client_id", null: false
     t.bigint "funding_source_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -111,19 +146,41 @@ ActiveRecord::Schema.define(version: 2022_03_23_064421) do
     t.string "subscriber_phone"
     t.date "subscriber_dob"
     t.integer "source_of_payment", default: 0
+    t.bigint "client_id"
     t.index ["client_id"], name: "index_client_enrollments_on_client_id"
     t.index ["funding_source_id"], name: "index_client_enrollments_on_funding_source_id"
   end
 
   create_table "client_notes", force: :cascade do |t|
-    t.bigint "client_id"
     t.text "note"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.date "add_date"
     t.bigint "creator_id"
+    t.bigint "client_id"
     t.index ["client_id"], name: "index_client_notes_on_client_id"
     t.index ["creator_id"], name: "index_client_notes_on_creator_id"
+  end
+
+  create_table "clients", force: :cascade do |t|
+    t.string "first_name"
+    t.string "last_name"
+    t.string "email"
+    t.integer "gender", default: 0
+    t.boolean "disqualified", default: false
+    t.integer "dq_reason"
+    t.integer "preferred_language", default: 0
+    t.date "dob"
+    t.integer "status", default: 0
+    t.string "payor_status"
+    t.bigint "clinic_id", null: false
+    t.bigint "bcba_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.text "catalyst_patient_id"
+    t.string "tracking_id"
+    t.index ["bcba_id"], name: "index_clients_on_bcba_id"
+    t.index ["clinic_id"], name: "index_clients_on_clinic_id"
   end
 
   create_table "clinics", force: :cascade do |t|
@@ -135,6 +192,7 @@ ActiveRecord::Schema.define(version: 2022_03_23_064421) do
     t.bigint "organization_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.text "catalyst_clinic_id"
     t.index ["organization_id"], name: "index_clinics_on_organization_id"
   end
 
@@ -148,10 +206,10 @@ ActiveRecord::Schema.define(version: 2022_03_23_064421) do
     t.boolean "resides_with_client", default: false, null: false
     t.boolean "guarantor", default: false, null: false
     t.boolean "parent_portal_access", default: false, null: false
-    t.bigint "client_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.boolean "is_address_same_as_client", default: false
+    t.bigint "client_id"
     t.index ["client_id"], name: "index_contacts_on_client_id"
   end
 
@@ -159,6 +217,7 @@ ActiveRecord::Schema.define(version: 2022_03_23_064421) do
     t.string "name"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "code"
   end
 
   create_table "funding_sources", force: :cascade do |t|
@@ -223,6 +282,19 @@ ActiveRecord::Schema.define(version: 2022_03_23_064421) do
     t.json "permissions", default: []
   end
 
+  create_table "scheduling_change_requests", force: :cascade do |t|
+    t.bigint "scheduling_id", null: false
+    t.date "date"
+    t.string "start_time"
+    t.string "end_time"
+    t.string "status"
+    t.integer "approval_status"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["approval_status"], name: "index_scheduling_change_requests_on_approval_status"
+    t.index ["scheduling_id"], name: "index_scheduling_change_requests_on_scheduling_id"
+  end
+
   create_table "schedulings", force: :cascade do |t|
     t.date "date"
     t.string "start_time"
@@ -230,16 +302,27 @@ ActiveRecord::Schema.define(version: 2022_03_23_064421) do
     t.string "status", default: "Scheduled"
     t.float "units"
     t.float "minutes"
-    t.bigint "staff_id", null: false
+    t.bigint "staff_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "client_enrollment_service_id"
     t.bigint "creator_id"
     t.bigint "updator_id"
     t.boolean "is_rendered", default: false
+    t.boolean "cross_site_allowed", default: false
+    t.integer "service_address_id"
+    t.string "unrendered_reason"
+    t.string "catalyst_data_ids", default: [], array: true
+    t.datetime "rendered_at"
+    t.string "snowflake_appointment_id"
+    t.boolean "is_manual_render", default: false
+    t.boolean "is_soap_notes_assigned", default: false
     t.index ["client_enrollment_service_id"], name: "index_schedulings_on_client_enrollment_service_id"
     t.index ["creator_id"], name: "index_schedulings_on_creator_id"
+    t.index ["date"], name: "index_schedulings_on_date"
+    t.index ["is_rendered"], name: "index_schedulings_on_is_rendered"
     t.index ["staff_id"], name: "index_schedulings_on_staff_id"
+    t.index ["start_time"], name: "index_schedulings_on_start_time"
     t.index ["updator_id"], name: "index_schedulings_on_updator_id"
   end
 
@@ -259,13 +342,20 @@ ActiveRecord::Schema.define(version: 2022_03_23_064421) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.boolean "is_service_provider_required", default: false
+    t.boolean "is_unassigned_appointment_allowed", default: false
+  end
+
+  create_table "settings", force: :cascade do |t|
+    t.text "welcome_note"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "soap_notes", force: :cascade do |t|
     t.string "note"
     t.date "add_date"
-    t.bigint "scheduling_id", null: false
-    t.bigint "creator_id", null: false
+    t.bigint "scheduling_id"
+    t.bigint "creator_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.boolean "rbt_signature"
@@ -273,20 +363,26 @@ ActiveRecord::Schema.define(version: 2022_03_23_064421) do
     t.date "rbt_signature_date"
     t.boolean "bcba_signature"
     t.string "bcba_signature_author_name"
-    t.date "bcba_signature_date"
+    t.datetime "bcba_signature_date"
     t.boolean "clinical_director_signature"
     t.string "clinical_director_signature_author_name"
     t.date "clinical_director_signature_date"
     t.datetime "caregiver_signature_datetime"
+    t.boolean "caregiver_signature", default: false
+    t.boolean "synced_with_catalyst", default: false
+    t.string "catalyst_data_id"
+    t.bigint "client_id"
+    t.datetime "add_time"
+    t.index ["client_id"], name: "index_soap_notes_on_client_id"
     t.index ["creator_id"], name: "index_soap_notes_on_creator_id"
     t.index ["scheduling_id"], name: "index_soap_notes_on_scheduling_id"
   end
 
   create_table "staff_clinic_services", force: :cascade do |t|
     t.bigint "service_id", null: false
-    t.bigint "staff_clinic_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.bigint "staff_clinic_id"
     t.index ["service_id"], name: "index_staff_clinic_services_on_service_id"
     t.index ["staff_clinic_id"], name: "index_staff_clinic_services_on_staff_clinic_id"
   end
@@ -335,14 +431,10 @@ ActiveRecord::Schema.define(version: 2022_03_23_064421) do
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
     t.string "unconfirmed_email"
-    t.bigint "clinic_id"
     t.string "first_name"
     t.string "last_name"
     t.string "email"
     t.integer "gender", default: 0
-    t.boolean "disqualified", default: false
-    t.integer "dq_reason"
-    t.integer "preferred_language", default: 0
     t.date "dob"
     t.string "type"
     t.bigint "supervisor_id"
@@ -351,9 +443,9 @@ ActiveRecord::Schema.define(version: 2022_03_23_064421) do
     t.json "tokens"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.string "payor_status"
     t.date "hired_at"
-    t.index ["clinic_id"], name: "index_users_on_clinic_id"
+    t.string "job_type", default: "full_time"
+    t.text "catalyst_user_id"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
@@ -363,25 +455,26 @@ ActiveRecord::Schema.define(version: 2022_03_23_064421) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "catalyst_data", "schedulings", column: "system_scheduling_id"
   add_foreign_key "client_enrollment_service_providers", "client_enrollment_services"
   add_foreign_key "client_enrollment_service_providers", "users", column: "staff_id"
   add_foreign_key "client_enrollment_services", "client_enrollments"
   add_foreign_key "client_enrollment_services", "services"
   add_foreign_key "client_enrollments", "funding_sources"
-  add_foreign_key "client_enrollments", "users", column: "client_id"
-  add_foreign_key "client_notes", "users", column: "client_id"
   add_foreign_key "client_notes", "users", column: "creator_id"
+  add_foreign_key "clients", "users", column: "bcba_id"
   add_foreign_key "clinics", "organizations"
-  add_foreign_key "contacts", "users", column: "client_id"
   add_foreign_key "funding_sources", "clinics"
   add_foreign_key "organizations", "users", column: "admin_id"
   add_foreign_key "rbt_supervisions", "users"
+  add_foreign_key "scheduling_change_requests", "schedulings"
   add_foreign_key "schedulings", "client_enrollment_services"
   add_foreign_key "schedulings", "users", column: "creator_id"
   add_foreign_key "schedulings", "users", column: "staff_id"
   add_foreign_key "schedulings", "users", column: "updator_id"
   add_foreign_key "service_qualifications", "qualifications"
   add_foreign_key "service_qualifications", "services"
+  add_foreign_key "soap_notes", "clients"
   add_foreign_key "soap_notes", "schedulings"
   add_foreign_key "soap_notes", "users", column: "creator_id"
   add_foreign_key "staff_clinic_services", "services"

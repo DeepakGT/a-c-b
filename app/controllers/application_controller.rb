@@ -10,7 +10,7 @@ class ApplicationController < ActionController::API
 
   def configure_permitted_parameters
     whitelisted_user_params = ['first_name', 'last_name', 'role_id', 'clinic_id', 'supervisor_id', 'status', 
-                               'terminated_on', {phone_numbers_attributes: %i[phone_type number], address_attributes: 
+                               'terminated_on', {phone_numbers_attributes: %i[id phone_type number], address_attributes: 
                                 %i[line1 line2 line3 zipcode city state country], rbt_supervision_attributes: 
                                 %i[status start_date end_date]}]
     # if self.service_provider?
