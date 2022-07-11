@@ -17,7 +17,12 @@ json.data do
     json.subscriber_phone client_enrollment.subscriber_phone
     json.subscriber_dob client_enrollment.subscriber_dob
     json.services do
-      json.array! client_enrollment.client_enrollment_services do |enrollment_service|
+      if params[:show_expired_before_30_days].to_bool.true?
+        client_enrollment_services = client_enrollment.client_enrollment_services
+      else
+        client_enrollment_services = client_enrollment.client_enrollment_services.not_expired_before_30_days
+      end
+      json.array! client_enrollment_services do |enrollment_service|
         # schedules = Scheduling.by_client_and_service(enrollment_service.client_enrollment.client_id, enrollment_service.service_id)
         # schedules = schedules.with_rendered_or_scheduled_as_status
         # completed_schedules = schedules.completed_scheduling
