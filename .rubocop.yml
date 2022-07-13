@@ -5,6 +5,7 @@ AllCops:
     - 'app/controllers/door_controller.rb'
     - 'test/**/*'
     - 'bin/*'
+    - 'db/schema.rb'
 # Rails:
 #   Enabled: true
 Style/FrozenStringLiteralComment:
@@ -150,4 +151,6 @@ Style/SoleNestedConditional:
 Naming/AccessorMethodName:
   Enabled: false
 Style/SoleNestedConditional:
+  Enabled: false
+Style/RedundantFileExtensionInRequire:
   Enabled: false
