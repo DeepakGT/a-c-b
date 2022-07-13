@@ -213,7 +213,7 @@ class SchedulingsController < ApplicationController
   # end 
 
   def update_render_service
-    RenderAppointments::RenderScheduleManualOperation.call(@schedule.id, params[:catalyst_soap_note_id]) if (params[:is_rendered].to_bool.true? || params[:status]=='Rendered') && @schedule.date<Time.current.to_date
+    RenderAppointments::RenderScheduleManualOperation.call(@schedule.id, params[:catalyst_soap_note_id], current_user) if (params[:is_rendered].to_bool.true? || params[:status]=='Rendered') && @schedule.date<Time.current.to_date
   end
 
   def update_scheduling
