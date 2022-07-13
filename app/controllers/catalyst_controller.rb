@@ -13,6 +13,7 @@ class CatalystController < ApplicationController
     use_abac_units if params[:use_abac_units].to_bool.true?
     use_custom_units if params[:use_custom_units].to_bool.true?
     update_soap_note
+    #ClientEnrollmentServices::UpdateUnitsColumnsOperation.call(@schedule.client_enrollment_service) if @schedule.client_enrollment_service.present?
     RenderAppointments::RenderScheduleOperation.call(@schedule.id) if @schedule.date<Time.current.to_date
   end
 
@@ -39,34 +40,13 @@ class CatalystController < ApplicationController
 
   def appointments_list
     @catalyst_data = CatalystData.find(params[:catalyst_data_id])
-    client = Client.where(catalyst_patient_id: @catalyst_data.catalyst_patient_id)
-    if client.count==1
-      client = client.first
-    elsif client.count>1
-      client = client.find_by(status: 'active')
-    else
-      client = Client.find_by(catalyst_patient_id: @catalyst_data.catalyst_patient_id)
-    end
-    staff = Staff.where(catalyst_user_id: @catalyst_data.catalyst_user_id)
-    if staff.count==1
-      staff = staff.first
-    elsif staff.count>1
-      staff = staff.find_by(status: 'active')
-    else
-      staff = Staff.find_by(catalyst_user_id: @catalyst_data.catalyst_user_id)
-    end
-    # schedules = Scheduling.on_date(@catalyst_data.date)
-    schedules = Scheduling.joins(client_enrollment_service: :client_enrollment).by_client_ids(client&.id).by_staff_ids(staff&.id).on_date(@catalyst_data.date)
-    # schedules = schedules.left_outer_joins(:soap_notes).group('schedulings.id').having('count(soap_notes.*) = ?', 0).where(status: "Rendered").where.not(rendered_at: nil)
-    schedules = schedules.left_outer_joins(:soap_notes).group('schedulings.id').having('count(soap_notes.*) = ?', 0)
-    schedules = schedules.by_status.or(schedules.where.not(rendered_at: nil).where(is_manual_render: true))
-    # schedules = schedules.joins(client_enrollment_service: {client_enrollment: :client}).by_client_clinic(params[:location_id]) if params[:location_id].present?
+    schedules = matching_existing_appointments_list
     @schedules = schedules.uniq.sort_by(&:start_time)
   end
 
   def sync_soap_notes
     workers = Sidekiq::Workers.new
-    if workers.empty?
+    if workers.nil?
       SyncClientSoapNotesJob.perform_later
       @success = true
     else
@@ -91,34 +71,9 @@ class CatalystController < ApplicationController
 
   def matching_appointments_list
     @catalyst_data = CatalystData.find(params[:catalyst_data_id])
-    client = Client.where(catalyst_patient_id: @catalyst_data.catalyst_patient_id)
-    if client.count==1
-      client = client.first
-    elsif client.count>1
-      client = client.find_by(status: 'active')
-    else
-      client = Client.find_by(catalyst_patient_id: @catalyst_data.catalyst_patient_id)
-    end
-    staff = Staff.where(catalyst_user_id: @catalyst_data.catalyst_user_id)
-    if staff.count==1
-      staff = staff.first
-    elsif staff.count>1
-      staff = staff.find_by(status: 'active')
-    else
-      staff = Staff.find_by(catalyst_user_id: @catalyst_data.catalyst_user_id)
-    end
-    schedules = Scheduling.joins(client_enrollment_service: :client_enrollment).by_client_ids(client&.id).by_staff_ids(staff&.id).on_date(@catalyst_data.date)
-    filtered_schedules = []
-    schedules.each do |appointment|
-      min_start_time = (appointment.start_time.to_time-15.minutes)
-      max_start_time = (appointment.start_time.to_time+15.minutes)
-      min_end_time = (appointment.end_time.to_time-15.minutes)
-      max_end_time = (appointment.end_time.to_time+15.minutes)
-      if (min_start_time..max_start_time).include?(@catalyst_data.start_time.to_time) && (min_end_time..max_end_time).include?(@catalyst_data.end_time.to_time)
-        filtered_schedules.push(appointment)
-      end
-    end
-    @schedules = filtered_schedules.uniq.sort_by(&:start_time)
+    schedules = matching_existing_appointments_list
+    schedule = best_match_appointment(schedules)
+    @schedules = Array.new(1, schedule).compact
   end
 
   private
@@ -246,5 +201,77 @@ class CatalystController < ApplicationController
       # catalyst_data.is_appointment_found = true
       catalyst_data.save(validate: false)
     end
+  end
+
+  def matching_existing_appointments_list
+    client = Client.where(catalyst_patient_id: @catalyst_data.catalyst_patient_id)
+    if client.count==1
+      client = client.first
+    elsif client.count>1
+      client = client.find_by(status: 'active')
+    else
+      client = Client.find_by(catalyst_patient_id: @catalyst_data.catalyst_patient_id)
+    end
+    staff = Staff.where(catalyst_user_id: @catalyst_data.catalyst_user_id)
+    if staff.count==1
+      staff = staff.first
+    elsif staff.count>1
+      staff = staff.find_by(status: 'active')
+    else
+      staff = Staff.find_by(catalyst_user_id: @catalyst_data.catalyst_user_id)
+    end
+    schedules = Scheduling.joins(client_enrollment_service: :client_enrollment).by_client_ids(client&.id).by_staff_ids(staff&.id).on_date(@catalyst_data.date)
+    schedules = schedules.where.not(rendered_at: nil).where(is_manual_render: true).left_outer_joins(:soap_notes).group('schedulings.id').having('count(soap_notes.*) = ?', 0)
+                         .or(schedules.by_status)
+    schedules
+  end
+
+  def best_match_appointment(schedules)
+    if schedules.length==1
+      schedule = schedules.first
+    elsif schedules.length>1
+      filtered_schedules = schedules.where(start_time: @catalyst_data.start_time, end_time: @catalyst_data.end_time, units: @catalyst_data.units)
+      if filtered_schedules.length==1
+        schedule = filtered_schedules.first
+      elsif filtered_schedules.length>1
+        service_display_code = @catalyst_data.response['templateName'][-10..-6]
+        filtered_schedules = filtered_schedules.joins(client_enrollment_service: :service).where('services.display_code': service_display_code)
+        if filtered_schedules.length==1
+          schedule = filtered_schedules.first
+        elsif filtered_schedules.length>1
+          filtered_schedules_by_soap_notes = filtered_schedules.left_outer_joins(:soap_notes).group('schedulings.id').having('count(soap_notes.*) = ?', 0)
+          if filtered_schedules_by_soap_notes.length>=1
+            schedule = filtered_schedules_by_soap_notes.first
+          end
+        end
+      end 
+      if schedule.nil?
+        filtered_schedules = []
+        schedules.each do |appointment|
+          min_start_time = (appointment.start_time.to_time-15.minutes)
+          max_start_time = (appointment.start_time.to_time+15.minutes)
+          min_end_time = (appointment.end_time.to_time-15.minutes)
+          max_end_time = (appointment.end_time.to_time+15.minutes)
+          if (min_start_time..max_start_time).include?(@catalyst_data.start_time.to_time) && (min_end_time..max_end_time).include?(@catalyst_data.end_time.to_time)
+            filtered_schedules.push(appointment)
+          end
+        end
+        if filtered_schedules.length==1
+          schedule = filtered_schedules.first
+        elsif filtered_schedules.length>1
+          service_display_code = catalyst_data.response['templateName'][-10..-6]
+          filtered_schedules = filtered_schedules.map{|schedule| schedule if schedule.client_enrollment_service.service.display_code==service_display_code}.compact
+          if filtered_schedules.length==1
+            schedule = filtered_schedules.first
+          elsif filtered_schedules.length>1
+            filtered_schedules = filtered_schedules.sort_by(&:minutes)
+            schedule = filtered_schedules.first
+          end
+        end
+      end
+    else
+      schedule = nil
+    end
+    schedule
   end
 end
