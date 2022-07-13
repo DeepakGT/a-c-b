@@ -1,8 +1,6 @@
 AllCops:
   DisplayCopNames: true
   Exclude:
-    - 'app/models/concerns/simulation_inputs_concern.rb'
-    - 'app/controllers/door_controller.rb'
     - 'test/**/*'
     - 'bin/*'
     - 'db/schema.rb'
