@@ -86,19 +86,19 @@ json.data do
       json.array! catalyst_datas do |data|
         user = Staff.where(catalyst_user_id: data.catalyst_user_id)
         if user.count==1
-            user = user.first
+          user = user.first
         elsif user.count>1
-            user = user.find_by(status: 'active')
+          user = user.find_by(status: 'active')
         else
-            user = Staff.find_by(catalyst_user_id: data.catalyst_user_id)
+          user = Staff.find_by(catalyst_user_id: data.catalyst_user_id)
         end
         patient = Client.where(catalyst_patient_id: data.catalyst_patient_id)
         if patient.count==1
-            patient = patient.first
+          patient = patient.first
         elsif patient.count>1
-            patient = patient.find_by(status: 'active')
+          patient = patient.find_by(status: 'active')
         else
-            patient = patient.find_by(catalyst_patient_id: data.catalyst_patient_id)
+          patient = patient.find_by(catalyst_patient_id: data.catalyst_patient_id)
         end
         json.id data.id
         json.client_name "#{patient&.first_name} #{patient&.last_name}"
