@@ -13,6 +13,7 @@ class CatalystController < ApplicationController
     use_abac_units if params[:use_abac_units].to_bool.true?
     use_custom_units if params[:use_custom_units].to_bool.true?
     update_soap_note
+    update_audit_action
     #ClientEnrollmentServices::UpdateUnitsColumnsOperation.call(@schedule.client_enrollment_service) if @schedule.client_enrollment_service.present?
     RenderAppointments::RenderScheduleOperation.call(@schedule.id) if @schedule.date<Time.current.to_date
   end
@@ -273,5 +274,14 @@ class CatalystController < ApplicationController
       schedule = nil
     end
     schedule
+  end
+
+  def update_audit_action
+    audit = @schedule.audits.last
+    if params[:use_catalyst_units].to_bool.true?
+      audit.update(action: 'use catalyst units')
+    elsif params[:use_custom_units].to_bool.true?
+      audit.update(action: 'use custom units')
+    end
   end
 end
