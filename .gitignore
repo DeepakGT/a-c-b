@@ -29,7 +29,7 @@
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
-bitbucket-pipelines.yml
+/bitbucket-pipelines.yml
 
 /config/credentials/staging.key
 

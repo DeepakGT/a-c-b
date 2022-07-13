@@ -1,4 +1,5 @@
 require 'will_paginate/array'
+
 class SchedulingsController < ApplicationController
   before_action :authenticate_user!
   before_action :authorize_user, except: %i[update_without_client render_appointment split_appointment_detail create_split_appointment create_without_staff create_without_client]
@@ -21,22 +22,28 @@ class SchedulingsController < ApplicationController
     else
       @schedule.save
     end
-    update_units_columns(@schedule.client_enrollment_service)
+    #update_units_columns(@schedule.client_enrollment_service)
   end
 
   # Creating split appointments
   def create_split_appointment
     ids = []
     schedule_hash = build_schedule_hash
+    parent_schedule = Scheduling.find(params[:schedule_id])
     params[:split_schedules].each do |schedule|
       schedule_details_hash = build_schedule_details_hash(schedule)
       schedule_params = schedule_hash.merge!(schedule_details_hash)
       @schedule = Scheduling.new(schedule_params)
       @schedule.id = Scheduling.last.id + 1
-      @schedule.save(validate:false)
+      @schedule.save(validate: false)
       update_units_columns(@schedule.client_enrollment_service)
       update_catalyst_data_and_soap_notes_for_split_appointment(schedule)
       ids.push @schedule.id
+      audit = @schedule.audits.new(action: 'split_appointment', user_id: current_user.id, user_type: 'User',username: "#{current_user.first_name} #{current_user.last_name}", audited_changes: {})
+      audit.audited_changes["start_time"] = ["#{parent_schedule.start_time}", "#{@schedule.start_time}"] if parent_schedule.start_time!=@schedule.start_time
+      audit.audited_changes["end_time"] = ["#{parent_schedule.end_time}", "#{@schedule.end_time}"] if parent_schedule.end_time!=@schedule.end_time
+      audit.audited_changes["units"] = [parent_schedule.units, @schedule.units] if parent_schedule.units!=@schedule.units
+      audit.save
     end
     delete_old_schedule(params[:schedule_id])
     @schedules = Scheduling.find(ids)
@@ -46,7 +53,7 @@ class SchedulingsController < ApplicationController
     @schedule.user = current_user
     return if !check_units
     update_status if params[:status].present?
-    update_units_columns(@schedule.client_enrollment_service)
+    #update_units_columns(@schedule.client_enrollment_service)
   end
 
   def destroy
@@ -57,7 +64,7 @@ class SchedulingsController < ApplicationController
     when 'bcba', 'executive_director', 'client_care_coordinator', 'Clinical Director', 'administrator'
       delete_scheduling if @schedule.created_at.strftime('%Y-%m-%d')>=(Time.current-1.day).strftime('%Y-%m-%d')
     end
-    update_units_columns(@schedule.client_enrollment_service)
+    #update_units_columns(@schedule.client_enrollment_service)
   end
 
   def create_without_staff
@@ -287,7 +294,7 @@ class SchedulingsController < ApplicationController
   end
   
   def update_units_columns(client_enrollment_service)
-    ClientEnrollmentServices::UpdateUnitsColumnsOperation.call(client_enrollment_service)
+    # ClientEnrollmentServices::UpdateUnitsColumnsOperation.call(client_enrollment_service)
   end
 
   def delete_scheduling
@@ -301,7 +308,7 @@ class SchedulingsController < ApplicationController
   end
 
   def check_units
-    update_units_columns(@schedule.client_enrollment_service)
+    #update_units_columns(@schedule.client_enrollment_service)
     if (params[:status]=='Scheduled' && @schedule.status!='Scheduled' && @schedule.status!='Rendered') && @schedule.client_enrollment_service.left_units<params[:units]
       @schedule.errors.add(:units, 'left in authorization are not enough to update this cancelled appointment to scheduled.')
       return false
@@ -324,7 +331,7 @@ class SchedulingsController < ApplicationController
     elsif @schedule.status=='Rendered' && params[:status]!='Rendered'
       if current_user.role_name=='super_admin'
         update_scheduling 
-        @schedule.is_rendered = false
+        # @schedule.is_rendered = false
         @schedule.rendered_at = nil
         @schedule.save
       else

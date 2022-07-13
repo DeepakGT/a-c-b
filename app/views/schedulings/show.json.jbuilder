@@ -46,7 +46,8 @@ json.data do
   json.date @schedule.date
   json.start_time @schedule.start_time.to_time.strftime('%H:%M')
   json.end_time @schedule.end_time.to_time.strftime('%H:%M')
-  if @schedule.rendered_at.present?
+  # json.is_rendered @schedule.is_rendered
+  if @schedule.rendered_at.present? && @schedule.status == 'Rendered'
     json.is_rendered true
   else
     json.is_rendered false
@@ -111,6 +112,15 @@ json.data do
           json.caregiver_sign_present soap_note.caregiver_signature
         end
       end
+    end
+  end
+  json.audits do
+    json.array! @schedule.audits do |audit|
+      auditor = User.find_by(id: audit.user_id) if audit.user_type=='User'
+      json.audited_changes audit.audited_changes
+      json.auditor_name "#{auditor&.first_name} #{auditor&.last_name}"
+      json.audited_at audit.created_at
+      json.action audit.action
     end
   end
 end
