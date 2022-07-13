@@ -16,13 +16,13 @@ class AddressPolicy < ApplicationPolicy
   end
 
   def update?
-    return true if user.role_name=='super_admin' || (Scheduling.where(service_address_id: @record.id).blank? && permissions.include?(client_service_address_update))
+    return true if user.role_name=='super_admin' || (Scheduling.where(service_address_id: @record.id).blank? && permissions.include?('client_service_address_update'))
 
     false
   end
 
   def destroy?
-    return true if Scheduling.where(service_address_id: @record.id).blank? && permissions.include?(client_service_address_delete)
+    return true if Scheduling.where(service_address_id: @record.id).blank? && permissions.include?('client_service_address_delete')
 
     false
   end

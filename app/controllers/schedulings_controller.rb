@@ -2,7 +2,7 @@ require 'will_paginate/array'
 
 class SchedulingsController < ApplicationController
   before_action :authenticate_user!
-  before_action :authorize_user, except: %i[update_without_client render_appointment split_appointment_detail create_split_appointment create_without_staff create_without_client]
+  before_action :authorize_user, except: %i[render_appointment split_appointment_detail create_split_appointment]
   before_action :set_scheduling, only: %i[show update destroy update_without_client]
   before_action :set_client_enrollment_service, only: %i[create create_without_staff]
 
