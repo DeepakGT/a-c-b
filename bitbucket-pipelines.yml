@@ -27,3 +27,6 @@ pipelines:
 definitions:
   caches:
     sonar: /opt/sonar-scanner/.sonar
+  services:
+    docker:
+      memory: 1024
