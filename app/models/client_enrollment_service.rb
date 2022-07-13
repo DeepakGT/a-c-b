@@ -36,10 +36,9 @@ class ClientEnrollmentService < ApplicationRecord
   scope :excluding_early_codes, -> { joins(:service).where.not('services.display_code': ['99998', '99999', '99997', '98888'])}
   
   def used_units
-    schedules = self.schedulings.with_rendered_or_scheduled_as_status
+    schedules = self.schedulings.where(status: 'Rendered')
     if schedules.any?
-      completed_schedules = schedules.completed_scheduling
-      used_units = completed_schedules.with_units.pluck(:units).sum.to_f
+      used_units = schedules.with_units.pluck(:units).sum.to_f
       used_units = 0 if used_units.blank?
     else
       used_units = 0
@@ -48,10 +47,9 @@ class ClientEnrollmentService < ApplicationRecord
   end
 
   def used_minutes
-    schedules = self.schedulings.with_rendered_or_scheduled_as_status
+    schedules = self.schedulings.where(status: 'Rendered')
     if schedules.any?
-      completed_schedules = schedules.completed_scheduling
-      used_minutes = completed_schedules.with_minutes.pluck(:minutes).sum.to_f
+      used_minutes = schedules.with_minutes.pluck(:minutes).sum.to_f
       used_minutes = 0 if used_minutes.blank?
     else
       used_minutes = 0
@@ -60,10 +58,9 @@ class ClientEnrollmentService < ApplicationRecord
   end
 
   def scheduled_units
-    schedules = self.schedulings.with_rendered_or_scheduled_as_status
+    schedules = self.schedulings.by_status
     if schedules.any?
-      scheduled_schedules = schedules.scheduled_scheduling
-      scheduled_units = scheduled_schedules.with_units.pluck(:units).sum.to_f
+      scheduled_units = schedules.with_units.pluck(:units).sum.to_f
       scheduled_units = 0 if scheduled_units.blank?
     else
       scheduled_units = 0
@@ -72,10 +69,9 @@ class ClientEnrollmentService < ApplicationRecord
   end
 
   def scheduled_minutes
-    schedules = self.schedulings.with_rendered_or_scheduled_as_status
+    schedules = self.schedulings.by_status
     if schedules.any?
-      scheduled_schedules = schedules.scheduled_scheduling
-      scheduled_minutes = scheduled_schedules.with_minutes.pluck(:minutes).sum.to_f
+      scheduled_minutes = schedules.with_minutes.pluck(:minutes).sum.to_f
       scheduled_minutes = 0 if scheduled_minutes.blank?
     else
       scheduled_minutes = 0
