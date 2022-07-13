@@ -57,7 +57,7 @@ class SchedulingsController < ApplicationController
   end
 
   def destroy
-    client_enrollment_service = @schedule.client_enrollment_services
+    client_enrollment_service = @schedule.client_enrollment_service
     case current_user.role_name
     when 'super_admin'
       delete_scheduling
