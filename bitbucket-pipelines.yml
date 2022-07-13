@@ -29,4 +29,4 @@ definitions:
     sonar: /opt/sonar-scanner/.sonar
   services:
     docker:
-      memory: 4096
+      memory: 1024
