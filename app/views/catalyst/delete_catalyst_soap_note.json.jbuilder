@@ -2,19 +2,19 @@ json.status @catalyst_data.errors.any? ? 'failure' : 'success'
 json.data do
   staff = Staff.where(catalyst_user_id: @catalyst_data.catalyst_user_id)
   if staff.count==1
-      staff = staff.first
+    staff = staff.first
   elsif staff.count>1
-      staff = staff.find_by(status: 'active')
+    staff = staff.find_by(status: 'active')
   else
-      staff = Staff.find_by(catalyst_user_id: @catalyst_data.catalyst_user_id)
+    staff = Staff.find_by(catalyst_user_id: @catalyst_data.catalyst_user_id)
   end
   client = Client.where(catalyst_patient_id: @catalyst_data.catalyst_patient_id)
   if client.count==1
-      client = client.first
+    client = client.first
   elsif client.count>1
-      client = client.find_by(status: 'active')
+    client = client.find_by(status: 'active')
   else
-      client = Client.find_by(catalyst_patient_id: @catalyst_data.catalyst_patient_id)
+    client = Client.find_by(catalyst_patient_id: @catalyst_data.catalyst_patient_id)
   end
   json.id @catalyst_data.id
   json.type 'catalyst_data'

@@ -11,8 +11,8 @@ RSpec.describe RolesController, type: :controller do
   
   let!(:user) { create(:user, :with_role, role_name: 'super_admin') }
   let!(:auth_headers) { user.create_new_auth_token }
-  let!(:role_1) { create(:role, name: 'test-role-1')}
-  let!(:role_2) { create(:role, name: 'test-role-2')}
+  let!(:role1) { create(:role, name: 'test-role-1')}
+  let!(:role2) { create(:role, name: 'test-role-2')}
 
   describe "GET #index" do
     context "when sign in" do
@@ -34,12 +34,12 @@ RSpec.describe RolesController, type: :controller do
       it "should fetch role detail successfully" do
         set_auth_headers(auth_headers)
 
-        get :show, params: { id: role_1.id}
+        get :show, params: { id: role1.id}
         response_body = JSON.parse(response.body)
         
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
-        expect(response_body['data']['id']).to eq(role_1.id) 
+        expect(response_body['data']['id']).to eq(role1.id) 
       end
     end
   end

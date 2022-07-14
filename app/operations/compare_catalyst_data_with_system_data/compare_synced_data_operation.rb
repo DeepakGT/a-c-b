@@ -48,9 +48,7 @@ module CompareCatalystDataWithSystemData
             elsif filtered_schedules.length>1
               service_display_code = catalyst_data.response['templateName'][-10..-6]
               filtered_schedules = filtered_schedules.joins(client_enrollment_service: :service).where('services.display_code': service_display_code)
-              if filtered_schedules.length==1
-                set_appointment(catalyst_data, filtered_schedules.first, soap_note)
-              end
+              set_appointment(catalyst_data, filtered_schedules.first, soap_note) if filtered_schedules.length==1
             end 
             if catalyst_data.system_scheduling_id.blank? 
               filtered_schedules = []
@@ -67,7 +65,7 @@ module CompareCatalystDataWithSystemData
                 set_appointment(catalyst_data, filtered_schedules.first, soap_note)
               elsif filtered_schedules.length>1
                 service_display_code = catalyst_data.response['templateName'][-10..-6]
-                filtered_schedules = filtered_schedules.map{|schedule| schedule if schedule.client_enrollment_service.service.display_code==service_display_code}.compact
+                filtered_schedules = filtered_schedules.map{|appointment| appointment if appointment.client_enrollment_service.service.display_code==service_display_code}.compact
                 if filtered_schedules.length==1
                   set_appointment(catalyst_data, filtered_schedules.first, soap_note)
                 elsif filtered_schedules.length>1

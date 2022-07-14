@@ -15,9 +15,7 @@ module Snowflake
         staff_rosters.each do |staff_roster|
           staff_roster = staff_roster.with_indifferent_access
           staff_count = Staff.all.reload.count
-          if staff_roster['email'].blank?
-            staff_roster.update(email: "staff_#{staff_count}_user@yopmail.com")
-          end
+          staff_roster.update(email: "staff_#{staff_count}_user@yopmail.com") if staff_roster['email'].blank?
           if Staff.where(email: staff_roster['email']).blank?
             staff = Staff.find_or_initialize_by(email: staff_roster['email'], dob: staff_roster['dob']&.to_time&.strftime('%Y-%m-%d'), hired_at: staff_roster['hireddate']&.to_time&.strftime('%Y-%m-%d'), first_name: staff_roster['stafffirstname'], last_name: staff_roster['stafflastname'], terminated_on: staff_roster['terminateddate']&.to_time&.strftime('%Y-%m-%d'))
             staff.status = staff_roster['active']=='ACTIVE' ? 'active' : 'inactive'
@@ -41,7 +39,7 @@ module Snowflake
             end
             staff.save(validate: false)
 
-            if staff.id==nil
+            if staff.id.nil?
               Loggers::SnowflakeStaffLoggerService.call(staff_rosters.find_index(staff_roster), 'Staff cannot be saved.')
             else
               Loggers::SnowflakeStaffLoggerService.call(staff_rosters.find_index(staff_roster), 'Staff is saved.')
@@ -51,16 +49,12 @@ module Snowflake
               clinic_name = staff_roster['agencyname']&.downcase
               # clinic = Clinic.where('lower(name) = ? OR lower(aka) = ?', clinic_name, clinic_name)&.first
               clinic = Clinic.where("name ILIKE '%#{clinic_name}%'")&.first
-              if clinic.blank?
-                clinic = Clinic.where("aka ILIKE '%#{clinic_name}%'")&.first
-              end
-              if staff_roster['agencyname']=='salem'
-                clinic = Clinic.find_by(name: 'Salem, NH')
-              end
+              clinic = Clinic.where("aka ILIKE '%#{clinic_name}%'")&.first if clinic.blank?
+              clinic = Clinic.find_by(name: 'Salem, NH') if staff_roster['agencyname']=='salem'
               if clinic.present?
                 staff_clinic = staff.staff_clinics.new(clinic_id: clinic.id, is_home_clinic: true)
                 staff_clinic.save(validate: false)
-                if staff_clinic.id==nil
+                if staff_clinic.id.nil?
                   Loggers::SnowflakeStaffLoggerService.call(staff_rosters.find_index(staff_roster), 'Staff clinic cannot be saved.')
                 else
                   Loggers::SnowflakeStaffLoggerService.call(staff_rosters.find_index(staff_roster), 'Staff clinic is saved.')
@@ -73,7 +67,7 @@ module Snowflake
             address.state = staff_roster['state']
             address.zipcode = staff_roster['zip']
             address.save(validate: false)
-            if address.id==nil
+            if address.id.nil?
               Loggers::SnowflakeStaffLoggerService.call(staff_rosters.find_index(staff_roster), 'Staff address cannot be saved.')
             else
               Loggers::SnowflakeStaffLoggerService.call(staff_rosters.find_index(staff_roster), 'Staff address is saved.')
@@ -103,7 +97,7 @@ module Snowflake
                   staff_phone_number.number = phone_number
                 end
                 staff_phone_number.save(validate: false)
-                if staff_phone_number.id==nil
+                if staff_phone_number.id.nil?
                   Loggers::SnowflakeStaffLoggerService.call(staff_rosters.find_index(staff_roster), 'Staff phone number cannot be saved.')
                 else
                   Loggers::SnowflakeStaffLoggerService.call(staff_rosters.find_index(staff_roster), 'Staff phone number is saved.')
@@ -112,21 +106,15 @@ module Snowflake
             end
           else
             staff = Staff.find_by(email: staff_roster['email'])
-            if staff.staff_clinics.blank?
-              if staff_roster['agencyname'].present?
-                clinic_name = staff_roster['agencyname']&.downcase
-                # clinic = Clinic.where('lower(name) = ? OR lower(aka) = ?', clinic_name, clinic_name)&.first
-                clinic = Clinic.where("name ILIKE '%#{clinic_name}%'")&.first
-                if clinic.blank?
-                  clinic = Clinic.where("aka ILIKE '%#{clinic_name}%'")&.first
-                end
-                if staff_roster['agencyname']=='salem'
-                  clinic = Clinic.find_by(name: 'Salem, NH')
-                end
-                if clinic.present?
-                  staff_clinic = staff.staff_clinics.new(clinic_id: clinic.id, is_home_clinic: true)
-                  staff_clinic.save(validate: false)
-                end
+            if staff.staff_clinics.blank? && staff_roster['agencyname'].present?
+              clinic_name = staff_roster['agencyname']&.downcase
+              # clinic = Clinic.where('lower(name) = ? OR lower(aka) = ?', clinic_name, clinic_name)&.first
+              clinic = Clinic.where("name ILIKE '%#{clinic_name}%'")&.first
+              clinic = Clinic.where("aka ILIKE '%#{clinic_name}%'")&.first if clinic.blank?
+              clinic = Clinic.find_by(name: 'Salem, NH') if staff_roster['agencyname']=='salem'
+              if clinic.present?
+                staff_clinic = staff.staff_clinics.new(clinic_id: clinic.id, is_home_clinic: true)
+                staff_clinic.save(validate: false)
               end
             end
 
@@ -155,7 +143,7 @@ module Snowflake
                   staff_phone_number.number = phone_number
                 end
                 staff_phone_number.save(validate: false)
-                if staff_phone_number.id==nil
+                if staff_phone_number.id.nil?
                   Loggers::SnowflakeStaffLoggerService.call(staff_rosters.find_index(staff_roster), 'Staff phone number cannot be saved.')
                 else
                   Loggers::SnowflakeStaffLoggerService.call(staff_rosters.find_index(staff_roster), 'Staff phone number is saved.')
