@@ -45,21 +45,19 @@ module S3Sync
       def sync_data_for(model)
         data = to_csv model
         object_name = "#{DateTime.current.to_s(:iso8601)}.csv"
-        Dir.mkdir(Rails.root.join('tmp', 'csv_files', model.table_name)) unless File.exists?(Rails.root.join('tmp', 'csv_files', model.table_name))
+        Dir.mkdir(Rails.root.join('tmp', 'csv_files', model.table_name)) unless File.exist?(Rails.root.join('tmp', 'csv_files', model.table_name))
         File.write(Rails.root.join('tmp', 'csv_files', model.table_name, object_name), data)
         # object_uploaded?(object_name, data) if Rails.env.production?
       end
 
       def to_csv(model)
-        csv = CSV.generate do |csv|
-          csv << model.column_names
+        csv = CSV.generate do |csv_file|
+          csv_file << model.column_names
           model.all.each do |user|
-            csv << user.attributes.values_at(*model.column_names)
+            csv_file << user.attributes.values_at(*model.column_names)
           end
         end
       end
-
-
 
       def object_uploaded?(object_key, body) 
         bucket_name = Rails.application.credentials.dig(:aws, :bi_bucket) 

@@ -30,6 +30,7 @@ class User < ActiveRecord::Base
   enum status: {active: 0, inactive: 1}
   enum gender: {male: 0, female: 1}
   enum job_type: {full_time: 'full_time', part_time: 'part_time'}
+  enum default_schedule_view: {calendar: 'calendar', list: 'list'}
 
   # Validation
   validates_associated :role
@@ -55,7 +56,7 @@ class User < ActiveRecord::Base
   # format response
   def as_json(options = {})
     response = super(options)
-               .select { |key| key.in?(['id', 'email', 'uid', 'first_name', 'last_name']) }
+               .select { |key| key.in?(['id', 'email', 'uid', 'first_name', 'last_name', 'default_schedule_view']) }
                .merge({role: Role.find_by(name: self.role_name)})
 
     response.merge!({organization_id: self.organization&.id}) if self.role_name=='executive_director'
@@ -91,9 +92,7 @@ class User < ActiveRecord::Base
 
   def validate_status
     # errors.add(:status, 'For an active user, terminated date must be blank.') if self.active? && self.terminated_on.present?
-    if self.type != 'Client' && self.inactive? && self.terminated_on.blank?
-      errors.add(:status, 'For an inactive user, terminated date must be present.')
-    end
+    errors.add(:status, 'For an inactive user, terminated date must be present.') if (self.type != 'Client' && self.inactive? && self.terminated_on.blank?)
   end
   # end of private
   

@@ -17,7 +17,7 @@ class SoapNotesController < ApplicationController
       @soap_note.user = current_user
       @soap_note.creator_id = current_user.id
       @soap_note.client_id = @scheduling.client_enrollment_service.client_enrollment.client.id
-      @soap_note.add_time = params[:add_time].to_datetime&.in_time_zone('Eastern Time (US & Canada)') + 4.hours
+      @soap_note.add_time = (params[:add_time].to_datetime&.in_time_zone('Eastern Time (US & Canada)') + 4.hours)
       @soap_note.save
       if @scheduling.unrendered_reason==['soap_notes_not_found']
         @scheduling.unrendered_reason=[]
@@ -31,7 +31,7 @@ class SoapNotesController < ApplicationController
     SoapNote.transaction do
       update_signature
       @soap_note.user = current_user
-      @soap_note.add_time = params[:add_time].to_datetime&.in_time_zone('Eastern Time (US & Canada)') + 4.hours
+      @soap_note.add_time = (params[:add_time].to_datetime&.in_time_zone('Eastern Time (US & Canada)') + 4.hours)
       @soap_note.update(soap_note_params)
       if @scheduling.unrendered_reason==['soap_notes_not_found']
         @scheduling.unrendered_reason=[]

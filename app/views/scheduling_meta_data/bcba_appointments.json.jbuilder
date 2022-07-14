@@ -219,7 +219,7 @@ json.data do
             end
           end
           if action_item.catalyst_data_ids.present?
-            catalyst_datas = CatalystData.where(id: action_item.catalyst_data_ids)#.where(system_scheduling_id: action_item.id)
+            catalyst_datas = CatalystData.where(id: action_item.catalyst_data_ids) #.where(system_scheduling_id: action_item.id)
             if catalyst_datas.present?
               json.catalyst_data do
                 json.array! catalyst_datas do |catalyst_data|
@@ -290,9 +290,12 @@ json.data do
         json.note action_item.note
         json.location action_item.session_location
         json.cordinates action_item.location
-        if action_item.system_scheduling_id.blank?
-          json.unrendered_reasons ["no_appointment_found"]
-        end
+        json.unrendered_reasons ["no_appointment_found"] if action_item.system_scheduling_id.blank?
+        # if action_item.is_appointment_found==false
+        #   json.unrendered_reasons ["no_appointment_found"]
+        # else
+        #   json.unrendered_reasons ["multiple_appointments_found"]
+        # end
       end
     end
   end
