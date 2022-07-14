@@ -4,7 +4,8 @@ class ServicesController < ApplicationController
   before_action :set_service, only: %i[update show destroy]
 
   def index
-    @services = Service.order(:name).paginate(page: params[:page])
+    @services = Service.order(:name)
+    @services = @services.paginate(page: params[:page]) if params[:page].present?
   end
 
   def create

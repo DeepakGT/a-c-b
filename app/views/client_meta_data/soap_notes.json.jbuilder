@@ -32,6 +32,8 @@ json.data do
     end
   end
 end
-json.total_records @soap_notes.total_entries
-json.limit @soap_notes.per_page
-json.page params[:page] || 1
+if params[:page].present?
+  json.total_records @soap_notes.total_entries
+  json.limit @soap_notes.per_page
+  json.page params[:page]
+end
