@@ -27,7 +27,7 @@ class ClientMetaDataController < ApplicationController
 
   def soap_notes
     @soap_notes = SoapNote.by_client(params[:client_id]).order(add_date: :desc, created_at: :desc)
-                          .paginate(page: params[:page] || 1, per_page: params[:per_page] || 30)
+    @soap_notes = @soap_notes.paginate(page: params[:page], per_page: params[:per_page] || 30) if params[:page].present?
   end
 
   def soap_note_detail
