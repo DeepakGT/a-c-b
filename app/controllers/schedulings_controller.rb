@@ -52,12 +52,13 @@ class SchedulingsController < ApplicationController
   def update
     @schedule.user = current_user
     return if !check_units
+    
     update_status if params[:status].present?
     #update_units_columns(@schedule.client_enrollment_service)
   end
 
   def destroy
-    client_enrollment_service = @schedule.client_enrollment_services
+    client_enrollment_service = @schedule.client_enrollment_service
     case current_user.role_name
     when 'super_admin'
       delete_scheduling
@@ -156,7 +157,7 @@ class SchedulingsController < ApplicationController
   end
 
   def scheduling_params_when_bcba
-    params.permit(%i[ status date start_time end_time units minutes])
+    params.permit(%i[status date start_time end_time units minutes])
   end
 
   def set_scheduling
@@ -213,7 +214,7 @@ class SchedulingsController < ApplicationController
   # end 
 
   def update_render_service
-    RenderAppointments::RenderScheduleManualOperation.call(@schedule.id, params[:catalyst_soap_note_id]) if (params[:is_rendered].to_bool.true? || params[:status]=='Rendered') && @schedule.date<Time.current.to_date
+    RenderAppointments::RenderScheduleManualOperation.call(@schedule.id, params[:catalyst_soap_note_id], current_user) if (params[:is_rendered].to_bool.true? || params[:status]=='Rendered') && @schedule.date<Time.current.to_date
   end
 
   def update_scheduling

@@ -9,7 +9,8 @@ class StaffController < ApplicationController
     staff = do_filter(staff) if params[:search_value].present?
     staff = filter_by_status(staff)
     staff = filter_by_location(staff) 
-    @staff = staff.uniq.sort_by(&:first_name).paginate(page: params[:page])
+    @staff = staff.uniq.sort_by(&:first_name)
+    @staff = @staff.paginate(page: params[:page]) if params[:page].present?
   end
 
   def show; end

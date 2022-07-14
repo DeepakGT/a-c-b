@@ -1,13 +1,14 @@
 AllCops:
   DisplayCopNames: true
   Exclude:
-    - 'app/models/concerns/simulation_inputs_concern.rb'
-    - 'app/controllers/door_controller.rb'    
+    - 'test/**/*'
+    - 'bin/*'
+    - 'db/schema.rb'
 # Rails:
 #   Enabled: true
 Style/FrozenStringLiteralComment:
   Enabled: false
-Metrics/LineLength:
+Layout/LineLength:
   Max: 1500
 Metrics/ModuleLength:
   Enabled: false
@@ -17,8 +18,8 @@ Style/GlobalVars:
   Enabled: false
 Style/GuardClause:
   Enabled: false
-# Style/IfUnlessModifier:
-#   Enabled: false
+Style/IfUnlessModifier:
+  Enabled: false
 Metrics/PerceivedComplexity:
   Max: 200
 Metrics/ClassLength:
@@ -51,6 +52,8 @@ Style/RedundantReturn:
   Enabled: false
 Style/NegatedIf:
   Enabled: false
+Style/Next:
+  Enabled: false
 Layout/TrailingWhitespace:
   Enabled: false
 Layout/SpaceAfterColon:
@@ -64,6 +67,8 @@ Layout/EmptyLinesAroundMethodBody:
 Style/RedundantInterpolation:
   Enabled: false
 Style/StringLiterals:
+  Enabled: false
+Metrics/BlockNesting:
   Enabled: false
 Metrics/CyclomaticComplexity:
   Max: 200
@@ -116,10 +121,34 @@ Style/NumericPredicate:
 Naming/PredicateName:
   Enabled: false  
 Metrics/BlockLength:
-  Max: 400
+  Max: 600
 Style/RescueModifier:
   Enabled: false
 Style/SpecialGlobalVars:
   Enabled: false
 # Layout/LineLength:
 #   Max: 400
+Lint/AmbiguousBlockAssociation:
+  Enabled: false
+Style/ClassAndModuleChildren:
+  Enabled: false
+Style/SymbolProc:
+  Enabled: false
+Style/BlockDelimiters:
+  Enabled: false
+Style/NumericLiterals:
+  Enabled: false
+Style/MultilineIfModifier:
+  Enabled: false
+Style/RedundantFetchBlock:
+  Enabled: false
+Lint/SafeNavigationChain:
+  Enabled: false
+Style/SoleNestedConditional:
+  Enabled: false
+Naming/AccessorMethodName:
+  Enabled: false
+Style/SoleNestedConditional:
+  Enabled: false
+Style/RedundantFileExtensionInRequire:
+  Enabled: false

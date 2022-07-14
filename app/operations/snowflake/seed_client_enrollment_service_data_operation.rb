@@ -29,7 +29,7 @@ module Snowflake
           client = Client.find_by(dob: student_service['clientdob']&.to_time&.strftime('%Y-%m-%d'), first_name: client_name&.first, last_name: client_name[1])
           if client.present?
             if student_service['fundingsource'].present?
-              funding_source_id = get_funding_source(student_service['fundingsource'], client)
+              funding_source_id = get_funding_source(student_service['fundingsource'])
               if funding_source_id.present?
                 client_enrollment = client&.client_enrollments&.find_by(source_of_payment: 'insurance', funding_source_id: funding_source_id, enrollment_date: student_service['contractstartdate']&.to_time&.strftime('%Y-%m-%d'), terminated_on: student_service['contractenddate']&.to_time&.strftime('%Y-%m-%d'))
                 if client_enrollment.present?
@@ -46,7 +46,7 @@ module Snowflake
                       client_enrollment_service.units = (client_enrollment_service.minutes - rem) / 15
                     end
                     client_enrollment_service.save(validate: false)
-                    if client_enrollment_service.id==nil
+                    if client_enrollment_service.id.nil?
                       Loggers::SnowflakeClientEnrollmentServiceLoggerService.call(student_services.find_index(student_service), 'Client enrollment service cannot be saved.')
                     else
                       Loggers::SnowflakeClientEnrollmentServiceLoggerService.call(student_services.find_index(student_service), 'Client enrollment service is saved.')
@@ -77,7 +77,7 @@ module Snowflake
                     client_enrollment_service.units = (client_enrollment_service.minutes - rem) / 15
                   end
                   client_enrollment_service.save(validate: false)
-                  if client_enrollment_service.id==nil
+                  if client_enrollment_service.id.nil?
                     Loggers::SnowflakeClientEnrollmentServiceLoggerService.call(student_services.find_index(student_service), 'Client enrollment service cannot be saved.')
                   else
                     Loggers::SnowflakeClientEnrollmentServiceLoggerService.call(student_services.find_index(student_service), 'Client enrollment service is saved.')
@@ -98,7 +98,7 @@ module Snowflake
         Loggers::SnowflakeClientEnrollmentServiceLoggerService.call(seed_count, "#{seed_count} authorization seeded.")
       end
 
-      def get_funding_source(funding_source_name, client)
+      def get_funding_source(funding_source_name)
         case funding_source_name
         when 'NEW HAMPSHIRE BCBS'
           return FundingSource.find_by(name: 'New Hampshire BCBS').id
@@ -131,7 +131,7 @@ module Snowflake
         when 'BCBS MA', 'massachusetts bcbs', 'MASSACHUSETTS BCBS'
           return FundingSource.find_by(name: 'Massachusetts BCBS').id
         else 
-          if funding_source_name!=nil
+          if !funding_source_name.nil?
             funding_source = FundingSource.find_by('lower(name) = ?', funding_source_name&.downcase)
             return funding_source.id
           else

@@ -29,6 +29,8 @@ json.data do
     end
   end
 end
-json.total_records @funding_sources.total_entries
-json.limit @funding_sources.per_page
-json.page params[:page] || 1
+if params[:page].present?
+  json.total_records @funding_sources.total_entries
+  json.limit @funding_sources.per_page
+  json.page params[:page]
+end

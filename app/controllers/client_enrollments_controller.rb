@@ -5,7 +5,8 @@ class ClientEnrollmentsController < ApplicationController
   before_action :set_client_enrollment, only: %i[show update destroy]
 
   def index
-    @client_enrollments = @client.client_enrollments.order(is_primary: :desc).paginate(page: params[:page])
+    @client_enrollments = @client.client_enrollments.order(is_primary: :desc)
+    @client_enrollments = @client_enrollments.paginate(page: params[:page]) if params[:page].present?
   end
 
   def create
