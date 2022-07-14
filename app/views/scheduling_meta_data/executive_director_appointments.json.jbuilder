@@ -498,12 +498,8 @@ json.data do
         if action_item.system_scheduling_id.blank?
           json.unrendered_reasons ["no_appointment_found"]
         end
-        # if action_item.is_appointment_found==false
-        #   json.unrendered_reasons ["no_appointment_found"]
-        # else
-        #   json.unrendered_reasons ["multiple_appointments_found"]
-        # end
       end
     end
   end
+  json.action_items_count @total_count
 end

@@ -74,9 +74,11 @@ class SchedulingMetaDataController < ApplicationController
                                                          .includes(:service, :staff, :service_providers, :client_enrollment, client_enrollment: %i[client funding_source]).uniq
     change_requests = SchedulingChangeRequest.by_approval_status
     @change_requests = change_requests.by_client_ids(client_ids)
-    catalyst_patient_ids = Client.where(id: client_ids).pluck(:catalyst_patient_id).compact!
+    catalyst_patient_ids = Client.where(id: client_ids).pluck(:catalyst_patient_id).compact
     catalyst_data = CatalystData.select("catalyst_data.*,clients.id AS client_id, clients.first_name, clients.last_name,'CatalystData' AS type").joins("LEFT JOIN clients ON (clients.catalyst_patient_id = catalyst_data.catalyst_patient_id)").after_live_date.past_60_days_catalyst_data.by_catalyst_patient_ids(catalyst_patient_ids).where(is_deleted_from_connect: false).and((CatalystData.with_no_appointments)).uniq.first(30)
     @action_items_array = past_schedules.uniq.concat(catalyst_data)
+    @total_count = @action_items_array.length
+    @action_items_array = filter_by_client(@action_items_array) if params[:client_name].present?
     @action_items_array = sort_action_items(@action_items_array)
     @unassigned_appointments = schedules.scheduled_scheduling.without_staff
   end
@@ -189,6 +191,21 @@ class SchedulingMetaDataController < ApplicationController
     end
     items
   end
-  # end of private
 
+  def filter_by_client(items)
+    fname, lname = params[:client_name].split(' ')
+    if fname.present? && lname.blank?
+      clients = Client.by_first_name(fname).or(Client.by_last_name(fname))
+    elsif fname.present? && lname.present?
+      clients = Client.by_first_name(fname)
+      clients = clients.by_last_name(lname)
+    else
+      clients = Client.by_first_name(fname)
+      clients = clients.by_last_name(lname)
+    end
+    client_ids = clients.pluck(:id).uniq.compact
+    catalyst_patient_ids = clients.pluck(:catalyst_patient_id).uniq.compact
+    items = items.map{|item| item if ((item.type=='Schedule' && client_ids.include?(item&.client_enrollment_service&.client_enrollment&.client_id)) || (item.type=='CatalystData' && catalyst_patient_ids.include?(item&.catalyst_patient_id)))}.uniq.compact if clients.present?
+  end
+  # end of private
 end
