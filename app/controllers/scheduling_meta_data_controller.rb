@@ -79,7 +79,7 @@ class SchedulingMetaDataController < ApplicationController
     @action_items_array = past_schedules.uniq.concat(catalyst_data)
     @total_count = @action_items_array.length
     @action_items_array = filter_by_client(@action_items_array) if params[:client_name].present?
-    @action_items_array = sort_action_items(@action_items_array)
+    @action_items_array = sort_action_items(@action_items_array) if @action_items_array.present?
     @unassigned_appointments = schedules.scheduled_scheduling.without_staff
   end
 
