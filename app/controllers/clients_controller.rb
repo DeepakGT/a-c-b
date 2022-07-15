@@ -9,7 +9,8 @@ class ClientsController < ApplicationController
     clients = filter_by_status(clients)
     clients = do_filter(clients) if params[:search_value].present?
     clients = filter_by_location(clients)
-    @clients = clients&.uniq&.sort_by(&:first_name)&.paginate(page: params[:page])
+    @clients = clients&.uniq&.sort_by(&:first_name)
+    @clients = @clients.paginate(page: params[:page]) if params[:page].present?
   end
 
   def show; end

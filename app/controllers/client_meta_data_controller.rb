@@ -15,7 +15,11 @@ class ClientMetaDataController < ApplicationController
 
   def client_data
     @schedules = Scheduling.includes(client_enrollment_service: :client_enrollment).by_client_ids(@client.id).scheduled_scheduling.order(:date).first(10)
-    @client_enrollment_services = ClientEnrollmentService.by_client(@client.id).first(10)
+    if params[:show_expired_before_30_days].to_bool.true?
+      @client_enrollment_services = ClientEnrollmentService.by_client(@client.id).first(10)
+    else
+      @client_enrollment_services = ClientEnrollmentService.by_client(@client.id).not_expired_before_30_days.first(10)
+    end
     @soap_notes = SoapNote.by_client(@client.id).order(add_date: :desc, created_at: :desc).first(10)
     @notes = ClientNote.by_client_id(@client.id).first(10)
     @attachments = Attachment.by_client_id(@client.id).first(10)
@@ -23,7 +27,7 @@ class ClientMetaDataController < ApplicationController
 
   def soap_notes
     @soap_notes = SoapNote.by_client(params[:client_id]).order(add_date: :desc, created_at: :desc)
-                          .paginate(page: params[:page] || 1, per_page: params[:per_page] || 30)
+    @soap_notes = @soap_notes.paginate(page: params[:page], per_page: params[:per_page] || 30) if params[:page].present?
   end
 
   def soap_note_detail
