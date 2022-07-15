@@ -5,7 +5,8 @@ class ContactsController < ApplicationController
   before_action :set_contact, only: %i[show update destroy]
 
   def index
-    @contacts = @client.contacts.order(:first_name).paginate(page: params[:page])
+    @contacts = @client.contacts.order(:first_name)
+    @contacts = @contacts.paginate(page: params[:page]) if params[:page].present?
   end
 
   def create

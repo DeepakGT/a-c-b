@@ -4,7 +4,8 @@ class OrganizationsController < ApplicationController
   before_action :set_organization, only: %i[update show destroy]
 
   def index
-    @organizations = Organization.order(:name).paginate(page: params[:page])
+    @organizations = Organization.order(:name)
+    @organizations = @organizations.paginate(page: params[:page]) if params[:page].present?
   end
 
   def show; end
