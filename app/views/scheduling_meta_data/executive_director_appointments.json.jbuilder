@@ -503,3 +503,8 @@ json.data do
   end
   json.action_items_count @total_count
 end
+if params[:page].present?
+  json.total_records @action_items_array&.total_entries
+  json.limit @action_items_array&.per_page
+  json.page params[:page]
+end
