@@ -5,6 +5,7 @@ class SchedulingsController < ApplicationController
   before_action :authorize_user, except: %i[render_appointment split_appointment_detail create_split_appointment]
   before_action :set_scheduling, only: %i[show update destroy update_without_client]
   before_action :set_client_enrollment_service, only: %i[create create_without_staff]
+  before_action :set_db_time_format, only: %i[create update create_without_staff create_split_appointment create_without_client update_without_client]
 
   def index
     @schedules = do_filter
@@ -350,6 +351,12 @@ class SchedulingsController < ApplicationController
   # Render an appointment manually
   def manual_rendering
     @schedule.update(status: 'Rendered',rendered_at: Time.current,is_manual_render: true, rendered_by_id: current_user.id, user: current_user)
+  end
+
+  def set_db_time_format
+    binding.pry
+    params[:start_time] = params[:start_time].in_time_zone.strftime("%H:%M") if params[:start_time].present?
+    params[:end_time] = params[:end_time].in_time_zone.strftime("%H:%M") if params[:end_time].present?
   end
   # end of private
 end
