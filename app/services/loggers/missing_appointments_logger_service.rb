@@ -1,5 +1,5 @@
 module Loggers
-  module SnowflakeSchedulingLoggerService
+  module MissingAppointmentsLoggerService
     class << self
       def call(snowflake_data, message)
         log_data_sync(snowflake_data, message)
@@ -15,4 +15,3 @@ module Loggers
     end
   end
 end
-  

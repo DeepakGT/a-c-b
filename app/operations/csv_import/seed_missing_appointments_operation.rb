@@ -2,7 +2,7 @@ require 'csv'
 module CsvImport
   module SeedMissingAppointmentsOperation
     class << self
-      def call(clinic_id, file_path)
+      def call(file_path)
         seed_missing_appointments(file_path)
       end
     
@@ -10,11 +10,35 @@ module CsvImport
       
       def seed_missing_appointments(file_path)
         CSV.foreach(Rails.root.join("#{file_path}"), headers: true, header_converters: :symbol) do |appointment|
-          client = Client.where(first_name: appointment[:first_name], last_name: appointment[:last_name])
-          if client.count>1
-            client = client.find_by(status: 'active')
-          else
-            client = client.first
+          client_name = appointment[:clientname]&.split(',')&.each(&:strip!)
+          case appointment[:clientname]
+          when 'James, Francis Franky' 
+            client_name[1] = 'Francis'
+          when 'Buss, Matthias Rumell'
+            client_name[1] = 'Matthias'
+          when 'Anderson, Robert RJ'
+            client_name[1] = 'Robert'
+          end
+          if client_name.present?
+            if appointment[:clientname]=='Syed Abraham Hasan' || appointment[:clientname]=='Syed Adam Hasan' || appointment[:clientname]=='Ana Clara El-Gamel'
+              client_name[2] = "#{client_name[1]} #{client_name[2]}"
+              # client_name[1] = "#{client_name[2]}"
+            elsif client_name.count==3
+              client_name[0] = "#{client_name[0]} #{client_name[1]}"
+            elsif client_name.count==4
+              client_name[0] = "#{client_name[0]} #{client_name[1]} #{client_name[2]}"
+            elsif client_name.count==5
+              client_name[0] = "#{client_name[0]} #{client_name[1]} #{client_name[2]} #{client_name[3]}"
+            end
+            client = Client.where(first_name: client_name&.last, last_name: client_name&.first)
+            if client.count>1
+              client = client.find_by(status: 'active')
+            else
+              client = client.first
+            end
+          end
+          if appointment[:clientname]=='Tanay Toth, Peter '
+            client = Client.find(1894)
           end
           if client.present?
             authorization = ClientEnrollmentService.by_client(client.id).find_by(service_number: appointment[:authorizationnumber])
