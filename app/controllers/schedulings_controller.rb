@@ -355,7 +355,6 @@ class SchedulingsController < ApplicationController
   end
 
   def set_db_time_format
-    binding.pry
     params[:start_time] = params[:start_time].in_time_zone.strftime("%H:%M") if params[:start_time].present?
     params[:end_time] = params[:end_time].in_time_zone.strftime("%H:%M") if params[:end_time].present?
   end
