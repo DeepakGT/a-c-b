@@ -10,7 +10,7 @@ class FundingSource < ApplicationRecord
   belongs_to :clinic
 
   enum status: {active: 0, inactive: 1}
-  enum network_status: {in_network: 0, out_of_network: 1}
+  enum network_status: {in_network: 0, out_of_network: 1, self_pay: 2, insurance: 3, non_billable: 4}
   enum payor_type: { commercial: 0, medicaid: 1, medicare: 2}
 
   accepts_nested_attributes_for :phone_number, update_only: true
