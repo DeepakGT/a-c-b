@@ -57,7 +57,7 @@ class Array
     arr = Array.new(self)
     if arr.count>1
       last = arr.pop
-      return arr.join(", ") + " and " + last.to_s
+      return "#{arr.join(", ")} and #{last}"
     end
     arr.first
   end

@@ -8,7 +8,7 @@ namespace :update_user_data do
       user.address.line1 = 'Test line1'
       user.address.line2 = 'Test line2'
       user.address.line3 = 'Test line3'
-      user.address.zipcode = 92222 
+      user.address.zipcode = '92222' 
       user.address.state = 'Test State'
       user.address.city = 'Test City'
       user.address.country = 'Test Country'
