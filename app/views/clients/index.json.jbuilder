@@ -59,6 +59,8 @@ end
 if params[:search_cross_location] == 1 || params[:search_cross_location] == "1"
   json.search_cross_location params[:search_cross_location]
 end
-json.total_records @clients.total_entries
-json.limit @clients.per_page
-json.page params[:page] || 1
+if params[:page].present?
+  json.total_records @clients.total_entries
+  json.limit @clients.per_page
+  json.page params[:page]
+end

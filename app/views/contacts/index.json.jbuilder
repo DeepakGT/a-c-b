@@ -35,6 +35,8 @@ json.data do
     end
   end
 end
-json.total_records @contacts.total_entries
-json.limit @contacts.per_page
-json.page params[:page] || 1
+if params[:page].present?
+  json.total_records @contacts.total_entries
+  json.limit @contacts.per_page
+  json.page params[:page]
+end
