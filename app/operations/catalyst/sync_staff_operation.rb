@@ -35,9 +35,7 @@ module Catalyst
               staff_data['lastName']='Rodriguez'
             end
             staff = Staff.find_by(first_name: staff_data['firstName'], last_name: staff_data['lastName'], email: staff_data['email'])
-            if staff.blank?
-              staff = Staff.where('email = ?', staff_data['email']&.downcase).find_by(first_name: staff_data['firstName'], last_name: staff_data['lastName'])
-            end
+            staff = Staff.where('email = ?', staff_data['email']&.downcase).find_by(first_name: staff_data['firstName'], last_name: staff_data['lastName']) if staff.blank?
             if staff.present?
               staff.catalyst_user_id = staff_data['userId']
               staff.save(validate: false)

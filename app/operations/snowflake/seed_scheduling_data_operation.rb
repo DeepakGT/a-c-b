@@ -20,7 +20,7 @@ module Snowflake
           client = Client.find_by(dob: appointment['clientdob']&.to_time&.strftime('%Y-%m-%d'), first_name: client_name&.last, last_name: client_name&.first)
           if client.present?
             if appointment['fundingsource'].present?
-              funding_source_id = get_funding_source(appointment['fundingsource'], client)
+              funding_source_id = get_funding_source(appointment['fundingsource'])
               if funding_source_id.present?
                 service = Service.where('lower(name) = ?', appointment['servicename']&.downcase).first
                 if service.present?
@@ -205,7 +205,7 @@ module Snowflake
         Loggers::SnowflakeSchedulingLoggerService.call(seed_count, "#{seed_count} schedulings seeded.")
       end
 
-      def get_funding_source(funding_source_name,client)
+      def get_funding_source(funding_source_name)
         case funding_source_name
         when 'BCBS NH'
           return FundingSource.find_by(name: 'New Hampshire BCBS').id

@@ -13,6 +13,7 @@ class CatalystController < ApplicationController
     use_abac_units if params[:use_abac_units].to_bool.true?
     use_custom_units if params[:use_custom_units].to_bool.true?
     update_soap_note
+    update_audit_action
     #ClientEnrollmentServices::UpdateUnitsColumnsOperation.call(@schedule.client_enrollment_service) if @schedule.client_enrollment_service.present?
     RenderAppointments::RenderScheduleOperation.call(@schedule.id) if @schedule.date<Time.current.to_date
   end
@@ -223,7 +224,6 @@ class CatalystController < ApplicationController
     schedules = Scheduling.joins(client_enrollment_service: :client_enrollment).by_client_ids(client&.id).by_staff_ids(staff&.id).on_date(@catalyst_data.date)
     schedules = schedules.where.not(rendered_at: nil).where(is_manual_render: true).left_outer_joins(:soap_notes).group('schedulings.id').having('count(soap_notes.*) = ?', 0)
                          .or(schedules.by_status)
-    schedules
   end
 
   def best_match_appointment(schedules)
@@ -260,7 +260,7 @@ class CatalystController < ApplicationController
           schedule = filtered_schedules.first
         elsif filtered_schedules.length>1
           service_display_code = catalyst_data.response['templateName'][-10..-6]
-          filtered_schedules = filtered_schedules.map{|schedule| schedule if schedule.client_enrollment_service.service.display_code==service_display_code}.compact
+          filtered_schedules = filtered_schedules.map{|appointment| appointment if appointment.client_enrollment_service.service.display_code==service_display_code}.compact
           if filtered_schedules.length==1
             schedule = filtered_schedules.first
           elsif filtered_schedules.length>1
@@ -273,5 +273,14 @@ class CatalystController < ApplicationController
       schedule = nil
     end
     schedule
+  end
+
+  def update_audit_action
+    audit = @schedule.audits.last
+    if params[:use_catalyst_units].to_bool.true?
+      audit.update(action: 'use catalyst units')
+    elsif params[:use_custom_units].to_bool.true?
+      audit.update(action: 'use custom units')
+    end
   end
 end
