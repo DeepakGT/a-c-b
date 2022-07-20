@@ -239,6 +239,22 @@ RSpec.describe ClientServiceAddressesController, type: :controller do
         expect(response_body['data']['address_name']).to eq('Office')
         expect(response_body['data']['city']).to eq(clinic.address.city)
       end
+      
+      context "and location doesn't have specified address" do
+        let!(:clinic1){create(:clinic, organization_id: organization.id)}
+        let!(:client2){create(:client, clinic_id: clinic1.id)}
+        it "should show error message successfully" do
+          set_auth_headers(auth_headers)
+
+          post :create_office_address, params: { client_id: client2.id}
+          response_body = JSON.parse(response.body)
+          
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('failure')
+          expect(response_body['data']['id']).to eq(nil)
+          expect(response_body['errors']).to eq(['Office address cannot be created since location has no address.'])
+        end
+      end
     end
   end
 end
