@@ -31,7 +31,7 @@ class ServicesController < ApplicationController
 
   def service_params
     params.permit(:name, :status, :display_code, :is_service_provider_required, :is_unassigned_appointment_allowed,
-                  service_qualifications_attributes: :qualification_id)
+                  service_qualifications_attributes: :qualification_id, :is_early_code)
   end
 
   def set_service
@@ -46,5 +46,4 @@ class ServicesController < ApplicationController
     @service.qualifications.destroy_all
   end
   # end of private
-
 end

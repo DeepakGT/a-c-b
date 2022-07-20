@@ -6,6 +6,7 @@ json.data do
       json.id service.id
       json.name service.name
       json.display_code service.display_code
+      json.is_early_code service&.is_early_code
       json.is_service_provider_required service.is_service_provider_required
     end
   end
