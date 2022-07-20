@@ -17,9 +17,9 @@ class Service < ApplicationRecord
   private
 
   def validate_is_early_code
-    if params[:is_early_code].to_bool.true?
-      billable_funding_sources = ClientEnrollmentService.by_service(self.id).joins(client_enrollment: :funding_source).where.not('funding_sources.network_status = ?', 'non_billable')
-      errors.add(:is_early_code, 'cannot be updated to true if service has billable payors in the auth.') if billable_funding_sources.present?
+    if self.is_early_code.to_bool.true? && Service.find(self.id).is_early_code.to_bool.false?
+      billable_funding_sources = ClientEnrollmentService.by_service(self.id).joins(client_enrollment: :funding_source).where.not('funding_sources.network_status': 'non_billable')
+      errors.add(:service, 'cannot be updated to early code as it is connected to billable payors.') if billable_funding_sources.present?
     end
   end
 end

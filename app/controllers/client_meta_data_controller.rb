@@ -41,9 +41,10 @@ class ClientMetaDataController < ApplicationController
   end
 
   def selectable_options_data
-    client_enrollments = @client.client_enrollments.active.where.not(source_of_payment: 'self_pay')
-    selectable_options = { services: Service.order(:name),
-                           client_enrollments: client_enrollments&.order(is_primary: :desc) }
+    # client_enrollments = @client.client_enrollments.active.where.not(source_of_payment: 'self_pay')
+    # selectable_options = { services: Service.order(:name),
+    #                        client_enrollments: client_enrollments&.order(is_primary: :desc) }
+    selectable_options = { services: Service.order(:name) }
   end
 
   def check_qualification(staff)
