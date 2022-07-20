@@ -30,7 +30,6 @@ class ClientServiceAddressesController < ApplicationController
 
   def create_office_address
     @office_address = create_office_address_for_client
-    @office_address.errors.add(:office_address, 'cannot be created since location has no address.') if @office_address.id.nil?
   end
 
   private
@@ -65,8 +64,8 @@ class ClientServiceAddressesController < ApplicationController
       office_address.state = @client.clinic.address.state
       office_address.country = @client.clinic.address.country
       office_address.zipcode = @client.clinic.address.zipcode
-      office_address.save
     end
+    office_address.save
     office_address
   end
 

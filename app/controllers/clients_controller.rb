@@ -48,8 +48,8 @@ class ClientsController < ApplicationController
   end
 
   def create_office_address_for_client
+    office_address = @client.addresses.new(address_name: 'Office', address_type: 'service_address', is_default: false, is_hidden: false)
     if @client.clinic.address.present?
-      office_address = @client.addresses.new(address_name: 'Office', address_type: 'service_address', is_default: false, is_hidden: false)
       office_address.line1 = @client.clinic.address.line1
       office_address.line2 = @client.clinic.address.line2
       office_address.line3 = @client.clinic.address.line3
@@ -57,8 +57,8 @@ class ClientsController < ApplicationController
       office_address.state = @client.clinic.address.state
       office_address.country = @client.clinic.address.country
       office_address.zipcode = @client.clinic.address.zipcode
-      office_address.save
     end
+    office_address.save
   end
 
   def filter_by_location(clients)
