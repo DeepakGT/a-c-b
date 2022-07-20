@@ -3,6 +3,7 @@ class StaffController < ApplicationController
   before_action :authenticate_user!
   before_action :authorize_user, except: %i[phone_types supervisor_list]
   before_action :set_staff, only: %i[show update destroy]
+  before_action :remove_trailing_space, only: %i[create update]
 
   def index
     staff = Staff.all
@@ -150,6 +151,11 @@ class StaffController < ApplicationController
     else
       staff = staff.active
     end
+  end
+
+  def remove_trailing_space
+    params[:first_name].strip! if params[:first_name].present?
+    params[:last_name].strip! if params[:last_name].present?
   end
   # end of private
 end
