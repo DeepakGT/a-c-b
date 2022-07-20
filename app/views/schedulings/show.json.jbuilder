@@ -44,8 +44,8 @@ json.data do
   json.service_display_code service&.display_code 
   json.status @schedule.status
   json.date @schedule.date
-  json.start_time @schedule.start_time.to_time.strftime('%H:%M')
-  json.end_time @schedule.end_time.to_time.strftime('%H:%M')
+  json.start_time @schedule.start_time.in_time_zone.strftime("%I:%M %p")
+  json.end_time @schedule.end_time.in_time_zone.strftime("%I:%M %p")
   # json.is_rendered @schedule.is_rendered
   if @schedule.rendered_at.present? && @schedule.status == 'Rendered'
     json.is_rendered true
