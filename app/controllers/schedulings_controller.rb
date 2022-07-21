@@ -211,7 +211,7 @@ class SchedulingsController < ApplicationController
   # end 
 
   def update_render_service
-    RenderAppointments::RenderScheduleManualOperation.call(@schedule.id, params[:catalyst_soap_note_id]) if (params[:is_rendered].to_bool.true? || params[:status]=='Rendered') && @schedule.date<Time.current.to_date
+    RenderAppointments::RenderScheduleManualOperation.call(@schedule.id, params[:catalyst_soap_note_id], current_user) if (params[:is_rendered].to_bool.true? || params[:status]=='Rendered') && @schedule.date<Time.current.to_date
   end
 
   def update_scheduling
@@ -331,6 +331,8 @@ class SchedulingsController < ApplicationController
         update_scheduling 
         # @schedule.is_rendered = false
         @schedule.rendered_at = nil
+        @schedule.rendered_by_id = nil
+        @schedule.is_manual_render = false
         @schedule.save
       else
         @schedule.errors.add(:schedule, 'You are not authorized to unrender appointment.')
