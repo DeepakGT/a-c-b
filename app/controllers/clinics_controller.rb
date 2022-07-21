@@ -6,7 +6,8 @@ class ClinicsController < ApplicationController
   def index
     @clinics = Clinic.all
     @clinics = @clinics.by_org_id(params[:organization_id]) if params[:organization_id].present?
-    @clinics = @clinics.order(:name).paginate(page: params[:page])
+    @clinics = @clinics.order(:name)
+    @clinics = @clinics.paginate(page: params[:page]) if params[:page].present?
   end
 
   def create

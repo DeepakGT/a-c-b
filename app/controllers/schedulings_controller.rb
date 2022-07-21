@@ -57,14 +57,12 @@ class SchedulingsController < ApplicationController
   end
 
   def destroy
-    client_enrollment_service = @schedule.client_enrollment_service
     case current_user.role_name
     when 'super_admin'
       delete_scheduling
     when 'bcba', 'executive_director', 'client_care_coordinator', 'Clinical Director', 'administrator'
       delete_scheduling if @schedule.created_at.strftime('%Y-%m-%d')>=(Time.current-1.day).strftime('%Y-%m-%d')
     end
-    #update_units_columns(@schedule.client_enrollment_service)
   end
 
   def create_without_staff
