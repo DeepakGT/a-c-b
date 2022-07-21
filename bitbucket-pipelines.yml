@@ -10,7 +10,8 @@ pipelines:
           caches:
             - sonar
           script:
-            - sonar-scanner
+            - pipe: sonarsource/sonarcloud-scan:1.4.0
+            - pipe: sonarsource/sonarcloud-quality-gate:0.1.6
 
   pull-requests:
     '**':
@@ -20,7 +21,8 @@ pipelines:
           caches:
             - sonar
           script:
-            - sonar-scanner
+            - pipe: sonarsource/sonarcloud-scan:1.4.0
+            - pipe: sonarsource/sonarcloud-quality-gate:0.1.6
 
 definitions:
   caches:
