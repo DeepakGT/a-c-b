@@ -1,7 +1,7 @@
 # require 'swagger_helper'
 require 'rails_helper'
 
-RSpec.describe DeviseTokenAuth::RegistrationsController, type: :controller do
+RSpec.describe Overrides::RegistrationsController, type: :controller do
   before(:each) do
     @request.env["devise.mapping"] = Devise.mappings[:user]
     @email = "testuser1@yopmail.com"
@@ -33,9 +33,9 @@ RSpec.describe DeviseTokenAuth::RegistrationsController, type: :controller do
           email: 'user'
         }
         response_body = JSON.parse(response.body)
-
+        
         expect(response.status).to eq(422)
-        expect(response_body["errors"]["email"]).to include("is not an email")
+        expect(response_body["errors"]).to include("Email is not an email")
       end
 
       it "should fail for invalid password" do
@@ -45,7 +45,7 @@ RSpec.describe DeviseTokenAuth::RegistrationsController, type: :controller do
         response_body = JSON.parse(response.body)
 
         expect(response.status).to eq(422)
-        expect(response_body["errors"]["password"]).to include("can't be blank")
+        expect(response_body["errors"]).to include("Password can't be blank")
       end
     end
   end
