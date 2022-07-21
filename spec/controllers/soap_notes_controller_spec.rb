@@ -154,7 +154,7 @@ RSpec.describe SoapNotesController, type: :controller do
         it "should cancel all signatures" do
           set_auth_headers(auth_headers)
 
-          put :update, params: { scheduling_id: scheduling.id, id: soap_note.id, rbt_sign: false, bcba_sign: false, clinical_director_sign: false}
+          put :update, params: { scheduling_id: scheduling.id, id: soap_note.id, rbt_sign: false, bcba_sign: false, clinical_director_sign: false, add_time: '1:00'}
           response_body = JSON.parse(response.body)
           
           expect(response.status).to eq(200)
@@ -171,7 +171,7 @@ RSpec.describe SoapNotesController, type: :controller do
         it "should add all signatures" do
           set_auth_headers(auth_headers)
 
-          put :update, params: { scheduling_id: scheduling.id, id: soap_note.id, rbt_sign: true, bcba_sign: true, clinical_director_sign: true}
+          put :update, params: { scheduling_id: scheduling.id, id: soap_note.id, rbt_sign: true, bcba_sign: true, clinical_director_sign: true, add_time: '1:00'}
           response_body = JSON.parse(response.body)
           
           expect(response.status).to eq(200)

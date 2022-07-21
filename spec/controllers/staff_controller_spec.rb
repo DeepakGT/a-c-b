@@ -36,17 +36,6 @@ RSpec.describe StaffController, type: :controller do
         expect(response_body['data'].count).to eq(Staff.joins(:role).by_role('billing').count)
       end
 
-      it "should fetch the first page record by default" do
-        set_auth_headers(auth_headers)
-        
-        get :index
-        response_body = JSON.parse(response.body)
-
-        expect(response.status).to eq(200)
-        expect(response_body['status']).to eq('success')
-        expect(response_body['page']).to eq(1)
-      end
-
       it "should fetch the given page record" do
         set_auth_headers(auth_headers)
         
@@ -137,7 +126,6 @@ RSpec.describe StaffController, type: :controller do
           expect(response.status).to eq(200)
           expect(response_body['status']).to eq('success')
           expect(response_body['data'].count).to eq(2)
-          expect(response_body['page']).to eq(1)
         end
       end
 
@@ -419,52 +407,6 @@ RSpec.describe StaffController, type: :controller do
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
         expect(response_body['data'].count).to eq(Staff.all.count)
-      end
-    end
-  end
-
-  describe "GET #staff_cancelled_schedules" do
-    context "when sign in" do
-      let!(:staff) { create(:staff, :with_role, role_name: 'billing', last_name: 'Zachary') }
-      let!(:client) { create(:client, clinic_id: clinic.id, first_name: 'test') }
-      let!(:service) { create(:service) }
-      let!(:client_enrollment) { create(:client_enrollment, client_id: client.id) }
-      let!(:client_enrollment_service) { create(:client_enrollment_service, client_enrollment_id: client_enrollment.id, service_id: service.id) }
-      let!(:schedulings1) {create_list(:scheduling, 3, units: '2', staff_id: staff.id, status: 'Staff_Cancellation', client_enrollment_service_id: client_enrollment_service.id)}
-      let!(:schedulings2) {create_list(:scheduling, 3, units: '2', staff_id: staff.id, status: 'Staff_Cancellation_Due_To_Illness', client_enrollment_service_id: client_enrollment_service.id)}
-      let!(:staff_cancelled_schedules) {Scheduling.by_staff_ids(staff.id).staff_cancelled_schedules}
-      it "should display all staff cancelled schedules" do
-        set_auth_headers(auth_headers)
-
-        get :staff_cancelled_schedules, params: {staff_id: staff.id}
-        response_body = JSON.parse(response.body)
-
-        expect(response.status).to eq(200)
-        expect(response_body['status']).to eq('success')
-        expect(response_body['data']['id']).to eq(staff.id)
-        expect(response_body['data']['schedules'].count).to eq(staff_cancelled_schedules.count)
-      end
-
-      it "should fetch the first page record by default" do
-        set_auth_headers(auth_headers)
-        
-        get :staff_cancelled_schedules, params: {staff_id: staff.id}
-        response_body = JSON.parse(response.body)
-
-        expect(response.status).to eq(200)
-        expect(response_body['status']).to eq('success')
-        expect(response_body['page']).to eq(1)
-      end
-
-      it "should fetch the given page record" do
-        set_auth_headers(auth_headers)
-        
-        get :staff_cancelled_schedules, params: {staff_id: staff.id, page: 2 }
-        response_body = JSON.parse(response.body)
-
-        expect(response.status).to eq(200)
-        expect(response_body['status']).to eq('success')
-        expect(response_body['page']).to eq("2")
       end
     end
   end
