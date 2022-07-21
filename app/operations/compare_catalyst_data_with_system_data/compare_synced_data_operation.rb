@@ -2,39 +2,21 @@ module CompareCatalystDataWithSystemData
   module CompareSyncedDataOperation
     class << self
       def call(catalyst_data)
-        response_data_hash = compare_synced_data(catalyst_data)
+        compare_synced_data(catalyst_data)
       end
 
       private
 
       def compare_synced_data(catalyst_data)
         response_data_hash = {}
-        staff = Staff.where(catalyst_user_id: catalyst_data.catalyst_user_id)
-        if staff.count==1
-          staff = staff.first
-        elsif staff.count>1
-          staff = staff.find_by(status: 'active')
-        else
-          staff = Staff.find_by(catalyst_user_id: catalyst_data.catalyst_user_id)
-        end
-        client = Client.where(catalyst_patient_id: catalyst_data.catalyst_patient_id)
-        if client.count==1
-          client = client.first
-        elsif client.count>1
-          client = client.find_by(status: 'active')
-        else
-          client = Client.find_by(catalyst_patient_id: catalyst_data.catalyst_patient_id)
-        end
+        staff = staff_details catalyst_data
+        client = client_details catalyst_data
         soap_note = SoapNote.find_or_initialize_by(catalyst_data_id: catalyst_data.id)
         soap_note.client_id = nil
         soap_note.scheduling_id = nil
         soap_note.creator_id = staff&.id
         soap_note.save(validate: false)
-        if soap_note.present? && !soap_note.id.nil?
-          Loggers::Catalyst::SyncSoapNotesLoggerService.call(catalyst_data.id, "Soap note with catalyst soap note id #{catalyst_data.catalyst_soap_note_id} is saved.")
-        else
-          Loggers::Catalyst::SyncSoapNotesLoggerService.call(catalyst_data.id, "Soap note with catalyst soap note id #{catalyst_data.catalyst_soap_note_id} cannot be saved.")
-        end
+        log_soap_note_presence(soap_note,catalyst_data)
         if staff.present?
           schedules = Scheduling.left_outer_joins(:soap_notes).select("schedulings.*").group("schedulings.id").having("count(soap_notes.*) = ?",0)
           schedules = schedules.joins(client_enrollment_service: :client_enrollment).by_client_ids(client&.id).by_staff_ids(staff&.id).on_date(catalyst_data.date).by_status
@@ -51,27 +33,11 @@ module CompareCatalystDataWithSystemData
               set_appointment(catalyst_data, filtered_schedules.first, soap_note) if filtered_schedules.length==1
             end 
             if catalyst_data.system_scheduling_id.blank? 
-              filtered_schedules = []
-              schedules.each do |appointment|
-                min_start_time = (appointment.start_time.to_time-15.minutes)
-                max_start_time = (appointment.start_time.to_time+15.minutes)
-                min_end_time = (appointment.end_time.to_time-15.minutes)
-                max_end_time = (appointment.end_time.to_time+15.minutes)
-                if (min_start_time..max_start_time).include?(catalyst_data.start_time.to_time) && (min_end_time..max_end_time).include?(catalyst_data.end_time.to_time)
-                  filtered_schedules.push(appointment)
-                end
-              end
+              filtered_schedules = filter_appointment_with_time_range(schedules,catalyst_data)
               if filtered_schedules.length==1
                 set_appointment(catalyst_data, filtered_schedules.first, soap_note)
               elsif filtered_schedules.length>1
-                service_display_code = catalyst_data.response['templateName'][-10..-6]
-                filtered_schedules = filtered_schedules.map{|appointment| appointment if appointment.client_enrollment_service.service.display_code==service_display_code}.compact
-                if filtered_schedules.length==1
-                  set_appointment(catalyst_data, filtered_schedules.first, soap_note)
-                elsif filtered_schedules.length>1
-                  filtered_schedules = filtered_schedules.sort_by(&:minutes)
-                  set_appointment(catalyst_data, filtered_schedules.last, soap_note)
-                end
+                compare_service_code_and_set_appointment(filtered_schedules,catalyst_data)
               end
             end 
           end
@@ -158,6 +124,63 @@ module CompareCatalystDataWithSystemData
           catalyst_data.save(validate: false)
         end
         response_data_hash
+      end
+
+      def staff_details(catalyst_data)
+        staff = Staff.where(catalyst_user_id: catalyst_data.catalyst_user_id)
+        if staff.count==1
+          staff = staff.first
+        elsif staff.count>1
+          staff = staff.find_by(status: 'active')
+        else
+          staff = Staff.find_by(catalyst_user_id: catalyst_data.catalyst_user_id)
+        end
+        staff
+      end
+
+      def client_details(catalyst_data)
+        client = Client.where(catalyst_patient_id: catalyst_data.catalyst_patient_id)
+        if client.count==1
+          client = client.first
+        elsif client.count>1
+          client = client.find_by(status: 'active')
+        else
+          client = Client.find_by(catalyst_patient_id: catalyst_data.catalyst_patient_id)
+        end
+        client
+      end
+
+      def log_soap_note_presence(soap_note,catalyst_data)
+        if soap_note.present? && !soap_note.id.nil?
+          Loggers::Catalyst::SyncSoapNotesLoggerService.call(catalyst_data.id, "Soap note with catalyst soap note id #{catalyst_data.catalyst_soap_note_id} is saved.")
+        else
+          Loggers::Catalyst::SyncSoapNotesLoggerService.call(catalyst_data.id, "Soap note with catalyst soap note id #{catalyst_data.catalyst_soap_note_id} cannot be saved.")
+        end
+      end
+
+      def filter_appointment_with_time_range(schedules,catalyst_data)
+        filtered_appointments = []
+        schedules.each do |appointment|
+          min_start_time = (appointment.start_time.to_time-15.minutes)
+          max_start_time = (appointment.start_time.to_time+15.minutes)
+          min_end_time = (appointment.end_time.to_time-15.minutes)
+          max_end_time = (appointment.end_time.to_time+15.minutes)
+          if (min_start_time..max_start_time).include?(catalyst_data.start_time.to_time) && (min_end_time..max_end_time).include?(catalyst_data.end_time.to_time)
+            filtered_appointments.push(appointment)
+          end
+        end
+        filtered_appointments
+      end
+
+      def compare_service_code_and_set_appointment(filtered_schedules,catalyst_data)
+        service_display_code = catalyst_data.response['templateName'][-10..-6]
+        filtered_schedules = filtered_schedules.map{|appointment| appointment if appointment.client_enrollment_service.service.display_code==service_display_code}.compact
+        if filtered_schedules.length==1
+          set_appointment(catalyst_data, filtered_schedules.first, soap_note)
+        elsif filtered_schedules.length>1
+          filtered_schedules = filtered_schedules.sort_by(&:minutes)
+          set_appointment(catalyst_data, filtered_schedules.last, soap_note)
+        end
       end
     end
   end

@@ -1,8 +1,13 @@
+APPOINTMENT_SAVED = "In appointment, catalyst data id is saved.".freeze
+APPOINTMENT_NOT_SAVED = "In appointment, catalyst data id cannot be saved."
+SOAP_NOTE_ID_UPDATED = "Soap note's client id is updated."
+SOAP_NOTE_ID_NOT_UPDATED = "Soap note's client id cannot be updated."
+
 module CompareCatalystDataWithSystemData
   module UpdateSyncedDataOperation
     class << self
       def call(catalyst_data)
-        response_data_hash = update_synced_data(catalyst_data)
+        update_synced_data(catalyst_data)
       end
 
       private
@@ -29,9 +34,9 @@ module CompareCatalystDataWithSystemData
               schedule.catalyst_data_ids = schedule.catalyst_data_ids | ["#{catalyst_data.id}"]
               schedule.save(validate: false)
               if schedule.catalyst_data_ids.include?("#{catalyst_data.id}")
-                Loggers::Catalyst::SyncSoapNotesLoggerService.call(schedule.id, "In appointment, catalyst data id is saved.")
+                Loggers::Catalyst::SyncSoapNotesLoggerService.call(schedule.id, APPOINTMENT_SAVED)
               else
-                Loggers::Catalyst::SyncSoapNotesLoggerService.call(schedule.id, "In appointment, catalyst data id cannot be saved.")
+                Loggers::Catalyst::SyncSoapNotesLoggerService.call(schedule.id, APPOINTMENT_NOT_SAVED)
               end
 
               soap_note = SoapNote.find_or_initialize_by(catalyst_data_id: catalyst_data.id)
@@ -53,9 +58,9 @@ module CompareCatalystDataWithSystemData
               if soap_note.present? && !soap_note.id.nil?
                 Loggers::Catalyst::SyncSoapNotesLoggerService.call(catalyst_data.id, "Soap note with catalyst soap note id #{catalyst_data.catalyst_soap_note_id} is saved.")
                 if soap_note.client_id.present?
-                  Loggers::Catalyst::SyncSoapNotesLoggerService.call(soap_note.id, "Soap note's client id is updated.")
+                  Loggers::Catalyst::SyncSoapNotesLoggerService.call(soap_note.id, SOAP_NOTE_ID_UPDATED)
                 else
-                  Loggers::Catalyst::SyncSoapNotesLoggerService.call(soap_note.id, "Soap note's client id cannot be updated.")
+                  Loggers::Catalyst::SyncSoapNotesLoggerService.call(soap_note.id, SOAP_NOTE_ID_NOT_UPDATED)
                 end
               else
                 Loggers::Catalyst::SyncSoapNotesLoggerService.call(catalyst_data.id, "Soap note with catalyst soap note id #{catalyst_data.catalyst_soap_note_id} cannot be saved.")
@@ -75,9 +80,9 @@ module CompareCatalystDataWithSystemData
               schedule.catalyst_data_ids = schedule.catalyst_data_ids | ["#{catalyst_data.id}"]
               schedule.save(validate: false)
               if schedule.catalyst_data_ids.include?("#{catalyst_data.id}")
-                Loggers::Catalyst::SyncSoapNotesLoggerService.call(schedule.id, "In appointment, catalyst data id is saved.")
+                Loggers::Catalyst::SyncSoapNotesLoggerService.call(schedule.id, APPOINTMENT_SAVED)
               else
-                Loggers::Catalyst::SyncSoapNotesLoggerService.call(schedule.id, "In appointment, catalyst data id cannot be saved.")
+                Loggers::Catalyst::SyncSoapNotesLoggerService.call(schedule.id, APPOINTMENT_NOT_SAVED)
               end
 
               soap_note = SoapNote.find_or_initialize_by(catalyst_data_id: catalyst_data.id)
@@ -99,9 +104,9 @@ module CompareCatalystDataWithSystemData
               if soap_note.present? && !soap_note.id.nil?
                 Loggers::Catalyst::SyncSoapNotesLoggerService.call(catalyst_data.id, "Soap note with catalyst soap note id #{catalyst_data.catalyst_soap_note_id} is saved.")
                 if soap_note.client_id.present?
-                  Loggers::Catalyst::SyncSoapNotesLoggerService.call(soap_note.id, "Soap note's client id is updated.")
+                  Loggers::Catalyst::SyncSoapNotesLoggerService.call(soap_note.id, SOAP_NOTE_ID_UPDATED)
                 else
-                  Loggers::Catalyst::SyncSoapNotesLoggerService.call(soap_note.id, "Soap note's client id cannot be updated.")
+                  Loggers::Catalyst::SyncSoapNotesLoggerService.call(soap_note.id, SOAP_NOTE_ID_NOT_UPDATED)
                 end
               else
                 Loggers::Catalyst::SyncSoapNotesLoggerService.call(catalyst_data.id, "Soap note with catalyst soap note id #{catalyst_data.catalyst_soap_note_id} cannot be saved.")
@@ -113,9 +118,9 @@ module CompareCatalystDataWithSystemData
               schedule.catalyst_data_ids = schedule.catalyst_data_ids | ["#{catalyst_data.id}"]
               schedule.save(validate: false)
               if schedule.catalyst_data_ids.include?("#{catalyst_data.id}")
-                Loggers::Catalyst::SyncSoapNotesLoggerService.call(schedule.id, "In appointment, catalyst data id is saved.")
+                Loggers::Catalyst::SyncSoapNotesLoggerService.call(schedule.id, APPOINTMENT_SAVED)
               else
-                Loggers::Catalyst::SyncSoapNotesLoggerService.call(schedule.id, "In appointment, catalyst data id cannot be saved.")
+                Loggers::Catalyst::SyncSoapNotesLoggerService.call(schedule.id, APPOINTMENT_NOT_SAVED)
               end
               Loggers::Catalyst::SyncSoapNotesLoggerService.call(schedule.id, "In appointment, unrendered_reason cannot be saved.") if schedule.unrendered_reason!=['units_does_not_match']
 
@@ -127,9 +132,9 @@ module CompareCatalystDataWithSystemData
               if soap_note.present? && !soap_note.id.nil?
                 Loggers::Catalyst::SyncSoapNotesLoggerService.call(catalyst_data.id, "Soap note with catalyst soap note id #{catalyst_data.catalyst_soap_note_id} is saved.")
                 if soap_note.client_id.present?
-                  Loggers::Catalyst::SyncSoapNotesLoggerService.call(soap_note.id, "Soap note's client id is updated.")
+                  Loggers::Catalyst::SyncSoapNotesLoggerService.call(soap_note.id, SOAP_NOTE_ID_UPDATED)
                 else
-                  Loggers::Catalyst::SyncSoapNotesLoggerService.call(soap_note.id, "Soap note's client id cannot be updated.")
+                  Loggers::Catalyst::SyncSoapNotesLoggerService.call(soap_note.id, SOAP_NOTE_ID_NOT_UPDATED)
                 end
               else
                 Loggers::Catalyst::SyncSoapNotesLoggerService.call(catalyst_data.id, "Soap note with catalyst soap note id #{catalyst_data.catalyst_soap_note_id} cannot be saved.")

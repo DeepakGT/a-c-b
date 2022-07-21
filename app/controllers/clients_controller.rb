@@ -13,7 +13,9 @@ class ClientsController < ApplicationController
     @clients = @clients.paginate(page: params[:page]) if params[:page].present?
   end
 
-  def show; end
+  def show
+    @client
+  end
 
   def create
     @client = Client.new(client_params)
@@ -98,9 +100,6 @@ class ClientsController < ApplicationController
         fname, lname = params[:search_value].split(' ')
         if fname.present? && lname.blank?
           clients = clients.by_first_name(fname).or(clients.by_last_name(fname))
-        elsif fname.present? && lname.present?
-          clients = clients.by_first_name(fname)
-          clients = clients.by_last_name(lname)
         else
           clients = clients.by_first_name(fname) # if fname.present?
           clients = clients.by_last_name(lname) # if lname.present?

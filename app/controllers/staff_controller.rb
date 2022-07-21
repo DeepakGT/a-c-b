@@ -13,7 +13,9 @@ class StaffController < ApplicationController
     @staff = @staff.paginate(page: params[:page]) if params[:page].present?
   end
 
-  def show; end
+  def show
+    @staff
+  end
 
   def update
     set_role if params[:role_name].present?
@@ -83,9 +85,6 @@ class StaffController < ApplicationController
         fname, lname = params[:search_value].split(' ')
         if fname.present? && lname.blank?
           staff = staff.by_first_name(fname).or(staff.by_last_name(fname))
-        elsif fname.present? && lname.present?
-          staff = staff.by_first_name(fname)
-          staff = staff.by_last_name(lname)
         else
           staff = staff.by_first_name(fname) # if fname.present?
           staff = staff.by_last_name(lname) # if lname.present?

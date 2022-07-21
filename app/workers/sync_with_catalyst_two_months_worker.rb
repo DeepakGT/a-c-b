@@ -21,7 +21,7 @@ class SyncWithCatalystTwoMonthsWorker
     RenderAppointments::MultipleSoapNotesOperation.call
     
     Loggers::Catalyst::SyncSoapNotesLoggerService.call(nil, "Rendering catalyst synced appointments from #{start_date} to #{end_date} at #{Time.current} has started.")
-    result = Catalyst::RenderAppointmentsOperation.call
+    Catalyst::RenderAppointmentsOperation.call
     Loggers::Catalyst::SyncSoapNotesLoggerService.call(nil, "Rendering catalyst synced appointments from #{start_date} to #{end_date} at #{Time.current} is completed.")
   
     # ClientEnrollmentService.all.each do |client_enrollment_service|
