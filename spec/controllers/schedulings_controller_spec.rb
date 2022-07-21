@@ -9,7 +9,7 @@ RSpec.describe SchedulingsController, type: :controller do
     @request.env["devise.mapping"] = Devise.mappings[:user]
   end
 
-  let!(:role) { create(:role, name: 'executive_director', permissions: ['schedule_view', 'schedule_update', 'schedule_delete'])}
+  let!(:role) { create(:role, name: 'executive_director', permissions: ['schedule_view', 'schedule_update', 'schedule_delete', 'schedule_update_for_unassigned_staff', 'schedule_update_for_unassigned_client'])}
   let!(:user) { create(:user, :with_role, role_name: role.name) }
   let!(:auth_headers) { user.create_new_auth_token }
   let!(:organization) { create(:organization, name: 'org1', admin_id: user.id) }
@@ -31,18 +31,7 @@ RSpec.describe SchedulingsController, type: :controller do
         
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
-        expect(response_body['total_records']).to eq(Scheduling.all.count)
-      end
-
-      it "should fetch the first page record by default" do
-        set_auth_headers(auth_headers)
-        
-        get :index
-        response_body = JSON.parse(response.body)
-
-        expect(response.status).to eq(200)
-        expect(response_body['status']).to eq('success')
-        expect(response_body['page']).to eq(1)
+        expect(response_body['data'].count).to eq(Scheduling.all.count)
       end
 
       it "should fetch the given page record" do
@@ -118,6 +107,7 @@ RSpec.describe SchedulingsController, type: :controller do
         let!(:staff2) {create(:staff, :with_role, role_name: role2.name)}
         let!(:staff1_auth_headers){ staff1.create_new_auth_token}
         let!(:staff2_auth_headers){ staff2.create_new_auth_token}
+        let!(:staff_clinic) {create(:staff_clinic, staff_id: staff.id, clinic_id: clinic.id)}
         let!(:client1) { create(:client, clinic_id: clinic.id, bcba_id: staff2.id) }
         let!(:client_enrollment1) { create(:client_enrollment, client_id: client1.id) }
         let!(:client_enrollment_service1) { create(:client_enrollment_service, client_enrollment_id: client_enrollment1.id) }
@@ -132,7 +122,7 @@ RSpec.describe SchedulingsController, type: :controller do
 
             expect(response.status).to eq(200)
             expect(response_body['status']).to eq('success')
-            expect(response_body['data'].count).to eq(1)
+            expect(response_body['data'].count).to eq(10)
           end
         end
 
@@ -145,7 +135,7 @@ RSpec.describe SchedulingsController, type: :controller do
 
             expect(response.status).to eq(200)
             expect(response_body['status']).to eq('success')
-            expect(response_body['data'].count).to eq(2)
+            expect(response_body['data'].count).to eq(10)
           end
         end
       end
@@ -154,6 +144,7 @@ RSpec.describe SchedulingsController, type: :controller do
 
   describe "POST #create" do
     context "when sign in" do
+      let!(:scheduling1){ create(:scheduling, staff_id: staff.id) }
       it "should create scheduling successfully" do
         set_auth_headers(auth_headers)
         
@@ -317,7 +308,7 @@ RSpec.describe SchedulingsController, type: :controller do
               expect(response_body['status']).to eq('success')
               expect(response_body['data']['id']).to eq(scheduling.id)
               expect(response_body['data']['status']).to eq('unavailable')
-              expect(response_body['data']['end_time']).to eq('13:00')
+              expect(response_body['data']['end_time']).to eq('13:10')
             end
           end
         end
@@ -327,17 +318,182 @@ RSpec.describe SchedulingsController, type: :controller do
 
   describe "DELETE #destroy" do
     context "when sign in" do
-      let(:scheduling) { create(:scheduling, client_enrollment_service_id: client_enrollment_service.id, staff_id: staff.id, start_time: '17:00', end_time: '18:00', units: '2') }
-      it "should delete scheduling detail successfully" do
-        set_auth_headers(auth_headers)
+      context "and logged in user is other than super admin" do
+        let(:scheduling) { create(:scheduling, client_enrollment_service_id: client_enrollment_service.id, staff_id: staff.id, start_time: '17:00', end_time: '18:00', units: '2') }
+        it "should delete scheduling detail successfully" do
+          set_auth_headers(auth_headers)
 
-        delete :destroy, params: { id: scheduling.id }
+          delete :destroy, params: { id: scheduling.id }
+          response_body = JSON.parse(response.body)
+
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data']['id']).to eq(scheduling.id)
+          expect(Scheduling.find_by_id(scheduling.id)).to eq(nil)    
+        end
+      end
+
+      context "and logged in user is super admin" do
+        let(:user) { create(:user, :with_role, role_name: 'super_admin') }
+        let(:auth_headers) { user.create_new_auth_token }
+        let(:scheduling) { create(:scheduling, client_enrollment_service_id: client_enrollment_service.id, staff_id: staff.id, start_time: '17:00', end_time: '18:00', units: '2') }
+        it "should delete scheduling detail successfully" do
+          set_auth_headers(auth_headers)
+
+          delete :destroy, params: { id: scheduling.id }
+          response_body = JSON.parse(response.body)
+
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data']['id']).to eq(scheduling.id)
+          expect(Scheduling.find_by_id(scheduling.id)).to eq(nil)    
+        end
+      end
+    end
+  end
+
+  describe "POST #create_without_staff" do
+    context "when sign in" do
+      let!(:scheduling1){ create(:scheduling, staff_id: staff.id) }
+      it "should create scheduling without staff successfully" do
+        set_auth_headers(auth_headers)
+        
+        post :create_without_staff, params: {
+          client_enrollment_service_id: client_enrollment_service.id,
+          date: Time.current.to_date,
+          start_time: '13:00',
+          end_time: '15:00',
+          minutes: '188'
+        }
+        response_body = JSON.parse(response.body)
+        
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data']['start_time']).to eq('13:00')
+        expect(response_body['data']['end_time']).to eq('15:00')
+        expect(response_body['data']['status']).to eq('Non-Billable')
+        expect(response_body['data']['minutes']).to eq(188.0)
+      end
+    end
+  end
+
+  describe "POST #create_without_client" do
+    context "when sign in" do
+      let(:staff) { create(:staff, :with_role, role_name: 'bcba') }
+      let!(:scheduling1){ create(:scheduling) }
+      it "should create scheduling without client successfully" do
+        set_auth_headers(auth_headers)
+        
+        post :create_without_client, params: {
+          staff_id: staff.id,
+          date: Time.current.to_date,
+          start_time: '13:00',
+          end_time: '15:00'
+        }
+        response_body = JSON.parse(response.body)
+        
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data']['start_time']).to eq('13:00')
+        expect(response_body['data']['end_time']).to eq('15:00')
+        expect(response_body['data']['status']).to eq('Non-Billable')
+      end
+    end
+  end
+
+  describe "PUT #update_without_client" do
+    context "when sign in" do
+      let(:staff) { create(:staff, :with_role, role_name: 'bcba') }
+      let!(:scheduling){ create(:scheduling, client_enrollment_service_id: nil, status: 'Non-Billable', date: Time.current.to_date-1, start_time: '13:00', end_time: '15:00') }
+      let(:staff2) { create(:staff, :with_role, role_name: 'rbt') }
+      it "should create scheduling without client successfully" do
+        set_auth_headers(auth_headers)
+        
+        put :update_without_client, params: {
+          id: scheduling.id,
+          staff_id: staff.id,
+          date: Time.current.to_date,
+          start_time: '14:00',
+          end_time: '16:00'
+        }
+        response_body = JSON.parse(response.body)
+        
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data']['start_time']).to eq('14:00')
+        expect(response_body['data']['end_time']).to eq('16:00')
+        expect(response_body['data']['date']).to eq(Time.current.strftime('%Y-%m-%d'))
+        expect(response_body['data']['status']).to eq('Non-Billable')
+      end
+    end
+  end
+
+  describe "GET #split_appointment_detail" do
+    context "when sign in" do
+      let!(:scheduling) { create(:scheduling, client_enrollment_service_id: client_enrollment_service.id, staff_id: staff.id, date: '2022-02-28', start_time: '9:00', end_time: '10:00', units: '4', unrendered_reason: ['split_appointments']) }
+      let!(:catalyst_data1){ create(:catalyst_data, system_scheduling_id: scheduling.id, start_time: '09:00', end_time: '09:30', units: 2, date: '2022-02-28', session_location: 'Home')}
+      let!(:catalyst_data2){ create(:catalyst_data, system_scheduling_id: scheduling.id, start_time: '09:30', end_time: '10:00', units: 2, date: '2022-02-28', session_location: 'Community')}
+      it "should fetch scheduling detail successfully" do
+        scheduling.update(catalyst_data_ids: [catalyst_data1.id, catalyst_data2.id])
+        set_auth_headers(auth_headers)
+        
+        get :split_appointment_detail, params: { id: scheduling.id }
         response_body = JSON.parse(response.body)
 
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
         expect(response_body['data']['id']).to eq(scheduling.id)
-        expect(Scheduling.find_by_id(scheduling.id)).to eq(nil)    
+        expect(response_body['data']['unrendered_reasons']).to eq(['split_appointments'])
+        expect(response_body['data']['is_rendered']).to eq(false)
+        expect(response_body['data']['catalyst_data'].count).to eq(scheduling.catalyst_data_ids.count)
+      end
+    end
+  end
+
+  describe "PUT #render_appointment" do
+    context "when sign in" do
+      let!(:scheduling) { create(:scheduling, client_enrollment_service_id: client_enrollment_service.id, staff_id: staff.id, date: '2022-02-28', start_time: '9:00', end_time: '10:00', units: '4') }
+      it "should render appointment manually" do
+        set_auth_headers(auth_headers)
+
+        put :render_appointment, params: {scheduling_id: scheduling.id}
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data']['id']).to eq(scheduling.id)
+        expect(response_body['data']['is_rendered']).to eq(true)
+        expect(response_body['data']['rendered_at']).not_to eq(nil)
+        expect(response_body['data']['rendered_by']).not_to eq(nil)
+        expect(response_body['data']['status']).not_to eq('Scheduled')
+      end
+    end
+  end
+
+  describe "POST #create_split_appointment" do
+    context "when sign in" do
+      let!(:scheduling) { create(:scheduling, client_enrollment_service_id: client_enrollment_service.id, staff_id: staff.id, date: '2022-02-28', start_time: '9:00', end_time: '10:00', units: '4', unrendered_reason: ['split_appointments']) }
+      let!(:catalyst_data1){ create(:catalyst_data, system_scheduling_id: scheduling.id, start_time: '09:00', end_time: '09:30', units: 2, date: '2022-02-28', session_location: 'Home')}
+      let!(:catalyst_data2){ create(:catalyst_data, system_scheduling_id: scheduling.id, start_time: '09:30', end_time: '10:00', units: 2, date: '2022-02-28', session_location: 'Community')}
+      it "should create split appointment successfully" do
+        scheduling.update(catalyst_data_ids: [catalyst_data1.id, catalyst_data2.id])
+        set_auth_headers(auth_headers)
+
+        post :create_split_appointment, params: {
+          schedule_id: scheduling.id, 
+          date: '2022-02-28',
+          client_enrollment_service_id: client_enrollment_service.id,
+          client_id: client.id,
+          staff_id: staff.id,
+          split_schedules: [{start_time: '09:00', end_time: '09:30', catalyst_data_id: catalyst_data1.id, units: 2, status: 'Scheduled'}, 
+                            {start_time: '09:30', end_time: '10:00', catalyst_data_id: catalyst_data2.id, units: 2, status: 'Scheduled'}]
+        }
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data'].count).to eq(scheduling.catalyst_data_ids.count)
+        expect(Scheduling.find_by_id(scheduling.id)).to eq(nil)
       end
     end
   end

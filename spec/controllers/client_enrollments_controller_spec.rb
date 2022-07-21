@@ -12,7 +12,7 @@ RSpec.describe ClientEnrollmentsController, type: :controller do
   let!(:role) { create(:role, name: 'executive_director', permissions: ['client_source_of_payment_view', 'client_source_of_payment_update', 'client_source_of_payment_delete'])}
   let!(:user) { create(:user, :with_role, role_name: role.name) }
   let!(:auth_headers) { user.create_new_auth_token }
-  let!(:organization) {create(:organization, name: 'test-organization', admin_id: user.id)}
+  let!(:organization) {create(:organization, name: 'test-organization1', admin_id: user.id)}
   let!(:clinic) {create(:clinic, name: 'test-clinic', organization_id: organization.id)}
   let!(:client) { create(:client, clinic_id: clinic.id)}
   let!(:funding_source) {create(:funding_source, clinic_id: clinic.id)}
@@ -156,12 +156,13 @@ RSpec.describe ClientEnrollmentsController, type: :controller do
 
   describe "PUT #update" do
     context "when sign in" do
-      let(:client_enrollment) { create(:client_enrollment, client_id: client.id)}
-      let(:updated_insurance_id) {'VFCD8543'}
+      let!(:client_enrollment1) { create(:client_enrollment, client_id: client.id, is_primary: true)}
+      let!(:client_enrollment) { create(:client_enrollment, client_id: client.id, is_primary: false)}
+      let!(:updated_insurance_id) {'VFCD8543'}
       it "should update client enrollment successfully" do
         set_auth_headers(auth_headers)
 
-        put :update, params: {id: client_enrollment.id, client_id: client.id, insurance_id: updated_insurance_id}
+        put :update, params: {id: client_enrollment.id, client_id: client.id, insurance_id: updated_insurance_id, is_primary: true}
         response_body = JSON.parse(response.body)
 
         expect(response.status).to eq(200)
