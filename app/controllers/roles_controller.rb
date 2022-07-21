@@ -4,7 +4,8 @@ class RolesController < ApplicationController
   before_action :set_role, only: %i[show update destroy]
 
   def index
-    @roles = Role.order(:name).paginate(page: params[:page])
+    @roles = Role.order(:name)
+    @roles = @roles.paginate(page: params[:page]) if params[:page].present?
   end
 
   def show; end

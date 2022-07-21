@@ -96,6 +96,7 @@ Rails.application.routes.draw do
     end
 
     get '/current_user_detail', to: 'users#current_user_detail'
+    put '/update_default_schedule_view', to: 'users#update_default_schedule_view'
 
     get '/setting', to: 'settings#show'
     put '/setting', to: 'settings#update'

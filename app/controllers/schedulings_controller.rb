@@ -58,14 +58,12 @@ class SchedulingsController < ApplicationController
   end
 
   def destroy
-    client_enrollment_service = @schedule.client_enrollment_services
     case current_user.role_name
     when 'super_admin'
       delete_scheduling
     when 'bcba', 'executive_director', 'client_care_coordinator', 'Clinical Director', 'administrator'
       delete_scheduling if @schedule.created_at.strftime('%Y-%m-%d')>=(Time.current-1.day).strftime('%Y-%m-%d')
     end
-    #update_units_columns(@schedule.client_enrollment_service)
   end
 
   def create_without_staff
@@ -214,7 +212,7 @@ class SchedulingsController < ApplicationController
   # end 
 
   def update_render_service
-    RenderAppointments::RenderScheduleManualOperation.call(@schedule.id, params[:catalyst_soap_note_id]) if (params[:is_rendered].to_bool.true? || params[:status]=='Rendered') && @schedule.date<Time.current.to_date
+    RenderAppointments::RenderScheduleManualOperation.call(@schedule.id, params[:catalyst_soap_note_id], current_user) if (params[:is_rendered].to_bool.true? || params[:status]=='Rendered') && @schedule.date<Time.current.to_date
   end
 
   def update_scheduling
@@ -334,6 +332,8 @@ class SchedulingsController < ApplicationController
         update_scheduling 
         # @schedule.is_rendered = false
         @schedule.rendered_at = nil
+        @schedule.rendered_by_id = nil
+        @schedule.is_manual_render = false
         @schedule.save
       else
         @schedule.errors.add(:schedule, 'You are not authorized to unrender appointment.')
