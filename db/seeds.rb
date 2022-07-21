@@ -112,21 +112,21 @@ ActiveRecord::Base.transaction do
   # Clinic
   clinic = Clinic.find_or_create_by!(name: 'clinic1', organization_id: org.id)
 
-    # funding sources
-    FundingSource.delete_all
-    funding_sources_data = [{name: 'aetna'},
-                            {name: 'ambetter nnhf'},
-                            {name: 'amerihealth caritas nh'},
-                            {name: 'beacon health strtegies'},
-                            {name: 'cigna'},
-                            {name: 'harvard pilgrim'},
-                            {name: 'new hampshire bcbs'},
-                            {name: 'optimhealth behavioral solutions'},
-                            {name: 'umr'},
-                            {name: 'united behavioral health'}]
-    funding_sources_data.each do |data|
-      clinic.funding_sources.create(data)
-    end
+  # funding sources
+  FundingSource.delete_all
+  funding_sources_data = [{name: 'aetna'},
+                          {name: 'ambetter nnhf'},
+                          {name: 'amerihealth caritas nh'},
+                          {name: 'beacon health strtegies'},
+                          {name: 'cigna'},
+                          {name: 'harvard pilgrim'},
+                          {name: 'new hampshire bcbs'},
+                          {name: 'optimhealth behavioral solutions'},
+                          {name: 'umr'},
+                          {name: 'united behavioral health'}]
+  funding_sources_data.each do |data|
+    clinic.funding_sources.create(data)
+  end
 
   # Will create two user for each each role, ['bcba', 'rbt', 'billing']
   Role.where(name: ['bcba', 'rbt', 'billing']).each do |role|

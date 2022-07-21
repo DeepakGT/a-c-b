@@ -22,9 +22,7 @@ module Catalyst
               client_data['firstName'] = 'Finn '
             end
             client = Client.find_by(first_name: client_data['firstName']&.strip, last_name: client_data['lastName']&.strip, dob: client_data['dateOfBirth']&.to_time&.strftime('%Y-%m-%d'))
-            if client_data['firstName']=='Olivia ' && client_data['lastName']=='Medard'
-              client = Client.find_by(first_name: client_data['firstName'], last_name: client_data['lastName'], dob: client_data['dateOfBirth']&.to_time&.strftime('%Y-%m-%d'))
-            end
+            client = Client.find_by(first_name: client_data['firstName'], last_name: client_data['lastName'], dob: client_data['dateOfBirth']&.to_time&.strftime('%Y-%m-%d')) if (client_data['firstName']=='Olivia ' && client_data['lastName']=='Medard')
             if client.present?
               client.catalyst_patient_id = client_data['patientId']
               client.save(validate: false)

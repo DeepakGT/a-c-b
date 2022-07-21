@@ -1,3 +1,5 @@
+require 'will_paginate/array'
+
 class SchedulingMetaDataController < ApplicationController
   before_action :authenticate_user!
 
@@ -31,6 +33,7 @@ class SchedulingMetaDataController < ApplicationController
 
     # sql = "(SELECT id, 'Upcoming Schedule' AS type FROM schedulings WHERE staff_id = #{current_user.id} AND status = 'Scheduled' AND date>=CURRENT_TIMESTAMP ORDER BY date LIMIT 10) UNION (SELECT id, 'Past Schedule' AS type FROM schedulings WHERE staff_id = #{current_user.id} AND status = 'Scheduled' AND date<CURRENT_TIMESTAMP AND date>=(CURRENT_TIMESTAMP + INTERVAL '-2 month') AND is_rendered=false ORDER BY date DESC) UNION (SELECT id,'Catalyst Data' AS type FROM catalyst_data WHERE system_scheduling_id IS NULL LIMIT 30);"
     # @appointments = ActiveRecord::Base.connection.exec_query(sql)&.rows
+    @action_items_array = @action_items_array.paginate(page: params[:page]) if params[:page].present?
   end
 
   def bcba_appointments
@@ -56,6 +59,7 @@ class SchedulingMetaDataController < ApplicationController
 
     # sql = "(SELECT id, 'Upcoming Schedule' AS type FROM schedulings WHERE staff_id = #{current_user.id} AND status = 'Scheduled' AND date>=CURRENT_TIMESTAMP ORDER BY date LIMIT 20) UNION (SELECT id, 'Past Schedule' AS type FROM schedulings WHERE staff_id = #{current_user.id} AND status = 'Scheduled' AND date<CURRENT_TIMESTAMP AND date>=(CURRENT_TIMESTAMP + INTERVAL '-2 month') AND is_rendered=false ORDER BY date DESC) UNION (SELECT client_enrollment_services.id, 'client_enrollment_services' AS type FROM client_enrollment_services INNER JOIN client_enrollments ON client_enrollments.id=client_enrollment_services.client_enrollment_id INNER JOIN clients ON clients.id=client_enrollments.client_id WHERE clients.bcba_id = #{current_user.id} AND client_enrollment_services.end_date >= CURRENT_TIMESTAMP AND client_enrollment_services.end_date <= (CURRENT_TIMESTAMP + INTERVAL '9 day')) UNION (SELECT id,'Catalyst Data' AS type FROM catalyst_data WHERE system_scheduling_id IS NULL LIMIT 30);"
     # @data = ActiveRecord::Base.connection.exec_query(sql)&.rows
+    @action_items_array = @action_items_array.paginate(page: params[:page]) if params[:page].present?
   end
 
   def executive_director_appointments
@@ -80,6 +84,7 @@ class SchedulingMetaDataController < ApplicationController
     @total_count = @action_items_array.length
     @action_items_array = filter_by_client(@action_items_array) if params[:client_name].present?
     @action_items_array = sort_action_items(@action_items_array) if @action_items_array.present?
+    @action_items_array = @action_items_array.paginate(page: params[:page]) if params[:page].present?
     @unassigned_appointments = schedules.scheduled_scheduling.without_staff
   end
 
@@ -112,7 +117,7 @@ class SchedulingMetaDataController < ApplicationController
     end
     @clients = clients&.active&.uniq&.sort_by(&:first_name)
     @staff = Staff.by_home_clinic(params[:location_id]).active
-    @services =  Service.order(:name)
+    @services = Service.order(:name)
   end
 
   private
@@ -177,15 +182,17 @@ class SchedulingMetaDataController < ApplicationController
     if params[:sortSoapNoteByClient].present? && params[:sortSoapNoteByDate].present?
       items.sort_by! {|b| b.type=="Schedule" ? [b.client_enrollment_service.client_enrollment.client.first_name+b.client_enrollment_service.client_enrollment.client.last_name,b.date] : [b.first_name+b.last_name,b.date] }
     elsif params[:sortSoapNoteByClient].present? && !params[:sortSoapNoteByDate].present?
-      if params[:sortSoapNoteByClient] == "1" || params[:sortSoapNoteByClient] == 1
+      case params[:sortSoapNoteByClient]
+      when "1", 1
         items.sort_by! {|b| b.type=="Schedule" ? b.client_enrollment_service.client_enrollment.client.first_name+b.client_enrollment_service.client_enrollment.client.last_name : b.first_name+b.last_name }
-      elsif params[:sortSoapNoteByClient] == "0" || params[:sortSoapNoteByClient] == 0
+      when "0", 0
         items.sort_by! {|b| b.type=="Schedule" ? b.client_enrollment_service.client_enrollment.client.first_name+b.client_enrollment_service.client_enrollment.client.last_name : b.first_name+b.last_name }.reverse!
       end
     elsif !params[:sortSoapNoteByClient].present? && params[:sortSoapNoteByDate].present?
-      if params[:sortSoapNoteByDate] == "1" || params[:sortSoapNoteByDate] == 1 
-        items.sort_by! &:date
-      elsif params[:sortSoapNoteByDate] == "0" || params[:sortSoapNoteByDate] == 0
+      case params[:sortSoapNoteByDate]
+      when "1", 1
+        items.sort_by!(&:date)
+      when "0", 0
         items.sort_by!(&:date).reverse!
       end
     end
