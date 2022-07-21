@@ -29,7 +29,7 @@ module Snowflake
           client = Client.find_by(dob: student_service['clientdob']&.to_time&.strftime('%Y-%m-%d'), first_name: client_name&.first, last_name: client_name[1])
           if client.present?
             if student_service['fundingsource'].present?
-              funding_source_id = get_funding_source(student_service['fundingsource'], client)
+              funding_source_id = get_funding_source(student_service['fundingsource'])
               if funding_source_id.present?
                 client_enrollment = client.client_enrollments.find_or_initialize_by(enrollment_date: student_service['contractstartdate']&.to_time&.strftime('%Y-%m-%d'), terminated_on: student_service['contractenddate']&.to_time&.strftime('%Y-%m-%d'), funding_source_id: funding_source_id)
                 client_enrollment.source_of_payment = 'insurance'
@@ -61,7 +61,7 @@ module Snowflake
         Loggers::SnowflakeClientEnrollmentLoggerService.call(seed_count, "Seeded #{seed_count} in our database.")
       end
 
-      def get_funding_source(funding_source_name, client)
+      def get_funding_source(funding_source_name)
         case funding_source_name
         when 'NEW HAMPSHIRE BCBS'
           return FundingSource.find_by(name: 'New Hampshire BCBS').id

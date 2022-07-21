@@ -22,9 +22,7 @@ module Snowflake
           client.gender = nil
           clinic_name = appointment['clientofficename']&.downcase
           client.clinic_id = Clinic.where('lower(name) = ? OR lower(aka) = ?', clinic_name, clinic_name)&.first&.id
-          if clinic_name=='salem'
-            client.clinic_id = Clinic.find_by(name: 'Salem, NH').id
-          end
+          client.clinic_id = Clinic.find_by(name: 'Salem, NH').id if clinic_name=='salem'
           if client.clinic_id.blank?
             client.clinic_id = Clinic.where("name ILIKE '%#{clinic_name}%' OR aka ILIKE '%#{clinic_name}%'")&.first&.id
             client.clinic_id = Clinic.first.id if client.clinic_id.blank?

@@ -117,7 +117,7 @@ class SchedulingMetaDataController < ApplicationController
     end
     @clients = clients&.active&.uniq&.sort_by(&:first_name)
     @staff = Staff.by_home_clinic(params[:location_id]).active
-    @services =  Service.order(:name)
+    @services = Service.order(:name)
   end
 
   private
@@ -182,15 +182,17 @@ class SchedulingMetaDataController < ApplicationController
     if params[:sortSoapNoteByClient].present? && params[:sortSoapNoteByDate].present?
       items.sort_by! {|b| b.type=="Schedule" ? [b.client_enrollment_service.client_enrollment.client.first_name+b.client_enrollment_service.client_enrollment.client.last_name,b.date] : [b.first_name+b.last_name,b.date] }
     elsif params[:sortSoapNoteByClient].present? && !params[:sortSoapNoteByDate].present?
-      if params[:sortSoapNoteByClient] == "1" || params[:sortSoapNoteByClient] == 1
+      case params[:sortSoapNoteByClient]
+      when "1", 1
         items.sort_by! {|b| b.type=="Schedule" ? b.client_enrollment_service.client_enrollment.client.first_name+b.client_enrollment_service.client_enrollment.client.last_name : b.first_name+b.last_name }
-      elsif params[:sortSoapNoteByClient] == "0" || params[:sortSoapNoteByClient] == 0
+      when "0", 0
         items.sort_by! {|b| b.type=="Schedule" ? b.client_enrollment_service.client_enrollment.client.first_name+b.client_enrollment_service.client_enrollment.client.last_name : b.first_name+b.last_name }.reverse!
       end
     elsif !params[:sortSoapNoteByClient].present? && params[:sortSoapNoteByDate].present?
-      if params[:sortSoapNoteByDate] == "1" || params[:sortSoapNoteByDate] == 1 
-        items.sort_by! &:date
-      elsif params[:sortSoapNoteByDate] == "0" || params[:sortSoapNoteByDate] == 0
+      case params[:sortSoapNoteByDate]
+      when "1", 1
+        items.sort_by!(&:date)
+      when "0", 0
         items.sort_by!(&:date).reverse!
       end
     end
