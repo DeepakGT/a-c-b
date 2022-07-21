@@ -1,5 +1,6 @@
 class SettingsController < ApplicationController
   before_action :authenticate_user!
+  before_action :authorize_user
   before_action :set_setting
 
   def show; end
@@ -12,5 +13,9 @@ class SettingsController < ApplicationController
 
   def set_setting
     @setting = Setting.first
+  end
+
+  def authorize_user
+    authorize Setting if current_user.role_name!='super_admin'
   end
 end

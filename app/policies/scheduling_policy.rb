@@ -26,4 +26,20 @@ class SchedulingPolicy < ApplicationPolicy
 
     false
   end
+
+  def create_without_staff?
+    return true if permissions.include?('schedule_update_for_unassigned_client')
+
+    false
+  end
+
+  def create_without_client?
+    return true if permissions.include?('schedule_update_for_unassigned_staff')
+
+    false
+  end
+
+  def update_without_client?
+    create_without_client?
+  end
 end
