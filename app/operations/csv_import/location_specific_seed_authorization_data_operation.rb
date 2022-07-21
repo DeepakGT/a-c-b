@@ -36,7 +36,7 @@ module CsvImport
             count = count+1
             if client.clinic_id==clinic_id
               if student_service[:fundingsource].present?
-                funding_source_id = get_funding_source(student_service[:fundingsource], client)
+                funding_source_id = get_funding_source(student_service[:fundingsource])
                 if funding_source_id.present?
                   client_enrollment = client&.client_enrollments&.find_by(source_of_payment: 'insurance', funding_source_id: funding_source_id, enrollment_date: student_service[:contractstartdate]&.to_time&.strftime('%Y-%m-%d'), terminated_on: student_service[:contractenddate]&.to_time&.strftime('%Y-%m-%d'))
                   if client_enrollment.blank?
@@ -45,9 +45,7 @@ module CsvImport
                   end
                   if client_enrollment.present?
                     service = Service.where('lower(name) = ?',student_service[:servicename].downcase).first
-                    if student_service[:servicename]=='Supervision'
-                      service = Service.find(17)
-                    end
+                    service = Service.find(17) if student_service[:servicename]=='Supervision'
                     if service.present?
                       client_enrollment_service = client_enrollment.client_enrollment_services.find_or_initialize_by(start_date: student_service[:servicefundingbegin]&.to_time&.strftime('%Y-%m-%d'), end_date: student_service[:servicefundingend]&.to_time&.strftime('%Y-%m-%d'), service_id: service.id)
                       client_enrollment_service.service_number = student_service['authorizationnumber'] if student_service['authorizationnumber']!='No Auth Required'
@@ -84,9 +82,7 @@ module CsvImport
                 end
                 if client_enrollment.present?
                   service = Service.where('lower(name) = ?',student_service[:servicename].downcase).first
-                  if student_service[:servicename]=='Supervision'
-                    service = Service.find(17)
-                  end
+                  service = Service.find(17) if student_service[:servicename]=='Supervision'
                   if service.present?
                     client_enrollment_service = client_enrollment.client_enrollment_services.find_or_initialize_by(start_date: student_service[:servicefundingbegin]&.to_time&.strftime('%Y-%m-%d'), end_date: student_service[:servicefundingend]&.to_time&.strftime('%Y-%m-%d'), service_id: service.id)
                     client_enrollment_service.service_number = student_service['authorizationnumber'] if student_service['authorizationnumber']!='No Auth Required'
@@ -124,7 +120,7 @@ module CsvImport
         Loggers::SnowflakeClientEnrollmentServiceLoggerService.call(seed_count, "#{seed_count} authorization of clinic #{clinic.name} seeded.")
       end
 
-      def get_funding_source(funding_source_name, client)
+      def get_funding_source(funding_source_name)
         case funding_source_name
         when 'NEW HAMPSHIRE BCBS'
           return FundingSource.find_by(name: 'New Hampshire BCBS').id

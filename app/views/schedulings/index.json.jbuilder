@@ -89,9 +89,7 @@ json.data do
     # end
   end
 end
-if params[:show_inactive] == 1 || params[:show_inactive] == "1"
-  json.show_inactive params[:show_inactive]
-end
+json.show_inactive params[:show_inactive] if (params[:show_inactive] == 1 || params[:show_inactive] == "1")
 if params[:page].present?
   json.total_records @schedules.total_entries
   json.limit @schedules.per_page

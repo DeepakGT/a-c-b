@@ -19,12 +19,6 @@ module Catalyst
               response_data_hash = {}
               Loggers::Catalyst::SyncSoapNotesLoggerService.call(data['soapNoteId'], "Started syncing soap note #{data['soapNoteId']} from catalyst.")
               catalyst_data = CatalystData.find_or_initialize_by(catalyst_soap_note_id: data['soapNoteId'])
-        
-              # if catalyst_data.blank?
-                # catalyst_data = CatalystData.new(response: data, catalyst_patient_id: data['patientId'], catalyst_user_id: data['userId'],
-                #                                  date: data['date'].to_time.strftime('%Y-%m-%d'), start_time: data['startTime'].to_time.strftime('%H:%M'), 
-                #                                  end_time: data['endTime'].to_time.strftime('%H:%M'), catalyst_soap_note_id: data['soapNoteId'], 
-                #                                  date_revision_made: data['dateRevisionMade'])
                 
               catalyst_data.response = data
               catalyst_data.catalyst_patient_id = data['patientId']
@@ -95,9 +89,7 @@ module Catalyst
               end
               soap_note.save(validate: false)
 
-              if catalyst_data.system_scheduling_id.blank?
-                response_data_hash = CompareCatalystDataWithSystemData::CompareSyncedDataOperation.call(catalyst_data)
-              end
+              response_data_hash = CompareCatalystDataWithSystemData::CompareSyncedDataOperation.call(catalyst_data) if catalyst_data.system_scheduling_id.blank?
               # elsif catalyst_data.date_revision_made!=data['dateRevisionMade']
               #   Loggers::Catalyst::SyncSoapNotesLoggerService.call(catalyst_data.id, "#{catalyst_data.attributes}")
               #   data['responses'].each do |response|

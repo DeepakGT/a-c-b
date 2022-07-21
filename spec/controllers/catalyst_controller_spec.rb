@@ -94,7 +94,7 @@ RSpec.describe CatalystController, type: :controller do
       context "and multiple appointments are found for soap_note in catalyst"
       let(:scheduling1) {create(:scheduling, date: (Time.current-5.days).strftime('%Y-%m-%d'), start_time: '12:00', end_time: '13:00', units: 4, minutes: 60)}
       let(:scheduling2) {create(:scheduling, date: (Time.current-5.days).strftime('%Y-%m-%d'), start_time: '14:00', end_time: '15:00', units: 4, minutes: 60)}
-      let(:catalyst_data) {create(:catalyst_data, start_time: '12:30', end_time: '13:30', units: 4, minutes: 60}
+      let(:catalyst_data) {create(:catalyst_data, start_time: '12:30', end_time: '13:30', units: 4, minutes: 60)}
 
       it "should assign soap note in catalyst to scheduling successfully" do
         set_auth_headers(auth_headers)
