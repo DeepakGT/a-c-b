@@ -45,7 +45,7 @@ RSpec.describe StaffMetaDataController, type: :controller do
 
             expect(response.status).to eq(200)
             expect(response_body['status']).to eq('success')
-            expect(response_body['data'].count).to eq(client_list.count)
+            expect(response_body['data'].count).to eq(Client.by_staff_id_in_scheduling(staff.id).by_clinic(clinic2.id).count)
           end
         end
       end
@@ -86,7 +86,7 @@ RSpec.describe StaffMetaDataController, type: :controller do
 
             expect(response.status).to eq(200)
             expect(response_body['status']).to eq('success')
-            expect(response_body['data'].count).to eq(client_list.count)
+            expect(response_body['data'].count).to eq(Client.by_staff_id_in_scheduling(staff.id).by_clinic(clinic3.id).count )
           end
         end
       end
