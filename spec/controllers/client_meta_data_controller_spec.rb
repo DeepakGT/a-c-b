@@ -73,11 +73,13 @@ RSpec.describe ClientMetaDataController, type: :controller do
   describe "GET #client_data" do
     context "when sign in" do
       let!(:client_enrollment){ create(:client_enrollment, client_id: client.id) }
-      let!(:client_enrollment_service){ create(:client_enrollment_service, client_enrollment_id: client_enrollment.id) }
+      let!(:client_enrollment_service){ create(:client_enrollment_service, client_enrollment_id: client_enrollment.id, units: 200, minutes: 200*15) }
+      let!(:client_enrollment_service1){ create(:client_enrollment_service, client_enrollment_id: client_enrollment.id, units: 200, minutes: 200*15, start_date: '2022-01-01', end_date: '2022-04-30') }
       let!(:scheduling){ create(:scheduling, client_enrollment_service_id: client_enrollment_service.id) }
-      let!(:soap_notes){ create_list(:soap_note, 5, scheduling_id: scheduling.id, user: user)}
+      let!(:soap_notes){ create_list(:soap_note, 5, scheduling_id: scheduling.id, user: user, client_id: client.id)}
       let!(:notes) { create_list(:client_note, 5, client_id: client.id)}
       let!(:attachments){ create_list(:attachment, 5, attachable_id: client.id, attachable_type: 'Client')}
+      let!(:schedulings) {create_list(:scheduling, 3, units: '2', client_enrollment_service_id: client_enrollment_service.id, status: 'Client_Cancel_Less_than_24_h')}
       it "should fetch client data detail successfully" do
         set_auth_headers(auth_headers)
         
@@ -87,11 +89,63 @@ RSpec.describe ClientMetaDataController, type: :controller do
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
         expect(response_body['data']['id']).to eq(client.id)
-        expect(response_body['data']['schedules'].count).to eq(1)
+        expect(response_body['data']['schedules'].count).to eq(Scheduling.includes(client_enrollment_service: :client_enrollment).by_client_ids(client.id).scheduled_scheduling.first(10).count)
         expect(response_body['data']['client_enrollment_services'].count).to eq(1)
         expect(response_body['data']['soap_notes'].count).to eq(soap_notes.first(10).count)
         expect(response_body['data']['notes'].count).to eq(notes.first(10).count)
         expect(response_body['data']['attachments'].count).to eq(attachments.first(10).count)
+      end
+
+      context "when show expired checkbox is selected" do
+        it "should fetch client data detail successfully" do
+          set_auth_headers(auth_headers)
+          
+          get :client_data, params: { client_id: client.id, show_expired_before_30_days: true }
+          response_body = JSON.parse(response.body)
+          
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data']['id']).to eq(client.id)
+          expect(response_body['data']['schedules'].count).to eq(Scheduling.includes(client_enrollment_service: :client_enrollment).by_client_ids(client.id).scheduled_scheduling.first(10).count)
+          expect(response_body['data']['client_enrollment_services'].count).to eq(2)
+          expect(response_body['data']['soap_notes'].count).to eq(soap_notes.first(10).count)
+          expect(response_body['data']['notes'].count).to eq(notes.first(10).count)
+          expect(response_body['data']['attachments'].count).to eq(attachments.first(10).count)
+        end
+      end
+    end
+  end
+
+  describe "GET #soap_notes" do
+    context "when sign in" do
+      let!(:soap_note) { create_list(:soap_note, 3, client_id: client.id) }
+      it "should fetch soap notes list successfully" do
+        set_auth_headers(auth_headers)
+        
+        get :soap_notes, params: { client_id: client.id, page: 2, per_page: 15 }
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['total_records']).to eq(soap_note.count)
+        expect(response_body['page']).to eq("2")
+        expect(response_body['limit']).to eq(15)
+      end
+    end
+  end
+
+  describe "GET #soap_note_detail" do
+    context "when sign in" do
+      let!(:soap_note) { create(:soap_note, client_id: client.id) }
+      it "should fetch soap note detail list successfully" do
+        set_auth_headers(auth_headers)
+        
+        get :soap_note_detail, params: { id: soap_note.id, client_id: client.id }
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data']['note']).to eq("test-note")
       end
     end
   end

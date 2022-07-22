@@ -42,6 +42,7 @@ RSpec.describe QualificationsController, type: :controller do
  
   describe "POST #create" do   
     context "when sign in" do
+      let!(:qualification) { create(:qualification, credential_type: 'education') }
       it "should create a qualification" do
         set_auth_headers(auth_headers)
         post :create, params: { 

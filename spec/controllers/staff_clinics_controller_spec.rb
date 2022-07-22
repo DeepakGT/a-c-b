@@ -75,13 +75,13 @@ RSpec.describe StaffClinicsController, type: :controller do
       it "should update staff clinic successfully" do
         set_auth_headers(auth_headers)
 
-        put :update, params: {staff_id: staff.id, id: staff_clinic1.id, is_home_clinic: false}
+        put :update, params: {staff_id: staff.id, id: staff_clinic2.id, is_home_clinic: true}
         response_body = JSON.parse(response.body)
 
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
-        expect(response_body['data']['id']).to eq(staff_clinic1.id)
-        expect(response_body['data']['is_home_clinic']).to eq(false)    
+        expect(response_body['data']['id']).to eq(staff_clinic2.id)
+        expect(response_body['data']['is_home_clinic']).to eq(true)    
       end
     end
   end
@@ -98,6 +98,37 @@ RSpec.describe StaffClinicsController, type: :controller do
         expect(response_body['status']).to eq('success')
         expect(response_body['data']['id']).to eq(staff_clinic1.id)
         expect(StaffClinic.find_by_id(staff_clinic1.id)).to eq(nil)    
+      end
+
+      context "and try to delete home clinic" do
+        let!(:staff2) { create(:staff, :with_role, role_name: 'bcba') } 
+        let!(:staff_clinic2){ create(:staff_clinic, clinic_id: clinic4.id, staff_id: staff2.id, is_home_clinic: true)}
+        it "should give error" do
+          set_auth_headers(auth_headers)
+  
+          delete :destroy, params: { staff_id: staff2.id, id: staff_clinic2.id }
+          response_body = JSON.parse(response.body)
+  
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('failure')
+          expect(response_body['data']['id']).to eq(staff_clinic2.id)
+          expect(StaffClinic.find_by_id(staff_clinic2.id)).not_to eq(nil) 
+          expect(response_body['errors']).to eq(['Please add another home location first.'])   
+        end
+      end
+
+      context "and try to delete staff clinic that is not home clinic" do
+        it "should delete staff clinic detail successfully" do
+          set_auth_headers(auth_headers)
+  
+          delete :destroy, params: { staff_id: staff.id, id: staff_clinic2.id }
+          response_body = JSON.parse(response.body)
+  
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data']['id']).to eq(staff_clinic2.id)
+          expect(StaffClinic.find_by_id(staff_clinic2.id)).to eq(nil)    
+        end
       end
     end
   end

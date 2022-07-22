@@ -18,6 +18,8 @@ RSpec.describe Client, type: :model do
   it { should accept_nested_attributes_for(:addresses).update_only(true)}
   it { should accept_nested_attributes_for(:phone_number).update_only(true)}
 
+  it { should define_enum_for(:status)}
+  it { should define_enum_for(:gender)}
   it { should define_enum_for(:preferred_language)}
   it { should define_enum_for(:dq_reason)}
 
