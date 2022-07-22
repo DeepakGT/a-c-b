@@ -24,4 +24,10 @@ class ClientEnrollmentServicePolicy < ApplicationPolicy
 
     false
   end
+
+  def create_early_auths?
+    return true if user.role_name=='UR'
+
+    false
+  end
 end

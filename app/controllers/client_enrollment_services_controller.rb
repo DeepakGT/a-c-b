@@ -24,6 +24,16 @@ class ClientEnrollmentServicesController < ApplicationController
     @enrollment_service.destroy
   end
 
+  def create_early_auths
+    end_date = (Time.current+90.days).strftime('%Y-%m-%d')
+    @client_enrollment = Client.find(params[:client_id]).client_enrollments.create(funding_source_id: params[:funding_source_id], enrollment_date: Time.current.strftime('%Y-%m-%d'), terminated_on: end_date, source_of_payment: 'insurance')
+    services = Service.where(id: params[:service_ids])
+
+    services.each do |service|
+      client_enrollment_service = @client_enrollment.client_enrollment_services.create(service_id: service.id, start_date: Time.current.strftime('%Y-%m-%d'), end_date: end_date, units: params[:units], minutes: params[:units].to_f*15)
+    end
+  end
+
   private
 
   def authorize_user
