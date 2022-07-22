@@ -13,7 +13,7 @@ RSpec.describe ClientsController, type: :controller do
   let!(:user) { create(:user, :with_role, role_name: role.name) }
   let!(:auth_headers) { user.create_new_auth_token }
   let!(:organization) {create(:organization, name: 'org1', admin_id: user.id)}
-  let!(:clinic) {create(:clinic, name: 'clinic1', organization_id: organization.id)}
+  let!(:clinic) {create(:clinic, name: 'clinic1', organization_id: organization.id, address_attributes: {city: 'Indore'})}
 
   describe "GET #index" do
     context "when sign in" do
@@ -27,17 +27,6 @@ RSpec.describe ClientsController, type: :controller do
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
         expect(response_body['data'].count).to eq(clients.count)
-      end
-
-      it "should fetch the first page record by default" do
-        set_auth_headers(auth_headers)
-        
-        get :index
-        response_body = JSON.parse(response.body)
-
-        expect(response.status).to eq(200)
-        expect(response_body['status']).to eq('success')
-        expect(response_body['page']).to eq(1)
       end
 
       it "should fetch the given page record" do
@@ -77,6 +66,198 @@ RSpec.describe ClientsController, type: :controller do
           expect(response.status).to eq(200)
           expect(response_body['status']).to eq('success')
           expect(response_body['data'].count).to eq(client_list.count)
+        end
+      end
+
+      context "and filter by logged in user" do
+        context "when logged in user is rbt" do
+          let!(:role) { create(:role, name: 'rbt', permissions: ['clients_view', 'clients_update'])}
+          let!(:staff) { create(:user, :with_role, role_name: role.name) }
+          let!(:staff_auth_headers) { staff.create_new_auth_token }
+          let!(:client1) { create(:client, clinic_id: clinic.id)}
+          let!(:client2) { create(:client, clinic_id: clinic.id)}
+          let!(:service) { create(:service) }
+          let!(:client_enrollment) { create(:client_enrollment, client_id: client1.id) }
+          let!(:client_enrollment_service) { create(:client_enrollment_service, client_enrollment_id: client_enrollment.id, service_id: service.id) }
+          let!(:schedule) {create(:scheduling, staff_id: staff.id, client_enrollment_service_id: client_enrollment_service.id)}
+          it "should display clients that have appointments with rbt" do
+            set_auth_headers(staff_auth_headers)
+
+            get :index
+            response_body = JSON.parse(response.body)
+
+            expect(response.status).to eq(200)
+            expect(response_body['status']).to eq('success')
+            expect(response_body['data'].count).to eq(Client.by_staff_id_in_scheduling(staff.id).count)
+          end
+        end
+
+        context "when logged in user is bcba" do
+          let!(:role) { create(:role, name: 'bcba', permissions: ['clients_view', 'clients_update'])}
+          let!(:staff) { create(:user, :with_role, role_name: role.name) }
+          let!(:staff_auth_headers) { staff.create_new_auth_token }
+          let!(:client1) { create(:client, clinic_id: clinic.id)}
+          let!(:client2) { create(:client, clinic_id: clinic.id)}
+          let!(:client3) { create(:client, clinic_id: clinic.id, bcba_id: staff.id)}
+          let!(:service) { create(:service) }
+          let!(:client_enrollment) { create(:client_enrollment, client_id: client1.id) }
+          let!(:client_enrollment_service) { create(:client_enrollment_service, client_enrollment_id: client_enrollment.id, service_id: service.id) }
+          let!(:schedule) {create(:scheduling, staff_id: staff.id, client_enrollment_service_id: client_enrollment_service.id)}
+          let!(:clients_count) {Client.by_staff_id_in_scheduling(staff.id).or(Client.by_bcbas(staff.id)).count}
+          it "should display clients that have appointments with bcba or are under that bcba" do
+            set_auth_headers(staff_auth_headers)
+
+            get :index
+            response_body = JSON.parse(response.body)
+
+            expect(response.status).to eq(200)
+            expect(response_body['status']).to eq('success')
+            expect(response_body['data'].count).to eq(clients_count)
+          end
+        end
+      end
+
+      context "and show_inactive checkbox is checked" do
+        let!(:client_list1){ create_list(:client, 7, clinic_id: clinic.id, status: 'active') }
+        let!(:client_list2){ create_list(:client, 4, clinic_id: clinic.id, status: 'inactive') }
+        it "should display inactive clients successfully" do
+          set_auth_headers(auth_headers)
+
+          get :index, params: {show_inactive: 1}
+          response_body = JSON.parse(response.body)
+
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data'].count).to eq(Client.inactive.count)
+        end
+      end
+
+      context "when search_value is present" do
+        let!(:staff) { create(:staff, :with_role, role_name: 'bcba', first_name: 'test', last_name: 'staff') }
+        let!(:clients) { create_list(:client, 4, clinic_id: clinic.id, gender: 1, bcba_id: staff.id)}
+        let!(:client1) {create(:client, clinic_id: clinic.id, first_name: 'test', gender: 0, payor_status: 'self_pay', bcba_id: nil)}
+        let!(:client2) {create(:client, clinic_id: clinic.id, last_name: 'test', gender: 0, payor_status: 'self_pay', bcba_id: nil)}
+        let!(:client3) {create(:client, clinic_id: clinic.id, first_name: 'test', last_name: 'client', gender: 0, bcba_id: nil)}
+        let!(:funding_source) {create(:funding_source, clinic_id: clinic.id)}
+        let!(:client_enrollment1) {create(:client_enrollment, terminated_on: Time.current.to_date+2, funding_source_id: funding_source.id, is_primary: true, client_id: client1.id)}
+        let!(:client_enrollment2) {create(:client_enrollment, funding_source_id: funding_source.id, is_primary: false, client_id: client2.id)}
+        context "and search_by is present" do
+          context "when search_by is name" do
+            context "and search_value contains single string" do
+              it "should show clients filter by name successfully" do
+                set_auth_headers(auth_headers)
+                
+                get :index, params: { search_by:"name", search_value: "test"}
+                response_body = JSON.parse(response.body)
+                
+                expect(response.status).to eq(200)
+                expect(response_body['status']).to eq('success')
+                expect(response_body['data'].count).to eq(3)
+              end
+            end
+
+            context "and search_value contains single string" do
+              it "should show clients filter by name successfully" do
+                set_auth_headers(auth_headers)
+                
+                get :index, params: { search_by:"name", search_value: "test client"}
+                response_body = JSON.parse(response.body)
+                
+                expect(response.status).to eq(200)
+                expect(response_body['status']).to eq('success')
+                expect(response_body['data'].count).to eq(1)
+              end
+            end
+          end
+
+          context "when search_by is gender" do
+            it "should list clients filtered by gender successfully" do
+              set_auth_headers(auth_headers)
+
+              get :index, params: { search_by:"gender", search_value: "male"}
+              response_body = JSON.parse(response.body)
+
+              expect(response.status).to eq(200)
+              expect(response_body['status']).to eq('success')
+              expect(response_body['data'].count).to eq(Client.by_gender('male').count)
+            end
+          end
+
+          context "when search_by is payor status" do
+            it "should list clients filtered by payor status successfully" do
+              set_auth_headers(auth_headers)
+
+              get :index, params: { search_by:"payor_status", search_value: 'insurance'}
+              response_body = JSON.parse(response.body)
+
+              expect(response.status).to eq(200)
+              expect(response_body['status']).to eq('success')
+              expect(response_body['data'].count).to eq(Client.by_payor_status('insurance').count)
+            end
+          end
+
+          context "when search_by is bcba" do
+            it "should list clients filtered by bcba successfully" do
+              set_auth_headers(auth_headers)
+              
+              get :index, params: { search_by: "bcba", search_value: 'test'}
+              response_body = JSON.parse(response.body)
+              
+              expect(response.status).to eq(200)
+              expect(response_body['status']).to eq('success')
+              expect(response_body['data'].count).to eq(4)
+            end
+
+            it "should list clients filtered by bcba successfully" do
+              set_auth_headers(auth_headers)
+              
+              get :index, params: { search_by: "bcba", search_value: 'test staff'}
+              response_body = JSON.parse(response.body)
+              
+              expect(response.status).to eq(200)
+              expect(response_body['status']).to eq('success')
+              expect(response_body['data'].count).to eq(4)
+            end
+          end
+
+          context "when search_by is payor" do
+            it "should list clients filtered by payor successfully" do
+              set_auth_headers(auth_headers)
+              
+              get :index, params: { search_by:"payor", search_value: funding_source.name}
+              response_body = JSON.parse(response.body)
+              
+              expect(response.status).to eq(200)
+              expect(response_body['status']).to eq('success')
+              expect(response_body['data'].count).to eq(1)
+            end
+          end
+
+          context "when search_by is any other value" do
+            it "should list all clients successfully" do
+              set_auth_headers(auth_headers)
+              
+              get :index, params: { search_by:"abcd", search_value: funding_source.name}
+              response_body = JSON.parse(response.body)
+              
+              expect(response.status).to eq(200)
+              expect(response_body['status']).to eq('success')
+              expect(response_body['data'].count).to eq(Client.active.count)
+            end
+          end
+        end
+
+        context "when search_by is absent but search_value is present" do
+          it "should list staff filtered by name, gender, payor_status, bcba, payor successfully" do
+            set_auth_headers(auth_headers)
+            
+            get :index, params: { search_value: funding_source.name}
+            response_body = JSON.parse(response.body)
+            
+            expect(response.status).to eq(200)
+            expect(response_body['status']).to eq('success')
+            expect(response_body['data'].count).to eq(1)
+          end
         end
       end
     end
@@ -129,8 +310,7 @@ RSpec.describe ClientsController, type: :controller do
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
         expect(response_body['data']['first_name']).to eq('test')
-        expect(response_body['data']['addresses'].count).to eq(2)
-        expect(response_body['data']['addresses'].first['type']).to eq('insurance_address')
+        expect(response_body['data']['addresses'].count).to eq(3)
         expect(response_body['data']['phone_number']['phone_type']).to eq('home')
       end
     end

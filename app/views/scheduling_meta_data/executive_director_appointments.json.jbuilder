@@ -196,7 +196,7 @@ json.data do
       json.service_providers do
         json.ids client_enrollment_service.service_providers.pluck(:id)
         json.staff_ids client_enrollment_service.service_providers.pluck(:staff_id)
-        json.names client_enrollment_service.staff&.map{|staff| "#{staff.first_name} #{staff.last_name}"}
+        json.names client_enrollment_service.staff&.map{|staff| ("#{staff.first_name} #{staff.last_name}")}
       end
     end
   end
@@ -422,7 +422,7 @@ json.data do
             end
           end
           if action_item.catalyst_data_ids.present?
-            catalyst_datas = CatalystData.where(id: action_item.catalyst_data_ids)#.where(system_scheduling_id: action_item.id)
+            catalyst_datas = CatalystData.where(id: action_item.catalyst_data_ids) #.where(system_scheduling_id: action_item.id)
             if catalyst_datas.present?
               json.catalyst_data do
                 json.array! catalyst_datas do |catalyst_data|
@@ -495,9 +495,7 @@ json.data do
         json.location action_item.session_location
         json.is_deleted_from_connect action_item.is_deleted_from_connect
         json.cordinates action_item.location
-        if action_item.system_scheduling_id.blank?
-          json.unrendered_reasons ["no_appointment_found"]
-        end
+        json.unrendered_reasons ["no_appointment_found"] if action_item.system_scheduling_id.blank?
         # if action_item.is_appointment_found==false
         #   json.unrendered_reasons ["no_appointment_found"]
         # else
@@ -506,4 +504,10 @@ json.data do
       end
     end
   end
+  json.action_items_count @total_count
+end
+if params[:page].present?
+  json.total_records @action_items_array&.total_entries
+  json.limit @action_items_array&.per_page
+  json.page params[:page]
 end

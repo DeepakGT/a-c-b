@@ -178,9 +178,7 @@ json.data do
         end
         json.creator_id user&.id
         json.creator "#{user&.first_name} #{user&.last_name}"
-        if soap_note.synced_with_catalyst.to_bool.true?
-          json.caregiver_sign_present soap_note.caregiver_signature
-        end
+        json.caregiver_sign_present soap_note.caregiver_signature if soap_note.synced_with_catalyst.to_bool.true?
       end
     end
   end

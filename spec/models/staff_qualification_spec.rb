@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe StaffQualification, type: :model do
   let!(:clinic) { create(:clinic, name: 'clinic1') }
-  let!(:user) { create(:user, :with_role, role_name: 'rbt', clinic_id: clinic.id) }
+  let!(:user) { create(:user, :with_role, role_name: 'rbt') }
   let!(:auth_headers) { user.create_new_auth_token }
   let!(:qualification) { create(:qualification, lifetime: true)}
   subject { create(:staff_qualification, staff_id: user.id, credential_id: qualification.id)}

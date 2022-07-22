@@ -33,5 +33,6 @@ json.data do
     #   json.left_minutes 0
     # end
     json.funding_source_name client_enrollment_service&.client_enrollment&.funding_source&.name 
+    json.is_primary client_enrollment_service&.client_enrollment&.is_primary
   end
 end
