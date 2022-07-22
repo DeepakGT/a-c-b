@@ -15,4 +15,7 @@ class FundingSource < ApplicationRecord
 
   accepts_nested_attributes_for :phone_number, update_only: true
   accepts_nested_attributes_for :address, update_only: true
+
+  scope :non_billable_funding_sources, ->{where(network_status: 'non_billable')}
+  scope :billable_funding_sources, ->{where.not(network_status: 'non_billable')}
 end

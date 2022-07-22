@@ -12,4 +12,10 @@ class Service < ApplicationRecord
 
   # Enums
   enum status: {active: 0, inactive: 1}
+
+  serialize :selected_non_early_services, Array
+  serialize :selected_non_billable_payors, Array
+  serialize :payors_requiring_rendering_provider, Array
+
+  scope :non_early_services, ->{where(is_early_code: false)}
 end
