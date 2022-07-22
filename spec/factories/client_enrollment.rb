@@ -1,5 +1,7 @@
 FactoryBot.define do
   factory :client_enrollment do
+    association :client
+    association :funding_source
     client_id { create(:client).id }
     funding_source_id { create(:funding_source).id }
     is_primary { false }

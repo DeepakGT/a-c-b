@@ -32,7 +32,7 @@ RSpec.describe SchedulingMetaDataController, type: :controller do
         it "should fetch selectable options list according to clinic successfully" do
           set_auth_headers(auth_headers)
         
-          get :selectable_options, params: { clinic_id: clinic.id }
+          get :selectable_options, params: { location_id: clinic.id }
           response_body = JSON.parse(response.body)
 
           expect(response.status).to eq(200)
@@ -66,20 +66,53 @@ RSpec.describe SchedulingMetaDataController, type: :controller do
         expect(response_body['status']).to eq('success')
         expect(response_body['data'].count).to eq(2)
       end
+
+      context "when staff has no qualifications" do
+        let!(:staff1){ create(:staff, :with_role, role_name: 'bcba') }
+        let!(:service3) {create(:service)}
+        let!(:client_enrollment_service3){create(:client_enrollment_service, service_id: service3.id, client_enrollment_id: client_enrollment.id, start_date: Time.current.to_date-10, end_date: Time.current.to_date+7)}
+        it "should list all authorization services list that require no qualifications" do
+          set_auth_headers(auth_headers)
+        
+          get :services_list, params: { client_id: client.id, staff_id: staff1.id, date: Time.current.to_date }
+          response_body = JSON.parse(response.body)
+          
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data'].count).to eq(1)
+        end
+      end
+
+      context "when staff_id is not present" do
+        let!(:service4) {create(:service, is_unassigned_appointment_allowed: true)}
+        let!(:client_enrollment_service3){create(:client_enrollment_service, service_id: service4.id, client_enrollment_id: client_enrollment.id, start_date: Time.current.to_date-10, end_date: Time.current.to_date+7)}
+        it "should list all authorization service list that have unassigned appointments allowed" do
+          set_auth_headers(auth_headers)
+        
+        get :services_list, params: { client_id: client.id, date: Time.current.to_date }
+        response_body = JSON.parse(response.body)
+        
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data'].count).to eq(1)
+        end
+      end
     end
   end
 
   describe "GET #rbt_appointments" do
     context "when sign in" do
-      let!(:staff1){ create(:staff, :with_role, role_name: 'rbt') }
+      let!(:staff1){ create(:staff, :with_role, role_name: 'rbt', catalyst_user_id: 'abcdefncnecnjdjk') }
       let!(:auth_headers){ staff1.create_new_auth_token }
       let(:clinic){ create(:clinic) }
-      let!(:client){ create(:client, clinic_id: clinic.id) }
+      let!(:client){ create(:client, clinic_id: clinic.id, catalyst_patient_id: 'nytreszxcvbnmjhyt', first_name: 'test1', last_name: 'client') }
       let!(:client_enrollment){ create(:client_enrollment, client_id: client.id) }
-
       let!(:client_enrollment_service){ create(:client_enrollment_service, client_enrollment_id: client_enrollment.id, start_date: Time.current.to_date-2, end_date: Time.current.to_date+5) }
       let!(:scheduling1){create(:scheduling, staff_id: staff1.id, date: Time.current.to_date-2, client_enrollment_service_id: client_enrollment_service.id)}
+      let!(:catalyst_data1){create(:catalyst_data, date: Time.current.to_date-3, catalyst_user_id: 'abcdefncnecnjdjk', catalyst_patient_id: 'nytreszxcvbnmjhyt')}
       let!(:scheduling2){create(:scheduling, staff_id: staff1.id, date: Time.current.to_date, client_enrollment_service_id: client_enrollment_service.id)}
+      let!(:client1){ create(:client, clinic_id: clinic.id, catalyst_patient_id: 'zssertfdszdesa', first_name: 'test2', last_name: 'client') }
+      let!(:catalyst_data2){create(:catalyst_data, date: Time.current.to_date-3, catalyst_user_id: 'abcdefncnecnjdjk', catalyst_patient_id: 'zssertfdszdesa')}
       it "should fetch rbt appointment list successfully" do
         set_auth_headers(auth_headers)
         
@@ -88,8 +121,75 @@ RSpec.describe SchedulingMetaDataController, type: :controller do
         
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
-        # expect(response_body['data']['upcoming_schedules'].count).to eq(1)
-        expect(response_body['data']['action_items'].count).to eq(1)
+        expect(response_body['data']['action_items'].count).to eq(3)
+      end
+
+      context "when sortSoapNoteByDate is present and sortSoapNoteByClient is present" do
+        it "should sort action items by client name and date in ascending order successfully" do
+          set_auth_headers(auth_headers)
+        
+          get :rbt_appointments, params: {sortSoapNoteByClient: 1, sortSoapNoteByDate: 1}
+          response_body = JSON.parse(response.body)
+          
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data']['action_items'].count).to eq(3)
+          expect(response_body['data']['action_items'].first['client_name']).to eq('test1 client')
+          expect(response_body['data']['action_items'].last['client_name']).to eq('test2 client')
+          expect(response_body['data']['action_items'].first['date']).to eq((Time.current-3.days).strftime('%Y-%m-%d'))
+        end
+      end
+
+      context "when sortSoapNoteByDate is absent and sortSoapNoteByClient is present" do
+        it "should sort action items by client name in ascending order successfully" do
+          set_auth_headers(auth_headers)
+        
+          get :rbt_appointments, params: {sortSoapNoteByClient: 1}
+          response_body = JSON.parse(response.body)
+          
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data']['action_items'].count).to eq(3)
+          expect(response_body['data']['action_items'].first['client_name']).to eq('test1 client')
+        end
+
+        it "should sort action items by client name in descending order successfully" do
+          set_auth_headers(auth_headers)
+        
+          get :rbt_appointments, params: {sortSoapNoteByClient: 0}
+          response_body = JSON.parse(response.body)
+          
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data']['action_items'].count).to eq(3)
+          expect(response_body['data']['action_items'].first['client_name']).to eq('test2 client')
+        end
+      end
+
+      context "when sortSoapNoteByDate is present and sortSoapNoteByClient is absent" do
+        it "should sort action items by date in ascending order successfully" do
+          set_auth_headers(auth_headers)
+        
+          get :rbt_appointments, params: {sortSoapNoteByDate: 1}
+          response_body = JSON.parse(response.body)
+          
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data']['action_items'].count).to eq(3)
+          expect(response_body['data']['action_items'].first['date']).to eq((Time.current-3.days).strftime('%Y-%m-%d'))
+        end
+
+        it "should sort action items by date in descending order successfully" do
+          set_auth_headers(auth_headers)
+        
+          get :rbt_appointments, params: {sortSoapNoteByDate: 0}
+          response_body = JSON.parse(response.body)
+          
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data']['action_items'].count).to eq(3)
+          expect(response_body['data']['action_items'].first['date']).to eq((Time.current-2.days).strftime('%Y-%m-%d'))
+        end
       end
     end
   end
@@ -124,13 +224,12 @@ RSpec.describe SchedulingMetaDataController, type: :controller do
       let!(:user){ create(:staff, :with_role, role_name: 'executive_director') }
       let!(:user_auth_headers){ user.create_new_auth_token }
       let(:clinic){ create(:clinic) }
-      let!(:client){ create(:client, clinic_id: clinic.id, first_name: 'test', catalyst_patient_id: 'cbdhbfrhfcsjxnscjerdc') }
+      let!(:client){ create(:client, clinic_id: clinic.id) }
       let!(:client_enrollment){ create(:client_enrollment, client_id: client.id) }
       let!(:client_enrollment_service){ create(:client_enrollment_service, client_enrollment_id: client_enrollment.id, start_date: Time.current.to_date-2, end_date: Time.current.to_date+5) }
       let!(:client_enrollment_service1){ create(:client_enrollment_service, client_enrollment_id: client_enrollment.id, start_date: Time.current.to_date-30, end_date: Time.current.to_date+30) }
       let!(:scheduling1){create(:scheduling, date: Time.current.to_date-2, client_enrollment_service_id: client_enrollment_service1.id)}
       let!(:scheduling2){create(:scheduling, date: Time.current.to_date, client_enrollment_service_id: client_enrollment_service1.id)}
-      let!(:catalyst_data){ create(:catalyst_data, date: Time.current.to_date-5, catalyst_patient_id: 'cbdhbfrhfcsjxnscjerdc', system_scheduling_id: nil) }
       it "should fetch executive_director appointment list successfully" do
         set_auth_headers(user_auth_headers)
         
@@ -140,27 +239,8 @@ RSpec.describe SchedulingMetaDataController, type: :controller do
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
         expect(response_body['data']['todays_schedules'].count).to eq(1)
-        expect(response_body['data']['action_items'].count).to eq(2)
+        expect(response_body['data']['action_items'].count).to eq(1)
         expect(response_body['data']['client_enrollment_services'].count).to eq(1)
-      end
-
-      context "and filtering by client_name" do
-        let!(:client1){ create(:client, clinic_id: clinic.id, last_name: 'abcd') }
-        let!(:client_enrollment1){ create(:client_enrollment, client_id: client1.id) }
-        let!(:client_enrollment_service2){ create(:client_enrollment_service, client_enrollment_id: client_enrollment1.id, start_date: Time.current.to_date-2, end_date: Time.current.to_date+5) }
-        let!(:scheduling3){create(:scheduling, date: Time.current.to_date-2, client_enrollment_service_id: client_enrollment_service2.id)}
-        it "should filter action items successfully" do
-          set_auth_headers(user_auth_headers)
-        
-          get :executive_director_appointments, params: { default_location_id: clinic.id, client_name: 'test' }
-          response_body = JSON.parse(response.body)
-          
-          expect(response.status).to eq(200)
-          expect(response_body['status']).to eq('success')
-          expect(response_body['data']['todays_schedules'].count).to eq(1)
-          expect(response_body['data']['action_items'].count).to eq(2)
-          expect(response_body['data']['client_enrollment_services'].count).to eq(2)
-        end
       end
     end
   end

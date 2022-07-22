@@ -53,6 +53,30 @@ RSpec.describe ClientEnrollmentServicesController, type: :controller do
           expect(response_body['errors']).to include("record not found")
         end
       end
+
+      context "when funding_source_id is not present" do
+        let!(:client1){create(:client, clinic_id: clinic.id)}
+        let!(:client_enrollment1){create(:client_enrollment, client_id: client1.id, source_of_payment: 'self_pay', funding_source_id: nil)}
+        it "should create client enrollment service successfully" do
+          set_auth_headers(auth_headers)
+          
+          post :create, params: {
+            client_id: client1.id,
+            service_id: service.id,
+            start_date: Date.today,
+            end_date: Date.tomorrow,
+            staff_id: staff.id
+          }
+          response_body = JSON.parse(response.body)
+  
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data']['client_enrollment_id']).to eq(client_enrollment1.id) 
+          expect(response_body['data']['service_id']).to eq(service.id)
+          expect(response_body['data']['start_date']).to eq(Date.today.to_s)
+          expect(response_body['data']['end_date']).to eq(Date.tomorrow.to_s)
+        end
+      end
     end
   end
 
@@ -158,7 +182,27 @@ RSpec.describe ClientEnrollmentServicesController, type: :controller do
           expect(response_body['data']['id']).to eq(enrollment_service.id) 
           expect(response_body['data']['client_enrollment_id']).to eq(client_enrollment.id)
         end
-      end
+
+        let!(:service1) { create(:service, is_service_provider_required: true) }
+        let!(:staff){create(:staff, :with_role, role_name: 'bcba')}
+        let!(:enrollment_service1) { create(:client_enrollment_service, client_enrollment_id: client_enrollment.id, service_id: service1.id, service_providers_attributes: [{staff_id: staff.id}]) }
+        let!(:staff){create(:staff, :with_role, role_name: 'rbt')}
+        it "should update service providers successfully" do
+          set_auth_headers(auth_headers)
+        
+          put :update, params: {
+            client_id: client.id,
+            id: enrollment_service1.id,
+            service_providers_attributes: [{staff_id: staff.id}]
+          }
+          response_body = JSON.parse(response.body)
+  
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data']['id']).to eq(enrollment_service1.id) 
+          expect(response_body['data']['service_providers'].count).to eq(1)
+        end
+      end 
     end
   end
 

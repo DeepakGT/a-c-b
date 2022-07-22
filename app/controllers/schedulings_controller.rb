@@ -332,6 +332,8 @@ class SchedulingsController < ApplicationController
         update_scheduling 
         # @schedule.is_rendered = false
         @schedule.rendered_at = nil
+        @schedule.rendered_by_id = nil
+        @schedule.is_manual_render = false
         @schedule.save
       else
         @schedule.errors.add(:schedule, 'You are not authorized to unrender appointment.')

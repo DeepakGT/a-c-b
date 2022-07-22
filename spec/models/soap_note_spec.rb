@@ -96,5 +96,32 @@ RSpec.describe SoapNote, type: :model do
         end
       end
     end
+
+    context "when another role tries to sign" do
+      let!(:staff) {create(:staff, :with_role, role_name: 'billing')}
+      context "as a bcba" do
+        let(:soap_note){ build :soap_note, bcba_signature: true, bcba_signature_author_name: "#{staff.first_name} #{staff.last_name}", user: staff}
+        it "should not allow to sign as bcba" do
+          soap_note.validate
+          expect(soap_note.errors[:bcba_signature]).to include('You are not authorized to sign as a bcba.')
+        end
+      end
+
+      context "as a rbt" do
+        let(:soap_note){ build :soap_note, rbt_signature: true, rbt_signature_author_name: "#{staff.first_name} #{staff.last_name}", user: staff}
+        it "should not allow to sign as rbt" do
+          soap_note.validate
+          expect(soap_note.errors[:rbt_signature]).to include('You are not authorized to sign as a rbt.')
+        end
+      end
+
+      context "as a clinical director" do
+        let(:soap_note){ build :soap_note, clinical_director_signature: true, clinical_director_signature_author_name: "#{staff.first_name} #{staff.last_name}", user: staff}
+        it "should not allow to sign as clinical director" do
+          soap_note.validate
+          expect(soap_note.errors[:clinical_director_signature]).to include('You are not authorized to sign as a clinical director.')
+        end
+      end
+    end
   end
 end
