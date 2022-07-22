@@ -17,6 +17,8 @@ class ClientEnrollment < ApplicationRecord
   scope :active, ->{ where('terminated_on >= ?',Time.current.to_date).or(where('terminated_on IS NULL')) }
   scope :except_ids, ->(ids) { where.not(id: ids) }
   scope :by_source_of_payment, ->(sources){ where(source_of_payment: sources)}
+  scope :billable_funding_sources, ->{where.not('funding_sources.network_status': 'non_billable')}
+  scope :non_billable_funding_sources, ->{where('funding_sources.network_status': 'non_billable')}
 
   private
 
