@@ -18,7 +18,7 @@ class SchedulingMetaDataController < ApplicationController
 
   def rbt_appointments
     authorize :appointment, :rbt_appointments?
-    rbt_schedules = Scheduling.left_outer_joins(:staff, client_enrollment_service: [:service, {client_enrollment: :client}]).by_staff_ids(current_user.id).by_status
+    rbt_schedules = Scheduling.left_outer_joins(:staff, client_enrollment_service: [:service, {client_enrollment: :client}]).joins("LEFT JOIN clinics ON (clinics.id = clients.clinic_id)").by_staff_ids(current_user.id).by_status
     # @upcoming_schedules = rbt_schedules.scheduled_scheduling.order(:date).first(10)
     @todays_appointments = rbt_schedules.todays_schedulings.order(:start_time).last(10)
     past_schedules = rbt_schedules.post_30_may_schedules.unrendered_schedulings.order(date: :desc)
@@ -38,7 +38,7 @@ class SchedulingMetaDataController < ApplicationController
 
   def bcba_appointments
     authorize :appointment, :bcba_appointments?
-    bcba_schedules = Scheduling.left_outer_joins(:staff, client_enrollment_service: [:service, {client_enrollment: :client}]).by_staff_ids(current_user.id).by_status
+    bcba_schedules = Scheduling.left_outer_joins(:staff, client_enrollment_service: [:service, {client_enrollment: :client}]).joins("LEFT JOIN clinics ON (clinics.id = clients.clinic_id)").by_staff_ids(current_user.id).by_status
     # @upcoming_schedules = bcba_schedules.scheduled_scheduling.order(:date).first(10)
     @todays_appointments = bcba_schedules.todays_schedulings.order(:start_time).last(10)
     past_schedules = bcba_schedules.post_30_may_schedules.unrendered_schedulings.order(date: :desc)
@@ -66,7 +66,7 @@ class SchedulingMetaDataController < ApplicationController
     authorize :appointment, :executive_director_appointments?
     client_ids = Clinic.find(params[:default_location_id]).clients.pluck(:id)
     schedules = Scheduling.left_outer_joins(:soap_notes, :staff, client_enrollment_service: [:service, {client_enrollment: :client}])
-    schedules = schedules.by_client_ids(client_ids)
+    schedules = schedules.joins("LEFT JOIN clinics ON (clinics.id = clients.clinic_id)").by_client_ids(client_ids)
     @todays_appointments = schedules.by_status.todays_schedulings.last(10)
     past_schedules = schedules.by_status.post_30_may_schedules.unrendered_schedulings.order(date: :desc)
     past_schedules.where(unrendered_reason: []).each do |schedule|
