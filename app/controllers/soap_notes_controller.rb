@@ -70,7 +70,7 @@ class SoapNotesController < ApplicationController
       @soap_note.rbt_signature = true
       @soap_note.rbt_signature_author_name = "#{current_user.first_name} #{current_user.last_name}"
       @soap_note.rbt_signature_date = Time.current.to_date
-    elsif params[:rbt_sign]==false
+    elsif params[:rbt_sign]==false || params[:rbt_sign]=='false'
       @soap_note.rbt_signature = false
       @soap_note.rbt_signature_author_name = nil
       @soap_note.rbt_signature_date = nil
@@ -79,7 +79,7 @@ class SoapNotesController < ApplicationController
       @soap_note.bcba_signature = true
       @soap_note.bcba_signature_author_name = "#{current_user.first_name} #{current_user.last_name}"
       @soap_note.bcba_signature_date = Time.current
-    elsif params[:bcba_sign]==false
+    elsif params[:bcba_sign]==false || params[:bcba_sign]=='false'
       @soap_note.bcba_signature = false
       @soap_note.bcba_signature_author_name = nil
       @soap_note.bcba_signature_date = nil
@@ -88,7 +88,7 @@ class SoapNotesController < ApplicationController
       @soap_note.clinical_director_signature = true
       @soap_note.clinical_director_signature_author_name = "#{current_user.first_name} #{current_user.last_name}"
       @soap_note.clinical_director_signature_date = Time.current.to_date
-    elsif params[:clinical_director_sign]==false
+    elsif params[:clinical_director_sign]==false || params[:clinical_director_sign]=='false'
       @soap_note.clinical_director_signature = false
       @soap_note.clinical_director_signature_author_name = nil
       @soap_note.clinical_director_signature_date = nil

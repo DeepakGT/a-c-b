@@ -113,9 +113,9 @@ class ClientsController < ApplicationController
       when "bcba"
         fname, lname = params[:search_value].split
         if lname.present?
-          clients.by_bcba_full_name(fname, lname)
+          clients = clients.by_bcba_full_name(fname, lname)
         else
-          clients.by_bcba_first_name(fname).or(clients.by_bcba_last_name(fname))
+          clients = clients.by_bcba_first_name(fname).or(clients.by_bcba_last_name(fname))
         end
         return clients
       when "payor"

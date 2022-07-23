@@ -15,7 +15,8 @@ RSpec.describe StaffQualificationsController, type: :controller do
 
   describe "GET #index" do
     let!(:clinic) { create(:clinic, name: 'clinic1') }
-    let!(:staff) { create(:staff, :with_role, role_name: 'rbt', clinic_id: clinic.id) }
+    let!(:staff) { create(:staff, :with_role, role_name: 'rbt') }
+    let!(:staff_clinic) { create(:staff_clinic, staff_id: staff.id, clinic_id: clinic.id) }
     before do
       10.times { create(:staff_qualification, staff_id: staff.id) }
     end
@@ -35,7 +36,8 @@ RSpec.describe StaffQualificationsController, type: :controller do
 
   describe "POST #create" do
     let!(:clinic) { create(:clinic, name: 'clinic1') }
-    let!(:staff) { create(:staff, :with_role, role_name: 'rbt', clinic_id: clinic.id) }
+    let!(:staff) { create(:staff, :with_role, role_name: 'rbt') }
+    let!(:staff_clinic) { create(:staff_clinic, staff_id: staff.id, clinic_id: clinic.id) }
     let!(:qualification) { create(:qualification) }
     context "when sign in" do
       it "should fetch staff qualification list successfully" do
@@ -53,7 +55,8 @@ RSpec.describe StaffQualificationsController, type: :controller do
 
   describe "GET #show" do
     let!(:clinic) { create(:clinic, name: 'clinic1') }
-    let!(:staff) { create(:staff, :with_role, role_name: 'rbt', clinic_id: clinic.id) }
+    let!(:staff) { create(:staff, :with_role, role_name: 'rbt') }
+    let!(:staff_clinic) { create(:staff_clinic, staff_id: staff.id, clinic_id: clinic.id) }
     let!(:staff_qualification) { create(:staff_qualification, staff_id: staff.id) }
     context "when sign in" do
       it "should fetch staff-qualification detail successfully" do
@@ -71,7 +74,8 @@ RSpec.describe StaffQualificationsController, type: :controller do
 
   describe "PUT #update" do
     let!(:clinic) { create(:clinic, name: 'clinic1') }
-    let!(:staff) { create(:staff, :with_role, role_name: 'rbt', clinic_id: clinic.id) }
+    let!(:staff) { create(:staff, :with_role, role_name: 'rbt') }
+    let!(:staff_clinic) { create(:staff_clinic, staff_id: staff.id, clinic_id: clinic.id) }
     let!(:staff_qualification) { create(:staff_qualification, staff_id: staff.id) }
     let!(:updated_cert_lic_number) { 'updated_cert_lic_number' }
     context "when sign in" do
@@ -90,7 +94,8 @@ RSpec.describe StaffQualificationsController, type: :controller do
 
   describe "DELETE #destroy" do
     let!(:clinic) { create(:clinic, name: 'clinic1') }
-    let!(:staff) { create(:staff, :with_role, role_name: 'rbt', clinic_id: clinic.id) }
+    let!(:staff) { create(:staff, :with_role, role_name: 'rbt') }
+    let!(:staff_clinic) { create(:staff_clinic, staff_id: staff.id, clinic_id: clinic.id) }
     let!(:staff_qualification) { create(:staff_qualification, staff_id: staff.id) }
     context "when sign in" do
       it "should delete staff-qualification successfully" do

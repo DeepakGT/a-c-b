@@ -9,7 +9,7 @@ RSpec.describe SoapNotesController, type: :controller do
     @request.env["devise.mapping"] = Devise.mappings[:user]
   end
 
-  let!(:role) { create(:role, name: 'executive_director', permissions: ['soap_notes_view', 'soap_notes_update', 'soap_notes_delete'])}
+  let!(:role) { create(:role, name: 'executive_director', permissions: ['soap_notes_view', 'soap_notes_update', 'soap_notes_delete', 'rbt_signature', 'bcba_signature', 'clinical_director_signature'])}
   let!(:user) { create(:user, :with_role, role_name: role.name) }
   let!(:auth_headers) { user.create_new_auth_token }
   let!(:organization) { create(:organization, name: 'org1', admin_id: user.id) }
@@ -19,7 +19,7 @@ RSpec.describe SoapNotesController, type: :controller do
   let!(:service) { create(:service) }
   let!(:client_enrollment_service) { create(:client_enrollment_service, client_enrollment_id: client_enrollment.id, service_id: service.id) }
   let!(:staff) { create(:staff, :with_role, role_name: 'bcba') }
-  let!(:scheduling) { create(:scheduling, client_enrollment_service_id: client_enrollment_service.id, staff_id: staff.id, units: '2') }
+  let!(:scheduling) { create(:scheduling, client_enrollment_service_id: client_enrollment_service.id, staff_id: staff.id, units: '2', unrendered_reason: ['soap_note_absent']) }
 
   describe "GET #index" do
     context "when sign in" do
@@ -62,7 +62,8 @@ RSpec.describe SoapNotesController, type: :controller do
         post :create, params: {
           scheduling_id: scheduling.id,
           note: 'test-note-1',
-          add_date: Time.current.to_date
+          add_date: Time.current.to_date,
+          add_time: '12:00'
         }
         response_body = JSON.parse(response.body)
 
@@ -81,7 +82,7 @@ RSpec.describe SoapNotesController, type: :controller do
       it "should update soap note detail successfully" do
         set_auth_headers(auth_headers)
 
-        put :update, params: { scheduling_id: scheduling.id, id: soap_note.id, note: 'test-note', add_date: '2022-03-02' }
+        put :update, params: { scheduling_id: scheduling.id, id: soap_note.id, note: 'test-note', add_date: '2022-03-02', add_time: '1:00' }
         response_body = JSON.parse(response.body)
 
         expect(response.status).to eq(200)
@@ -92,14 +93,14 @@ RSpec.describe SoapNotesController, type: :controller do
         expect(response_body['data']['add_date']).to eq('2022-03-02')
       end
 
-      context "when user tries to update signature" do
+      context "when rbt tries to update rbt signature" do
         let(:rbt_role){ create(:role, name: 'rbt', permissions: ['soap_notes_update'])}
         let(:staff){ create(:staff, :with_role, role_name: rbt_role.name)}
         let(:staff_auth_headers){ staff.create_new_auth_token }
         it "should update signatures successfully" do
           set_auth_headers(staff_auth_headers)
   
-          put :update, params: { scheduling_id: scheduling.id, rbt_sign: true, id: soap_note.id }
+          put :update, params: { scheduling_id: scheduling.id, rbt_sign: true, id: soap_note.id, add_time: '1:00' }
           response_body = JSON.parse(response.body)
           
           expect(response.status).to eq(200)
@@ -107,7 +108,79 @@ RSpec.describe SoapNotesController, type: :controller do
           expect(response_body['data']['id']).to eq(soap_note.id)
           expect(response_body['data']['scheduling_id']).to eq(scheduling.id)
           expect(response_body['data']['rbt_sign']).to eq(true)
-          expect(response_body['data']['rbt_sign_name']).to eq("#{user.first_name} #{user.last_name}")
+          expect(response_body['data']['rbt_sign_name']).to eq("#{staff.first_name} #{staff.last_name}")
+        end
+      end
+
+      context "when bcba tries to update bcba signature" do
+        let(:bcba_role){ create(:role, name: 'bcba', permissions: ['soap_notes_update'])}
+        let(:staff){ create(:staff, :with_role, role_name: bcba_role.name)}
+        let(:staff_auth_headers){ staff.create_new_auth_token }
+        it "should update signatures successfully" do
+          set_auth_headers(staff_auth_headers)
+  
+          put :update, params: { scheduling_id: scheduling.id, bcba_sign: true, id: soap_note.id, add_time: '12:00' }
+          response_body = JSON.parse(response.body)
+          
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data']['id']).to eq(soap_note.id)
+          expect(response_body['data']['scheduling_id']).to eq(scheduling.id)
+          expect(response_body['data']['bcba_sign']).to eq(true)
+          expect(response_body['data']['bcba_sign_name']).to eq("#{staff.first_name} #{staff.last_name}")
+        end
+      end
+
+      context "when staff tries to update clinical director signature" do
+        let(:bcba_role){ create(:role, name: 'bcba', permissions: ['soap_notes_update', 'clinical_director_signature'])}
+        let(:staff){ create(:staff, :with_role, role_name: bcba_role.name)}
+        let(:staff_auth_headers){ staff.create_new_auth_token }
+        it "should update signatures successfully" do
+          set_auth_headers(staff_auth_headers)
+  
+          put :update, params: { scheduling_id: scheduling.id, clinical_director_sign: true, id: soap_note.id, add_time: '12:00' }
+          response_body = JSON.parse(response.body)
+          
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data']['id']).to eq(soap_note.id)
+          expect(response_body['data']['scheduling_id']).to eq(scheduling.id)
+          expect(response_body['data']['clinical_director_sign']).to eq(true)
+          expect(response_body['data']['clinical_director_sign_name']).to eq("#{staff.first_name} #{staff.last_name}")
+        end
+      end
+
+      context "when ed tries to revert signatures" do
+        it "should cancel all signatures" do
+          set_auth_headers(auth_headers)
+
+          put :update, params: { scheduling_id: scheduling.id, id: soap_note.id, rbt_sign: false, bcba_sign: false, clinical_director_sign: false, add_time: '1:00'}
+          response_body = JSON.parse(response.body)
+          
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data']['id']).to eq(soap_note.id)
+          expect(response_body['data']['scheduling_id']).to eq(scheduling.id)
+          expect(response_body['data']['clinical_director_sign']).to eq(false)
+          expect(response_body['data']['rbt_sign']).to eq(false)
+          expect(response_body['data']['bcba_sign']).to eq(false)
+        end
+      end
+
+      context "when ed tries to add signatures" do
+        it "should add all signatures" do
+          set_auth_headers(auth_headers)
+
+          put :update, params: { scheduling_id: scheduling.id, id: soap_note.id, rbt_sign: true, bcba_sign: true, clinical_director_sign: true, add_time: '1:00'}
+          response_body = JSON.parse(response.body)
+          
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data']['id']).to eq(soap_note.id)
+          expect(response_body['data']['scheduling_id']).to eq(scheduling.id)
+          expect(response_body['data']['clinical_director_sign']).to eq(true)
+          expect(response_body['data']['rbt_sign']).to eq(true)
+          expect(response_body['data']['bcba_sign']).to eq(true)
         end
       end
     end

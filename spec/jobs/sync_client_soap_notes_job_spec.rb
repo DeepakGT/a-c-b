@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'sidekiq/testing'
 
 RSpec.describe SyncClientSoapNotesJob, type: :job do
   describe "#perform_later" do
