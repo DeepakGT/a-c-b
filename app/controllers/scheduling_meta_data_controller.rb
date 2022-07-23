@@ -27,7 +27,7 @@ class SchedulingMetaDataController < ApplicationController
     end
     past_schedules = past_schedules.select("schedulings.*, 'Schedule' AS type")
     @past_schedules = past_schedules
-    catalyst_data = CatalystData.select("catalyst_data.*,clients.id AS client_id, clients.first_name, clients.last_name,'CatalystData' AS type").joins("LEFT JOIN clients ON (clients.catalyst_patient_id = catalyst_data.catalyst_patient_id)").after_live_date.post_30_may_catalyst_data.by_catalyst_user_id(current_user.id).where(is_deleted_from_connect: false).and((CatalystData.with_no_appointments)).uniq
+    catalyst_data = CatalystData.select("catalyst_data.*,clients.id AS client_id, clients.first_name, clients.last_name,'CatalystData' AS type").joins("LEFT JOIN clients ON (clients.catalyst_patient_id = catalyst_data.catalyst_patient_id)").joins("LEFT JOIN clinics ON (clinics.id = clients.clinic_id)").post_30_may_catalyst_data.by_catalyst_user_id(current_user.id).where(is_deleted_from_connect: false).and((CatalystData.with_no_appointments)).uniq
     @action_items_array = past_schedules.uniq.concat(catalyst_data)
     @action_items_array = sort_action_items(@action_items_array)
 
@@ -53,7 +53,7 @@ class SchedulingMetaDataController < ApplicationController
     # change_requests = SchedulingChangeRequest.by_approval_status
     # @change_requests = change_requests.by_bcba_ids(current_user.id)
     #                                   .or(change_requests.by_staff_ids(current_user.id)).left_outer_joins(:scheduling)
-    catalyst_data = CatalystData.select("catalyst_data.*,clients.id AS client_id, clients.first_name, clients.last_name,'CatalystData' AS type").joins("LEFT JOIN clients ON (clients.catalyst_patient_id = catalyst_data.catalyst_patient_id)").after_live_date.post_30_may_catalyst_data.by_catalyst_user_id(current_user.id).where(is_deleted_from_connect: false).and((CatalystData.with_no_appointments)).uniq
+    catalyst_data = CatalystData.select("catalyst_data.*,clients.id AS client_id, clients.first_name, clients.last_name,'CatalystData' AS type").joins("LEFT JOIN clients ON (clients.catalyst_patient_id = catalyst_data.catalyst_patient_id)").joins("LEFT JOIN clinics ON (clinics.id = clients.clinic_id)").post_30_may_catalyst_data.by_catalyst_user_id(current_user.id).where(is_deleted_from_connect: false).and((CatalystData.with_no_appointments)).uniq
     @action_items_array = past_schedules.uniq.concat(catalyst_data)
     @action_items_array = sort_action_items(@action_items_array)
 
@@ -79,7 +79,7 @@ class SchedulingMetaDataController < ApplicationController
     change_requests = SchedulingChangeRequest.by_approval_status
     @change_requests = change_requests.by_client_ids(client_ids)
     catalyst_patient_ids = Client.where(id: client_ids).pluck(:catalyst_patient_id).compact
-    catalyst_data = CatalystData.select("catalyst_data.*,clients.id AS client_id, clients.first_name, clients.last_name,'CatalystData' AS type").joins("LEFT JOIN clients ON (clients.catalyst_patient_id = catalyst_data.catalyst_patient_id)").after_live_date.post_30_may_catalyst_data.by_catalyst_patient_ids(catalyst_patient_ids).where(is_deleted_from_connect: false).and((CatalystData.with_no_appointments)).uniq
+    catalyst_data = CatalystData.select("catalyst_data.*,clients.id AS client_id, clients.first_name, clients.last_name,'CatalystData' AS type").joins("LEFT JOIN clients ON (clients.catalyst_patient_id = catalyst_data.catalyst_patient_id)").joins("LEFT JOIN clinics ON (clinics.id = clients.clinic_id)").post_30_may_catalyst_data.by_catalyst_patient_ids(catalyst_patient_ids).where(is_deleted_from_connect: false).and((CatalystData.with_no_appointments)).uniq
     @action_items_array = past_schedules.uniq.concat(catalyst_data)
     @total_count = @action_items_array.length
     @action_items_array = filter_by_client(@action_items_array) if params[:client_name].present?
