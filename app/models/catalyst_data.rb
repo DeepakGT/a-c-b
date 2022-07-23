@@ -10,4 +10,5 @@ class CatalystData < ApplicationRecord
   scope :by_catalyst_patient_ids, ->(catalyst_patient_ids){ where(catalyst_patient_id: catalyst_patient_ids) }
   scope :by_active_clients, ->{ where('clients.status = ?', 0) }
   scope :post_30_may_catalyst_data, ->{ where('date>? and date <?', '2022-05-30', Time.current.strftime('%Y-%m-%d')) }
+  scope :removed_from_dashboard, ->{ where(is_deleted_from_connect: false) }
 end
