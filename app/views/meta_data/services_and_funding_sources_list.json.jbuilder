@@ -1,7 +1,7 @@
 json.status 'success'
 json.data do
   if @billable_funding_sources.present?
-    json.billable_funding_sources do
+    json.funding_sources do
       json.array! @billable_funding_sources do |funding_source|
         json.id funding_source.id
         json.name funding_source.name
@@ -9,7 +9,7 @@ json.data do
     end
   end
   if @non_billable_funding_sources.present?
-    json.non_billable_funding_sources do
+    json.funding_sources do
       json.array! @non_billable_funding_sources do |funding_source|
         json.id funding_source.id
         json.name funding_source.name
