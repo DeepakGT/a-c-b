@@ -2,6 +2,7 @@ require 'will_paginate/array'
 SCHEDULE_QUERY = "schedulings.*, 'Schedule' AS type".freeze
 CATALYST_QUERY = "catalyst_data.*,clients.id AS client_id, clients.first_name, clients.last_name,'CatalystData' AS type".freeze
 CATALYST_LEFT_JOIN_QUERY = "LEFT JOIN clients ON (clients.catalyst_patient_id = catalyst_data.catalyst_patient_id)".freeze
+CATALYST_LEFT_JOIN_WITH_CLINIC = "LEFT JOIN clinics ON (clinics.id = clients.clinic_id)"
 SCHEDULING_ROLES = ['bcba', 'rbt', 'Clinical Director', 'Lead RBT'].freeze
 
 class SchedulingMetaDataController < ApplicationController
@@ -22,16 +23,16 @@ class SchedulingMetaDataController < ApplicationController
 
   def rbt_appointments
     authorize :appointment, :rbt_appointments?
-    rbt_schedules = Scheduling.left_outer_joins(:staff, client_enrollment_service: [:service, {client_enrollment: :client}]).by_staff_ids(current_user.id).by_status.with_active_client
+    rbt_schedules = Scheduling.left_outer_joins(:staff, client_enrollment_service: [:service, {client_enrollment: :client}]).joins("LEFT JOIN clinics ON (clinics.id = clients.clinic_id)").by_staff_ids(current_user.id).by_status
     # @upcoming_schedules = rbt_schedules.scheduled_scheduling.order(:date).first(10)
     @todays_appointments = rbt_schedules.todays_schedulings.order(:start_time).last(10)
-    past_schedules = rbt_schedules.past_60_days_schedules.unrendered_schedulings.order(date: :desc)
+    past_schedules = rbt_schedules.post_30_may_schedules.unrendered_schedulings.order(date: :desc)
     past_schedules.where(unrendered_reason: []).each do |schedule|
       RenderAppointments::RenderScheduleOperation.call(schedule.id)
     end
     past_schedules = past_schedules.select(SCHEDULE_QUERY)
     @past_schedules = past_schedules
-    catalyst_data = CatalystData.select(CATALYST_QUERY).joins(CATALYST_LEFT_JOIN_QUERY).by_active_clients.after_live_date.past_60_days_catalyst_data.by_catalyst_user_id(current_user.id).where(is_deleted_from_connect: false).and((CatalystData.with_no_appointments)).uniq.first(30)
+    catalyst_data = CatalystData.select(CATALYST_QUERY).joins(CATALYST_LEFT_JOIN_QUERY).joins(CATALYST_LEFT_JOIN_WITH_CLINIC).post_30_may_catalyst_data.by_catalyst_user_id(current_user.id).removed_from_dashboard.and(CatalystData.with_no_appointments).uniq
     @action_items_array = past_schedules.uniq.concat(catalyst_data)
     @action_items_array = sort_action_items(@action_items_array)
 
@@ -42,10 +43,10 @@ class SchedulingMetaDataController < ApplicationController
 
   def bcba_appointments
     authorize :appointment, :bcba_appointments?
-    bcba_schedules = Scheduling.left_outer_joins(:staff, client_enrollment_service: [:service, {client_enrollment: :client}]).by_staff_ids(current_user.id).by_status.with_active_client
+    bcba_schedules = Scheduling.left_outer_joins(:staff, client_enrollment_service: [:service, {client_enrollment: :client}]).joins("LEFT JOIN clinics ON (clinics.id = clients.clinic_id)").by_staff_ids(current_user.id).by_status
     # @upcoming_schedules = bcba_schedules.scheduled_scheduling.order(:date).first(10)
     @todays_appointments = bcba_schedules.todays_schedulings.order(:start_time).last(10)
-    past_schedules = bcba_schedules.past_60_days_schedules.unrendered_schedulings.order(date: :desc)
+    past_schedules = bcba_schedules.post_30_may_schedules.unrendered_schedulings.order(date: :desc)
     past_schedules.where(unrendered_reason: []).each do |schedule|
       RenderAppointments::RenderScheduleOperation.call(schedule.id)
     end
@@ -57,7 +58,7 @@ class SchedulingMetaDataController < ApplicationController
     # change_requests = SchedulingChangeRequest.by_approval_status
     # @change_requests = change_requests.by_bcba_ids(current_user.id)
     #                                   .or(change_requests.by_staff_ids(current_user.id)).left_outer_joins(:scheduling)
-    catalyst_data = CatalystData.select(CATALYST_QUERY).joins(CATALYST_LEFT_JOIN_QUERY).by_active_clients.after_live_date.past_60_days_catalyst_data.by_catalyst_user_id(current_user.id).where(is_deleted_from_connect: false).and((CatalystData.with_no_appointments)).uniq.first(30)
+    catalyst_data = CatalystData.select(CATALYST_QUERY).joins(CATALYST_LEFT_JOIN_QUERY).joins(CATALYST_LEFT_JOIN_WITH_CLINIC).post_30_may_catalyst_data.by_catalyst_user_id(current_user.id).removed_from_dashboard.and(CatalystData.with_no_appointments).uniq
     @action_items_array = past_schedules.uniq.concat(catalyst_data)
     @action_items_array = sort_action_items(@action_items_array)
 
@@ -68,11 +69,11 @@ class SchedulingMetaDataController < ApplicationController
 
   def executive_director_appointments
     authorize :appointment, :executive_director_appointments?
-    client_ids = Clinic.find(params[:default_location_id]).clients.active.pluck(:id)
+    client_ids = Clinic.find(params[:default_location_id]).clients.pluck(:id)
     schedules = Scheduling.left_outer_joins(:soap_notes, :staff, client_enrollment_service: [:service, {client_enrollment: :client}])
-    schedules = schedules.by_client_ids(client_ids)
+    schedules = schedules.joins("LEFT JOIN clinics ON (clinics.id = clients.clinic_id)").by_client_ids(client_ids)
     @todays_appointments = schedules.by_status.todays_schedulings.last(10)
-    past_schedules = schedules.by_status.past_60_days_schedules.unrendered_schedulings.order(date: :desc)
+    past_schedules = schedules.by_status.post_30_may_schedules.unrendered_schedulings.order(date: :desc)
     past_schedules.where(unrendered_reason: []).each do |schedule|
       RenderAppointments::RenderScheduleOperation.call(schedule.id)
     end
@@ -83,7 +84,7 @@ class SchedulingMetaDataController < ApplicationController
     change_requests = SchedulingChangeRequest.by_approval_status
     @change_requests = change_requests.by_client_ids(client_ids)
     catalyst_patient_ids = Client.where(id: client_ids).pluck(:catalyst_patient_id).compact
-    catalyst_data = CatalystData.select(CATALYST_QUERY).joins(CATALYST_LEFT_JOIN_QUERY).after_live_date.past_60_days_catalyst_data.by_catalyst_patient_ids(catalyst_patient_ids).where(is_deleted_from_connect: false).and((CatalystData.with_no_appointments)).uniq.first(30)
+    catalyst_data = CatalystData.select(CATALYST_QUERY).joins(CATALYST_LEFT_JOIN_QUERY).joins(CATALYST_LEFT_JOIN_WITH_CLINIC).post_30_may_catalyst_data.by_catalyst_user_id(current_user.id).removed_from_dashboard.and(CatalystData.with_no_appointments).uniq
     @action_items_array = past_schedules.uniq.concat(catalyst_data)
     @total_count = @action_items_array.length
     @action_items_array = filter_by_client(@action_items_array) if params[:client_name].present?
