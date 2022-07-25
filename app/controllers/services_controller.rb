@@ -31,7 +31,7 @@ class ServicesController < ApplicationController
 
   def service_params
     params.permit(:name, :status, :display_code, :is_service_provider_required, :is_unassigned_appointment_allowed, 
-                  :selected_non_early_services, :selected_non_billable_payors, :payors_requiring_rendering_provider,
+                  :selected_non_early_services, :selected_payors, :max_units,
                   service_qualifications_attributes: :qualification_id)
   end
 
