@@ -94,7 +94,6 @@ RSpec.describe ClientMetaDataController, type: :controller do
         expect(response_body['data']['soap_notes'].count).to eq(soap_notes.first(10).count)
         expect(response_body['data']['notes'].count).to eq(notes.first(10).count)
         expect(response_body['data']['attachments'].count).to eq(attachments.first(10).count)
-        expect(response_body['data']['client_cancelled_schedules'].count).to eq(schedulings.first(10).count)
       end
 
       context "when show expired checkbox is selected" do
@@ -112,7 +111,6 @@ RSpec.describe ClientMetaDataController, type: :controller do
           expect(response_body['data']['soap_notes'].count).to eq(soap_notes.first(10).count)
           expect(response_body['data']['notes'].count).to eq(notes.first(10).count)
           expect(response_body['data']['attachments'].count).to eq(attachments.first(10).count)
-          expect(response_body['data']['client_cancelled_schedules'].count).to eq(schedulings.first(10).count)
         end
       end
     end

@@ -29,17 +29,6 @@ RSpec.describe ClientsController, type: :controller do
         expect(response_body['data'].count).to eq(clients.count)
       end
 
-      it "should fetch the first page record by default" do
-        set_auth_headers(auth_headers)
-        
-        get :index
-        response_body = JSON.parse(response.body)
-
-        expect(response.status).to eq(200)
-        expect(response_body['status']).to eq('success')
-        expect(response_body['page']).to eq(1)
-      end
-
       it "should fetch the given page record" do
         set_auth_headers(auth_headers)
         
@@ -146,9 +135,9 @@ RSpec.describe ClientsController, type: :controller do
       context "when search_value is present" do
         let!(:staff) { create(:staff, :with_role, role_name: 'bcba', first_name: 'test', last_name: 'staff') }
         let!(:clients) { create_list(:client, 4, clinic_id: clinic.id, gender: 1, bcba_id: staff.id)}
-        let!(:client1) {create(:client, clinic_id: clinic.id, first_name: 'test', gender: 0, payor_status: 'self_pay')}
-        let!(:client2) {create(:client, clinic_id: clinic.id, last_name: 'test', gender: 0, payor_status: 'self_pay')}
-        let!(:client3) {create(:client, clinic_id: clinic.id, first_name: 'test', last_name: 'client', gender: 0)}
+        let!(:client1) {create(:client, clinic_id: clinic.id, first_name: 'test', gender: 0, payor_status: 'self_pay', bcba_id: nil)}
+        let!(:client2) {create(:client, clinic_id: clinic.id, last_name: 'test', gender: 0, payor_status: 'self_pay', bcba_id: nil)}
+        let!(:client3) {create(:client, clinic_id: clinic.id, first_name: 'test', last_name: 'client', gender: 0, bcba_id: nil)}
         let!(:funding_source) {create(:funding_source, clinic_id: clinic.id)}
         let!(:client_enrollment1) {create(:client_enrollment, terminated_on: Time.current.to_date+2, funding_source_id: funding_source.id, is_primary: true, client_id: client1.id)}
         let!(:client_enrollment2) {create(:client_enrollment, funding_source_id: funding_source.id, is_primary: false, client_id: client2.id)}
@@ -426,51 +415,6 @@ RSpec.describe ClientsController, type: :controller do
           
           expect(response_body['errors']).to include("record not found")
         end
-      end
-    end
-  end
-
-  describe "GET #client_cancelled_schedules" do
-    context "when sign in" do
-      let!(:client) { create(:client, clinic_id: clinic.id)}
-      let!(:service) { create(:service) }
-      let!(:client_enrollment) { create(:client_enrollment, client_id: client.id) }
-      let!(:client_enrollment_service) { create(:client_enrollment_service, client_enrollment_id: client_enrollment.id, service_id: service.id) }
-      let!(:schedulings1) {create_list(:scheduling, 3, units: '2', client_enrollment_service_id: client_enrollment_service.id, status: 'Client_Cancel_Less_than_24_h')}
-      let!(:schedulings2) {create_list(:scheduling, 3, units: '2', client_enrollment_service_id: client_enrollment_service.id, status: 'Client_Cancel_Greater_than_24_h')}
-      let!(:client_cancelled_schedules) { Scheduling.joins(client_enrollment_service: :client_enrollment).by_client_ids(client.id).client_cancelled_schedules}
-      it "should display all client cancelled schedules" do
-        set_auth_headers(auth_headers)
-
-        get :client_cancelled_schedules, params: { client_id: client.id }
-        response_body = JSON.parse(response.body)
-
-        expect(response.status).to eq(200)
-        expect(response_body['status']).to eq('success')
-        expect(response_body['data']['id']).to eq(client.id)
-        expect(response_body['data']['schedules'].count).to eq(client_cancelled_schedules.count)
-      end
-
-      it "should fetch the first page record by default" do
-        set_auth_headers(auth_headers)
-        
-        get :client_cancelled_schedules, params: { client_id: client.id }
-        response_body = JSON.parse(response.body)
-
-        expect(response.status).to eq(200)
-        expect(response_body['status']).to eq('success')
-        expect(response_body['page']).to eq(1)
-      end
-
-      it "should fetch the given page record" do
-        set_auth_headers(auth_headers)
-        
-        get :client_cancelled_schedules, params: { client_id: client.id, page: 2 }
-        response_body = JSON.parse(response.body)
-
-        expect(response.status).to eq(200)
-        expect(response_body['status']).to eq('success')
-        expect(response_body['page']).to eq("2")
       end
     end
   end

@@ -260,7 +260,7 @@ RSpec.describe CatalystController, type: :controller do
           
           set_auth_headers(auth_headers)
   
-          get :appointment_with_multiple_soap_notes, params: {scheduling_id: scheduling.id, selected_catalyst_data_ids: [catalyst_data1.id, catalyst_data2.id]}
+          put :appointment_with_multiple_soap_notes, params: {scheduling_id: scheduling.id, selected_catalyst_data_ids: [catalyst_data1.id, catalyst_data2.id]}
           response_body = JSON.parse(response.body)
           
           expect(response.status).to eq(200)
