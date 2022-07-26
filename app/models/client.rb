@@ -38,7 +38,7 @@ class Client < ApplicationRecord
   scope :by_bcba_last_name, ->(fname){ where(bcba_id: User.by_roles(['bcba', 'Clinical Director']).by_last_name(fname).ids) }
   scope :by_gender, ->(gender_value){ where(gender: Client.genders[gender_value] || -1) }
   scope :by_payor_status, ->(payor_status_value){ where("payor_status ILIKE '%#{payor_status_value}%'") }
-  scope :by_payor, ->(payor_name){ joins(client_enrollments: :funding_source).where("client_enrollments.is_primary = ?", true).where("client_enrollments.terminated_on >= ? OR terminated_on IS NULL", Time.current.strftime('%Y-%m-%d')).where("funding_sources.name ILIKE '%#{payor_name}%'") }
+  scope :by_payor, ->(payor_name){ left_outer_joins(client_enrollments: :funding_source).where("client_enrollments.is_primary = ?", true).where("client_enrollments.terminated_on >= ? OR terminated_on IS NULL", Time.current.strftime('%Y-%m-%d')).where("funding_sources.name ILIKE '%#{payor_name}%'") }
 
   def save_with_exception_handler
     self.save

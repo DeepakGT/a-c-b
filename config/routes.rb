@@ -42,6 +42,7 @@ Rails.application.routes.draw do
       resources :notes, controller: 'client_notes'
       resources :attachments, controller: 'client_attachments'
       get '/meta_data', to: 'client_meta_data#selectable_options'
+      get '/funding_sources_list', to: 'client_meta_data#funding_sources_list'
       get '/service_providers_list', to: 'client_meta_data#service_providers_list'
       get '/client_data', to: 'client_meta_data#client_data'
       get '/soap_notes', to: 'client_meta_data#soap_notes'

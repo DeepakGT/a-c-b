@@ -10,6 +10,7 @@ json.data do
   json.selected_payors @service.selected_payors
   json.selected_payors_names FundingSource.where(id: @service.selected_payors).pluck(:name)
   json.max_units @service.max_units
+  json.is_early_code @service.is_early_code
   if @service.qualifications.present?
     json.qualification_ids @service.qualifications.pluck(:id)
     json.qualification_names @service.qualifications.pluck(:name)
