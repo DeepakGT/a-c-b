@@ -25,18 +25,7 @@ RSpec.describe ClinicsController, type: :controller do
 
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
-        expect(response_body['total_records']).to eq(clinics.count)
-      end
-
-      it "should fetch the first page record by default" do
-        set_auth_headers(auth_headers)
-        
-        get :index
-        response_body = JSON.parse(response.body)
-
-        expect(response.status).to eq(200)
-        expect(response_body['status']).to eq('success')
-        expect(response_body['page']).to eq(1)
+        expect(response_body['data'].count).to eq(clinics.count)
       end
 
       it "should fetch the given page record" do

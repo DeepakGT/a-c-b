@@ -1,4 +1,4 @@
-json.status @schedule.errors.any? ? 'failure' : 'success'
+json.status @schedule.reload.errors.any? ? 'failure' : 'success'
 json.data do
   client = @schedule.client_enrollment_service&.client_enrollment&.client
   service = @schedule.client_enrollment_service&.service
@@ -29,6 +29,7 @@ json.data do
   json.service_id service&.id
   json.service_name service&.name
   json.service_display_code service&.display_code 
+  json.is_early_code service&.is_early_code
   json.status @schedule.status
   json.date @schedule.date
   json.start_time @schedule.start_time
