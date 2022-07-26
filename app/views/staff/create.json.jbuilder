@@ -10,6 +10,7 @@ json.data do
   json.gender @staff.gender
   json.job_type @staff.job_type
   json.supervisor_id @staff.supervisor_id
+  json.legacy_number @staff.legacy_number
   json.phone_numbers do
     json.array! @staff.phone_numbers do |phone|
       json.id phone.id
