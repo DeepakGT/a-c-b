@@ -277,7 +277,7 @@ class CatalystController < ApplicationController
   end
 
   def update_audit_action
-    audit = @schedule.audits.last
+    audit = @schedule.audits.where(user_id: current_user.id, user_type: "User").last
     if params[:use_catalyst_units].to_bool.true?
       audit.update(action: 'use catalyst units')
     elsif params[:use_custom_units].to_bool.true?
