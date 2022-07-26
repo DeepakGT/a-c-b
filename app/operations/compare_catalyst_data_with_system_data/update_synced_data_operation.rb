@@ -1,7 +1,7 @@
 APPOINTMENT_SAVED = "In appointment, catalyst data id is saved.".freeze
-APPOINTMENT_NOT_SAVED = "In appointment, catalyst data id cannot be saved."
-SOAP_NOTE_ID_UPDATED = "Soap note's client id is updated."
-SOAP_NOTE_ID_NOT_UPDATED = "Soap note's client id cannot be updated."
+APPOINTMENT_NOT_SAVED = "In appointment, catalyst data id cannot be saved.".freeze
+SOAP_NOTE_ID_UPDATED = "Soap note's client id is updated.".freeze
+SOAP_NOTE_ID_NOT_UPDATED = "Soap note's client id cannot be updated.".freeze
 
 module CompareCatalystDataWithSystemData
   module UpdateSyncedDataOperation

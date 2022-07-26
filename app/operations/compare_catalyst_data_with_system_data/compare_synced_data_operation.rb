@@ -133,7 +133,7 @@ module CompareCatalystDataWithSystemData
         elsif staff.count>1
           staff = staff.find_by(status: 'active')
         else
-          staff = Staff.find_by(catalyst_user_id: catalyst_data.catalyst_user_id)
+          staff
         end
         staff
       end
@@ -145,7 +145,7 @@ module CompareCatalystDataWithSystemData
         elsif client.count>1
           client = client.find_by(status: 'active')
         else
-          client = Client.find_by(catalyst_patient_id: catalyst_data.catalyst_patient_id)
+          client
         end
         client
       end
@@ -174,12 +174,16 @@ module CompareCatalystDataWithSystemData
 
       def compare_service_code_and_set_appointment(filtered_schedules,catalyst_data)
         service_display_code = catalyst_data.response['templateName'][-10..-6]
-        filtered_schedules = filtered_schedules.map{|appointment| appointment if appointment.client_enrollment_service.service.display_code==service_display_code}.compact
-        if filtered_schedules.length==1
-          set_appointment(catalyst_data, filtered_schedules.first, soap_note)
-        elsif filtered_schedules.length>1
-          filtered_schedules = filtered_schedules.sort_by(&:minutes)
-          set_appointment(catalyst_data, filtered_schedules.last, soap_note)
+        if service_display_code.present?
+          filtered_schedules = filtered_schedules.map{|appointment| appointment if appointment.client_enrollment_service.service.display_code==service_display_code}.compact
+          if filtered_schedules.length==1
+            set_appointment(catalyst_data, filtered_schedules.first, soap_note)
+          elsif filtered_schedules.length>1
+            filtered_schedules = filtered_schedules.sort_by(&:minutes)
+            set_appointment(catalyst_data, filtered_schedules.last, soap_note)
+          end
+        else
+          return
         end
       end
     end

@@ -2,7 +2,7 @@ require 'will_paginate/array'
 SCHEDULE_QUERY = "schedulings.*, 'Schedule' AS type".freeze
 CATALYST_QUERY = "catalyst_data.*,clients.id AS client_id, clients.first_name, clients.last_name,'CatalystData' AS type".freeze
 CATALYST_LEFT_JOIN_QUERY = "LEFT JOIN clients ON (clients.catalyst_patient_id = catalyst_data.catalyst_patient_id)".freeze
-CATALYST_LEFT_JOIN_WITH_CLINIC = "LEFT JOIN clinics ON (clinics.id = clients.clinic_id)"
+CATALYST_LEFT_JOIN_WITH_CLINIC = "LEFT JOIN clinics ON (clinics.id = clients.clinic_id)".freeze
 SCHEDULING_ROLES = ['bcba', 'rbt', 'Clinical Director', 'Lead RBT'].freeze
 
 class SchedulingMetaDataController < ApplicationController
