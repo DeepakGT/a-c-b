@@ -110,15 +110,27 @@ class Scheduling < ApplicationRecord
     if self.units.present? && self.minutes.blank?
       self.minutes = self.units*15
     elsif self.minutes.present? && self.units.blank?
-      rem = self.minutes%15
-      if rem == 0
-        self.units = self.minutes/15
-      elsif rem < 8
-        self.units = (self.minutes - rem)/15
+      self.units = calculate_units(self.minutes)
+    else
+      if self.units.blank? && self.minutes.blank? && self.start_time.present? && self.end_time.present?
+        self.minutes = (self.end_time.to_time - self.start_time.to_time) / 1.minutes
+        self.units = calculate_units(self.minutes)
       else
-        self.units = (self.minutes + 15 - rem)/15
+        self.units ||= 0
+        self.minutes ||= 0
       end
     end 
+  end
+
+  def calculate_units(minutes)
+    rem = minutes%15
+    if rem == 0
+      minutes/15
+    elsif rem < 8
+      (minutes - rem)/15
+    else
+      (minutes + 15 - rem)/15
+    end
   end
   # end of private
 end
