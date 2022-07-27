@@ -34,9 +34,13 @@ module RenderAppointments
         #   schedule.save(validate: false)
         # end
         if schedule.unrendered_reason.blank?
-          # schedule.is_rendered = true
-          schedule.status = 'Rendered' 
-          schedule.rendered_at = DateTime.current if schedule.client_enrollment_service&.service&.is_early_code&.to_bool&.true?
+          if schedule.client_enrollment_service&.service&.is_early_code&.to_bool&.true?
+            schedule.status = 'Auth_Pending'
+            schedule.rendered_at = nil
+          else
+            schedule.status = 'Rendered' 
+            schedule.rendered_at = DateTime.current
+          end
           schedule.save(validate: false)
         end
       end
