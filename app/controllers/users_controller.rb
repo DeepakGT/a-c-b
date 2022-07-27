@@ -9,4 +9,8 @@ class UsersController < ApplicationController
     @user = current_user
     @user.update(default_schedule_view: params[:default_schedule_view])
   end
+
+  def super_admins_list
+    @super_admins = User.by_roles('super_admin')
+  end
 end
