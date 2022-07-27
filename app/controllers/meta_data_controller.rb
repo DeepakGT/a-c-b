@@ -26,6 +26,12 @@ class MetaDataController < ApplicationController
     @staff = Staff.active.by_roles('rbt')
   end
 
+  def replaceable_authorizations_list
+    @enrollment_service = ClientEnrollmentService.find(params[:client_enrollment_service_id])
+    replaceable_service_ids = @enrollment_service.service.selected_non_early_services
+    @authorizations = ClientEnrollmentService.by_client(@enrollment_service.client_enrollment.client_id).by_service(replaceable_service_ids).where.not('client_enrollments.funding_soucre_id': nil)
+  end
+
   private
 
   def selectable_options_data
