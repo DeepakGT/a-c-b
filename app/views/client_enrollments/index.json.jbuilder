@@ -96,3 +96,8 @@ if params[:page].present?
   json.limit @client_enrollments.per_page
   json.page params[:page]
 end
+if FundingSource.where(network_status: 'non_billable').present?
+  json.nonBillabelPayorExists true
+else
+  json.nonBillabelPayorExists false
+end
