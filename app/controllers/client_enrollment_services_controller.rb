@@ -2,7 +2,7 @@ FORMAT_DATE = '%Y-%m-%d'.freeze
 
 class ClientEnrollmentServicesController < ApplicationController
   before_action :authenticate_user!
-  before_action :authorize_user
+  before_action :authorize_user, except: :create_early_auths
   before_action :set_client_enrollment_service, only: %i[show update destroy]
 
   def create
@@ -27,12 +27,19 @@ class ClientEnrollmentServicesController < ApplicationController
   end
 
   def create_early_auths
-    end_date = (Time.current+90.days).strftime(FORMAT_DATE)
-    @client_enrollment = Client.find(early_auth_params[:client_id]).client_enrollments.create(funding_source_id: early_auth_params[:funding_source_id], enrollment_date: Time.current.strftime(FORMAT_DATE), terminated_on: end_date, source_of_payment: 'insurance')
-    services = Service.map{|service| service if service.selected_payors&.pluck(:payor_id)&.include?(early_auth_params[:funding_source_id])}.compact
+    @client = Client.find(early_auth_params[:client_id])
+    authorize @client if current_user.role_name!='super_admin'
+    authorizations = ClientEnrollmentService.by_client(record.id).joins(:service).where('services.is_early_code': true).where('client_enrollments.funding_source_id': early_auth_params[:funding_source_id])
+    if authorizations.present?
+      @client.errors.add(:early_authorization, 'is already present for this non-billable funding source.')
+    else
+      end_date = (Time.current+90.days).strftime(FORMAT_DATE)
+      @client_enrollment = @client.client_enrollments.create(funding_source_id: early_auth_params[:funding_source_id], enrollment_date: Time.current.strftime(FORMAT_DATE), terminated_on: end_date, source_of_payment: 'insurance')
+      services = Service.map{|service| service if service.selected_payors&.pluck(:payor_id)&.include?(early_auth_params[:funding_source_id])}.compact
 
-    services.each do |service|
-      @client_enrollment.client_enrollment_services.create(service_id: service.id, start_date: Time.current.strftime(FORMAT_DATE), end_date: end_date, units: service.max_units, minutes: (service.max_units)*15)
+      services.each do |service|
+        @client_enrollment.client_enrollment_services.create(service_id: service.id, start_date: Time.current.strftime(FORMAT_DATE), end_date: end_date, units: service.max_units, minutes: (service.max_units)*15)
+      end
     end
   end
 
