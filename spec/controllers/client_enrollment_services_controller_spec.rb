@@ -244,4 +244,27 @@ RSpec.describe ClientEnrollmentServicesController, type: :controller do
       end
     end
   end
+
+  describe "PUT #replace_early_auth" do
+    context "when sign in" do
+      let!(:early_service) { create(:service, is_early_code: true, selected_non_early_services: [service.id]) }
+      let!(:non_billable_funding_source) {create(:funding_source, clinic_id: clinic.id, network_status: 'non_billable')}
+      let!(:client_enrollment1){ create(:client_enrollment, client_id: client.id, funding_source_id: non_billable_funding_source.id)}
+      let!(:client_enrollment_service1){create(:client_enrollment_service, client_enrollment_id: client_enrollment1.id, service_id: early_service.id, start_date: (Time.current - 5.days).to_date, end_date: (Time.current + 5.days).to_date)}
+      let!(:client_enrollment_service2){create(:client_enrollment_service, client_enrollment_id: client_enrollment.id, service_id: service.id, start_date: (Time.current - 5.days).to_date, end_date: (Time.current + 5.days).to_date)}
+      let!(:scheduling1){create(:scheduling, client_enrollment_service_id: client_enrollment_service1.id, date: (Time.current - 2.days).to_date, status: 'Auth_Pending', start_time: '10:00', end_time: '11:00', units: 4)}
+      let!(:scheduling2){create(:scheduling, client_enrollment_service_id: client_enrollment_service1.id, date: (Time.current + 2.days).to_date, status: 'Scheduled', start_time: '10:00', end_time: '11:00', units: 4)}
+      it "should replace early auth by final auth successfully" do
+        set_auth_headers(auth_headers)
+
+        put :replace_early_auth, params: {early_authorization_id: early_authorization.id, final_authorization_id: final_authorization.id}
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(ClientEnrollmentService.find(final_authorization.id).schedulings.count).to eq(2)
+        expect(ClientEnrollmentService.find_by_id(early_authorization.id)).to eq(nil)
+      end
+    end
+  end
 end

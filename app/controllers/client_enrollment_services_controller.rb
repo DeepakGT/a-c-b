@@ -24,6 +24,17 @@ class ClientEnrollmentServicesController < ApplicationController
     @enrollment_service.destroy
   end
 
+  def replace_early_auth
+    @early_authorization = ClientEnrollmentService.find(params[:early_authorization_id])
+    @final_authorization = ClientEnrollmentService.find(params[:final_authorization_id])
+    schedules = @early_authorization.schedulings.where('date>=? && date<=?', @final_authorization.start_date, @final_authorization.end_date)
+    schedules.each do |schedule|
+      schedule.update(client_enrollment_service_id: @final_authorization.id) if @final_authorization.left_units>=schedule.units
+    end
+    @early_authorization.destroy if @early_authorization.schedulings.blank?
+    RenderAppointments::RenderPartiallyRenderedSchedulesOperation.call(@final_authorization.id)
+  end
+
   private
 
   def authorize_user
