@@ -2,6 +2,7 @@ json.id super_admin.id
 json.first_name super_admin.first_name
 json.last_name super_admin.last_name
 json.email super_admin.email
+json.dob super_admin.dob
 json.status super_admin.status
 json.hired_at super_admin.hired_at
 json.terminated_on super_admin.terminated_on
