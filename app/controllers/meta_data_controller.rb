@@ -38,7 +38,7 @@ class MetaDataController < ApplicationController
   private
 
   def selectable_options_data
-    selectable_options = { countries: country_list,
+    { countries: country_list,
                            preferred_languages: Client.preferred_languages,
                            dq_reasons: Client.dq_reasons, 
                            relation_types: Contact.relation_types,
