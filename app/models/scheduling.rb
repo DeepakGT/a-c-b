@@ -1,6 +1,8 @@
 require 'audited.rb'
+DATE_RANGE_QUERY = 'date < ? OR (date = ? AND end_time < ?'.freeze
+
 class Scheduling < ApplicationRecord
-  audited only: %i[start_time end_time units date], on: :update
+  audited only: %i[start_time end_time units date status], on: :update
 
   belongs_to :staff, optional: true
   belongs_to :client_enrollment_service, optional: true
@@ -40,9 +42,9 @@ class Scheduling < ApplicationRecord
   scope :by_staff_clinic, ->(location_id) { where('staff_clinics.clinic_id': location_id) }
   scope :by_staff_home_clinic, ->(location_id) { where('staff_clinics.clinic_id = ? AND staff_clinics.is_home_clinic = ?', location_id, true) }
   scope :on_date, ->(date){ where(date: date) }
-  scope :exceeded_24_h_scheduling, ->{ where('date < ? OR (date = ? AND end_time < ?)', Time.current.to_date-1, Time.current.to_date-1, Time.current.strftime('%H:%M')) }
-  scope :exceeded_3_days_scheduling, ->{ where('date < ? OR (date = ? AND end_time < ?)', Time.current.to_date-3, Time.current.to_date-3, Time.current.strftime('%H:%M')) }
-  scope :exceeded_5_days_scheduling, ->{ where('date < ? OR (date = ? AND end_time < ?)', Time.current.to_date-5, Time.current.to_date-5, Time.current.strftime('%H:%M')) }
+  scope :exceeded_24_h_scheduling, ->{ where(DATE_RANGE_QUERY, Time.current.to_date-1, Time.current.to_date-1, Time.current.strftime('%H:%M')) }
+  scope :exceeded_3_days_scheduling, ->{ where(DATE_RANGE_QUERY, Time.current.to_date-3, Time.current.to_date-3, Time.current.strftime('%H:%M')) }
+  scope :exceeded_5_days_scheduling, ->{ where(DATE_RANGE_QUERY, Time.current.to_date-5, Time.current.to_date-5, Time.current.strftime('%H:%M')) }
   scope :partially_rendered_schedules, ->{ where(status: 'Auth_Pending', rendered_at: nil)}
   scope :past_60_days_schedules, ->{ where('date>=? AND date<?', (Time.current-60.days).strftime('%Y-%m-%d'), Time.current.strftime('%Y-%m-%d')) }
   scope :without_staff, ->{ where(staff_id: nil) }

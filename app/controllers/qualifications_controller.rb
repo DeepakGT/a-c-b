@@ -15,7 +15,9 @@ class QualificationsController < ApplicationController
     @qualification.save
   end
 
-  def show; end
+  def show
+    @qualification
+  end
 
   def update
     @qualification.update(qualification_params)
