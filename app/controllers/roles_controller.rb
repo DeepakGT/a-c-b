@@ -8,7 +8,9 @@ class RolesController < ApplicationController
     @roles = @roles.paginate(page: params[:page]) if params[:page].present?
   end
 
-  def show; end
+  def show
+    @role
+  end
 
   def create
     @role = Role.create(name: params[:name], permissions: params[:permissions], id: Role.ids.max+1)
