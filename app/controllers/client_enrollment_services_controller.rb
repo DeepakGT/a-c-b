@@ -61,7 +61,6 @@ class ClientEnrollmentServicesController < ApplicationController
   def remove_service_providers
     @enrollment_service.service_providers.destroy_all
   end
-<<<<<<< HEAD
 
   def update_units_columns(client_enrollment_service)
     # ClientEnrollmentServices::UpdateUnitsColumnsOperation.call(client_enrollment_service)
@@ -72,7 +71,5 @@ class ClientEnrollmentServicesController < ApplicationController
       Staff.find_by(id: item[:staff_id])&.update(legacy_number: item[:legacy_number])
     end
   end
-=======
->>>>>>> 27ee59f1a97972559cf8a3a4e598a576073a130e
   # end of private
 end
