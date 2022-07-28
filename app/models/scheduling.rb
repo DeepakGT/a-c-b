@@ -1,5 +1,5 @@
 require 'audited.rb'
-DATE_RANGE_QUERY = 'date < ? OR (date = ? AND end_time < ?'.freeze
+DATE_RANGE_QUERY = 'date < ? OR (date = ? AND end_time < ?)'.freeze
 
 class Scheduling < ApplicationRecord
   audited only: %i[start_time end_time units date], on: :update
