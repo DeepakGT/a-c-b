@@ -67,7 +67,7 @@ class ClientEnrollmentServicesController < ApplicationController
   end
 
   def update_staff_legacy_numbers
-    return if params[:legacy_numbers].present?
+    return if params[:legacy_numbers].blank?
   
     params[:legacy_numbers].each do |item|
       Staff.find_by(id: item[:staff_id])&.update(legacy_number: item[:legacy_number])
