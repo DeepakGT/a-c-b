@@ -6,7 +6,7 @@ class ClientEnrollmentServicesController < ApplicationController
   def create
     set_client_enrollment
     @enrollment_service = @client_enrollment.client_enrollment_services.create(enrollment_service_params)
-    update_staff_legacy_numbers if params[:legacy_numbers].present?
+    update_staff_legacy_numbers
     #update_units_columns(@enrollment_service)
   end
 
@@ -19,7 +19,7 @@ class ClientEnrollmentServicesController < ApplicationController
       remove_service_providers if params[:service_providers_attributes].present?
       @enrollment_service.update(enrollment_service_params)
       update_client_enrollment if params[:funding_source_id].present?
-      update_staff_legacy_numbers if params[:legacy_numbers].present?
+      update_staff_legacy_numbers
     end
   end
 
@@ -67,6 +67,8 @@ class ClientEnrollmentServicesController < ApplicationController
   end
 
   def update_staff_legacy_numbers
+    return if params[:legacy_numbers].present?
+  
     params[:legacy_numbers].each do |item|
       Staff.find_by(id: item[:staff_id])&.update(legacy_number: item[:legacy_number])
     end
