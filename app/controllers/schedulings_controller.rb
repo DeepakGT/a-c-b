@@ -70,7 +70,7 @@ class SchedulingsController < ApplicationController
 
   def create_without_staff
     @schedule = @client_enrollment_service.schedulings.new(scheduling_params)
-    @schedule.status = 'Non-Billable' if params[:status].blank?
+    @schedule.status = 'Non_Billable' if params[:status].blank?
     @schedule.creator_id = current_user.id
     @schedule.user = current_user
     @schedule.id = Scheduling.last.id + 1
@@ -85,7 +85,7 @@ class SchedulingsController < ApplicationController
   
   def create_without_client
     @schedule = Scheduling.new(create_without_client_params)
-    @schedule.status = 'Non-Billable'
+    @schedule.status = 'Non_Billable'
     @schedule.creator_id = current_user.id
     @schedule.user = current_user
     @schedule.id = Scheduling.last.id + 1

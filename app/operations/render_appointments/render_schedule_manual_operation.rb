@@ -11,7 +11,7 @@ module RenderAppointments
         schedule = Scheduling.find(schedule_id)
         schedule.is_manual_render = true
         schedule.unrendered_reason = []
-        if schedule.client_enrollment_service&.service&.is_early_code.to_bool.true?
+        if schedule.client_enrollment_service&.service&.is_early_code?
           schedule.rendered_at = nil
           schedule.status = 'Auth_Pending' 
         else

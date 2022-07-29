@@ -14,10 +14,18 @@ class Service < ApplicationRecord
   # Enums
   enum status: {active: 0, inactive: 1}
 
+  def is_early_code?
+    self&.is_early_code&.to_bool&.true?
+  end
+
+  def is_not_early_code?
+    self&.is_early_code&.to_bool&.false?
+  end
+
   private
 
   def validate_is_early_code
-    if self.is_early_code.to_bool.true? && Service.find(self.id).is_early_code.to_bool.false?
+    if self&.is_early_code? && Service.find(self.id)&.is_not_early_code?
       billable_funding_sources = ClientEnrollmentService.by_service(self.id).joins(client_enrollment: :funding_source).where.not('funding_sources.network_status': 'non_billable')
       errors.add(:service, 'cannot be updated to early code as it is connected to billable payors.') if billable_funding_sources.present?
     end
