@@ -157,4 +157,33 @@ RSpec.describe MetaDataController, type: :controller do
       end
     end
   end
+
+  describe "GET #replaceable_authorizations_list" do
+    context "when sign in" do
+      let!(:clinic){create(:clinic)}
+      let!(:service){create(:service)}
+      let!(:early_service){create(:service, is_early_code: true, selected_non_early_service_id: service.id)}
+      let!(:non_billable_funding_source){create(:funding_source, network_status: 'non_billable', clinic_id: clinic.id)}
+      let!(:funding_source1){create(:funding_source, clinic_id: clinic.id)}
+      let!(:funding_source2){create(:funding_source, clinic_id: clinic.id)}
+      let!(:client){create(:client, clinic_id: clinic.id)}
+      let!(:client_enrollment1){create(:client_enrollment, client_id: client.id, source_of_payment: 'insurance', funding_source_id: non_billable_funding_source.id)}
+      let!(:client_enrollment2){create(:client_enrollment, client_id: client.id, source_of_payment: 'insurance', funding_source_id: funding_source1.id)}
+      let!(:client_enrollment3){create(:client_enrollment, client_id: client.id, source_of_payment: 'insurance', funding_source_id: funding_source2.id)}
+      let!(:client_enrollment_service1){create(:client_enrollment_service, client_enrollment_id: client_enrollment1.id, service_id: early_service.id)}
+      let!(:client_enrollment_service2){create(:client_enrollment_service, client_enrollment_id: client_enrollment2.id, service_id: service.id)}
+      let!(:client_enrollment_service3){create(:client_enrollment_service, client_enrollment_id: client_enrollment3.id, service_id: service.id)}
+      it "should display replaceable authorizations list successfully" do
+        set_auth_headers(auth_headers)
+
+        get :replaceable_authorizations_list, params: {client_enrollment_service_id: client_enrollment_service1.id}
+        response_body = JSON.parse(response.body)
+
+        expect('response.status').to eq(200)
+        expect(response_body['data']['status']).to eq('success')
+        expect(response_body['data'].count).to eq(2)
+        expect(response_body['total_count']).to eq(2)
+      end
+    end
+  end
 end
