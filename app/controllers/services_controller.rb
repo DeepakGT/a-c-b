@@ -33,7 +33,7 @@ class ServicesController < ApplicationController
 
   def service_params
     params.permit(:name, :status, :display_code, :is_service_provider_required, :is_unassigned_appointment_allowed, 
-                  :selected_non_early_services, :selected_payors, :max_units,:is_early_code,
+                  :selected_non_early_service_id, :selected_payors, :max_units,:is_early_code,
                   service_qualifications_attributes: :qualification_id)
   end
 

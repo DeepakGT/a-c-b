@@ -15,6 +15,7 @@ class Service < ApplicationRecord
   enum status: {active: 0, inactive: 1}
 
   scope :non_early_services, ->{where(is_early_code: false)}
+
   private
 
   def validate_is_early_code
