@@ -3,6 +3,7 @@ class StaffController < ApplicationController
   before_action :authenticate_user!
   before_action :authorize_user, except: %i[phone_types supervisor_list]
   before_action :set_staff, only: %i[show update destroy]
+  before_action :remove_trailing_space, only: %i[create update]
 
   def index
     staff = Staff.all
@@ -13,7 +14,9 @@ class StaffController < ApplicationController
     @staff = @staff.paginate(page: params[:page]) if params[:page].present?
   end
 
-  def show; end
+  def show
+    @staff
+  end
 
   def update
     set_role if params[:role_name].present?
@@ -43,7 +46,7 @@ class StaffController < ApplicationController
   private
 
   def staff_params
-    arr = %i[first_name last_name hired_at terminated_on email supervisor_id job_type]
+    arr = %i[first_name last_name hired_at terminated_on email supervisor_id job_type legacy_number]
     
     arr.concat(%i[password password_confirmation]) if params[:action] == 'create'
     
@@ -83,9 +86,6 @@ class StaffController < ApplicationController
         fname, lname = params[:search_value].split(' ')
         if fname.present? && lname.blank?
           staff = staff.by_first_name(fname).or(staff.by_last_name(fname))
-        elsif fname.present? && lname.present?
-          staff = staff.by_first_name(fname)
-          staff = staff.by_last_name(lname)
         else
           staff = staff.by_first_name(fname) # if fname.present?
           staff = staff.by_last_name(lname) # if lname.present?
@@ -150,6 +150,11 @@ class StaffController < ApplicationController
     else
       staff = staff.active
     end
+  end
+
+  def remove_trailing_space
+    params[:first_name].strip! if params[:first_name].present?
+    params[:last_name].strip! if params[:last_name].present?
   end
   # end of private
 end

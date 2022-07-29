@@ -5,12 +5,15 @@ class SchedulingsController < ApplicationController
   before_action :authorize_user, except: %i[render_appointment split_appointment_detail create_split_appointment]
   before_action :set_scheduling, only: %i[show update destroy update_without_client]
   before_action :set_client_enrollment_service, only: %i[create create_without_staff]
+  before_action :set_db_time_format, only: %i[create update create_without_staff create_split_appointment create_without_client update_without_client]
 
   def index
     @schedules = do_filter
   end
 
-  def show; end
+  def show
+    @schedule
+  end
 
   def create
     @schedule = @client_enrollment_service.schedulings.new(scheduling_params)
@@ -22,7 +25,6 @@ class SchedulingsController < ApplicationController
     else
       @schedule.save
     end
-    #update_units_columns(@schedule.client_enrollment_service)
   end
 
   # Creating split appointments
@@ -36,7 +38,6 @@ class SchedulingsController < ApplicationController
       @schedule = Scheduling.new(schedule_params)
       @schedule.id = Scheduling.last.id + 1
       @schedule.save(validate: false)
-      update_units_columns(@schedule.client_enrollment_service)
       update_catalyst_data_and_soap_notes_for_split_appointment(schedule)
       ids.push @schedule.id
       audit = @schedule.audits.new(action: 'split_appointment', user_id: current_user.id, user_type: 'User',username: "#{current_user.first_name} #{current_user.last_name}", audited_changes: {})
@@ -54,7 +55,6 @@ class SchedulingsController < ApplicationController
     return if !check_units
     
     update_status if params[:status].present?
-    #update_units_columns(@schedule.client_enrollment_service)
   end
 
   def destroy
@@ -63,6 +63,8 @@ class SchedulingsController < ApplicationController
       delete_scheduling
     when 'bcba', 'executive_director', 'client_care_coordinator', 'Clinical Director', 'administrator'
       delete_scheduling if @schedule.created_at.strftime('%Y-%m-%d')>=(Time.current-1.day).strftime('%Y-%m-%d')
+    else
+      puts "Cannot deleted by user role #{current_user.role}"
     end
   end
 
@@ -163,18 +165,7 @@ class SchedulingsController < ApplicationController
   end
 
   def do_filter
-    if params[:staff_ids].present? || params[:client_ids].present? || params[:service_ids].present? || current_user.role_name=='rbt' || current_user.role_name=='bcba' || params[:default_location_id].present?
-      if !(params[:show_inactive].present? && (params[:show_inactive]==1 || params[:show_inactive]=="1"))
-        schedules = Scheduling.left_outer_joins(staff: :staff_clinics, client_enrollment_service: [:service, {client_enrollment: :client}]).with_active_client
-      else
-        schedules = Scheduling.includes(staff: :staff_clinics, client_enrollment_service: [:service, {client_enrollment: :client}]).with_client
-      end
-    else
-      schedules = Scheduling.with_client
-      if !(params[:show_inactive].present? && (params[:show_inactive]==1 || params[:show_inactive]=="1"))
-        schedules = schedules.joins(client_enrollment_service: {client_enrollment: :client}).with_active_client
-      end
-    end
+    schedules = filter_schedules
     schedules = schedules.or(Scheduling.by_staff_ids(current_user.id).without_client)
     #schedules = schedules + Scheduling.by_staff_ids(current_user.id).without_client
     schedules = schedules.by_staff_ids(string_to_array(params[:staff_ids])) if params[:staff_ids].present?
@@ -189,6 +180,22 @@ class SchedulingsController < ApplicationController
     end
     schedules = schedules.uniq.sort_by(&:date)
     schedules = schedules.paginate(page: params[:page]) if params[:page].present?
+    schedules
+  end
+
+  def filter_schedules
+    if params[:staff_ids].present? || params[:client_ids].present? || params[:service_ids].present? || current_user.role_name=='rbt' || current_user.role_name=='bcba' || params[:default_location_id].present?
+      if !(params[:show_inactive].present? && (params[:show_inactive]==1 || params[:show_inactive]=="1"))
+        schedules = Scheduling.left_outer_joins(staff: :staff_clinics, client_enrollment_service: [:service, {client_enrollment: :client}]).with_active_client
+      else
+        schedules = Scheduling.includes(staff: :staff_clinics, client_enrollment_service: [:service, {client_enrollment: :client}]).with_client
+      end
+    else
+      schedules = Scheduling.with_client
+      if !(params[:show_inactive].present? && (params[:show_inactive]==1 || params[:show_inactive]=="1"))
+        schedules = schedules.joins(client_enrollment_service: {client_enrollment: :client}).with_active_client
+      end
+    end
     schedules
   end
 
@@ -291,10 +298,6 @@ class SchedulingsController < ApplicationController
     soap_note.scheduling_id = @schedule.id
     soap_note.save(validate: false)
   end
-  
-  def update_units_columns(client_enrollment_service)
-    # ClientEnrollmentServices::UpdateUnitsColumnsOperation.call(client_enrollment_service)
-  end
 
   def delete_scheduling
     CatalystData.where(system_scheduling_id: @schedule.id).update_all(system_scheduling_id: nil)
@@ -345,6 +348,8 @@ class SchedulingsController < ApplicationController
         update_scheduling 
       when 'bcba'
         update_scheduling_when_bcba
+      else
+        puts "#{current_user.role_name}"
       end
     end
     true
@@ -353,6 +358,11 @@ class SchedulingsController < ApplicationController
   # Render an appointment manually
   def manual_rendering
     @schedule.update(status: 'Rendered',rendered_at: Time.current,is_manual_render: true, rendered_by_id: current_user.id, user: current_user)
+  end
+
+  def set_db_time_format
+    params[:start_time] = params[:start_time].in_time_zone.strftime("%H:%M") if params[:start_time].present?
+    params[:end_time] = params[:end_time].in_time_zone.strftime("%H:%M") if params[:end_time].present?
   end
   # end of private
 end

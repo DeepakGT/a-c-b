@@ -10,6 +10,7 @@ json.data do
     json.job_type staff.job_type
     json.hired_at staff.hired_at
     json.terminated_on staff.terminated_on
+    json.legacy_number staff.legacy_number
     if staff_clinic.present?
       json.organization_id staff_clinic.clinic&.organization_id
       json.organization_name staff_clinic.clinic&.organization_name

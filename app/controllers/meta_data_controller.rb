@@ -26,10 +26,19 @@ class MetaDataController < ApplicationController
     @staff = Staff.active.by_roles('rbt')
   end
 
+  def services_and_funding_sources_list
+    if params[:is_early_code].to_bool.true?
+      @non_billable_funding_sources = FundingSource.non_billable_funding_sources
+      @non_early_services = Service.non_early_services
+    else
+      @billable_funding_sources = FundingSource.billable_funding_sources
+    end
+  end
+
   private
 
   def selectable_options_data
-    selectable_options = { countries: country_list,
+    { countries: country_list,
                            preferred_languages: Client.preferred_languages,
                            dq_reasons: Client.dq_reasons, 
                            relation_types: Contact.relation_types,

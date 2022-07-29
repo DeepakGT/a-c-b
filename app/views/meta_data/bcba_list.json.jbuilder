@@ -11,6 +11,7 @@ json.data do
     json.terminated_on bcba.terminated_on
     json.title bcba.role_name
     json.gender bcba.gender
+    json.legacy_number bcba.legacy_number
     if staff_clinic.present?
       json.organization_id staff_clinic.clinic&.organization_id
       json.organization_name staff_clinic.clinic&.organization_name

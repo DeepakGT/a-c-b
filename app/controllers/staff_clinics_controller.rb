@@ -8,7 +8,9 @@ class StaffClinicsController < ApplicationController
     @staff_clinics = @staff.staff_clinics.order(is_home_clinic: :desc)
   end
 
-  def show; end
+  def show
+    @staff_clinic
+  end
   
   def create
     @staff_clinic = @staff.staff_clinics.new(staff_clinic_params)

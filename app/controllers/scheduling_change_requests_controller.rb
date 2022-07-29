@@ -22,6 +22,8 @@ class SchedulingChangeRequestsController < ApplicationController
       update_scheduling
     when 'decline'
       change_approval_status('declined')
+    else
+      puts "#{params[:approval_status]}"
     end
   end
 
