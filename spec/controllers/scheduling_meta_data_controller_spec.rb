@@ -304,7 +304,7 @@ RSpec.describe SchedulingMetaDataController, type: :controller do
       context "clients list" do
         let!(:staff) { create(:staff, :with_role, role_name: 'bcba') }
         let!(:auth_headers){ staff.create_new_auth_token }
-        let!(:client) { create(:client, status: 'active', first_name: 'abc' ) }
+        let!(:client) { create(:client, status: 'active', first_name: 'abc') }
         let!(:client_enrollment_service){ create(:client_enrollment_service) }
         let!(:scheduling){ create(:scheduling, staff_id: staff.id) }
         it "should fetch clients_list successfully" do
