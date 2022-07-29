@@ -126,7 +126,7 @@ RSpec.describe MetaDataController, type: :controller do
     context "when sign in" do
       let!(:clinic){create(:clinic)}
       let!(:service){create(:service)}
-      let!(:early_service){create(:service, is_early_code: true, selected_non_early_services: [service.id])}
+      let!(:early_service){create(:service, is_early_code: true, selected_non_early_service_id: service.id)}
       let!(:non_billable_funding_source){create(:funding_source, network_status: 'non_billable', clinic_id: clinic.id)}
       let!(:funding_source1){create(:funding_source, clinic_id: clinic.id)}
       let!(:funding_source2){create(:funding_source, clinic_id: clinic.id)}

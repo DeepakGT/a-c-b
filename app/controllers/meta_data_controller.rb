@@ -28,7 +28,7 @@ class MetaDataController < ApplicationController
 
   def replaceable_authorizations_list
     @enrollment_service = ClientEnrollmentService.find(params[:client_enrollment_service_id])
-    replaceable_service_ids = @enrollment_service.service.selected_non_early_services
+    replaceable_service_ids = @enrollment_service.service.selected_non_early_service_id
     @authorizations = ClientEnrollmentService.by_client(@enrollment_service.client_enrollment.client_id).by_service(replaceable_service_ids).where.not('client_enrollments.funding_soucre_id': nil)
   end
 

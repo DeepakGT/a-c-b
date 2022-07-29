@@ -247,7 +247,7 @@ RSpec.describe ClientEnrollmentServicesController, type: :controller do
 
   describe "PUT #replace_early_auth" do
     context "when sign in" do
-      let!(:early_service) { create(:service, is_early_code: true, selected_non_early_services: [service.id]) }
+      let!(:early_service) { create(:service, is_early_code: true, selected_non_early_service_id: service.id) }
       let!(:non_billable_funding_source) {create(:funding_source, clinic_id: clinic.id, network_status: 'non_billable')}
       let!(:client_enrollment1){ create(:client_enrollment, client_id: client.id, funding_source_id: non_billable_funding_source.id)}
       let!(:client_enrollment_service1){create(:client_enrollment_service, client_enrollment_id: client_enrollment1.id, service_id: early_service.id, start_date: (Time.current - 5.days).to_date, end_date: (Time.current + 5.days).to_date)}
