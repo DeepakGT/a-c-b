@@ -14,7 +14,9 @@ class ClientNotesController < ApplicationController
     @client_note.save
   end
 
-  def show; end
+  def show
+    @client_note
+  end
 
   def update
     @client_note.update(client_note_params)

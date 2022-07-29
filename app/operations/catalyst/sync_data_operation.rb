@@ -28,52 +28,19 @@ module Catalyst
               catalyst_data.end_time = data['endTime'].to_time.strftime('%H:%M')
               catalyst_data.date_revision_made = data['dateRevisionMade']
               data['responses'].each do |response|
-                case response['questionText']
-                when 'BCBA Signature'
-                  catalyst_data.bcba_signature = response['answer']
-                when 'Clinical Director '
-                  catalyst_data.clinical_director_signature = response['answer']
-                when 'Notes'
-                  catalyst_data.note = response['answer']
-                when 'Guardian Signature', 'Client/Guardian Signature'
-                  catalyst_data.caregiver_signature = response['answer'] if response['answer'].present?
-                when 'Provider Signature'
-                  catalyst_data.provider_signature = response['answer']
-                when 'Location'
-                  catalyst_data.location = response['answer']
-                when 'Session Location'
-                  catalyst_data.session_location = response['answer']
-                end
+                update_signature_and_location response
               end
               catalyst_data.minutes = (catalyst_data.end_time.to_time - catalyst_data.start_time.to_time)/60
               rem = catalyst_data.minutes%15
-              if rem == 0
-                catalyst_data.units = catalyst_data.minutes/15
-              elsif rem < 8
-                catalyst_data.units = (catalyst_data.minutes - rem)/15
-              else
-                catalyst_data.units = (catalyst_data.minutes + 15 - rem)/15
-              end 
+              update_units rem
               # comment below three lines after deploying on production
               # catalyst_data.system_scheduling_id = nil
               # catalyst_data.multiple_schedulings_ids = []
               # catalyst_data.is_appointment_found = nil
               catalyst_data.save(validate: false)
-              if catalyst_data.id.nil?
-                Loggers::Catalyst::SyncSoapNotesLoggerService.call(catalyst_data.id, "Catalyst soap note with id #{data['soapNoteId']} cannot be saved.")
-              else
-                Loggers::Catalyst::SyncSoapNotesLoggerService.call(catalyst_data.id, "Catalyst soap note with id #{data['soapNoteId']} is saved.")
-                Loggers::Catalyst::SyncSoapNotesLoggerService.call(catalyst_data.id, "#{catalyst_data.attributes}")
-              end
+              log_info catalyst_data
 
-              staff = Staff.where(catalyst_user_id: catalyst_data.catalyst_user_id)
-              if staff.count==1
-                staff = staff.first
-              elsif staff.count>1
-                staff = staff.find_by(status: 'active')
-              else
-                staff = Staff.find_by(catalyst_user_id: catalyst_data.catalyst_user_id)
-              end
+              staff = staff_details catalyst_data
               soap_note = SoapNote.find_or_initialize_by(catalyst_data_id: catalyst_data.id)
               soap_note.add_date = catalyst_data.date
               soap_note.note = catalyst_data.note
@@ -143,6 +110,59 @@ module Catalyst
         end
         response_data_array
       end
+
+      def update_signature_and_location(response)
+        case response['questionText']
+        when 'BCBA Signature'
+          catalyst_data.bcba_signature = response['answer']
+        when 'Clinical Director '
+          catalyst_data.clinical_director_signature = response['answer']
+        when 'Notes'
+          catalyst_data.note = response['answer']
+        when 'Guardian Signature', 'Client/Guardian Signature'
+          catalyst_data.caregiver_signature = response['answer'] if response['answer'].present?
+        when 'Provider Signature'
+          catalyst_data.provider_signature = response['answer']
+        when 'Location'
+          catalyst_data.location = response['answer']
+        when 'Session Location'
+          catalyst_data.session_location = response['answer']
+        else
+          catalyst_data
+        end
+      end
+
+      def update_units(rem)
+        if rem == 0
+          catalyst_data.units = catalyst_data.minutes/15
+        elsif rem < 8
+          catalyst_data.units = (catalyst_data.minutes - rem)/15
+        else
+          catalyst_data.units = (catalyst_data.minutes + 15 - rem)/15
+        end 
+      end
+
+      def log_info(catalyst_data)
+        if catalyst_data.id.nil?
+          Loggers::Catalyst::SyncSoapNotesLoggerService.call(catalyst_data.id, "Catalyst soap note with id #{data['soapNoteId']} cannot be saved.")
+        else
+          Loggers::Catalyst::SyncSoapNotesLoggerService.call(catalyst_data.id, "Catalyst soap note with id #{data['soapNoteId']} is saved.")
+          Loggers::Catalyst::SyncSoapNotesLoggerService.call(catalyst_data.id, "#{catalyst_data.attributes}")
+        end
+      end
+
+      def staff_details(catalyst_data)
+        staff = Staff.where(catalyst_user_id: catalyst_data.catalyst_user_id)
+        if staff.count==1
+          staff = staff.first
+        elsif staff.count>1
+          staff = staff.find_by(status: 'active')
+        else
+          staff = Staff.find_by(catalyst_user_id: catalyst_data.catalyst_user_id)
+        end
+        staff
+      end
+
     end
   end
 end

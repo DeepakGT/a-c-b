@@ -20,7 +20,7 @@ module Catalyst
         request["Authorization"] = "Bearer #{access_token}"
     
         response = https.request(request)
-        response_body = JSON.parse(response.body)
+        JSON.parse(response.body)
       end
     end
   end

@@ -13,7 +13,9 @@ class ContactsController < ApplicationController
     @contact = @client.contacts.create(contact_params)
   end
 
-  def show; end
+  def show
+    @contact
+  end
 
   def update
     @contact.update(contact_params)
