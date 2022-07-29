@@ -7,6 +7,7 @@ json.data do
     json.display_code service.display_code
     json.is_service_provider_required service.is_service_provider_required
     json.is_unassigned_appointment_allowed service.is_unassigned_appointment_allowed
+    json.is_early_code service.is_early_code
     if service.qualifications.present?
       json.qualification_ids service.qualifications.pluck(:id)
       json.qualification_names service.qualifications.pluck(:name)
