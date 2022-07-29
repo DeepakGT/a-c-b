@@ -8,16 +8,16 @@ class ClientEnrollmentServicesController < ApplicationController
   def create
     set_client_enrollment
     @enrollment_service = @client_enrollment.client_enrollment_services.create(enrollment_service_params)
-    #update_units_columns(@enrollment_service)
   end
 
-  def show; end
+  def show
+    @enrollment_service  
+  end
 
   def update
     ClientEnrollmentService.transaction do
       remove_service_providers if params[:service_providers_attributes].present?
       @enrollment_service.update(enrollment_service_params)
-      #update_units_columns(@enrollment_service)
       update_client_enrollment if params[:funding_source_id].present?
     end
   end

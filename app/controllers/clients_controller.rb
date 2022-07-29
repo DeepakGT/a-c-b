@@ -14,7 +14,9 @@ class ClientsController < ApplicationController
     @clients = @clients.paginate(page: params[:page]) if params[:page].present?
   end
 
-  def show; end
+  def show
+    @client
+  end
 
   def create
     @client = Client.new(client_params)

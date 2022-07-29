@@ -9,7 +9,9 @@ class FundingSourcesController < ApplicationController
     @funding_sources = @funding_sources.paginate(page: params[:page]) if params[:page].present?
   end
 
-  def show; end
+  def show
+    @funding_source
+  end
 
   def create
     @funding_source = @clinic.funding_sources.new(funding_source_params)

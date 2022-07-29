@@ -8,7 +8,9 @@ class SoapNotesController < ApplicationController
     @soap_notes = @scheduling.soap_notes.order(:add_date)
   end
 
-  def show; end
+  def show
+    @soap_note
+  end
 
   def create 
     SoapNote.transaction do

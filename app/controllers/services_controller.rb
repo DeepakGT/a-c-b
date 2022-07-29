@@ -14,7 +14,9 @@ class ServicesController < ApplicationController
     @service.save
   end
 
-  def show; end
+  def show
+    @service
+  end
 
   def update
     Service.transaction do
