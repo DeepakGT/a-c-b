@@ -10,6 +10,7 @@ class ServicesController < ApplicationController
 
   def create
     @service = Service.new(service_params)
+    @service.selected_payors = params[:selected_payors]
     @service.id = Service.ids.max+1
     @service.save
   end
@@ -22,6 +23,8 @@ class ServicesController < ApplicationController
     Service.transaction do
       remove_qualifications if params[:service_qualifications_attributes].present?
       @service.update(service_params)
+      @service.selected_payors ||= params[:selected_payors]
+      @service.save
     end
   end
 
@@ -33,7 +36,7 @@ class ServicesController < ApplicationController
 
   def service_params
     params.permit(:name, :status, :display_code, :is_service_provider_required, :is_unassigned_appointment_allowed, 
-                  :selected_non_early_service_id, :selected_payors, :max_units,:is_early_code,
+                  :selected_non_early_service_id, :max_units,:is_early_code,
                   service_qualifications_attributes: :qualification_id)
   end
 
