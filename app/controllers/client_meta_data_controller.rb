@@ -35,8 +35,8 @@ class ClientMetaDataController < ApplicationController
   end
 
   def funding_sources_list
-    service = Service.find(params[:service_id])
-    if service&.is_early_code.to_bool.true?
+    @service = Service.find(params[:service_id]) rescue nil
+    if @service&.is_early_code?
       @client_enrollments = @client.client_enrollments.active.joins(:funding_source).non_billable_funding_sources
     else
       @client_enrollments = @client.client_enrollments.active.joins(:funding_source).billable_funding_sources
