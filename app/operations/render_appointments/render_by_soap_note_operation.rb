@@ -34,7 +34,7 @@ module RenderAppointments
         #   schedule.save(validate: false)
         # end
         if schedule.unrendered_reason.blank?
-          if schedule.client_enrollment_service&.service&.is_early_code&.to_bool&.true?
+          if schedule.client_enrollment_service&.service&.is_early_code?
             schedule.status = 'Auth_Pending'
             schedule.rendered_at = nil
           else
