@@ -1,6 +1,6 @@
 json.status @client.reload.errors.any? ? 'failure' : 'success'
 json.data do
-  if @client_enrollment.present?
+  if @client_enrollment.reload.present?
     json.id @client_enrollment.id
     json.client_id @client_enrollment.client_id
     json.source_of_payment @client_enrollment.source_of_payment

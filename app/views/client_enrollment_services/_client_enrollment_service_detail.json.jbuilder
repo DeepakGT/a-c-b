@@ -17,9 +17,9 @@ json.used_minutes enrollment_service.used_minutes
 json.scheduled_minutes enrollment_service.scheduled_minutes
 json.left_minutes enrollment_service.left_minutes
 json.service_number enrollment_service.service_number
-json.service_providers do
-    json.array! enrollment_service.service_providers do |service_provider|
-        json.id service_provider.staff_id
-        json.name "#{service_provider.staff&.first_name} #{service_provider.staff&.last_name}"
-    end 
-end
+# json.service_providers do
+#   json.array! enrollment_service.service_providers do |service_provider|
+#     json.id service_provider.staff_id
+#     json.name "#{service_provider.staff&.first_name} #{service_provider.staff&.last_name}"
+#   end 
+# end
