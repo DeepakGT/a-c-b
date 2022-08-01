@@ -51,7 +51,7 @@ class ClientEnrollmentServicesController < ApplicationController
     @final_authorization = ClientEnrollmentService.find(params[:final_authorization_id])
     schedules = @early_authorization.schedulings.where('date>=? && date<=?', @final_authorization.start_date, @final_authorization.end_date)
     schedules.each do |schedule|
-      schedule.update(client_enrollment_service_id: @final_authorization.id) if @final_authorization.left_units>=schedule.units
+      schedule.update(client_enrollment_service_id: @final_authorization.id) if (check_rendering_provider_condition(schedule) && @final_authorization.left_units>=schedule.units)
     end
     @early_authorization.destroy if @early_authorization.schedulings.blank?
     RenderAppointments::RenderPartiallyRenderedSchedulesOperation.call(@final_authorization.id)
@@ -91,10 +91,6 @@ class ClientEnrollmentServicesController < ApplicationController
     @enrollment_service.service_providers.destroy_all
   end
 
-  def update_units_columns(client_enrollment_service)
-    # ClientEnrollmentServices::UpdateUnitsColumnsOperation.call(client_enrollment_service)
-  end
-
   def update_staff_legacy_numbers
     return if params[:legacy_numbers].blank?
   
@@ -105,6 +101,15 @@ class ClientEnrollmentServicesController < ApplicationController
 
   def early_auth_params
     params.permit(:client_id, :funding_source_id)
+  end
+
+  def check_rendering_provider_condition(schedule)
+    return true if (@final_authorization&.service&.is_service_provider_required.to_bool.false? || schedule.staff.role_name!='bcba')
+
+    bcba_ids = @final_authorization.service_providers&.pluck(:staff_id)
+    return true if bcba_ids&.include?(schedule.staff_id)
+
+    false
   end
   # end of private
 end
