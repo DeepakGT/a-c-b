@@ -33,7 +33,7 @@ json.data do
         # scheduled_minutes = scheduled_schedules.with_minutes.pluck(:minutes).sum
         json.id enrollment_service.id
         json.service_id enrollment_service.service_id
-        json.service_name enrollment_service.service&.name
+        json.service enrollment_service.service&.name
         json.service_display_code enrollment_service.service&.display_code
         json.is_early_code enrollment_service.service&.is_early_code
         json.is_service_provider_required enrollment_service.service&.is_service_provider_required
@@ -95,4 +95,17 @@ if params[:page].present?
   json.total_records @client_enrollments.total_entries
   json.limit @client_enrollments.per_page
   json.page params[:page]
+end
+non_billable_funding_sources = FundingSource.where(network_status: 'non_billable')
+if non_billable_funding_sources.present?
+  json.nonBillabelPayorExists true
+else
+  json.nonBillabelPayorExists false
+end
+early_authorizations = ClientEnrollmentService.by_client(@client.id).joins(:service).where('services.is_early_code': true).where.not('client_enrollments.funding_source_id': nil)
+funding_source_ids = early_authorizations.map{|authorization| authorization.client_enrollment.funding_source_id}.uniq.compact
+if early_authorizations.present? && funding_source_ids.count==non_billable_funding_sources.count
+  json.hideEarlyAuthButton true
+else
+  json.hideEarlyAuthButton false
 end

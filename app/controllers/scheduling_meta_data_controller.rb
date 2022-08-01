@@ -1,6 +1,6 @@
 require 'will_paginate/array'
 SCHEDULE_QUERY = "schedulings.*, 'Schedule' AS type".freeze
-CATALYST_QUERY = "catalyst_data.*,clients.id AS client_id, clients.first_name, clients.last_name,'CatalystData' AS type".freeze
+CATALYST_QUERY = "catalyst_data.*,clients.id AS client_id, clients.first_name AS first_name, clients.last_name AS last_name,'CatalystData' AS type".freeze
 CATALYST_LEFT_JOIN_QUERY = "LEFT JOIN clients ON (clients.catalyst_patient_id = catalyst_data.catalyst_patient_id)".freeze
 CATALYST_LEFT_JOIN_WITH_CLINIC = "LEFT JOIN clinics ON (clinics.id = clients.clinic_id)".freeze
 SCHEDULING_ROLES = ['bcba', 'rbt', 'Clinical Director', 'Lead RBT'].freeze
@@ -14,8 +14,8 @@ class SchedulingMetaDataController < ApplicationController
 
   def services_list
     if params[:staff_id].present?
-      staff = Staff.find(params[:staff_id])
-      @client_enrollment_services = check_qualifications(params[:client_id], params[:date], staff)
+      @staff = Staff.find(params[:staff_id])
+      @client_enrollment_services = check_qualifications(params[:client_id], params[:date], @staff)
     else
       @client_enrollment_services = ClientEnrollmentService.left_outer_joins(service: :service_qualifications).by_client(params[:client_id]).by_date(params[:date]).active.by_unassigned_appointments_allowed&.uniq
     end

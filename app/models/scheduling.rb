@@ -20,6 +20,8 @@ class Scheduling < ApplicationRecord
   validate :validate_units, on: :create
   # validate :validate_staff, on: :create
   # validate :validate_units_and_minutes
+  
+  enum status: {Scheduled: 0, Rendered: 1, Auth_Pending: 2, Non_Billable: 3, Duplicate: 4, Error: 5, Client_Cancel_Greater_than_24_h: 6, Client_Cancel_Less_than_24_h: 7, Client_No_Show: 8, Staff_Cancellation: 9, Staff_Cancellation_Due_To_Illness: 10, Cancellation_Related_to_COVID: 11, Unavailable: 12, Inclement_Weather_Cancellation: 13}
 
   before_save :set_units_and_minutes
 
@@ -45,7 +47,7 @@ class Scheduling < ApplicationRecord
   scope :exceeded_24_h_scheduling, ->{ where(DATE_RANGE_QUERY, Time.current.to_date-1, Time.current.to_date-1, Time.current.strftime('%H:%M')) }
   scope :exceeded_3_days_scheduling, ->{ where(DATE_RANGE_QUERY, Time.current.to_date-3, Time.current.to_date-3, Time.current.strftime('%H:%M')) }
   scope :exceeded_5_days_scheduling, ->{ where(DATE_RANGE_QUERY, Time.current.to_date-5, Time.current.to_date-5, Time.current.strftime('%H:%M')) }
-  scope :partially_rendered_schedules, ->{ where(status: 'Auth_Pending')}
+  scope :partially_rendered_schedules, ->{ where(status: 'Auth_Pending', rendered_at: nil)}
   scope :past_60_days_schedules, ->{ where('date>=? AND date<?', (Time.current-60.days).strftime('%Y-%m-%d'), Time.current.strftime('%Y-%m-%d')) }
   scope :without_staff, ->{ where(staff_id: nil) }
   scope :with_staff, ->{ where.not(staff_id: nil) }
@@ -54,6 +56,17 @@ class Scheduling < ApplicationRecord
   scope :with_active_client, ->{ where('clients.status = ?', 0) }
   scope :post_30_may_schedules, ->{ where('date>? and date <?', '2022-05-30', Time.current.strftime('%Y-%m-%d')) }
   scope :within_dates, ->(start_date, end_date){ where('date>=? && date<=?', start_date, end_date) }
+
+  def calculate_units(minutes)
+    rem = minutes%15
+    if rem == 0
+      minutes/15
+    elsif rem < 8
+      (minutes - rem)/15
+    else
+      (minutes + 15 - rem)/15
+    end
+  end
 
   private
 
@@ -113,15 +126,17 @@ class Scheduling < ApplicationRecord
     if self.units.present? && self.minutes.blank?
       self.minutes = self.units*15
     elsif self.minutes.present? && self.units.blank?
-      rem = self.minutes%15
-      if rem == 0
-        self.units = self.minutes/15
-      elsif rem < 8
-        self.units = (self.minutes - rem)/15
+      self.units = self.calculate_units(self.minutes)
+    else
+      if self.units.blank? && self.minutes.blank? && self.start_time.present? && self.end_time.present?
+        self.minutes = (self.end_time.to_time - self.start_time.to_time) / 1.minutes
+        self.units = self.calculate_units(self.minutes)
       else
-        self.units = (self.minutes + 15 - rem)/15
+        self.units ||= 0
+        self.minutes ||= 0
       end
     end 
   end
+
   # end of private
 end

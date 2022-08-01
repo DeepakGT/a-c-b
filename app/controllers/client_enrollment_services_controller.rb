@@ -1,11 +1,15 @@
+FORMAT_DATE = '%Y-%m-%d'.freeze
+
 class ClientEnrollmentServicesController < ApplicationController
   before_action :authenticate_user!
-  before_action :authorize_user
+  before_action :authorize_user, except: :create_early_auths
   before_action :set_client_enrollment_service, only: %i[show update destroy]
 
   def create
     set_client_enrollment
     @enrollment_service = @client_enrollment.client_enrollment_services.create(enrollment_service_params)
+    update_staff_legacy_numbers
+    #update_units_columns(@enrollment_service)
   end
 
   def show
@@ -17,11 +21,35 @@ class ClientEnrollmentServicesController < ApplicationController
       remove_service_providers if params[:service_providers_attributes].present?
       @enrollment_service.update(enrollment_service_params)
       update_client_enrollment if params[:funding_source_id].present?
+      update_staff_legacy_numbers
     end
   end
 
   def destroy
     @enrollment_service.destroy
+  end
+
+  def create_early_auths
+    @client = Client.find(early_auth_params[:client_id]) rescue nil
+    authorize @client if current_user.role_name!='super_admin'
+    authorizations = ClientEnrollmentService.by_client(@client.id).joins(:service).where('services.is_early_code': true).where('client_enrollments.funding_source_id': early_auth_params[:funding_source_id])
+    if authorizations.present?
+      @client.errors.add(:early_authorization, 'is already present for this non-billable funding source.')
+    else
+      end_date = (Time.current+90.days).strftime(FORMAT_DATE)
+      @client_enrollment = @client.client_enrollments.create(funding_source_id: early_auth_params[:funding_source_id], enrollment_date: Time.current.strftime(FORMAT_DATE), terminated_on: end_date, source_of_payment: 'insurance')
+      services = Service.all.map{|service| service if JSON.parse(service&.selected_payors)&.pluck('payor_id')&.include?("#{early_auth_params[:funding_source_id]}")}.compact
+
+      if services.present?
+        services.each do |service|
+          @client_enrollment.client_enrollment_services.create(service_id: service.id, start_date: Time.current.strftime(FORMAT_DATE), end_date: end_date, units: service.max_units, minutes: (service.max_units)*15)
+        end
+        @client_enrollment.destroy if @client_enrollment.client_enrollment_services.blank?
+      else
+        @client_enrollment.destroy if @client_enrollment.client_enrollment_services.blank?
+        @client.errors.add(:funding_source, 'is not present in selected payors list of any service.')
+      end
+    end
   end
 
   def replace_early_auth
@@ -58,7 +86,6 @@ class ClientEnrollmentServicesController < ApplicationController
     set_client_enrollment 
     @enrollment_service.client_enrollment = @client_enrollment
     @enrollment_service.save
-    RenderAppointments::RenderPartiallyRenderedSchedulesOperation.call(@enrollment_service.id) if @enrollment_service.client_enrollment&.funding_source&.name!='ABA Centers of America'
   end
 
   def enrollment_service_params
@@ -70,6 +97,7 @@ class ClientEnrollmentServicesController < ApplicationController
     @enrollment_service.service_providers.destroy_all
   end
 
+<<<<<<< HEAD
   def check_rendering_provider_condition(schedule)
     return true if (@final_authorization&.service&.is_service_provider_required&.to_bool&.false? || schedule&.staff&.role_name!='bcba')
 
@@ -83,6 +111,22 @@ class ClientEnrollmentServicesController < ApplicationController
     replaceable_service_ids = @early_authorization&.service&.selected_non_early_service_id
     authorizations = ClientEnrollmentService.by_client(@early_authorization&.client_enrollment&.client_id).by_service(replaceable_service_ids).with_funding_source&.order(:created_at)
     authorizations&.last
+=======
+  def update_units_columns(client_enrollment_service)
+    # ClientEnrollmentServices::UpdateUnitsColumnsOperation.call(client_enrollment_service)
+  end
+
+  def update_staff_legacy_numbers
+    return if params[:legacy_numbers].blank?
+  
+    params[:legacy_numbers].each do |item|
+      Staff.find_by(id: item[:staff_id])&.update(legacy_number: item[:legacy_number])
+    end
+  end
+  
+  def early_auth_params
+    params.permit(:client_id, :funding_source_id)
+>>>>>>> e39b11e75e54d70180d77baa538927e643991356
   end
   # end of private
 end
