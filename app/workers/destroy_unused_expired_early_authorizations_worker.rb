@@ -14,9 +14,9 @@ class DestroyUnusedExpiredEarlyAuthorizationsWorker
   private
 
   def destroy_unused_expired_early_authorizations
-    expired_early_authorizations = ClientEnrollmentService.joins(:service).where('services.is_early_code': true).expired
-    unused_expired_early_authorizations = expired_early_authorizations.left_outer_joins(:schedulings).select('client_enrollment_services.*').group('id').having('count(schedulings.*) = ?', 0)
-    unused_expired_early_authorizations.map{|authorization| authorization.destroy}
+    expired_early_authorizations = ClientEnrollmentService.joins(:service).with_early_code_services.expired
+    unused_expired_early_authorizations = expired_early_authorizations.with_zero_schedulings
+    unused_expired_early_authorizations&.map{|authorization| authorization.destroy}
   end
   # end of private
 end

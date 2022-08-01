@@ -53,6 +53,7 @@ class Scheduling < ApplicationRecord
   scope :without_client, ->{ where(client_enrollment_service_id: nil) }
   scope :with_active_client, ->{ where('clients.status = ?', 0) }
   scope :post_30_may_schedules, ->{ where('date>? and date <?', '2022-05-30', Time.current.strftime('%Y-%m-%d')) }
+  scope :within_dates, ->(start_date, end_date){ where('date>=? && date<=?', start_date, end_date) }
 
   private
 
