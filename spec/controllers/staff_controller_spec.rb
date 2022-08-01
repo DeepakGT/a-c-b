@@ -242,7 +242,8 @@ RSpec.describe StaffController, type: :controller do
           phone_numbers_attributes: [{ number: '9898767655'}, {number: '8787876565'}],
           rbt_supervision_attributes: { status: 'requires'},
           role_name: 'bcba',
-          staff_location_id: clinic.id
+          staff_location_id: clinic.id,
+          legacy_number: '6758399746578493'
         }
         
         response_body = JSON.parse(response.body)
@@ -257,6 +258,7 @@ RSpec.describe StaffController, type: :controller do
         expect(response_body['data']['rbt_supervision']['status']).to eq('requires')
         expect(response_body['data']['staff_clinics']).not_to eq(nil)
         expect(response_body['data']['staff_clinics'].count).to eq(1)
+        expect(response_body['data']['legacy_number']).to eq('6758399746578493')
       end
     end
   end
