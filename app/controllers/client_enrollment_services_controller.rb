@@ -41,9 +41,9 @@ class ClientEnrollmentServicesController < ApplicationController
         services.each do |service|
           @client_enrollment.client_enrollment_services.create(service_id: service.id, start_date: Time.current.strftime(FORMAT_DATE), end_date: end_date, units: service.max_units, minutes: (service.max_units)*15)
         end
-        @client_enrollment.destroy if @client_enrollment.client_enrollment_services.blank?
-      else
-        @client_enrollment.destroy if @client_enrollment.client_enrollment_services.blank?
+        delete_client_enrollment if @client_enrollment.client_enrollment_services.blank?
+      else 
+        delete_client_enrollment if @client_enrollment.client_enrollment_services.blank?
         @client.errors.add(:funding_source, 'is not present in selected payors list of any service.')
       end
     end
@@ -90,6 +90,11 @@ class ClientEnrollmentServicesController < ApplicationController
 
   def early_auth_params
     params.permit(:client_id, :funding_source_id)
+  end
+
+  def delete_client_enrollment
+    @client_enrollment.destroy
+    @client_enrollment = nil
   end
   # end of private
 end
