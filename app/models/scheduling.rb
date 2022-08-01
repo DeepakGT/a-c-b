@@ -21,7 +21,12 @@ class Scheduling < ApplicationRecord
   # validate :validate_staff, on: :create
   # validate :validate_units_and_minutes
   
-  # enum status: {Scheduled: 0, Rendered: 1, Auth_Pending: 2, Non_Billable: 3, Duplicate: 4, Error: 5, Client_Cancel_Greater_than_24_h: 6, Client_Cancel_Less_than_24_h: 7, Client_No_Show: 8, Staff_Cancellation: 9, Staff_Cancellation_Due_To_Illness: 10, Cancellation_Related_to_COVID: 11, Unavailable: 12, Inclement_Weather_Cancellation: 13}
+  enum status: { Scheduled: 'Scheduled', Rendered: 'Rendered', Auth_Pending: 'Auth_Pending', Non_Billable: 'Non_Billable', 
+                 Duplicate: 'Duplicate', Error: 'Error', Client_Cancel_Greater_than_24_h: 'Client_Cancel_Greater_than_24_h', 
+                 Client_Cancel_Less_than_24_h: 'Client_Cancel_Less_than_24_h', Client_No_Show: 'Client_No_Show', 
+                 Staff_Cancellation: 'Staff_Cancellation', Staff_Cancellation_Due_To_Illness: 'Staff_Cancellation_Due_To_Illness', 
+                 Cancellation_Related_to_COVID: 'Cancellation_Related_to_COVID', Unavailable: 'Unavailable', 
+                 Inclement_Weather_Cancellation: 'Inclement_Weather_Cancellation'}
 
   before_save :set_units_and_minutes
 
