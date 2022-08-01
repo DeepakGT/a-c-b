@@ -273,7 +273,7 @@ RSpec.describe ClientEnrollmentServicesController, type: :controller do
       end
     end
   end
-
+  
   describe "POST #create_early_auths" do
     context "when sign in" do
       let!(:user) {create(:user, :with_role, role_name: 'super_admin')}
