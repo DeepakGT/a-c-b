@@ -8,7 +8,9 @@ class ClientEnrollmentServicesController < ApplicationController
     @enrollment_service = @client_enrollment.client_enrollment_services.create(enrollment_service_params)
   end
 
-  def show; end
+  def show
+    @enrollment_service  
+  end
 
   def update
     ClientEnrollmentService.transaction do

@@ -8,7 +8,9 @@ class OrganizationsController < ApplicationController
     @organizations = @organizations.paginate(page: params[:page]) if params[:page].present?
   end
 
-  def show; end
+  def show
+    @organization
+  end
 
   def create
     @organization = Organization.new(organization_params)
