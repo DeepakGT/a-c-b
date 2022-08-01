@@ -1,4 +1,4 @@
-json.status 'success'
+json.status @client.reload.errors.any? ? 'failure' : 'success'
 json.data do
   if @client_enrollment.present?
     json.id @client_enrollment.id
