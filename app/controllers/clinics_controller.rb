@@ -16,7 +16,9 @@ class ClinicsController < ApplicationController
     @clinic.save
   end
 
-  def show; end
+  def show
+    @clinic
+  end
 
   def update
     @clinic.update(clinic_params)

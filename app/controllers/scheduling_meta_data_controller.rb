@@ -1,4 +1,9 @@
 require 'will_paginate/array'
+SCHEDULE_QUERY = "schedulings.*, 'Schedule' AS type".freeze
+CATALYST_QUERY = "catalyst_data.*,clients.id AS client_id, clients.first_name, clients.last_name,'CatalystData' AS type".freeze
+CATALYST_LEFT_JOIN_QUERY = "LEFT JOIN clients ON (clients.catalyst_patient_id = catalyst_data.catalyst_patient_id)".freeze
+CATALYST_LEFT_JOIN_WITH_CLINIC = "LEFT JOIN clinics ON (clinics.id = clients.clinic_id)".freeze
+SCHEDULING_ROLES = ['bcba', 'rbt', 'Clinical Director', 'Lead RBT'].freeze
 
 class SchedulingMetaDataController < ApplicationController
   before_action :authenticate_user!
@@ -25,9 +30,9 @@ class SchedulingMetaDataController < ApplicationController
     past_schedules.where(unrendered_reason: []).each do |schedule|
       RenderAppointments::RenderScheduleOperation.call(schedule.id)
     end
-    past_schedules = past_schedules.select("schedulings.*, 'Schedule' AS type")
+    past_schedules = past_schedules.select(SCHEDULE_QUERY)
     @past_schedules = past_schedules
-    catalyst_data = CatalystData.select("catalyst_data.*,clients.id AS client_id, clients.first_name, clients.last_name,'CatalystData' AS type").joins("LEFT JOIN clients ON (clients.catalyst_patient_id = catalyst_data.catalyst_patient_id)").joins("LEFT JOIN clinics ON (clinics.id = clients.clinic_id)").post_30_may_catalyst_data.by_catalyst_user_id(current_user.id).removed_from_dashboard.and(CatalystData.with_no_appointments).uniq
+    catalyst_data = CatalystData.select(CATALYST_QUERY).joins(CATALYST_LEFT_JOIN_QUERY).joins(CATALYST_LEFT_JOIN_WITH_CLINIC).post_30_may_catalyst_data.by_catalyst_user_id(current_user.id).removed_from_dashboard.and(CatalystData.with_no_appointments).uniq
     @action_items_array = past_schedules.uniq.concat(catalyst_data)
     @action_items_array = sort_action_items(@action_items_array)
 
@@ -45,7 +50,7 @@ class SchedulingMetaDataController < ApplicationController
     past_schedules.where(unrendered_reason: []).each do |schedule|
       RenderAppointments::RenderScheduleOperation.call(schedule.id)
     end
-    past_schedules = past_schedules.select("schedulings.*, 'Schedule' AS type")
+    past_schedules = past_schedules.select(SCHEDULE_QUERY)
     @past_schedules = past_schedules
     @client_enrollment_services = ClientEnrollmentService.by_bcba_ids(current_user.id).excluding_early_codes
                                                          .and(ClientEnrollmentService.about_to_expire.or(ClientEnrollmentService.expired))
@@ -53,7 +58,7 @@ class SchedulingMetaDataController < ApplicationController
     # change_requests = SchedulingChangeRequest.by_approval_status
     # @change_requests = change_requests.by_bcba_ids(current_user.id)
     #                                   .or(change_requests.by_staff_ids(current_user.id)).left_outer_joins(:scheduling)
-    catalyst_data = CatalystData.select("catalyst_data.*,clients.id AS client_id, clients.first_name, clients.last_name,'CatalystData' AS type").joins("LEFT JOIN clients ON (clients.catalyst_patient_id = catalyst_data.catalyst_patient_id)").joins("LEFT JOIN clinics ON (clinics.id = clients.clinic_id)").post_30_may_catalyst_data.by_catalyst_user_id(current_user.id).removed_from_dashboard.and(CatalystData.with_no_appointments).uniq
+    catalyst_data = CatalystData.select(CATALYST_QUERY).joins(CATALYST_LEFT_JOIN_QUERY).joins(CATALYST_LEFT_JOIN_WITH_CLINIC).post_30_may_catalyst_data.by_catalyst_user_id(current_user.id).removed_from_dashboard.and(CatalystData.with_no_appointments).uniq
     @action_items_array = past_schedules.uniq.concat(catalyst_data)
     @action_items_array = sort_action_items(@action_items_array)
 
@@ -72,14 +77,14 @@ class SchedulingMetaDataController < ApplicationController
     past_schedules.where(unrendered_reason: []).each do |schedule|
       RenderAppointments::RenderScheduleOperation.call(schedule.id)
     end
-    past_schedules = past_schedules.select("schedulings.*, 'Schedule' AS type")
+    past_schedules = past_schedules.select(SCHEDULE_QUERY)
     @past_schedules = past_schedules
     @client_enrollment_services = ClientEnrollmentService.by_client(client_ids).excluding_early_codes.and(ClientEnrollmentService.about_to_expire.or(ClientEnrollmentService.expired))
                                                          .includes(:service, :staff, :service_providers, :client_enrollment, client_enrollment: %i[client funding_source]).uniq
     change_requests = SchedulingChangeRequest.by_approval_status
     @change_requests = change_requests.by_client_ids(client_ids)
     catalyst_patient_ids = Client.where(id: client_ids).pluck(:catalyst_patient_id).compact
-    catalyst_data = CatalystData.select("catalyst_data.*,clients.id AS client_id, clients.first_name, clients.last_name,'CatalystData' AS type").joins("LEFT JOIN clients ON (clients.catalyst_patient_id = catalyst_data.catalyst_patient_id)").joins("LEFT JOIN clinics ON (clinics.id = clients.clinic_id)").post_30_may_catalyst_data.by_catalyst_patient_ids(catalyst_patient_ids).removed_from_dashboard.and(CatalystData.with_no_appointments).uniq
+    catalyst_data = CatalystData.select(CATALYST_QUERY).joins(CATALYST_LEFT_JOIN_QUERY).joins(CATALYST_LEFT_JOIN_WITH_CLINIC).post_30_may_catalyst_data.by_catalyst_user_id(current_user.id).removed_from_dashboard.and(CatalystData.with_no_appointments).uniq
     @action_items_array = past_schedules.uniq.concat(catalyst_data)
     @total_count = @action_items_array.length
     @action_items_array = filter_by_client(@action_items_array) if params[:client_name].present?
@@ -126,13 +131,13 @@ class SchedulingMetaDataController < ApplicationController
     if params[:location_id].present?
       clinic = Clinic.find(params[:location_id])
       client = clinic.clients.active
-      staff = clinic.staff.by_roles(['bcba', 'rbt', 'Clinical Director', 'Lead RBT']).active if !(params[:cross_site_allowed].to_bool.true?)
-      staff = Staff.by_roles(['bcba', 'rbt', 'Clinical Director', 'Lead RBT']).active if params[:cross_site_allowed].to_bool.true?
+      staff = clinic.staff.by_roles(SCHEDULING_ROLES).active if !(params[:cross_site_allowed].to_bool.true?)
+      staff = Staff.by_roles(SCHEDULING_ROLES).active if params[:cross_site_allowed].to_bool.true?
     else
       client = Client.active
-      staff = Staff.by_roles(['bcba', 'rbt', 'Clinical Director', 'Lead RBT']).active
+      staff = Staff.by_roles(SCHEDULING_ROLES).active
     end
-    selectable_options = { clients: client.order(:first_name),
+    return { clients: client.order(:first_name),
                            staff: staff.order(:first_name),
                            services: Service.order(:name) }
   end
@@ -182,19 +187,33 @@ class SchedulingMetaDataController < ApplicationController
     if params[:sortSoapNoteByClient].present? && params[:sortSoapNoteByDate].present?
       items.sort_by! {|b| b.type=="Schedule" ? [b.client_enrollment_service.client_enrollment.client.first_name+b.client_enrollment_service.client_enrollment.client.last_name,b.date] : [b.first_name+b.last_name,b.date] }
     elsif params[:sortSoapNoteByClient].present? && !params[:sortSoapNoteByDate].present?
-      case params[:sortSoapNoteByClient]
-      when "1", 1
-        items.sort_by! {|b| b.type=="Schedule" ? b.client_enrollment_service.client_enrollment.client.first_name+b.client_enrollment_service.client_enrollment.client.last_name : b.first_name+b.last_name }
-      when "0", 0
-        items.sort_by! {|b| b.type=="Schedule" ? b.client_enrollment_service.client_enrollment.client.first_name+b.client_enrollment_service.client_enrollment.client.last_name : b.first_name+b.last_name }.reverse!
-      end
+      sort_soap_note_by_client(items)
     elsif !params[:sortSoapNoteByClient].present? && params[:sortSoapNoteByDate].present?
-      case params[:sortSoapNoteByDate]
-      when "1", 1
-        items.sort_by!(&:date)
-      when "0", 0
-        items.sort_by!(&:date).reverse!
-      end
+      sort_soap_note_by_date(items)
+    end
+    items
+  end
+
+  def sort_soap_note_by_client(items)
+    case params[:sortSoapNoteByClient]
+    when "1", 1
+      items.sort_by! {|b| b.type=="Schedule" ? b.client_enrollment_service.client_enrollment.client.first_name+b.client_enrollment_service.client_enrollment.client.last_name : b.first_name+b.last_name }
+    when "0", 0
+      items.sort_by! {|b| b.type=="Schedule" ? b.client_enrollment_service.client_enrollment.client.first_name+b.client_enrollment_service.client_enrollment.client.last_name : b.first_name+b.last_name }.reverse!
+    else
+      items
+    end
+    items
+  end
+
+  def sort_soap_note_by_date(items)
+    case params[:sortSoapNoteByDate]
+    when "1", 1
+      items.sort_by!(&:date)
+    when "0", 0
+      items.sort_by!(&:date).reverse!
+    else
+      items
     end
     items
   end

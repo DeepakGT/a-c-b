@@ -8,7 +8,9 @@ class ClientAttachmentsController < ApplicationController
     @attachments = @client.attachments.order(:created_at)
   end
 
-  def show; end
+  def show
+    @attachment  
+  end
 
   def create
     @attachment = @client.attachments.create(attachment_params)

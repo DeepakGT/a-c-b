@@ -34,6 +34,15 @@ class ClientMetaDataController < ApplicationController
     @soap_note = SoapNote.by_client(params[:client_id]).find(params[:id])
   end
 
+  def funding_sources_list
+    service = Service.find(params[:service_id])
+    if service&.is_early_code?
+      @client_enrollments = @client.client_enrollments.active.joins(:funding_source).non_billable_funding_sources
+    else
+      @client_enrollments = @client.client_enrollments.active.joins(:funding_source).billable_funding_sources
+    end
+  end
+
   private
 
   def set_client
@@ -45,9 +54,10 @@ class ClientMetaDataController < ApplicationController
   end
 
   def selectable_options_data
-    client_enrollments = @client.client_enrollments.active.where.not(source_of_payment: 'self_pay')
-    selectable_options = { services: Service.order(:name),
-                           client_enrollments: client_enrollments&.order(is_primary: :desc) }
+    # client_enrollments = @client.client_enrollments.active.where.not(source_of_payment: 'self_pay')
+    # selectable_options = { services: Service.order(:name),
+    #                        client_enrollments: client_enrollments&.order(is_primary: :desc) }
+    { services: Service.order(:name) }
   end
 
   def check_qualification(staff)

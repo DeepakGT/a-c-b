@@ -15,7 +15,9 @@ class ClientServiceAddressesController < ApplicationController
     @service_address.save
   end
 
-  def show; end
+  def show
+    @service_address
+  end
 
   def update
     authorize @service_address
