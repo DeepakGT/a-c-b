@@ -18,6 +18,7 @@ json.data do
       json.terminated_on staff.terminated_on
       json.title staff.role_name
       json.gender staff.gender
+      json.legacy_number staff.legacy_number
     end
   end
   json.services do

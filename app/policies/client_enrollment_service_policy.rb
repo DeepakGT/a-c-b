@@ -24,4 +24,11 @@ class ClientEnrollmentServicePolicy < ApplicationPolicy
 
     false
   end
+
+  def create_early_auths?
+    authorizations = ClientEnrollmentService.by_client(record.id).joins(:service).where.not('services.display_code': '97151')
+    return true if permissions.include?('early_auth_update') && ((Time.current.to_date - (record.created_at).to_date).to_s[0..-3].to_i<=90) && authorizations.blank?
+
+    false
+  end
 end

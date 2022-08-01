@@ -19,6 +19,8 @@ json.data do
   json.disqualified_reason @client.dq_reason if @client.disqualified?
   json.payor_status @client.payor_status
   json.created_date @client.created_at&.strftime('%Y-%m-%d')
+  days_since_creation = (Time.current.to_date - (@client.created_at).to_date).to_s[0..-3]
+  json.days_since_creation days_since_creation
   if primary_client_enrollment.present?
     if primary_client_enrollment.source_of_payment=='self_pay' || primary_client_enrollment.funding_source.blank?
       json.payor nil
