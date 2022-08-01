@@ -14,8 +14,8 @@ class SchedulingMetaDataController < ApplicationController
 
   def services_list
     if params[:staff_id].present?
-      staff = Staff.find(params[:staff_id])
-      @client_enrollment_services = check_qualifications(params[:client_id], params[:date], staff)
+      @staff = Staff.find(params[:staff_id])
+      @client_enrollment_services = check_qualifications(params[:client_id], params[:date], @staff)
     else
       @client_enrollment_services = ClientEnrollmentService.left_outer_joins(service: :service_qualifications).by_client(params[:client_id]).by_date(params[:date]).active.by_unassigned_appointments_allowed&.uniq
     end
