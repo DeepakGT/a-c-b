@@ -25,6 +25,7 @@ class SchedulingsController < ApplicationController
     else
       @schedule.save
     end
+    update_staff_legacy_number
   end
 
   # Creating split appointments
@@ -55,6 +56,7 @@ class SchedulingsController < ApplicationController
     return if !check_units
     
     update_status if params[:status].present?
+    update_staff_legacy_number
   end
 
   def destroy
@@ -363,6 +365,12 @@ class SchedulingsController < ApplicationController
   def set_db_time_format
     params[:start_time] = params[:start_time].in_time_zone.strftime("%H:%M") if params[:start_time].present?
     params[:end_time] = params[:end_time].in_time_zone.strftime("%H:%M") if params[:end_time].present?
+  end
+
+  def update_staff_legacy_number
+    return if params[:legacy_number].blank?
+    
+    @schedule&.staff&.update(legacy_number: params[:legacy_number])
   end
   # end of private
 end
