@@ -37,10 +37,15 @@ class ClientEnrollmentServicesController < ApplicationController
       @client_enrollment = @client.client_enrollments.create(funding_source_id: early_auth_params[:funding_source_id], enrollment_date: Time.current.strftime(FORMAT_DATE), terminated_on: end_date, source_of_payment: 'insurance')
       services = Service.all.map{|service| service if JSON.parse(service&.selected_payors)&.pluck('payor_id')&.include?("#{early_auth_params[:funding_source_id]}")}.compact
 
-      services.each do |service|
-        @client_enrollment.client_enrollment_services.create(service_id: service.id, start_date: Time.current.strftime(FORMAT_DATE), end_date: end_date, units: service.max_units, minutes: (service.max_units)*15)
+      if services.present?
+        services.each do |service|
+          @client_enrollment.client_enrollment_services.create(service_id: service.id, start_date: Time.current.strftime(FORMAT_DATE), end_date: end_date, units: service.max_units, minutes: (service.max_units)*15)
+        end
+        @client_enrollment.destroy if @client_enrollment.client_enrollment_services.blank?
+      else
+        @client_enrollment.destroy if @client_enrollment.client_enrollment_services.blank?
+        @client.errors.add(:funding_source, 'is not present in selected payors list of any service.')
       end
-      @client_enrollment.destroy if @client_enrollment.client_enrollment_services.blank?
     end
   end
 
