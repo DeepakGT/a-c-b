@@ -97,10 +97,6 @@ class ClientEnrollmentServicesController < ApplicationController
     @enrollment_service.service_providers.destroy_all
   end
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 691bd40831f0505b01610f7cc7d9499e28193530
   def check_rendering_provider_condition(schedule)
     return true if (@final_authorization&.service&.is_service_provider_required&.to_bool&.false? || schedule&.staff&.role_name!='bcba')
 
@@ -114,12 +110,6 @@ class ClientEnrollmentServicesController < ApplicationController
     replaceable_service_ids = @early_authorization&.service&.selected_non_early_service_id
     authorizations = ClientEnrollmentService.by_client(@early_authorization&.client_enrollment&.client_id).by_service(replaceable_service_ids).with_funding_source&.order(:created_at)
     authorizations&.last
-<<<<<<< HEAD
-=======
-  def update_units_columns(client_enrollment_service)
-    # ClientEnrollmentServices::UpdateUnitsColumnsOperation.call(client_enrollment_service)
-=======
->>>>>>> 691bd40831f0505b01610f7cc7d9499e28193530
   end
 
   def update_staff_legacy_numbers
@@ -132,10 +122,6 @@ class ClientEnrollmentServicesController < ApplicationController
   
   def early_auth_params
     params.permit(:client_id, :funding_source_id)
-<<<<<<< HEAD
->>>>>>> e39b11e75e54d70180d77baa538927e643991356
-=======
->>>>>>> 691bd40831f0505b01610f7cc7d9499e28193530
   end
   # end of private
 end
