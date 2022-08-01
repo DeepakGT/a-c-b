@@ -94,7 +94,7 @@ json.data do
         # scheduled_minutes = scheduled_schedules.with_minutes.pluck(:minutes).sum
         json.id client_enrollment_service.id
         json.service_id client_enrollment_service.service_id
-        json.service_name client_enrollment_service.service&.name
+        json.service client_enrollment_service.service&.name
         json.service_display_code client_enrollment_service.service&.display_code
         json.is_early_code client_enrollment_service.service&.is_early_code
         json.is_service_provider_required client_enrollment_service.service&.is_service_provider_required
