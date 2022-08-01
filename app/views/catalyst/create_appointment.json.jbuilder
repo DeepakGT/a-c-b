@@ -1,1 +1,0 @@
-json.partial! 'scheduling_detail', schedule: @schedule
