@@ -1,5 +1,5 @@
-json.status schedule.errors.any? ? 'failure' : 'success'
-json.data do
+# json.status schedule.errors.any? ? 'failure' : 'success'
+# json.data do
   client = schedule.client_enrollment_service&.client_enrollment&.client
   service = schedule.client_enrollment_service&.service
   json.id schedule.id
@@ -24,9 +24,11 @@ json.data do
   end
   json.staff_id schedule.staff_id
   json.staff_name "#{schedule.staff.first_name} #{schedule.staff.last_name}" if schedule.staff.present?
+  json.staff_role schedule&.staff&.role_name if schedule&.staff.present?
   json.service_id service&.id
   json.service_name service&.name
   json.service_display_code service&.display_code 
+  json.is_early_code service&.is_early_code
   json.status schedule.status
   json.date schedule.date
   json.start_time schedule.start_time&.in_time_zone&.strftime("%I:%M %p")
@@ -38,18 +40,18 @@ json.data do
   end
   json.unrendered_reasons schedule.unrendered_reason
   json.rendered_at schedule.rendered_at
-  if (schedule.status=='Scheduled' || schedule.status=='Rendered') && action.present?
-    if schedule.rendered_at.present? && action=='update'
-      json.rendered_message "Appointment has been updated and rendered successfully."
-    elsif schedule.rendered_at.present? && action=='create'
-      json.rendered_message "Appointment has been created and rendered successfully."
-    elsif schedule.unrendered_reason.present?
-      message = "Appointment has been updated but cannot be rendered because #{schedule.unrendered_reason.to_human_string}"
-      message.gsub!('absent', 'not found')
-      message.gsub!('_',' ')
-      json.rendered_message message
-    end
-  end
+  # if (schedule.status=='Scheduled' || schedule.status=='Rendered') && action.present?
+  #   if schedule.rendered_at.present? && action=='update'
+  #     json.rendered_message "Appointment has been updated and rendered successfully."
+  #   elsif schedule.rendered_at.present? && action=='create'
+  #     json.rendered_message "Appointment has been created and rendered successfully."
+  #   elsif schedule.unrendered_reason.present?
+  #     message = "Appointment has been updated but cannot be rendered because #{schedule.unrendered_reason.to_human_string}"
+  #     message.gsub!('absent', 'not found')
+  #     message.gsub!('_',' ')
+  #     json.rendered_message message
+  #   end
+  # end
   json.units schedule.units
   json.minutes schedule.minutes
   if schedule.creator_id.present?
@@ -68,5 +70,5 @@ json.data do
     json.updator_id nil
     json.updator_name nil
   end
-end
-json.errors schedule.errors.full_messages
+# end
+# json.errors schedule.errors.full_messages

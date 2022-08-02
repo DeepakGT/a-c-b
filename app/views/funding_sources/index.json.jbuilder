@@ -4,8 +4,4 @@ json.data do
     json.partial! 'funding_source_detail', funding_source: funding_source
   end
 end
-if params[:page].present?
-  json.total_records @funding_sources.total_entries
-  json.limit @funding_sources.per_page
-  json.page params[:page]
-end
+json.partial! 'pagination_detail', list: @funding_sources, page_number: params[:page]

@@ -18,3 +18,13 @@ json.used_minutes enrollment_service.used_minutes
 json.scheduled_minutes enrollment_service.scheduled_minutes
 json.left_minutes enrollment_service.left_minutes
 json.service_number enrollment_service.service_number
+if enrollment_service.end_date.present? && enrollment_service.end_date > (Time.current.to_date + 9)
+  json.about_to_expire false
+else
+  json.about_to_expire true
+end
+if (enrollment_service.used_units + enrollment_service.scheduled_units)>=(0.9 * enrollment_service.units)
+  json.is_exhausted true
+else
+  json.is_exhausted false
+end

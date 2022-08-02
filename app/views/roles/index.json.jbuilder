@@ -4,8 +4,4 @@ json.data do
     json.partial! 'role_detail', role: role
   end
 end
-if params[:page].present?
-  json.total_records @roles.total_entries
-  json.limit @roles.per_page
-  json.page params[:page]
-end
+json.partial! 'pagination_detail', list: @roles, page_number: params[:page]

@@ -4,14 +4,6 @@ if @staff.errors.any?
 else
   json.status 'success'
   json.data do
-    json.id @staff.id
-    json.first_name @staff.first_name
-    json.last_name @staff.last_name
-    json.email @staff.email
-    json.status @staff.status
-    json.terminated_on @staff.terminated_on
-    json.gender @staff.gender
-    json.job_type @staff.job_type
-    json.supervisor_id @staff.supervisor_id
+    json.partial! 'staff_detail', staff: @staff
   end
 end

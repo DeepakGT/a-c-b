@@ -4,8 +4,6 @@ json.data do
   json.appointments do
     json.array! @schedules do |schedule|
       json.partial! 'schedulings/scheduling_detail', schedule: schedule
-      json.staff_role schedule.staff.role_name if schedule.staff.present?
-      json.is_early_code service&.is_early_code
       soap_note = schedule.soap_notes&.order(add_date: :desc, add_time: :desc).first
       if soap_note.present?
         json.soap_note do

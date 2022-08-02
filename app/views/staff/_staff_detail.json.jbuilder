@@ -3,11 +3,15 @@ json.first_name staff.first_name
 json.last_name staff.last_name
 json.email staff.email
 json.role staff.role.name
+json.title staff.role_name
 json.status staff.status
 json.terminated_on staff.terminated_on
 json.gender staff.gender
 json.job_type staff.job_type
 json.supervisor_id staff.supervisor_id
+json.immediate_supervisor "#{staff&.supervisor&.first_name} #{staff&.supervisor&.last_name}"
+json.legacy_number staff.legacy_number
+json.hired_at staff.hired_at
 json.phone_numbers do
   json.array! staff.phone_numbers do |phone|
     json.id phone.id

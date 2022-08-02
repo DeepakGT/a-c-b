@@ -4,8 +4,4 @@ json.data do
     json.partial! 'soap_notes/soap_note_detail', soap_note: soap_note
   end
 end
-if params[:page].present?
-  json.total_records @soap_notes.total_entries
-  json.limit @soap_notes.per_page
-  json.page params[:page]
-end
+json.partial! 'pagination_detail', list: @soap_notes, page_number: params[:page]

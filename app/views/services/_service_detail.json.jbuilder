@@ -9,6 +9,6 @@ json.selected_payors JSON.parse(service.selected_payors)
 json.is_early_code service.is_early_code
 json.max_units service.max_units
 if service.qualifications.present?
-    json.qualification_ids service.qualifications.pluck(:id)
-    json.qualification_names service.qualifications.pluck(:name)
+  json.qualification_ids service.qualifications.pluck(:id)
+  json.qualification_names service.qualifications.pluck(:name)
 end

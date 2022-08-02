@@ -4,8 +4,4 @@ json.data do
     json.partial! 'clinic_detail', clinic: clinic
   end
 end
-if params[:page].present?
-  json.total_records @clinics.total_entries
-  json.limit @clinics.per_page
-  json.page params[:page]
-end
+json.partial! 'pagination_detail', list: @clinics, page_number: params[:page]
