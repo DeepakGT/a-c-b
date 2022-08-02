@@ -11,4 +11,18 @@ namespace :user do
       u.save(validate: false)
     end
   end
+
+  desc "Add system administrator"
+  task add_system_administrator: :environment do
+    role = Role.new(name: 'system_administrator', permissions: ['super_admins_view', 'super_admins_update'])
+    role.save(validate: false)
+
+    User.find_or_initialize_by(email: "aba_emr_sa@abacenters.com") do |u|
+      u.first_name = 'aba-emr-sa'
+      u.password = 'Welcome123!'
+      u.password_confirmation = 'Welcome123!'
+      u.role = role
+      u.save(validate: false)
+    end
+  end
 end
