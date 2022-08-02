@@ -99,7 +99,6 @@ RSpec.describe MetaDataController, type: :controller do
   
           expect(response.status).to eq(200)
           expect(response_body['status']).to eq('success')
-          # expect(response_body['data'].count).to eq(2)
         end 
       end
     end

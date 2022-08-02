@@ -87,8 +87,8 @@ class StaffController < ApplicationController
         if fname.present? && lname.blank?
           staff = staff.by_first_name(fname).or(staff.by_last_name(fname))
         else
-          staff = staff.by_first_name(fname) # if fname.present?
-          staff = staff.by_last_name(lname) # if lname.present?
+          staff = staff.by_first_name(fname) 
+          staff = staff.by_last_name(lname) 
         end
         return staff
       when "organization"
@@ -114,7 +114,6 @@ class StaffController < ApplicationController
 
   def search_on_all_fields(query)
     staff = Staff.left_joins(:role, :address, clinics: :organization).all
-    # formated_val = query.split.map{|x| "%#{x}%"}
     fname, lname = query.split
     if lname.present?
       staff = staff.by_first_name(fname).by_last_name(lname)

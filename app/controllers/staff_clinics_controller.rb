@@ -20,7 +20,7 @@ class StaffClinicsController < ApplicationController
 
   def update
     StaffClinic.transaction do
-      remove_services # if params[:staff_clinic_services_attributes].present?
+      remove_services
       remove_home_clinic if params[:is_home_clinic].to_bool.true?
       @staff_clinic.update(staff_clinic_params)
     end

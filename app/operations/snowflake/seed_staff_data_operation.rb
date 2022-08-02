@@ -47,7 +47,6 @@ module Snowflake
 
             if staff_roster['agencyname'].present?
               clinic_name = staff_roster['agencyname']&.downcase
-              # clinic = Clinic.where('lower(name) = ? OR lower(aka) = ?', clinic_name, clinic_name)&.first
               clinic = Clinic.where("name ILIKE '%#{clinic_name}%'")&.first
               clinic = Clinic.where("aka ILIKE '%#{clinic_name}%'")&.first if clinic.blank?
               clinic = Clinic.find_by(name: 'Salem, NH') if staff_roster['agencyname']=='salem'
@@ -108,7 +107,6 @@ module Snowflake
             staff = Staff.find_by(email: staff_roster['email'])
             if staff.staff_clinics.blank? && staff_roster['agencyname'].present?
               clinic_name = staff_roster['agencyname']&.downcase
-              # clinic = Clinic.where('lower(name) = ? OR lower(aka) = ?', clinic_name, clinic_name)&.first
               clinic = Clinic.where("name ILIKE '%#{clinic_name}%'")&.first
               clinic = Clinic.where("aka ILIKE '%#{clinic_name}%'")&.first if clinic.blank?
               clinic = Clinic.find_by(name: 'Salem, NH') if staff_roster['agencyname']=='salem'

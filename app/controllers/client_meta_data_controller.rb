@@ -54,9 +54,6 @@ class ClientMetaDataController < ApplicationController
   end
 
   def selectable_options_data
-    # client_enrollments = @client.client_enrollments.active.where.not(source_of_payment: 'self_pay')
-    # selectable_options = { services: Service.order(:name),
-    #                        client_enrollments: client_enrollments&.order(is_primary: :desc) }
     { services: Service.order(:name) }
   end
 
@@ -64,10 +61,7 @@ class ClientMetaDataController < ApplicationController
     service_qualification_ids = @service.service_qualifications.pluck(:qualification_id)
     return staff if service_qualification_ids.empty?
     
-    # staff = staff.map{|s| s if service_qualification_ids.difference(s.staff_qualifications.pluck(:credential_id)).empty? }
-    # staff.delete(nil)
     staff = staff.by_service_qualifications(service_qualification_ids)
-    # staff
   end
   # end of private
 end

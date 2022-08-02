@@ -4,7 +4,6 @@ class QualificationsController < ApplicationController
   before_action :set_qualification, only: %i[show update destroy]
 
   def index
-    # if page parameter would be pass then return paginated records otherwise return all records
     @qualifications = Qualification.order(:created_at)
     @qualifications = @qualifications.paginate(page: params[:page]) if params[:page].present?
   end

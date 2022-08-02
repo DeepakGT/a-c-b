@@ -143,7 +143,6 @@ RSpec.describe CatalystController, type: :controller do
         expect(response_body['status']).to eq('success')
         expect(response_body['data']['id']).to eq(catalyst_data.id)
         expect(response_body['data']['date']).to eq(catalyst_data.date.to_time.strftime('%Y-%m-%d'))
-        # expect(response_body['data']['appointments'].count).to eq(catalyst_data.multiple_schedulings_ids.count)
       end
     end
   end

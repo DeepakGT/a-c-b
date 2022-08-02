@@ -12,14 +12,11 @@ class Scheduling < ApplicationRecord
   attr_accessor :user
 
   validates_presence_of :date, :start_time, :end_time, :status
-  # validates_presence_of :units, message: "or minutes, any one must be present.", if: proc { |obj| obj.minutes.blank? }
-  # validates_absence_of :units, message: "or minutes, only one must be present.", if: proc { |obj| obj.minutes.present? }
 
   # validate :validate_time
   validate :validate_past_appointments, on: :create
   validate :validate_units, on: :create
   # validate :validate_staff, on: :create
-  # validate :validate_units_and_minutes
   
   enum status: { Scheduled: 'Scheduled', Rendered: 'Rendered', Auth_Pending: 'Auth_Pending', Non_Billable: 'Non_Billable', 
                  Duplicate: 'Duplicate', Error: 'Error', Client_Cancel_Greater_than_24_h: 'Client_Cancel_Greater_than_24_h', 
@@ -120,13 +117,6 @@ class Scheduling < ApplicationRecord
   #   end
   # end
 
-  # def validate_units_and_minutes
-  #   if self.units.present? && self.minutes.present?
-  #     minutes = self.units*15
-  #     errors.add(:scheduling, "The units/minutes are wrong. 1 unit is equivalent to 15 minutes, and vice versa.") if minutes != self.minutes
-  #   end
-  # end
-
   def set_units_and_minutes
     if self.units.present? && self.minutes.blank?
       self.minutes = self.units*15
@@ -142,6 +132,5 @@ class Scheduling < ApplicationRecord
       end
     end 
   end
-
   # end of private
 end

@@ -210,16 +210,6 @@ class SchedulingsController < ApplicationController
     @schedule.save
   end
 
-  # def is_renderable
-  #   @schedule.reload
-  #   if params[:status]=='Rendered' && @schedule.date<Time.current.to_date && @schedule.rendered_at.present?
-  #     @schedule.errors.add(:status, message: "Scheduling could not be rendered.")
-  #     return false 
-  #   end
-    
-  #   true
-  # end 
-
   def update_render_service
     RenderAppointments::RenderScheduleManualOperation.call(@schedule.id, params[:catalyst_soap_note_id], current_user) if (params[:is_rendered].to_bool.true? || params[:status]=='Rendered') && @schedule.date<Time.current.to_date
   end
@@ -303,16 +293,10 @@ class SchedulingsController < ApplicationController
 
   def delete_scheduling
     CatalystData.where(system_scheduling_id: @schedule.id).update_all(system_scheduling_id: nil)
-    # catalyst_data = CatalystData.where('multiple_schedulings_ids @> ?', "{#{@schedule.id}}")
-    # catalyst_data.each do |catalyst_datum| 
-    #   catalyst_datum.multiple_schedulings_ids.delete("#{@schedule.id}")
-    #   catalyst_datum.save
-    # end
     @schedule.destroy
   end
 
   def check_units
-    #update_units_columns(@schedule.client_enrollment_service)
     if (params[:status]=='Scheduled' && @schedule.status!='Scheduled' && @schedule.status!='Rendered') && @schedule.client_enrollment_service.left_units<params[:units].to_f
       @schedule.errors.add(:units, 'left in authorization are not enough to update this cancelled appointment to scheduled.')
       return false
@@ -335,7 +319,6 @@ class SchedulingsController < ApplicationController
     elsif @schedule.status=='Rendered' && params[:status]!='Rendered'
       if current_user.role_name=='super_admin'
         update_scheduling 
-        # @schedule.is_rendered = false
         @schedule.rendered_at = nil
         @schedule.rendered_by_id = nil
         @schedule.is_manual_render = false

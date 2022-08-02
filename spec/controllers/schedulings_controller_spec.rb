@@ -171,7 +171,6 @@ RSpec.describe SchedulingsController, type: :controller do
       end
 
       context "and catalyst data id is present" do
-        # let(:catalyst_data){ create(:catalyst_data, is_appointment_found: false, start_time: '12:30', end_time: '13:30', units: 4, minutes: 60) }
         let(:catalyst_data){ create(:catalyst_data, start_time: '12:30', end_time: '13:30', units: 4, minutes: 60) }
         it "should create scheduling using catalyst data successfully" do
           set_auth_headers(auth_headers)

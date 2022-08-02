@@ -5,7 +5,6 @@ RSpec.describe ClientEnrollmentService, type: :model do
     let!(:service) { create(:service, is_service_provider_required: false) }
     subject { create(:client_enrollment_service, service_id: service.id) }
     it { should belong_to(:client_enrollment) } 
-    # it { should belong_to(:service) } 
     it { ClientEnrollmentService.reflect_on_association(:service).macro.should  eq(:belongs_to) }
 
     it { should have_many(:service_providers).class_name('ClientEnrollmentServiceProvider').dependent(:destroy) } 

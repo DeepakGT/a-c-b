@@ -206,7 +206,6 @@ module CsvImport
         end 
         if appointment[:isrendered]=='Yes'
           schedule.status = 'Rendered'
-          # schedule.is_rendered = true
           schedule.rendered_at = appointment[:renderedtime]&.to_datetime if appointment[:renderedtime].present?
         else
           case appointment[:apptstatus]
