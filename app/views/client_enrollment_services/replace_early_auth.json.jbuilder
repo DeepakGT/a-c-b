@@ -4,7 +4,7 @@ else
   json.status 'success'
 end
 json.data do
-  if @final_authorization.reload.present?
+  if @final_authorization&.reload&.present?
     json.final_authorization do
       json.id @final_authorization.id
       json.client_enrollment_id @final_authorization.client_enrollment_id
