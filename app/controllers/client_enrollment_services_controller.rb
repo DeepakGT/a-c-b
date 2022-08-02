@@ -59,7 +59,7 @@ class ClientEnrollmentServicesController < ApplicationController
     schedules&.each do |schedule|
       schedule&.update(client_enrollment_service_id: @final_authorization&.id) if (check_rendering_provider_condition(schedule) && @final_authorization&.left_units>=schedule&.units)
     end
-    @early_authorization&.destroy if @early_authorization&.schedulings&.blank?
+    delete_early_authorization if @early_authorization&.schedulings&.blank?
     RenderAppointments::RenderPartiallyRenderedSchedulesOperation.call(@final_authorization&.id)
   end
 
@@ -127,6 +127,11 @@ class ClientEnrollmentServicesController < ApplicationController
   def delete_client_enrollment
     @client_enrollment.destroy
     @client_enrollment = nil
+  end
+  
+  def delete_early_authorization
+    @early_authorization.destroy
+    @early_authorization = nil
   end
   # end of private
 end
