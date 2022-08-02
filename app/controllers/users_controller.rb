@@ -13,6 +13,7 @@ class UsersController < ApplicationController
 
   def super_admins_list
     @super_admins = User.by_roles('super_admin')
+    @super_admins = @super_admins.paginate(page: params[:page]) if params[:page].present?
   end
 
   def create_super_admin

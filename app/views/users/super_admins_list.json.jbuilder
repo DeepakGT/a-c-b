@@ -4,3 +4,4 @@ json.data do
     json.partial! 'super_admin_detail', super_admin: super_admin
   end
 end
+json.partial! 'pagination_detail', list: @super_admins, page_number: params[:page]

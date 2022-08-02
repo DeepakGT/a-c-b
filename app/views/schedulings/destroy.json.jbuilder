@@ -1,1 +1,4 @@
-json.partial! 'scheduling_detail', schedule: @schedule
+json.status 'success'
+json.data do
+  json.partial! 'scheduling_detail', schedule: @schedule
+end
