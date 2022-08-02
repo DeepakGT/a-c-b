@@ -1,4 +1,8 @@
-json.status 'success'
+if @early_authorization.present?
+  json.status @early_authorization.errors.any? ? 'failure' : 'success'
+else
+  json.status 'success'
+end
 json.data do
   if @final_authorization.reload.present?
     json.final_authorization do
