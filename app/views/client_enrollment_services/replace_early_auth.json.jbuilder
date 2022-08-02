@@ -1,6 +1,10 @@
-json.status 'success'
+if @early_authorization.present?
+  json.status @early_authorization.errors.any? ? 'failure' : 'success'
+else
+  json.status 'success'
+end
 json.data do
-  if @final_authorization.reload.present?
+  if @final_authorization&.reload&.present?
     json.final_authorization do
       json.id @final_authorization.id
       json.client_enrollment_id @final_authorization.client_enrollment_id
@@ -57,3 +61,4 @@ json.data do
     end
   end
 end
+json.errors @early_authorization&.errors&.full_messages
