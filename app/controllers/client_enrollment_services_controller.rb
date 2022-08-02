@@ -40,22 +40,27 @@ class ClientEnrollmentServicesController < ApplicationController
       @client_enrollment = @client.client_enrollments.create(funding_source_id: early_auth_params[:funding_source_id], enrollment_date: Time.current.strftime(FORMAT_DATE), terminated_on: end_date, source_of_payment: 'insurance')
       services = Service.all.map{|service| service if JSON.parse(service&.selected_payors)&.pluck('payor_id')&.include?("#{early_auth_params[:funding_source_id]}")}.compact
 
-      services.each do |service|
-        @client_enrollment.client_enrollment_services.create(service_id: service.id, start_date: Time.current.strftime(FORMAT_DATE), end_date: end_date, units: service.max_units, minutes: (service.max_units)*15)
+      if services.present?
+        services.each do |service|
+          @client_enrollment.client_enrollment_services.create(service_id: service.id, start_date: Time.current.strftime(FORMAT_DATE), end_date: end_date, units: service.max_units, minutes: (service.max_units)*15)
+        end
+        delete_client_enrollment if @client_enrollment.client_enrollment_services.blank?
+      else 
+        delete_client_enrollment if @client_enrollment.client_enrollment_services.blank?
+        @client.errors.add(:funding_source, 'is not present in selected payors list of any service.')
       end
-      @client_enrollment.destroy if @client_enrollment.client_enrollment_services.blank?
     end
   end
 
   def replace_early_auth
-    @early_authorization = ClientEnrollmentService.find(params[:early_authorization_id])
-    @final_authorization = ClientEnrollmentService.find(params[:final_authorization_id])
-    schedules = @early_authorization.schedulings.where('date>=? && date<=?', @final_authorization.start_date, @final_authorization.end_date)
-    schedules.each do |schedule|
-      schedule.update(client_enrollment_service_id: @final_authorization.id) if (check_rendering_provider_condition(schedule) && @final_authorization.left_units>=schedule.units)
+    @early_authorization = ClientEnrollmentService.find(params[:early_authorization_id]) rescue nil
+    @final_authorization = assign_replaceable_authorization
+    schedules = @early_authorization&.schedulings&.within_dates(@final_authorization&.start_date, @final_authorization&.end_date)
+    schedules&.each do |schedule|
+      schedule&.update(client_enrollment_service_id: @final_authorization&.id) if (check_rendering_provider_condition(schedule) && @final_authorization&.left_units>=schedule&.units)
     end
-    @early_authorization.destroy if @early_authorization.schedulings.blank?
-    RenderAppointments::RenderPartiallyRenderedSchedulesOperation.call(@final_authorization.id)
+    @early_authorization&.destroy if @early_authorization&.schedulings&.blank?
+    RenderAppointments::RenderPartiallyRenderedSchedulesOperation.call(@final_authorization&.id)
   end
 
   private
@@ -92,6 +97,21 @@ class ClientEnrollmentServicesController < ApplicationController
     @enrollment_service.service_providers.destroy_all
   end
 
+  def check_rendering_provider_condition(schedule)
+    return true if (@final_authorization&.service&.is_service_provider_required? || schedule&.staff&.role_name!='bcba')
+
+    bcba_ids = @final_authorization&.service_providers&.pluck(:staff_id)
+    return true if bcba_ids&.include?(schedule&.staff_id)
+
+    false
+  end
+
+  def assign_replaceable_authorization
+    replaceable_service_ids = @early_authorization&.service&.selected_non_early_service_id
+    authorizations = ClientEnrollmentService.by_client(@early_authorization&.client_enrollment&.client_id).by_service(replaceable_service_ids).with_funding_source&.order(:created_at)
+    authorizations&.last
+  end
+
   def update_staff_legacy_numbers
     return if params[:legacy_numbers].blank?
   
@@ -104,13 +124,9 @@ class ClientEnrollmentServicesController < ApplicationController
     params.permit(:client_id, :funding_source_id)
   end
 
-  def check_rendering_provider_condition(schedule)
-    return true if (@final_authorization&.service&.is_service_provider_required.to_bool.false? || schedule.staff.role_name!='bcba')
-
-    bcba_ids = @final_authorization.service_providers&.pluck(:staff_id)
-    return true if bcba_ids&.include?(schedule.staff_id)
-
-    false
+  def delete_client_enrollment
+    @client_enrollment.destroy
+    @client_enrollment = nil
   end
   # end of private
 end

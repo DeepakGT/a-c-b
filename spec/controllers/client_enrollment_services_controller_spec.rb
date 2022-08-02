@@ -245,32 +245,6 @@ RSpec.describe ClientEnrollmentServicesController, type: :controller do
     end
   end
 
-  describe "POST #create_early_auths" do
-    context "when sign in" do
-      let!(:user) {create(:user, :with_role, role_name: 'super_admin')}
-      let!(:auth_headers){user.create_new_auth_token}
-      let!(:funding_source) {create(:funding_source, network_status: 'non_billable')}
-      let!(:services) {create_list(:service, 5, is_early_code: true)}
-      it "should create source_of_payment and early authorizations successfully" do
-        set_auth_headers(auth_headers)
-
-        post :create_early_auths, params: {
-          funding_source_id: funding_source.id,
-          units: 500,
-          client_id: client.id,
-          service_ids: services.pluck(:id).first(3)
-        }
-        response_body = JSON.parse(response.body)
-
-        expect(response.status).to eq(200)
-        expect(response_body['status']).to eq('success')
-        expect(response_body['data']['id']).not_to eq(nil)
-        expect(response_body['data']['funding_source_id']).to eq(funding_source.id)
-        expect(response_body['data']['services'].count).to eq(3)
-      end
-    end
-  end
-
   describe "PUT #replace_early_auth" do
     context "when sign in" do
       let!(:early_service) { create(:service, is_early_code: true, selected_non_early_service_id: service.id) }
@@ -296,6 +270,32 @@ RSpec.describe ClientEnrollmentServicesController, type: :controller do
         expect(response_body['status']).to eq('success')
         expect(ClientEnrollmentService.find(client_enrollment_service2.id).schedulings.count).to eq(2)
         expect(ClientEnrollmentService.find_by_id(client_enrollment_service1.id)).not_to eq(nil)
+      end
+    end
+  end
+  
+  describe "POST #create_early_auths" do
+    context "when sign in" do
+      let!(:user) {create(:user, :with_role, role_name: 'super_admin')}
+      let!(:auth_headers){user.create_new_auth_token}
+      let!(:funding_source) {create(:funding_source, network_status: 'non_billable')}
+      let!(:services) {create_list(:service, 5, is_early_code: true)}
+      it "should create source_of_payment and early authorizations successfully" do
+        set_auth_headers(auth_headers)
+
+        post :create_early_auths, params: {
+          funding_source_id: funding_source.id,
+          units: 500,
+          client_id: client.id,
+          service_ids: services.pluck(:id).first(3)
+        }
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data']['id']).not_to eq(nil)
+        expect(response_body['data']['funding_source_id']).to eq(funding_source.id)
+        expect(response_body['data']['services'].count).to eq(3)
       end
     end
   end

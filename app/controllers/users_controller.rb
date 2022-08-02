@@ -24,7 +24,7 @@ class UsersController < ApplicationController
   private
 
   def create_params
-    params.permit(:email, :first_name, :last_name, :dob, :terminated_on, :gender, :hired_at, ).merge({password: 'Welcome1234!', password_confirmation: 'Welcome1234!'})
+    params.permit(:email, :first_name, :last_name, :dob, :terminated_on, :gender, :hired_at).merge({password: 'Welcome1234!', password_confirmation: 'Welcome1234!'})
   end
 
   def authorize_user

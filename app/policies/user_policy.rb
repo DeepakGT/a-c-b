@@ -6,8 +6,6 @@ class UserPolicy < ApplicationPolicy
   end
 
   def create_super_admin?
-    return true if user.role_name=='system_administrator'
-    
-    false
+    super_admins_list?
   end
 end
