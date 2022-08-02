@@ -55,12 +55,16 @@ class ClientEnrollmentServicesController < ApplicationController
   def replace_early_auth
     @early_authorization = ClientEnrollmentService.find(params[:early_authorization_id]) rescue nil
     @final_authorization = assign_replaceable_authorization
-    schedules = @early_authorization&.schedulings&.within_dates(@final_authorization&.start_date, @final_authorization&.end_date)
-    schedules&.each do |schedule|
-      schedule&.update(client_enrollment_service_id: @final_authorization&.id) if (check_rendering_provider_condition(schedule) && @final_authorization&.left_units>=schedule&.units)
+    if @final_authorization.present?
+      schedules = @early_authorization&.schedulings&.within_dates(@final_authorization&.start_date, @final_authorization&.end_date)
+      schedules&.each do |schedule|
+        schedule&.update(client_enrollment_service_id: @final_authorization&.id) if (check_rendering_provider_condition(schedule) && @final_authorization&.left_units>=schedule&.units)
+      end
+      delete_early_authorization if @early_authorization&.schedulings&.blank?
+      RenderAppointments::RenderPartiallyRenderedSchedulesOperation.call(@final_authorization&.id)
+    else
+      @early_authorization&.errors&.add(:final_authorization, 'does not exist for selected early authorization.')
     end
-    delete_early_authorization if @early_authorization&.schedulings&.blank?
-    RenderAppointments::RenderPartiallyRenderedSchedulesOperation.call(@final_authorization&.id)
   end
 
   private
