@@ -1,6 +1,6 @@
 json.status 'success'
 json.data do
-  if @final_authorization.present?
+  if @final_authorization.reload.present?
     json.final_authorization do
       json.id @final_authorization.id
       json.client_enrollment_id @final_authorization.client_enrollment_id
@@ -28,7 +28,7 @@ json.data do
       end
     end
   end
-  if @early_authorization.reload.present?
+  if @early_authorization.present?
     json.early_authorization do
       json.id @early_authorization.id
       json.client_enrollment_id @early_authorization.client_enrollment_id
