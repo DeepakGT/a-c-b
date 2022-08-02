@@ -98,7 +98,7 @@ class ClientEnrollmentServicesController < ApplicationController
   end
 
   def check_rendering_provider_condition(schedule)
-    return true if (@final_authorization&.service&.is_service_provider_required&.to_bool&.false? || schedule&.staff&.role_name!='bcba')
+    return true if (@final_authorization&.service&.is_service_provider_required? || schedule&.staff&.role_name!='bcba')
 
     bcba_ids = @final_authorization&.service_providers&.pluck(:staff_id)
     return true if bcba_ids&.include?(schedule&.staff_id)
