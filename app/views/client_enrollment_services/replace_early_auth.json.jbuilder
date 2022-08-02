@@ -57,3 +57,4 @@ json.data do
     end
   end
 end
+json.errors @early_authorization&.errors&.full_messages
