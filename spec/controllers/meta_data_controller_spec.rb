@@ -120,5 +120,21 @@ RSpec.describe MetaDataController, type: :controller do
       end 
     end
   end
+
+  describe "GET #select_payor_types" do
+    context "when the response is successful " do
+      let!(:payor_types){ FundingSource.payor_types.keys}
+
+      it "should get the selectable options from the payer successfully" do
+
+        get :select_payor_types
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data']['payor_types']).to eq(payor_types)
+      end
+    end
+  end
   
 end
