@@ -27,7 +27,7 @@ class MetaDataController < ApplicationController
   end
 
   def select_payor_types
-    @payor_types = FundingSource.payor_types.keys
+    @payor_types = FundingSource.transform_payor_types
   end
 
   private

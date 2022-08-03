@@ -15,4 +15,11 @@ class FundingSource < ApplicationRecord
 
   accepts_nested_attributes_for :phone_number, update_only: true
   accepts_nested_attributes_for :address, update_only: true
+
+  def self.transform_payor_types
+    payor_types.map do |type, _|
+      {'value' => type , 'title'=> I18n.t("activerecord.attributes.funding_source.payor_types.#{type}").capitalize }
+    end
+
+  end
 end

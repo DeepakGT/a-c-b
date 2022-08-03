@@ -123,7 +123,7 @@ RSpec.describe MetaDataController, type: :controller do
 
   describe "GET #select_payor_types" do
     context "when the response is successful " do
-      let!(:payor_types){ FundingSource.payor_types.keys}
+      let!(:payor_types){ FundingSource.transform_payor_types }
 
       it "should get the selectable options from the payer successfully" do
 
