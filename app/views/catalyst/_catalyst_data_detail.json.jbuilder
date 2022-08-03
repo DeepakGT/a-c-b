@@ -29,5 +29,5 @@ json.catalyst_soap_note_id catalyst_data.catalyst_soap_note_id
 json.location catalyst_data.session_location
 json.cordinates catalyst_data.location
 json.is_deleted_from_connect catalyst_data.is_deleted_from_connect
-json.date_revision_made unassigned_note.date_revision_made
+json.date_revision_made catalyst_data.date_revision_made
 json.creator "#{staff&.first_name} #{staff&.last_name}"
