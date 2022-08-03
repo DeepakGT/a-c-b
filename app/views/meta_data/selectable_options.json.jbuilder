@@ -25,6 +25,6 @@ json.data do
     json.partial! 'list_detail_with_name', list: @selectable_options[:countries]
   end
   json.source_of_payments do
-    json.partial! 'list_detail_with_name', list: @selectable_options[:source_of_payments]
+    json.partial! 'list_detail_with_type', list: @selectable_options[:source_of_payments]
   end
 end

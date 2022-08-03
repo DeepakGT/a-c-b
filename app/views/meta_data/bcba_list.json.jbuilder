@@ -9,4 +9,5 @@ json.data do
       json.clinic_id staff_clinic.clinic_id
       json.clinic_name staff_clinic.clinic&.name
     end
+  end
 end
