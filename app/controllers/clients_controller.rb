@@ -11,7 +11,7 @@ class ClientsController < ApplicationController
     clients = do_filter(clients) if params[:search_value].present?
     clients = filter_by_location(clients)
     @clients = clients&.uniq&.sort_by(&:first_name)
-    @clients = @clients.paginate(page: params[:page]) if params[:page].present?
+    @clients = @clients&.paginate(page: params[:page]) if params[:page].present?
   end
 
   def show
@@ -20,17 +20,17 @@ class ClientsController < ApplicationController
 
   def create
     @client = Client.new(client_params)
-    @client.save_with_exception_handler
+    @client&.save_with_exception_handler
     create_office_address_for_client
   end
 
   def update
-    @client.update_with_exception_handler(client_params)
+    @client&.update_with_exception_handler(client_params)
   end
 
   def destroy
-    SoapNote.by_client(@client.id).destroy_all
-    @client.destroy
+    SoapNote.by_client(@client&.id)&.destroy_all
+    @client&.destroy
   end
 
   private
@@ -43,7 +43,7 @@ class ClientsController < ApplicationController
   end
 
   def set_client
-    @client = Client.find(params[:id])
+    @client = Client.find(params[:id]) rescue nil
   end
 
   def authorize_user
@@ -51,8 +51,8 @@ class ClientsController < ApplicationController
   end
 
   def create_office_address_for_client
-    office_address = @client.addresses.new(address_name: 'Office', address_type: 'service_address', is_default: false, is_hidden: false)
-    if @client.clinic.address.present?
+    office_address = @client&.addresses&.new(address_name: 'Office', address_type: 'service_address', is_default: false, is_hidden: false)
+    if @client&.clinic&.address.present?
       office_address.line1 = @client.clinic.address.line1
       office_address.line2 = @client.clinic.address.line2
       office_address.line3 = @client.clinic.address.line3
@@ -61,7 +61,7 @@ class ClientsController < ApplicationController
       office_address.country = @client.clinic.address.country
       office_address.zipcode = @client.clinic.address.zipcode
     end
-    office_address.save
+    office_address&.save
   end
 
   def filter_by_location(clients)
@@ -144,5 +144,4 @@ class ClientsController < ApplicationController
     params[:last_name].strip! if params[:last_name].present?
   end
   # end of private
-
 end

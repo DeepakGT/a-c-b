@@ -5,7 +5,7 @@ class OrganizationsController < ApplicationController
 
   def index
     @organizations = Organization.order(:name)
-    @organizations = @organizations.paginate(page: params[:page]) if params[:page].present?
+    @organizations = @organizations&.paginate(page: params[:page]) if params[:page].present?
   end
 
   def show
@@ -14,17 +14,17 @@ class OrganizationsController < ApplicationController
 
   def create
     @organization = Organization.new(organization_params)
-    @organization.id = Organization.ids.max+1
-    @organization.admin_id = current_user.id
-    @organization.save
+    @organization&.id = Organization.ids.max+1
+    @organization&.admin_id = current_user.id
+    @organization&.save
   end
 
   def update
-    @organization.update(organization_params)
+    @organization&.update(organization_params)
   end
 
   def destroy
-    @organization.destroy
+    @organization&.destroy
   end
 
   private
@@ -36,7 +36,7 @@ class OrganizationsController < ApplicationController
   end
 
   def set_organization
-    @organization = Organization.find(params[:id])
+    @organization = Organization.find(params[:id]) rescue nil
   end
 
   def authorize_user

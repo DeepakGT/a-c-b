@@ -17,7 +17,7 @@ class MetaDataController < ApplicationController
 
   def bcba_list
     bcbas = Staff.joins(:role).by_roles(['bcba', 'Clinical Director', 'Lead RBT']).active
-    @bcbas = bcbas.order(:first_name, :last_name)
+    @bcbas = bcbas&.order(:first_name, :last_name)
   end
 
   def rbt_list
@@ -50,8 +50,8 @@ class MetaDataController < ApplicationController
   def country_list
     countries = Country.order(:name)
     prioritize_country = Country.find_by(name: "United States of America")
-    countries = countries.to_a.prepend(prioritize_country)
-    countries = countries.uniq
+    countries = countries&.to_a&.prepend(prioritize_country)
+    countries = countries&.uniq
   end
 
   # end of private

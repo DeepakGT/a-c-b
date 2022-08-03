@@ -8,7 +8,7 @@ class SettingsController < ApplicationController
   end
 
   def update 
-    @setting.update(welcome_note: params[:welcome_note])
+    @setting&.update(welcome_note: params[:welcome_note])
   end
 
   private

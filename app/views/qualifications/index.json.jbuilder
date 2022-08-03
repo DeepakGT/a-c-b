@@ -4,4 +4,4 @@ json.data do
     json.partial! 'qualification_detail', qualification: qualification
   end
 end
-json.partial! 'pagination_detail', list: @qualifications, page_number: params[:page]
+json.partial! '/pagination_detail', list: @qualifications, page_number: params[:page]

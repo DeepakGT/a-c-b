@@ -5,12 +5,12 @@ class ContactsController < ApplicationController
   before_action :set_contact, only: %i[show update destroy]
 
   def index
-    @contacts = @client.contacts.order(:first_name)
-    @contacts = @contacts.paginate(page: params[:page]) if params[:page].present?
+    @contacts = @client&.contacts&.order(:first_name)
+    @contacts = @contacts&.paginate(page: params[:page]) if params[:page].present?
   end
 
   def create
-    @contact = @client.contacts.create(contact_params)
+    @contact = @client&.contacts&.create(contact_params)
   end
 
   def show
@@ -18,21 +18,21 @@ class ContactsController < ApplicationController
   end
 
   def update
-    @contact.update(contact_params)
+    @contact&.update(contact_params)
   end
 
   def destroy
-    @contact.destroy
+    @contact&.destroy
   end
 
   private
 
   def set_client
-    @client = Client.find(params[:client_id])
+    @client = Client.find(params[:client_id]) rescue nil
   end
 
   def set_contact
-    @contact = @client.contacts.find(params[:id])
+    @contact = @client.contacts.find(params[:id]) rescue nil
   end
 
   def contact_params
@@ -46,5 +46,4 @@ class ContactsController < ApplicationController
     authorize Contact if current_user.role_name!='super_admin'
   end
   # end of private
-
 end

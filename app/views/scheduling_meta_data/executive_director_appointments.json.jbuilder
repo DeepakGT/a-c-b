@@ -86,4 +86,4 @@ json.data do
   end
   json.action_items_count @total_count
 end
-json.partial! 'pagination_detail', list: @action_items_array, page_number: params[:page]
+json.partial! '/pagination_detail', list: @action_items_array, page_number: params[:page]

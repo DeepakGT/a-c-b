@@ -4,4 +4,4 @@ json.data do
     json.partial! 'contact_detail', contact: contact
   end
 end
-json.partial! 'pagination_detail', list: @contacts, page_number: params[:page]
+json.partial! '/pagination_detail', list: @contacts, page_number: params[:page]

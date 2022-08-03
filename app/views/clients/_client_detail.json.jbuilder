@@ -26,7 +26,7 @@ if client.addresses.present?
       json.city address.city
       json.state address.state
       json.country address.country
-      if address.address_type.service_address?
+      if address.service_address?
         json.is_default address.is_default 
         json.is_hidden address.is_hidden
       end

@@ -58,4 +58,4 @@ json.data do
     end
   end
 end
-json.partial! 'pagination_detail', list: @action_items_array, page_number: params[:page]
+json.partial! '/pagination_detail', list: @action_items_array, page_number: params[:page]

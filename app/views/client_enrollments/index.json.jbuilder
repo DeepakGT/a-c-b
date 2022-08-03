@@ -27,4 +27,4 @@ if early_authorizations.present? && funding_source_ids.count==non_billable_fundi
 else
   json.hideEarlyAuthButton false
 end
-json.partial! 'pagination_detail', list: @client_enrollments, page_number: params[:page]
+json.partial! '/pagination_detail', list: @client_enrollments, page_number: params[:page]

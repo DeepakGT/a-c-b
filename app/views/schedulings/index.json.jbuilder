@@ -43,4 +43,4 @@ json.data do
   end
 end
 json.show_inactive params[:show_inactive] if (params[:show_inactive] == 1 || params[:show_inactive] == "1")
-json.partial! 'pagination_detail', list: @schedules, page_number: params[:page]
+json.partial! '/pagination_detail', list: @schedules, page_number: params[:page]
