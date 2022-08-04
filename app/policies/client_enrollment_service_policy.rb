@@ -31,4 +31,10 @@ class ClientEnrollmentServicePolicy < ApplicationPolicy
 
     false
   end
+
+  def replace_early_auth?
+    return true if permissions.include?('early_auth_update')
+
+    false
+  end
 end
