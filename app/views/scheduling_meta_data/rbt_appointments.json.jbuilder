@@ -338,6 +338,8 @@ json.data do
         json.client_id client&.id
         json.client_name "#{client.first_name} #{client.last_name}" if client.present?
         json.service_address_id action_item.service_address_id
+        json.appointment_office_id action_item&.appointment_office_id
+        json.appointment_office Clinic.find_by(id: action_item&.appointment_office_id)&.name
         if action_item.service_address_id.present?
           service_address = Address.find_by(id: action_item.service_address_id)
           if service_address.present?

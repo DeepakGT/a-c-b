@@ -65,8 +65,10 @@ class SchedulingMetaDataController < ApplicationController
   def executive_director_appointments
     authorize :appointment, :executive_director_appointments?
     client_ids = Clinic.find(params[:default_location_id]).clients.pluck(:id)
-    schedules = Scheduling.left_outer_joins(:soap_notes, :staff, client_enrollment_service: [:service, {client_enrollment: :client}])
-    schedules = schedules.joins("LEFT JOIN clinics ON (clinics.id = clients.clinic_id)").by_client_ids(client_ids)
+    # schedules = Scheduling.left_outer_joins(:soap_notes, :staff, client_enrollment_service: [:service, {client_enrollment: :client}])
+    # schedules = schedules.joins("LEFT JOIN clinics ON (clinics.id = clients.clinic_id)").by_client_ids(client_ids)
+    schedules = Scheduling.left_outer_joins(:soap_notes, :staff)
+    schedules = schedules.by_appointment_office(params[:default_location_id])
     @todays_appointments = schedules.by_status.todays_schedulings.last(10)
     past_schedules = schedules.by_status.post_30_may_schedules.unrendered_schedulings.order(date: :desc)
     past_schedules.where(unrendered_reason: []).each do |schedule|

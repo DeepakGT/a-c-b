@@ -32,7 +32,7 @@ class SchedulingsController < ApplicationController
     parent_schedule = Scheduling.find(params[:schedule_id])
     params[:split_schedules].each do |schedule|
       schedule_details_hash = build_schedule_details_hash(schedule)
-      schedule_params = schedule_hash.merge!(schedule_details_hash)
+      schedule_params = schedule_hash.merge!(schedule_details_hash.merge(appointment_office_id: parent_schedule.appointment_office_id))
       @schedule = Scheduling.new(schedule_params)
       @schedule.id = Scheduling.last.id + 1
       @schedule.save(validate: false)
@@ -112,7 +112,7 @@ class SchedulingsController < ApplicationController
     arr.concat(%i[staff_id catalyst_soap_note_id]) if params[:action] == 'create'
     arr.concat(%i[staff_id]) if params[:action] == 'update'
 
-    params.permit(arr)
+    params.permit(arr).merge(appointment_office_id: params[:location_id])
   end
 
   # Building info common for both splitted appointments
@@ -151,7 +151,7 @@ class SchedulingsController < ApplicationController
   end
 
   def create_without_client_params
-    params.permit(:staff_id, :date, :start_time, :end_time, :non_billable_reason)
+    params.permit(:staff_id, :date, :start_time, :end_time, :non_billable_reason).merge(appointment_office_id: params[:location_id])
   end
 
   def scheduling_params_when_bcba

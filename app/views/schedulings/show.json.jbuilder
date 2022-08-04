@@ -4,6 +4,8 @@ json.data do
   service = @schedule.client_enrollment_service&.service
   json.id @schedule.id
   json.client_enrollment_service_id @schedule.client_enrollment_service_id
+  json.appointment_office_id @schedule&.appointment_office_id
+  json.appointment_office Clinic.find_by(id: @schedule&.appointment_office_id)&.name
   if @schedule.client_enrollment_service_id.present?
     json.total_units @schedule.client_enrollment_service.units
     json.used_units @schedule.client_enrollment_service.used_units
