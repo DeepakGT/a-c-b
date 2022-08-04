@@ -19,11 +19,11 @@ class Scheduling < ApplicationRecord
   # validate :validate_staff, on: :create
   
   enum status: { scheduled: 'scheduled', rendered: 'rendered', auth_pending: 'auth_pending', non_billable: 'non_billable', 
-    duplicate: 'duplicate', error: 'error', client_cancel_greater_than_24_h: 'client_cancel_greater_than_24_h', 
-    client_cancel_less_than_24_h: 'client_cancel_less_than_24_h', client_no_show: 'client_no_show', 
-    staff_cancellation: 'staff_cancellation', staff_cancellation_due_to_illness: 'staff_cancellation_due_to_illness', 
-    cancellation_related_to_covid: 'cancellation_related_to_covid', unavailable: 'unavailable', 
-    inclement_weather_cancellation: 'inclement_weather_cancellation'}
+                 duplicate: 'duplicate', error: 'error', client_cancel_greater_than_24_h: 'client_cancel_greater_than_24_h', 
+                 client_cancel_less_than_24_h: 'client_cancel_less_than_24_h', client_no_show: 'client_no_show', 
+                 staff_cancellation: 'staff_cancellation', staff_cancellation_due_to_illness: 'staff_cancellation_due_to_illness', 
+                 cancellation_related_to_covid: 'cancellation_related_to_covid', unavailable: 'unavailable', 
+                 inclement_weather_cancellation: 'inclement_weather_cancellation'}
 
   before_save :set_units_and_minutes
 
