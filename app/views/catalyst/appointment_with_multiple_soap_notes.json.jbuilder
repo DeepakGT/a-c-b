@@ -34,7 +34,7 @@ json.data do
   json.date @schedule.date
   json.start_time @schedule.start_time
   json.end_time @schedule.end_time
-  if @schedule.rendered_at.present? && @schedule.status == 'Rendered'
+  if @schedule.rendered_at.present? && @schedule.status == 'rendered'
     json.is_rendered true
   else
     json.is_rendered false

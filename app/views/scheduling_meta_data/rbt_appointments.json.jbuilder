@@ -187,7 +187,7 @@ json.data do
       json.start_time schedule.start_time
       json.end_time schedule.end_time
       # json.is_rendered schedule.is_rendered
-      if schedule.rendered_at.present? && schedule.status == 'Rendered'
+      if schedule.rendered_at.present? && schedule.status == 'rendered'
         json.is_rendered true
       else
         json.is_rendered false
@@ -367,7 +367,7 @@ json.data do
         json.start_time action_item.start_time
         json.end_time action_item.end_time
         # json.is_rendered action_item.is_rendered
-        if action_item.rendered_at.present? && action_item.status == 'Rendered'
+        if action_item.rendered_at.present? && action_item.status == 'rendered'
           json.is_rendered true
         else
           json.is_rendered false

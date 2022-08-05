@@ -140,7 +140,7 @@ class CatalystController < ApplicationController
   def check_units
     # @schedule.is_rendered = false
     @schedule.rendered_at = nil
-    @schedule.status = 'Scheduled'
+    @schedule.status = 'scheduled'
     @schedule.save(validate: false)
     catalyst_data = CatalystData.where(id: @schedule.catalyst_data_ids.uniq)
     total_units = catalyst_data.pluck(:units).sum

@@ -14,14 +14,14 @@ class SchedulingChangeRequest < ApplicationRecord
   private
 
   def validate_status
-    errors.add(:status, 'RBTs cannot request change status to given value.') if self.status.present? && self.status!='Client_Cancel_Greater_than_24_h' && self.status!='Client_Cancel_Less_than_24_h' && self.status!='Client_No_Show'
-    errors.add(:status, 'No further change requests for given schedule can be created.') if self.scheduling.status=='Client_No_Show' && self.status!='Client_No_Show'
+    errors.add(:status, 'RBTs cannot request change status to given value.') if self.status.present? && self.status!='client_cancel_greater_than_24_h' && self.status!='client_cancel_less_than_24_h' && self.status!='client_no_show'
+    errors.add(:status, 'No further change requests for given schedule can be created.') if self.scheduling.status=='client_no_show' && self.status!='client_no_show'
   end
 
   def validate_change_request
     schedule = Scheduling.find(self.scheduling_id)
     # if schedule.scheduling_change_requests.by_approval_status.any? && self.status!='Client_No_Show'
-    errors.add(:approval_status, 'No further change requests for given schedule can be created unless old change requests are approved or declined.') if schedule.scheduling_change_requests.by_approval_status.any? && self.status!='Client_No_Show'
+    errors.add(:approval_status, 'No further change requests for given schedule can be created unless old change requests are approved or declined.') if schedule.scheduling_change_requests.by_approval_status.any? && self.status!='client_no_show'
     # end
   end
 end

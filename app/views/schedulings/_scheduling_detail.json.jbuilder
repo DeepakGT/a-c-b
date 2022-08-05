@@ -31,14 +31,14 @@ json.data do
   json.date schedule.date
   json.start_time schedule.start_time&.in_time_zone&.strftime("%I:%M %p")
   json.end_time schedule.end_time&.in_time_zone&.strftime("%I:%M %p")
-  if schedule.rendered_at.present? && schedule.status == 'Rendered'
+  if schedule.rendered_at.present? && schedule.status == 'rendered'
     json.is_rendered true
   else
     json.is_rendered false
   end
   json.unrendered_reasons schedule.unrendered_reason
   json.rendered_at schedule.rendered_at
-  if (schedule.status=='Scheduled' || schedule.status=='Rendered') && action.present?
+  if (schedule.status=='scheduled' || schedule.status=='rendered') && action.present?
     if schedule.rendered_at.present? && action=='update'
       json.rendered_message "Appointment has been updated and rendered successfully."
     elsif schedule.rendered_at.present? && action=='create'

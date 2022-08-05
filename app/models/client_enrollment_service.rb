@@ -42,7 +42,7 @@ class ClientEnrollmentService < ApplicationRecord
   scope :with_zero_schedulings, ->{ left_outer_joins(:schedulings).select('client_enrollment_services.*').group('id').having('count(schedulings.*) = ?', 0) }
   
   def used_units
-    schedules = self.schedulings.where(status: 'Rendered')
+    schedules = self.schedulings.where(status: 'rendered')
     if schedules.any?
       used_units = schedules.with_units.pluck(:units).sum.to_f
       used_units = 0 if used_units.blank?
@@ -53,7 +53,7 @@ class ClientEnrollmentService < ApplicationRecord
   end
 
   def used_minutes
-    schedules = self.schedulings.where(status: 'Rendered')
+    schedules = self.schedulings.where(status: 'rendered')
     if schedules.any?
       used_minutes = schedules.with_minutes.pluck(:minutes).sum.to_f
       used_minutes = 0 if used_minutes.blank?

@@ -72,7 +72,7 @@ class SchedulingsController < ApplicationController
 
   def create_without_staff
     @schedule = @client_enrollment_service.schedulings.new(scheduling_params)
-    @schedule.status = 'Non_Billable' if params[:status].blank?
+    @schedule.status = 'non_billable' if params[:status].blank?
     @schedule.creator_id = current_user.id
     @schedule.user = current_user
     @schedule.id = Scheduling.last.id + 1
@@ -87,7 +87,7 @@ class SchedulingsController < ApplicationController
   
   def create_without_client
     @schedule = Scheduling.new(create_without_client_params)
-    @schedule.status = 'Non_Billable'
+    @schedule.status = 'non_billable'
     @schedule.creator_id = current_user.id
     @schedule.user = current_user
     @schedule.id = Scheduling.last.id + 1
@@ -221,13 +221,13 @@ class SchedulingsController < ApplicationController
   # end 
 
   def update_render_service
-    RenderAppointments::RenderScheduleManualOperation.call(@schedule.id, params[:catalyst_soap_note_id], current_user) if (params[:is_rendered].to_bool.true? || params[:status]=='Rendered') && @schedule.date<Time.current.to_date
+    RenderAppointments::RenderScheduleManualOperation.call(@schedule.id, params[:catalyst_soap_note_id], current_user) if (params[:is_rendered].to_bool.true? || params[:status]=='rendered') && @schedule.date<Time.current.to_date
   end
 
   def update_scheduling
     @schedule.update(scheduling_params)
     @schedule.updator_id = current_user.id
-    update_render_service if params[:is_rendered].present? || params[:status]=='Rendered'
+    update_render_service if params[:is_rendered].present? || params[:status]=='rendered'
     update_client_enrollment_service if params[:client_enrollment_service_id].present?
     @schedule.save
   end
@@ -235,7 +235,7 @@ class SchedulingsController < ApplicationController
   def update_scheduling_when_bcba
     @schedule.update(scheduling_params_when_bcba)
     @schedule.updator_id = current_user.id
-    update_render_service if params[:is_rendered].present? || params[:status]=='Rendered'
+    update_render_service if params[:is_rendered].present? || params[:status]=='rendered'
     update_client_enrollment_service if params[:client_enrollment_service_id].present?
     @schedule.save
   end
@@ -313,7 +313,7 @@ class SchedulingsController < ApplicationController
 
   def check_units
     #update_units_columns(@schedule.client_enrollment_service)
-    if (params[:status]=='Scheduled' && @schedule.status!='Scheduled' && @schedule.status!='Rendered') && @schedule.client_enrollment_service.left_units<params[:units].to_f
+    if (params[:status]=='scheduled' && @schedule.status!='scheduled' && @schedule.status!='rendered') && @schedule.client_enrollment_service.left_units<params[:units].to_f
       @schedule.errors.add(:units, 'left in authorization are not enough to update this cancelled appointment to scheduled.')
       return false
     elsif params[:units].present? && params[:units].to_f>@schedule.units && @schedule.client_enrollment_service.left_units<(params[:units].to_f-@schedule.units)
@@ -324,7 +324,7 @@ class SchedulingsController < ApplicationController
   end
 
   def update_status
-    if params[:status]=='Rendered'
+    if params[:status]=='rendered'
       if current_user.role_name=='super_admin'
         update_scheduling 
         update_render_service
@@ -332,7 +332,7 @@ class SchedulingsController < ApplicationController
         @schedule.errors.add(:schedule, 'You are not authorized to render appointment manually.')
         return false
       end
-    elsif @schedule.status=='Rendered' && params[:status]!='Rendered'
+    elsif @schedule.status=='rendered' && params[:status]!='rendered'
       if current_user.role_name=='super_admin'
         update_scheduling 
         # @schedule.is_rendered = false
@@ -359,7 +359,7 @@ class SchedulingsController < ApplicationController
 
   # Render an appointment manually
   def manual_rendering
-    @schedule.update(status: 'Rendered',rendered_at: Time.current,is_manual_render: true, rendered_by_id: current_user.id, user: current_user)
+    @schedule.update(status: 'rendered',rendered_at: Time.current,is_manual_render: true, rendered_by_id: current_user.id, user: current_user)
   end
 
   def set_db_time_format

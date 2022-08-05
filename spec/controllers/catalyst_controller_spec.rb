@@ -212,7 +212,7 @@ RSpec.describe CatalystController, type: :controller do
       context "and adding new appointment for catalyat soap note with no appointment found as unrendered reason" do
         let!(:catalyst_data) {create(:catalyst_data, start_time: '12:30', end_time: '13:30', units: 4, minutes: 60, date: (Time.current-5.days).strftime('%Y-%m-%d'), catalyst_patient_id: 'cbsdjefftggncjdnskcn', catalyst_user_id: 'mxkewdnufjfvntrjngujt')}
         context "and best match exists" do
-          let!(:scheduling1) {create(:scheduling, date: (Time.current-5.days).strftime('%Y-%m-%d'), start_time: '12:20', end_time: '13:20', units: 4, minutes: 60, is_manual_render: true, status: 'Rendered', rendered_at: Time.current, staff_id: staff.id, client_enrollment_service_id: client_enrollment_service.id)}
+          let!(:scheduling1) {create(:scheduling, date: (Time.current-5.days).strftime('%Y-%m-%d'), start_time: '12:20', end_time: '13:20', units: 4, minutes: 60, is_manual_render: true, status: 'rendered', rendered_at: Time.current, staff_id: staff.id, client_enrollment_service_id: client_enrollment_service.id)}
           let!(:scheduling2) {create(:scheduling, date: (Time.current-5.days).strftime('%Y-%m-%d'), start_time: '14:00', end_time: '15:15', units: 5, minutes: 75, staff_id: staff.id, client_enrollment_service_id: client_enrollment_service.id)}
           it "should display best matching appointment successfully" do
             set_auth_headers(auth_headers)
