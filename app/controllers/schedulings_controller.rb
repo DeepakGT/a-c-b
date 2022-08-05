@@ -68,7 +68,7 @@ class SchedulingsController < ApplicationController
 
   def create_without_staff
     @schedule = @client_enrollment_service.schedulings.new(scheduling_params)
-    @schedule.status = 'Non-Billable' if params[:status].blank?
+    @schedule.status = 'non_billable' if params[:status].blank?
     @schedule.creator_id = current_user.id
     @schedule.user = current_user
     @schedule.id = Scheduling.last.id + 1
@@ -83,7 +83,7 @@ class SchedulingsController < ApplicationController
   
   def create_without_client
     @schedule = Scheduling.new(create_without_client_params)
-    @schedule.status = 'Non-Billable'
+    @schedule.status = 'non_billable'
     @schedule.creator_id = current_user.id
     @schedule.user = current_user
     @schedule.id = Scheduling.last.id + 1
@@ -308,7 +308,7 @@ class SchedulingsController < ApplicationController
 
   def check_units
     #update_units_columns(@schedule.client_enrollment_service)
-    if (params[:status]=='Scheduled' && @schedule.status!='Scheduled' && @schedule.status!='Rendered') && @schedule.client_enrollment_service.left_units<params[:units].to_f
+    if (params[:status]=='scheduled' && @schedule.status!='scheduled' && @schedule.status!='rendered') && @schedule.client_enrollment_service.left_units<params[:units].to_f
       @schedule.errors.add(:units, 'left in authorization are not enough to update this cancelled appointment to scheduled.')
       return false
     elsif params[:units].present? && params[:units].to_f>@schedule.units && @schedule.client_enrollment_service.left_units<(params[:units].to_f-@schedule.units)
@@ -319,7 +319,7 @@ class SchedulingsController < ApplicationController
   end
 
   def update_status
-    if params[:status]=='Rendered'
+    if params[:status]=='rendered'
       if current_user.role_name=='super_admin'
         update_scheduling 
         update_render_service
@@ -327,7 +327,7 @@ class SchedulingsController < ApplicationController
         @schedule.errors.add(:schedule, 'You are not authorized to render appointment manually.')
         return false
       end
-    elsif @schedule.status=='Rendered' && params[:status]!='Rendered'
+    elsif @schedule.status=='rendered' && params[:status]!='rendered'
       if current_user.role_name=='super_admin'
         update_scheduling 
         # @schedule.is_rendered = false
@@ -352,7 +352,7 @@ class SchedulingsController < ApplicationController
 
   # Render an appointment manually
   def manual_rendering
-    @schedule.update(status: 'Rendered',rendered_at: Time.current,is_manual_render: true, rendered_by_id: current_user.id, user: current_user)
+    @schedule.update(status: 'rendered',rendered_at: Time.current,is_manual_render: true, rendered_by_id: current_user.id, user: current_user)
   end
   # end of private
 end
