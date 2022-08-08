@@ -418,4 +418,27 @@ RSpec.describe ClientsController, type: :controller do
       end
     end
   end
+
+  describe "GET #past_appointments" do
+    context "when sign in" do
+      let!(:client) { create(:client, clinic_id: clinic.id)}
+      let!(:service) { create(:service) }
+      let!(:funding_source){ create(:funding_source, clinic_id: clinic.id)}
+      let!(:client_enrollment) { create(:client_enrollment, client_id: client.id, source_of_payment: 'insurance', funding_source_id: funding_source.id) }
+      let!(:client_enrollment_service) { create(:client_enrollment_service, client_enrollment_id: client_enrollment.id, service_id: service.id) }
+      let!(:staff) { create(:staff, :with_role, role_name: 'administrator', first_name: 'abcd') }
+      let!(:scheduling){ create(:scheduling, staff_id: staff.id, client_enrollment_service_id: client_enrollment_service.id, date: '2022-01-01') }
+      let!(:past_schedules){ Scheduling.joins(client_enrollment_service: :client_enrollment).by_client_ids(client&.id).completed_scheduling }
+      it "should show client past appointments successfully" do
+        set_auth_headers(auth_headers)
+
+        get :past_appointments, params: {client_id: client.id}
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data'].count).to eq(past_schedules.count)
+      end
+    end
+  end
 end

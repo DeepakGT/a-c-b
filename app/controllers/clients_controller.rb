@@ -1,7 +1,7 @@
 require 'will_paginate/array'
 class ClientsController < ApplicationController
   before_action :authenticate_user!
-  before_action :authorize_user
+  before_action :authorize_user, except: :past_appointments
   before_action :set_client, only: %i[show update destroy]
 
   def index
@@ -28,6 +28,11 @@ class ClientsController < ApplicationController
   def destroy
     SoapNote.by_client(@client.id).destroy_all
     @client.destroy
+  end
+
+  def past_appointments
+    @client = Client.find(params[:client_id]) rescue nil
+    @schedules = Scheduling.joins(client_enrollment_service: :client_enrollment).by_client_ids(@client&.id).completed_scheduling
   end
 
   private
