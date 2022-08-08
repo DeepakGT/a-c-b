@@ -10,6 +10,7 @@ else
     json.web @organization.web
     json.email @organization.email
     json.status @organization.status
+    json.id_regions @organization.id_regions
     if @organization.phone_number.present?
       json.phone_number do
         json.id @organization.phone_number.id
