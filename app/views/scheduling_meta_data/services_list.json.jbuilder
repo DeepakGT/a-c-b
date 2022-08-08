@@ -34,8 +34,10 @@ json.data do
     # end
     json.funding_source_name client_enrollment_service&.client_enrollment&.funding_source&.name 
     json.is_primary client_enrollment_service&.client_enrollment&.is_primary
-    selected_payor = JSON.parse(client_enrollment_service&.service&.selected_payors)&.select{|payor| payor['payor_id']=="#{client_enrollment_service&.client_enrollment&.funding_source&.id}"}&.first
-    json.is_legacy_required selected_payor['is_legacy_required'] if (client_enrollment_service&.service.is_service_provider_required.to_bool.true? && selected_payor.present? && @staff.present?)
+    if client_enrollment_service&.service&.selected_payors.present?
+      selected_payor = JSON.parse(client_enrollment_service&.service&.selected_payors)&.select{|payor| payor['payor_id']=="#{client_enrollment_service&.client_enrollment&.funding_source&.id}"}&.first
+      json.is_legacy_required selected_payor['is_legacy_required'] if (client_enrollment_service&.service.is_service_provider_required.to_bool.true? && selected_payor.present? && @staff.present?)
+    end
   end
 end
 json.staff_legacy_number @staff&.legacy_number if @staff.present?
