@@ -7,7 +7,7 @@ json.data do
     json.partial! 'list_detail_with_type', list: @selectable_options[:dq_reasons]
   end
   json.relation_types do
-    json.partial! 'list_detail_with_type', list: @selectable_options[:relation_type]
+    json.partial! 'list_detail_with_type', list: @selectable_options[:relation_types]
   end
   json.relations do
     json.partial! 'list_detail_with_type', list: @selectable_options[:relations]
