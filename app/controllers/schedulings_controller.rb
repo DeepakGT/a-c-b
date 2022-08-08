@@ -297,7 +297,7 @@ class SchedulingsController < ApplicationController
 
   def check_units
     if (params[:status]=='scheduled' && @schedule&.status!='scheduled' && @schedule&.status!='rendered') && @schedule&.client_enrollment_service&.left_units<params[:units].to_f
-      @schedule&.errors&.add(:units, 'left in authorization are not enough to update this cancelled appointment to scheduled.')
+      @schedule&.errors&.add(:units, "left in authorization are not enough to update #{@schedule&.status} appointment to scheduled.")
       return false
     elsif params[:units].present? && params[:units].to_f>@schedule&.units && @schedule&.client_enrollment_service&.left_units<(params[:units].to_f-@schedule&.units)
       @schedule&.errors&.add(:units, 'left in authorization are not enough to update the units of appointment.')
