@@ -38,6 +38,7 @@ else
   json.is_rendered false
 end
 json.unrendered_reasons schedule.unrendered_reason
+json.rendered_at schedule.rendered_at
 if @schedule.rendered_at.present? 
   json.rendered_message "Appointment has been rendered successfully."
 elsif @schedule.unrendered_reason.present?

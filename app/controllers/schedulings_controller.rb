@@ -216,7 +216,7 @@ class SchedulingsController < ApplicationController
   def update_scheduling
     @schedule&.update(scheduling_params)
     @schedule&.updator_id = current_user.id
-    update_render_service if params[:is_rendered].present? || params[:status]=='Rendered'
+    update_render_service if params[:is_rendered].present? || params[:status]=='rendered'
     update_client_enrollment_service if params[:client_enrollment_service_id].present?
     @schedule&.save
   end
@@ -224,7 +224,7 @@ class SchedulingsController < ApplicationController
   def update_scheduling_when_bcba
     @schedule&.update(scheduling_params_when_bcba)
     @schedule&.updator_id = current_user.id
-    update_render_service if params[:is_rendered].present? || params[:status]=='Rendered'
+    update_render_service if params[:is_rendered].present? || params[:status]=='rendered'
     update_client_enrollment_service if params[:client_enrollment_service_id].present?
     @schedule&.save
   end
