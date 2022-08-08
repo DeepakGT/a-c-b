@@ -5,6 +5,8 @@ class Clinic < ApplicationRecord
   has_many :staff, through: :staff_clinics
   has_many :clients, dependent: :destroy
   has_many :funding_sources, dependent: :destroy
+  has_one :region
+
 
   belongs_to :organization
 

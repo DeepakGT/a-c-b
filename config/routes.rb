@@ -25,7 +25,9 @@ Rails.application.routes.draw do
       registrations: 'overrides/registrations'
     }
 
+    resources :regions, only: [:index ]
     resources :organizations
+    get '/regions_organizations/:id', to: 'organizations#regions_organizations'
     
     resources :clinics do
       resources :funding_sources
@@ -60,7 +62,7 @@ Rails.application.routes.draw do
 
     resources :services
 
-    resources :roles 
+    resources :roles
 
     get 'meta_data/selectable_options'
     get 'meta_data/select_payor_types'
