@@ -58,7 +58,6 @@ ActiveRecord::Schema.define(version: 2022_08_08_144400) do
     t.datetime "updated_at", precision: 6, null: false
     t.boolean "is_default", default: false
     t.string "address_name"
-    t.boolean "is_hidden", default: false
     t.index ["addressable_id", "addressable_type", "address_type"], name: "index_on_address", unique: true, where: "((address_type = 0) OR (address_type = 1))"
     t.index ["addressable_type", "addressable_id"], name: "index_addresses_on_addressable"
   end
@@ -71,28 +70,6 @@ ActiveRecord::Schema.define(version: 2022_08_08_144400) do
     t.datetime "updated_at", precision: 6, null: false
     t.string "file_name"
     t.index ["attachable_type", "attachable_id"], name: "index_attachments_on_attachable"
-  end
-
-  create_table "audits", force: :cascade do |t|
-    t.integer "auditable_id"
-    t.string "auditable_type"
-    t.integer "associated_id"
-    t.string "associated_type"
-    t.integer "user_id"
-    t.string "user_type"
-    t.string "username"
-    t.string "action"
-    t.text "audited_changes"
-    t.integer "version", default: 0
-    t.string "comment"
-    t.string "remote_address"
-    t.string "request_uuid"
-    t.datetime "created_at"
-    t.index ["associated_type", "associated_id"], name: "associated_index"
-    t.index ["auditable_type", "auditable_id", "version"], name: "auditable_index"
-    t.index ["created_at"], name: "index_audits_on_created_at"
-    t.index ["request_uuid"], name: "index_audits_on_request_uuid"
-    t.index ["user_id", "user_type"], name: "user_index"
   end
 
   create_table "catalyst_data", force: :cascade do |t|
@@ -116,7 +93,8 @@ ActiveRecord::Schema.define(version: 2022_08_08_144400) do
     t.string "catalyst_user_id"
     t.string "location"
     t.string "session_location"
-    t.boolean "is_deleted_from_connect", default: false
+    t.index ["is_appointment_found"], name: "index_catalyst_data_on_is_appointment_found"
+    t.index ["multiple_schedulings_ids"], name: "index_catalyst_data_on_multiple_schedulings_ids"
     t.index ["system_scheduling_id"], name: "index_catalyst_data_on_system_scheduling_id"
   end
 
@@ -125,6 +103,12 @@ ActiveRecord::Schema.define(version: 2022_08_08_144400) do
     t.bigint "staff_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.float "left_units", default: 0.0
+    t.float "used_units", default: 0.0
+    t.float "scheduled_units", default: 0.0
+    t.float "left_minutes", default: 0.0
+    t.float "used_minutes", default: 0.0
+    t.float "scheduled_minutes", default: 0.0
     t.index ["client_enrollment_service_id"], name: "index_on_service_provider"
     t.index ["staff_id"], name: "index_client_enrollment_service_providers_on_staff_id"
   end
@@ -134,6 +118,8 @@ ActiveRecord::Schema.define(version: 2022_08_08_144400) do
     t.date "end_date"
     t.float "units"
     t.float "minutes"
+    t.boolean "is_appointment_found"
+    t.string "multiple_schedulings_ids", default: [], array: true
     t.string "service_number"
     t.bigint "client_enrollment_id", null: false
     t.bigint "service_id", null: false
@@ -331,6 +317,7 @@ ActiveRecord::Schema.define(version: 2022_08_08_144400) do
     t.bigint "client_enrollment_service_id"
     t.bigint "creator_id"
     t.bigint "updator_id"
+    t.boolean "is_rendered", default: false
     t.boolean "cross_site_allowed", default: false
     t.integer "service_address_id"
     t.string "unrendered_reason"
@@ -339,12 +326,10 @@ ActiveRecord::Schema.define(version: 2022_08_08_144400) do
     t.string "snowflake_appointment_id"
     t.boolean "is_manual_render", default: false
     t.boolean "is_soap_notes_assigned", default: false
-    t.text "non_billable_reason"
-    t.bigint "rendered_by_id"
     t.index ["client_enrollment_service_id"], name: "index_schedulings_on_client_enrollment_service_id"
     t.index ["creator_id"], name: "index_schedulings_on_creator_id"
     t.index ["date"], name: "index_schedulings_on_date"
-    t.index ["rendered_by_id"], name: "index_schedulings_on_rendered_by_id"
+    t.index ["is_rendered"], name: "index_schedulings_on_is_rendered"
     t.index ["staff_id"], name: "index_schedulings_on_staff_id"
     t.index ["start_time"], name: "index_schedulings_on_start_time"
     t.index ["updator_id"], name: "index_schedulings_on_updator_id"
@@ -470,7 +455,6 @@ ActiveRecord::Schema.define(version: 2022_08_08_144400) do
     t.date "hired_at"
     t.string "job_type", default: "full_time"
     t.text "catalyst_user_id"
-    t.string "default_schedule_view", default: "calendar"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
@@ -496,7 +480,6 @@ ActiveRecord::Schema.define(version: 2022_08_08_144400) do
   add_foreign_key "scheduling_change_requests", "schedulings"
   add_foreign_key "schedulings", "client_enrollment_services"
   add_foreign_key "schedulings", "users", column: "creator_id"
-  add_foreign_key "schedulings", "users", column: "rendered_by_id"
   add_foreign_key "schedulings", "users", column: "staff_id"
   add_foreign_key "schedulings", "users", column: "updator_id"
   add_foreign_key "service_qualifications", "qualifications"
