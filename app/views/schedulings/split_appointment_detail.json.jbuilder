@@ -8,7 +8,7 @@ json.data do
     json.catalyst_data do
       catalyst_datas = CatalystData.where(id: @schedule.catalyst_data_ids)
       json.array! catalyst_datas do |data|
-        json.partial! 'catalyst/catalyst_data_detail'
+        json.partial! 'catalyst/catalyst_data_detail', catalyst_data: data
       end
     end
   end
