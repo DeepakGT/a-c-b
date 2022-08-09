@@ -103,8 +103,10 @@ else
   json.nonBillabelPayorExists false
 end
 early_authorizations = ClientEnrollmentService.by_client(@client.id).joins(:service).where('services.is_early_code': true).where.not('client_enrollments.funding_source_id': nil)
+authorizations = ClientEnrollmentService.by_client(@client.id).joins(:service).where.not('services.is_early_code': true).where.not('services.display_code': '97151').where.not('client_enrollments.funding_source_id': nil)
 funding_source_ids = early_authorizations.map{|authorization| authorization.client_enrollment.funding_source_id}.uniq.compact
-if early_authorizations.present? && funding_source_ids.count==non_billable_funding_sources.count
+days_since_creation = (Time.current.to_date - (@client.created_at).to_date).to_s[0..-3]
+if early_authorizations.present? && funding_source_ids.count==non_billable_funding_sources.count && authorizations.present? && days_since_creation.to_i>90
   json.hideEarlyAuthButton true
 else
   json.hideEarlyAuthButton false
