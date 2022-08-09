@@ -22,7 +22,7 @@ module RenderAppointments
         if catalyst_notes_ids.present? && !catalyst_notes_ids.empty?
           @catalyst_notes = CatalystData.where('id IN (?)', catalyst_notes_ids)
           @catalyst_notes.each do |catalyst_note|
-            create_soap_note&(schedule, catalyst_note)
+            create_soap_note(schedule, catalyst_note)
             catalyst_note.system_scheduling_id = schedule&.id
             catalyst_note.save(validate: false)
           end
@@ -30,7 +30,7 @@ module RenderAppointments
         schedule&.save(validate: false)
       end
 
-      def create_soap_note&(schedule, catalyst_data)
+      def create_soap_note(schedule, catalyst_data)
         soap_note = SoapNote.find_or_initialize_by(catalyst_data_id: catalyst_data&.id)
         soap_note&.add_date = catalyst_data&.date
         soap_note&.note = catalyst_data&.note

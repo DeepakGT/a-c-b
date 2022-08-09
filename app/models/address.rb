@@ -15,7 +15,7 @@ class Address < ApplicationRecord
   end
 
   def validate_is_hidden_for_default_service_address
-    if self.address_type.service_address? && self.is_default.to_bool.true? && self.is_hidden.to_bool.true?
+    if self.service_address? && self.is_default.to_bool.true? && self.is_hidden.to_bool.true?
       errors.add(:is_hidden, 'cannot be true for default address.')
     end
   end

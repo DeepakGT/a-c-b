@@ -35,7 +35,7 @@ json.staff_name "#{schedule.staff.first_name} #{schedule.staff.last_name}" if sc
 json.staff_role schedule&.staff&.role_name if schedule&.staff.present?
 json.staff_email schedule.staff.email if schedule.staff.present?
 json.staff_legacy_number schedule.staff.legacy_number if schedule.staff.present?
-if @schedule.client_enrollment_service_id.present? && @schedule.client_enrollment_service.service&.selected_payors.present?
+if @schedule&.client_enrollment_service_id.present? && @schedule.client_enrollment_service.service&.selected_payors.present?
   selected_payor = JSON.parse(schedule&.client_enrollment_service&.service&.selected_payors)&.select{|payor| payor['payor_id']=="#{schedule&.client_enrollment_service&.client_enrollment&.funding_source&.id}"}&.first
   json.is_legacy_required selected_payor['is_legacy_required'] if (schedule&.client_enrollment_service&.service&.is_service_provider_required? && selected_payor.present?)
 end
