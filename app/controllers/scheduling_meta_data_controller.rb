@@ -35,7 +35,7 @@ class SchedulingMetaDataController < ApplicationController
     catalyst_data = CatalystData.select(CATALYST_QUERY).joins(CATALYST_LEFT_JOIN_QUERY).joins(CATALYST_LEFT_JOIN_WITH_CLINIC).post_30_may_catalyst_data.by_catalyst_user_id(current_user.id).removed_from_dashboard.and(CatalystData.with_no_appointments).uniq
     @action_items_array = past_schedules.uniq.concat(catalyst_data)
     @action_items_array = sort_action_items(@action_items_array)
-
+    @total_count = @action_items_array.length
     # sql = "(SELECT id, 'Upcoming Schedule' AS type FROM schedulings WHERE staff_id = #{current_user.id} AND status = 'Scheduled' AND date>=CURRENT_TIMESTAMP ORDER BY date LIMIT 10) UNION (SELECT id, 'Past Schedule' AS type FROM schedulings WHERE staff_id = #{current_user.id} AND status = 'Scheduled' AND date<CURRENT_TIMESTAMP AND date>=(CURRENT_TIMESTAMP + INTERVAL '-2 month') AND is_rendered=false ORDER BY date DESC) UNION (SELECT id,'Catalyst Data' AS type FROM catalyst_data WHERE system_scheduling_id IS NULL LIMIT 30);"
     # @appointments = ActiveRecord::Base.connection.exec_query(sql)&.rows
     @action_items_array = @action_items_array.paginate(page: params[:page]) if params[:page].present?
@@ -61,7 +61,7 @@ class SchedulingMetaDataController < ApplicationController
     catalyst_data = CatalystData.select(CATALYST_QUERY).joins(CATALYST_LEFT_JOIN_QUERY).joins(CATALYST_LEFT_JOIN_WITH_CLINIC).post_30_may_catalyst_data.by_catalyst_user_id(current_user.id).removed_from_dashboard.and(CatalystData.with_no_appointments).uniq
     @action_items_array = past_schedules.uniq.concat(catalyst_data)
     @action_items_array = sort_action_items(@action_items_array)
-
+    @total_count = @action_items_array.length
     # sql = "(SELECT id, 'Upcoming Schedule' AS type FROM schedulings WHERE staff_id = #{current_user.id} AND status = 'Scheduled' AND date>=CURRENT_TIMESTAMP ORDER BY date LIMIT 20) UNION (SELECT id, 'Past Schedule' AS type FROM schedulings WHERE staff_id = #{current_user.id} AND status = 'Scheduled' AND date<CURRENT_TIMESTAMP AND date>=(CURRENT_TIMESTAMP + INTERVAL '-2 month') AND is_rendered=false ORDER BY date DESC) UNION (SELECT client_enrollment_services.id, 'client_enrollment_services' AS type FROM client_enrollment_services INNER JOIN client_enrollments ON client_enrollments.id=client_enrollment_services.client_enrollment_id INNER JOIN clients ON clients.id=client_enrollments.client_id WHERE clients.bcba_id = #{current_user.id} AND client_enrollment_services.end_date >= CURRENT_TIMESTAMP AND client_enrollment_services.end_date <= (CURRENT_TIMESTAMP + INTERVAL '9 day')) UNION (SELECT id,'Catalyst Data' AS type FROM catalyst_data WHERE system_scheduling_id IS NULL LIMIT 30);"
     # @data = ActiveRecord::Base.connection.exec_query(sql)&.rows
     @action_items_array = @action_items_array.paginate(page: params[:page]) if params[:page].present?
