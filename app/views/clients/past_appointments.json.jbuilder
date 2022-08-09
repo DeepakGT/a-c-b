@@ -1,13 +1,12 @@
 json.status 'success'
 json.data do
   json.array! @schedules do |schedule|
-    client = schedule.client_enrollment_service&.client_enrollment&.client
     service = schedule.client_enrollment_service&.service
     json.id schedule.id
     json.client_enrollment_service_id schedule.client_enrollment_service_id
     json.cross_site_allowed schedule.cross_site_allowed
-    json.client_id client&.id
-    json.client_name "#{client.first_name} #{client.last_name}" if client.present?
+    json.client_id @client&.id
+    json.client_name "#{@client.first_name} #{@client.last_name}" if @client.present?
     json.service_address_id schedule.service_address_id
     service_address = Address.find_by(id: schedule.service_address_id)
     if service_address.present?
@@ -75,4 +74,9 @@ json.data do
       json.updator_name nil
     end
   end
+end
+if params[:page].present?
+  json.total_records @schedules.total_entries
+  json.limit @schedules.per_page
+  json.page params[:page]
 end

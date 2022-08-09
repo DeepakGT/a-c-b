@@ -33,6 +33,8 @@ class ClientsController < ApplicationController
   def past_appointments
     @client = Client.find(params[:client_id]) rescue nil
     @schedules = Scheduling.joins(client_enrollment_service: :client_enrollment).by_client_ids(@client&.id).completed_scheduling
+    @schedules = filter_schedules(@schedules) if params[:staff_ids].present? || params[:service_ids].present?
+    @schedules = @schedules.paginate(page: params[:page]) if params[:page].present?
   end
 
   private
@@ -154,6 +156,11 @@ class ClientsController < ApplicationController
     end
     clients
   end
-  # end of private
 
+  def filter_schedules(schedules)
+    schedules = schedules.by_staff_ids(params[:staff_ids]) if params[:staff_ids].present?
+    schedules = schedules.by_service_ids(params[:service_ids]) if params[:service_ids].present?
+    schedules
+  end
+  # end of private
 end
