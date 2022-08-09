@@ -7,7 +7,7 @@ json.data do
   json.email @organization.email
   json.status @organization.status
   if @organization.id_regions.any?
-    json.regions @organization.regions
+    json.regions @organization.id_regions
   end
   if @organization.phone_number.present?
     json.phone_number do
