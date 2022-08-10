@@ -52,7 +52,7 @@ class SchedulingMetaDataController < ApplicationController
     end
     past_schedules = past_schedules.select(SCHEDULE_QUERY)
     @past_schedules = past_schedules
-    @client_enrollment_services = ClientEnrollmentService.by_bcba_ids(current_user.id).excluding_early_codes
+    @client_enrollment_services = ClientEnrollmentService.by_bcba_ids(current_user.id).joins(:service).excluding_early_codes
                                                          .and(ClientEnrollmentService.about_to_expire.or(ClientEnrollmentService.expired))
                                                          .includes(:client_enrollment, client_enrollment: :client)
     # change_requests = SchedulingChangeRequest.by_approval_status
@@ -79,7 +79,7 @@ class SchedulingMetaDataController < ApplicationController
     end
     past_schedules = past_schedules.select(SCHEDULE_QUERY)
     @past_schedules = past_schedules
-    @client_enrollment_services = ClientEnrollmentService.by_client(client_ids).excluding_early_codes.and(ClientEnrollmentService.about_to_expire.or(ClientEnrollmentService.expired))
+    @client_enrollment_services = ClientEnrollmentService.by_client(client_ids).joins(:service).excluding_early_codes.and(ClientEnrollmentService.about_to_expire.or(ClientEnrollmentService.expired))
                                                          .includes(:service, :staff, :service_providers, :client_enrollment, client_enrollment: %i[client funding_source]).uniq
     change_requests = SchedulingChangeRequest.by_approval_status
     @change_requests = change_requests.by_client_ids(client_ids)
@@ -94,7 +94,7 @@ class SchedulingMetaDataController < ApplicationController
   end
 
   def billing_dashboard
-    @authorizations_expire_in_5_days = ClientEnrollmentService.expire_in_5_days.excluding_early_codes
+    @authorizations_expire_in_5_days = ClientEnrollmentService.expire_in_5_days.joins(:service).excluding_early_codes
     @authorizations_renewal_in_5_to_20_days = authorization_renewals_in_5_to_20_days
     @authorizations_renewal_in_21_to_60_days = authorization_renewals_in_21_to_60_days
     @client_with_no_authorizations = Client.with_no_authorizations

@@ -18,6 +18,8 @@ class FundingSource < ApplicationRecord
 
   validate :validate_non_billable_payors, on: :update
 
+  scope :non_billable_funding_sources, ->{ where(network_status: 'non_billable') }
+
   private
 
   def validate_non_billable_payors

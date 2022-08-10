@@ -96,17 +96,12 @@ if params[:page].present?
   json.limit @client_enrollments.per_page
   json.page params[:page]
 end
-non_billable_funding_sources = FundingSource.where(network_status: 'non_billable')
-if non_billable_funding_sources.present?
+if FundingSource.non_billable_funding_sources.present?
   json.nonBillabelPayorExists true
 else
   json.nonBillabelPayorExists false
 end
-early_authorizations = ClientEnrollmentService.by_client(@client.id).joins(:service).where('services.is_early_code': true).where.not('client_enrollments.funding_source_id': nil)
-authorizations = ClientEnrollmentService.by_client(@client.id).joins(:service).where.not('services.is_early_code': true).where.not('services.display_code': '97151').where.not('client_enrollments.funding_source_id': nil)
-funding_source_ids = early_authorizations.map{|authorization| authorization.client_enrollment.funding_source_id}.uniq.compact
-days_since_creation = (Time.current.to_date - (@client.created_at).to_date).to_i
-if early_authorizations.present? && funding_source_ids.count==non_billable_funding_sources.count && authorizations.present? && days_since_creation>180
+if @client&.early_authorizations&.present? && @client&.funding_source_ids&.count==FundingSource.non_billable_funding_sources.count && @client&.non_early_authorizations_except_97151&.present? && @client&.days_since_creation>180
   json.hideEarlyAuthButton true
 else
   json.hideEarlyAuthButton false
