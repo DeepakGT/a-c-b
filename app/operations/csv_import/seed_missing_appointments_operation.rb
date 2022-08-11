@@ -107,8 +107,8 @@ module CsvImport
             # else
             #   Loggers::MissingAppointmentsLoggerService.call(appointment[:appointmentid], "Client enrollment service with authorization number #{appointment[:authorizationnumber]} not found.")
             # end
-            if appointment[:fundingsource].present?
-              funding_source_id = get_funding_source(appointment[:fundingsource])
+            if appointment[:ss_fundingsource].present?
+              funding_source_id = get_funding_source(appointment[:ss_fundingsource])
               if funding_source_id.present?
                 service = Service.where('lower(name) = ?', appointment[:servicename]&.downcase).first
                 # if appointment[:servicename]=='Supervision'
@@ -166,7 +166,7 @@ module CsvImport
                   if client_enrollment_services.count==1
                     client_enrollment_service = client_enrollment_services.first
                   else
-                    client_enrollment_services = client_enrollment_services.where('start_date <= ? AND end_date>=?', appointment[:servicestart]&.to_time&.strftime('%Y-%m-%d'), appointment[:serviceend]&.to_time&.strftime('%Y-%m-%d'))
+                    client_enrollment_services = client_enrollment_services.where('start_date <= ? AND end_date>=?', appointment[:servicefundingbegin]&.to_time&.strftime('%Y-%m-%d'), appointment[:servicefundingend]&.to_time&.strftime('%Y-%m-%d'))
                     if client_enrollment_services.count==1
                       client_enrollment_service = client_enrollment_services.first
                     else
@@ -209,13 +209,13 @@ module CsvImport
           return FundingSource.find_by(name: 'Ambetter nnhf').id
         when 'AETNA'
           return FundingSource.find_by(name: 'Aetna').id
-        when 'OPTUM'
-          return FundingSource.find_by(name: 'Optumhealth Behavioral Solutions').id
-        when 'UBH'
+        when 'OPTUM', 'OPTUMHEALTH BEHAVIORAL SOLUTIONS'
+          return FundingSource.find_by(name: 'Optum Health Behavioral Solutions').id
+        when 'UBH', 'UNITED BEHAVIORAL HEALTH'
           return FundingSource.find_by(name: 'United Behavioral Health').id
-        when 'BHS'
-          return FundingSource.find_by(name: 'Beacon health strategies').id
-        when 'AMERIHEALTH'
+        when 'BHS', 'BEACON HEALTH STRTEGIES'
+          return FundingSource.find_by(name: 'Beacon health strategies (Duplicate-pending purge)').id
+        when 'AMERIHEALTH', 'AMERIHEALTH CARITAS NH'
           return FundingSource.find_by(name: 'Amerihealth caritas nh').id
         when 'CIGNA'
           return FundingSource.find_by(name: 'Cigna').id
@@ -223,7 +223,7 @@ module CsvImport
           return FundingSource.find_by(name: 'TUFTS').id
         when 'UMR'
           return FundingSource.find_by(name: 'UMR').id
-        when 'HP'
+        when 'HP', 'HARVARD PILGRIM'
           return FundingSource.find_by(name: 'Harvard pilgrim').id
         when 'aba'
           return FundingSource.find_by(name: 'ABA Centers of America').id
@@ -296,6 +296,7 @@ module CsvImport
         schedule.creator_id = Staff.find_by(first_name: creator_name.last, last_name: creator_name.first)&.id
         schedule.cross_site_allowed = true if appointment[:crossofficeappt].present? && appointment[:crossofficeappt].split('/').count>1
         schedule.service_address_id = client.addresses&.by_service_address&.find_by(city: appointment[:clientcity], zipcode: appointment[:clientzip])&.id
+        schedule.id = Scheduling.last.id + 1
         schedule.save(validate: false)
         if schedule.id==nil
           Loggers::MissingAppointmentsLoggerService.call(appointment_id, 'Schedule cannot be saved.')
