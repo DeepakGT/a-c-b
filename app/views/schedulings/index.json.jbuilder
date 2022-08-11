@@ -59,8 +59,8 @@ json.data do
     json.service_display_code service&.display_code 
     json.status schedule.status
     json.date schedule.date
-    json.start_time schedule.start_time.to_time.strftime('%H:%M')
-    json.end_time schedule.end_time.to_time.strftime('%H:%M')
+    json.start_time schedule.start_time
+    json.end_time schedule.end_time
     # json.is_rendered schedule.is_rendered
     if schedule.rendered_at.present? && schedule.status == 'Rendered'
       json.is_rendered true
@@ -89,9 +89,7 @@ json.data do
     # end
   end
 end
-if params[:show_inactive] == 1 || params[:show_inactive] == "1"
-  json.show_inactive params[:show_inactive]
-end
+json.show_inactive params[:show_inactive] if (params[:show_inactive] == 1 || params[:show_inactive] == "1")
 if params[:page].present?
   json.total_records @schedules.total_entries
   json.limit @schedules.per_page

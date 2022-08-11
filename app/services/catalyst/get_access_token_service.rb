@@ -5,12 +5,12 @@ module Catalyst
   module GetAccessTokenService
     class << self
       def call
-        get_catalyst_access_token
+        receive_catalyst_access_token
       end
 
       private
 
-      def get_catalyst_access_token
+      def receive_catalyst_access_token
         url = URI("https://api.datafinch.com/connect/token")
     
         https = Net::HTTP.new(url.host, url.port)

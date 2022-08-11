@@ -52,6 +52,7 @@ class SchedulingsController < ApplicationController
   def update
     @schedule.user = current_user
     return if !check_units
+    
     update_status if params[:status].present?
     #update_units_columns(@schedule.client_enrollment_service)
   end
@@ -154,7 +155,7 @@ class SchedulingsController < ApplicationController
   end
 
   def scheduling_params_when_bcba
-    params.permit(%i[ status date start_time end_time units minutes])
+    params.permit(%i[status date start_time end_time units minutes])
   end
 
   def set_scheduling
@@ -211,7 +212,7 @@ class SchedulingsController < ApplicationController
   # end 
 
   def update_render_service
-    RenderAppointments::RenderScheduleManualOperation.call(@schedule.id, params[:catalyst_soap_note_id]) if (params[:is_rendered].to_bool.true? || params[:status]=='Rendered') && @schedule.date<Time.current.to_date
+    RenderAppointments::RenderScheduleManualOperation.call(@schedule.id, params[:catalyst_soap_note_id], current_user) if (params[:is_rendered].to_bool.true? || params[:status]=='Rendered') && @schedule.date<Time.current.to_date
   end
 
   def update_scheduling
@@ -307,10 +308,10 @@ class SchedulingsController < ApplicationController
 
   def check_units
     #update_units_columns(@schedule.client_enrollment_service)
-    if (params[:status]=='Scheduled' && @schedule.status!='Scheduled' && @schedule.status!='Rendered') && @schedule.client_enrollment_service.left_units<params[:units]
+    if (params[:status]=='Scheduled' && @schedule.status!='Scheduled' && @schedule.status!='Rendered') && @schedule.client_enrollment_service.left_units<params[:units].to_f
       @schedule.errors.add(:units, 'left in authorization are not enough to update this cancelled appointment to scheduled.')
       return false
-    elsif params[:units].present? && params[:units]>@schedule.units && @schedule.client_enrollment_service.left_units<(params[:units]-@schedule.units)
+    elsif params[:units].present? && params[:units].to_f>@schedule.units && @schedule.client_enrollment_service.left_units<(params[:units].to_f-@schedule.units)
       @schedule.errors.add(:units, 'left in authorization are not enough to update the units of appointment.')
       return false
     end
@@ -331,6 +332,8 @@ class SchedulingsController < ApplicationController
         update_scheduling 
         # @schedule.is_rendered = false
         @schedule.rendered_at = nil
+        @schedule.rendered_by_id = nil
+        @schedule.is_manual_render = false
         @schedule.save
       else
         @schedule.errors.add(:schedule, 'You are not authorized to unrender appointment.')
