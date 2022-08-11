@@ -150,7 +150,7 @@ RSpec.describe MetaDataController, type: :controller do
 
           expect(response.status).to eq(200)
           expect(response_body['status']).to eq('success')
-          expect(response_body['data']['non_billable_funding_sources'].count).to eq(funding_sources_list.count)
+          expect(response_body['data']['funding_sources'].count).to eq(funding_sources_list.count)
           expect(response_body['data']['non_early_services'].count).to eq(services_list.count)
           expect(response_body['data']['billable_funding_sources']).to eq(nil)
         end
@@ -166,7 +166,7 @@ RSpec.describe MetaDataController, type: :controller do
 
           expect(response.status).to eq(200)
           expect(response_body['status']).to eq('success')
-          expect(response_body['data']['billable_funding_sources'].count).to eq(funding_sources_list.count)
+          expect(response_body['data']['funding_sources'].count).to eq(funding_sources_list.count)
           expect(response_body['data']['non_early_services']).to eq(nil)
           expect(response_body['data']['non_billable_funding_sources']).to eq(nil)
         end
