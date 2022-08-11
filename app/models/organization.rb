@@ -15,6 +15,6 @@ class Organization < ApplicationRecord
   validates_uniqueness_of :name
 
   def regions
-    id_regions.map {|id_region| Region.find(id_region) }
+    id_regions.map {|id_region| Region.find_by(id: id_region) }
   end
 end
