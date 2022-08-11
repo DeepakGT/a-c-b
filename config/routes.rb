@@ -58,6 +58,7 @@ Rails.application.routes.draw do
 
     resources :roles 
 
+    put '/update_claim_statuses', to: 'availity#update_claim_statuses'
     get 'meta_data/selectable_options'
     get '/supervisor_list', to: 'staff#supervisor_list'
     get '/addresses/country_list', to: 'addresses#country_list'
