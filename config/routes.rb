@@ -51,6 +51,7 @@ Rails.application.routes.draw do
       post '/create_office_address', to: 'client_service_addresses#create_office_address'
       put '/replace_early_auth', to: 'client_enrollment_services#replace_early_auth'
       post '/create_early_auths', to: 'client_enrollment_services#create_early_auths'
+      get '/past_appointments', to: 'clients#past_appointments'
     end
     
     resources :credentials, controller: 'qualifications' do
