@@ -15,23 +15,29 @@ class AvailityController < ApplicationController
     s3_data = S3::S3ApiServices.get_file(s3_client, params[:bucket], params[:source_file])
 
     # parse S3 data
-    rows = CSV.parse(s3_data)
-    rows.each_with_index do |row, index|
-      row << (index == 0 ? Availity::ProcessClaimsOperation::AVAILITY_STATUS : "")
+    rows = CSV.parse(s3_data, headers: true)
+    rows.each do |row|
+      row[Availity::ProcessClaimsOperation::AVAILITY_STATUS] = ""
     end
 
     # initialize errors for reporting purpose and process claims
     missing_payerid_errors = []
     claim_status_errors = []
-    Availity::ProcessClaimsOperation.process_claims(rows, missing_payerid_errors, claim_status_errors)
+    Availity::ProcessClaimsOperation.process_claims(rows, missing_payerid_errors, claim_status_errors, "availity_field_mapping", "availity_payer_mapping")
 
     if params[:testing] == "true"
       # save to csv file
-      idx = params[:target_file].include?("/") ? params[:target_file].rindex("/") : -1
-      CSV.open("#{Rails.root.join(Availity::ProcessClaimsOperation::AVAILITY_LOG_PATH)}/#{params[:target_file][idx + 1..]}", "wb") { |csv| rows.each { |row| csv << [row.first, row.second, row.last] } }
+      # for privacy, only save some columns
+      CSV.open("#{Rails.root.join(Availity::ProcessClaimsOperation::AVAILITY_LOG_PATH)}/test.csv", "wb") do |csv|
+        csv << [Availity::ProcessClaimsOperation::CLAIM_NUMBER, Availity::ProcessClaimsOperation::PAYORID, Availity::ProcessClaimsOperation::AVAILITY_STATUS]
+        rows.each { |row| csv << [row[Availity::ProcessClaimsOperation::CLAIM_NUMBER], row[Availity::ProcessClaimsOperation::PAYORID], row[Availity::ProcessClaimsOperation::AVAILITY_STATUS]] }
+      end
     else
       # upload data to S3
-      updated_s3_data = CSV.generate { |csv| rows.each { |row| csv << row } }
+      updated_s3_data = CSV.generate(headers: true) do |csv|
+        csv << rows.headers
+        rows.each { |row| csv << row }
+      end
       S3::S3ApiServices.put_file(s3_client, params[:bucket], params[:target_file], updated_s3_data)
     end
 
