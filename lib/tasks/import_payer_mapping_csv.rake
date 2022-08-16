@@ -6,7 +6,7 @@ namespace :import_availity_mapping_csv do
     field_mapping_key = "availity_field_mapping"
     field_mapping = []
     CSV.foreach(Rails.root.join("lib/Availity/field_mapping.csv"), headers: true) do |row|
-      field_mapping << { availity_param: row["availity_param"], data_field: row["data_field"] }
+      field_mapping << { availity_param: row["availity_param"].strip, data_field: row["data_field"].strip }
     end
     config_rec = ApplicationConfig.find_by(config_key: field_mapping_key)
     if config_rec.present?
@@ -22,10 +22,10 @@ namespace :import_availity_mapping_csv do
     payer_mapping = {}
     CSV.foreach(Rails.root.join("lib/Availity/payer_mapping.csv"), headers: true) do |row|
       payer_mapping[row["cmd_payer_id"]] = {
-        availity_payer_id: row["availity_payer_id"],
-        submitter_id: row["submitter_id"],
-        submitter_last_name: row["submitter_last_name"],
-        provider_last_name: row["provider_last_name"]
+        availity_payer_id: row["availity_payer_id"].strip,
+        submitter_id: row["submitter_id"].strip,
+        submitter_last_name: row["submitter_last_name"].strip,
+        provider_last_name: row["provider_last_name"].strip
       } unless payer_mapping.key?(row["cmd_payer_id"])
     end
     config_rec = ApplicationConfig.find_by(config_key: payer_mapping_key)

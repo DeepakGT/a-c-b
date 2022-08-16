@@ -3,6 +3,8 @@ require 'uri'
 
 module Availity
   module AvailityApiServices
+    AVAILITY_CLAIM_STATUS_URL = "https://api.availity.com/availity/v1/claim-statuses".freeze
+
     class << self
       def get_access_token
         uri = URI.parse("https://api.availity.com/availity/v1/token")
@@ -33,12 +35,12 @@ module Availity
       end
 
       def get_claim_statuses(access_token, parameters)
-        url = "https://api.availity.com/availity/v1/claim-statuses?#{parameters}"
+        url = "#{AVAILITY_CLAIM_STATUS_URL}?#{parameters}"
         get_claim_data(access_token, url)
       end
 
       def get_claim_statuses_by_id(access_token, id)
-        url = "https://api.availity.com/availity/v1/claim-statuses/#{id}"
+        url = "#{AVAILITY_CLAIM_STATUS_URL}/#{id}"
         get_claim_data(access_token, url)
       end
     end

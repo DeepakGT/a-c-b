@@ -20,10 +20,8 @@ class AvailityController < ApplicationController
       row[Availity::ProcessClaimsOperation::AVAILITY_STATUS] = ""
     end
 
-    # initialize errors for reporting purpose and process claims
-    missing_payerid_errors = []
-    claim_status_errors = []
-    Availity::ProcessClaimsOperation.process_claims(rows, missing_payerid_errors, claim_status_errors, "availity_field_mapping", "availity_payer_mapping")
+    # process claims
+    Availity::ProcessClaimsOperation.process_claims(rows, "availity_field_mapping", "availity_payer_mapping")
 
     if params[:testing] == "true"
       # save to csv file
@@ -41,13 +39,9 @@ class AvailityController < ApplicationController
       S3::S3ApiServices.put_file(s3_client, params[:bucket], params[:target_file], updated_s3_data)
     end
 
-    if missing_payerid_errors.blank? && claim_status_errors.blank?
-      render json: { success: true }
-    else
-      render json: { success: false, errors: { payerid_missing: missing_payerid_errors, claim_statuses: claim_status_errors } }
-    end
+    render json: { success: true }, status: 200
   rescue => e
-    render json: { success: false, errors: e.message }
+    render json: { success: false, error: e.message }, status: 500
   end
 
   private

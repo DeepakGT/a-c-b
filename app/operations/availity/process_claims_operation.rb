@@ -6,7 +6,7 @@ module Availity
     PAYORID = "PAYORID".freeze
     
     class << self
-      def process_claims(rows, missing_payerid_errors, claim_status_errors, field_mapping_key, payer_mapping_key)
+      def process_claims(rows, field_mapping_key, payer_mapping_key)
         # get the field mapping between Availity API parameters and S3 data fields
         # example:
         # [
@@ -35,6 +35,7 @@ module Availity
         # get access token from Availity
         access_token = Availity::AvailityApiServices.get_access_token
         retry_claims = []
+        missing_payerid_errors = []
 
         rows.each do |claim|
           # loop through each field and build the list of parameters
@@ -49,7 +50,8 @@ module Availity
                 cmd_payer = value
                 if payer_mapping[cmd_payer].blank?
                   value = ""
-                  err = "CollabMD Payer #{cmd_payer} missing Availity Payer Id"
+                  err = "Not found Availity Payer Id for CollabMD Payer #{cmd_payer}"
+                  claim[AVAILITY_STATUS] = { "error" => err, "details" => err }
                   if missing_payerid_errors.exclude?(err)
                     missing_payerid_errors << err
                     log.error(err)
@@ -72,8 +74,8 @@ module Availity
             parameters = "#{parameters}&providers.lastName=#{payer_mapping[cmd_payer]['provider_last_name']}&submitter.lastName=#{payer_mapping[cmd_payer]['submitter_last_name']}&submitter.id=#{payer_mapping[cmd_payer]['submitter_id']}"
 
             # get claim status by required parameters
-            url = "https://api.availity.com/availity/v1/claim-statuses?#{parameters}"
-            get_status(claim, access_token, url, retry_claims, claim_status_errors, log)
+            url = "#{Availity::AvailityApiServices::AVAILITY_CLAIM_STATUS_URL}?#{parameters}"
+            get_status(claim, access_token, url, retry_claims, log)
           end
         rescue => e
           log.error("#{e.message} => #{e.backtrace}")
@@ -87,8 +89,8 @@ module Availity
           retry_claims = []
           retries.each do |item|
             # get claim status by Availity id
-            url = "https://api.availity.com/availity/v1/claim-statuses/#{item[:availity_id]}"
-            get_status(item[:claim], access_token, url, retry_claims, claim_status_errors, log)
+            url = "#{Availity::AvailityApiServices::AVAILITY_CLAIM_STATUS_URL}/#{item[:availity_id]}"
+            get_status(item[:claim], access_token, url, retry_claims, log)
           rescue => e
             log.error("#{e.message} => #{e.backtrace}")
           end
@@ -99,7 +101,7 @@ module Availity
 
       private
 
-      def get_status(claim, access_token, url, retry_claims, claim_status_errors, log)
+      def get_status(claim, access_token, url, retry_claims, log)
         # send Availity API request to get claim status
         response = Availity::AvailityApiServices.get_claim_data(access_token, url)
         if response.code == "401"
@@ -121,9 +123,9 @@ module Availity
             claim[AVAILITY_STATUS] = resp_claim["statusDetails"]
           end
         else
-          err = { claim_number: claim[CLAIM_NUMBER], payer: claim[PAYORID], error: "#{response.code}-#{response.message}" }
-          err[:details] = response.code == "400" ? resp_data["errors"]&.map { |e| e.slice("field", "errorMessage") } : response
-          claim_status_errors << err
+          err = { "claim_number" => claim[CLAIM_NUMBER], "payer" => claim[PAYORID], "error" => "#{response.code}-#{response.message}" }
+          err["details"] = response.code == "400" ? resp_data["errors"]&.map { |e| e.slice("field", "errorMessage") } : response
+          claim[AVAILITY_STATUS] = err.slice("error", "details")
           log.error(err)
         end
       end
