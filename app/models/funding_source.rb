@@ -23,7 +23,7 @@ class FundingSource < ApplicationRecord
   private
 
   def validate_non_billable_payors
-    if self.network_status=='non_billable' && FundingSource.find(self.id).network_status!='non_billable'
+    if self.network_status.non_billable? && !FundingSource.find(self.id).network_status.non_billable?
       services = FundingSource.joins(client_enrollments: {client_enrollment_services: :service}).where('funding_sources.id': self.id).where('services.is_early_code': false)
       errors.add(:funding_source, 'cannot be made non-billable as it has authorization with service that is not an early code.') if services.present?
     end

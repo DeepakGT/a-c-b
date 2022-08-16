@@ -23,7 +23,7 @@ class ClientEnrollment < ApplicationRecord
   private
 
   def set_status
-    self.client.status = Client.statuses['active'] if (self.terminated_on.blank? || self.terminated_on > Time.current.to_date) && self.client.status=='inactive' 
+    self.client.status = Client.statuses['active'] if (self.terminated_on.blank? || self.terminated_on > Time.current.to_date) && self.client.inactive?
   end
 
   def validate_source_of_payment

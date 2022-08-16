@@ -38,7 +38,7 @@ json.data do
   end
   json.unrendered_reasons schedule.unrendered_reason
   json.rendered_at schedule.rendered_at
-  if (schedule.status=='scheduled' || schedule.status=='rendered') && action.present?
+  if (schedule.scheduled? || schedule.rendered?) && action.present?
     if schedule.rendered_at.present? && action=='update'
       json.rendered_message "Appointment has been updated and rendered successfully."
     elsif schedule.rendered_at.present? && action=='create'

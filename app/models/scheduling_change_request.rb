@@ -15,7 +15,7 @@ class SchedulingChangeRequest < ApplicationRecord
 
   def validate_status
     errors.add(:status, 'RBTs cannot request change status to given value.') if self.status.present? && self.status!='client_cancel_greater_than_24_h' && self.status!='client_cancel_less_than_24_h' && self.status!='client_no_show'
-    errors.add(:status, 'No further change requests for given schedule can be created.') if self.scheduling.status=='client_no_show' && self.status!='client_no_show'
+    errors.add(:status, 'No further change requests for given schedule can be created.') if self.scheduling.client_no_show? && self.status!='client_no_show'
   end
 
   def validate_change_request
