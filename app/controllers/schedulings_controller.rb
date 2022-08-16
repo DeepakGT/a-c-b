@@ -296,7 +296,8 @@ class SchedulingsController < ApplicationController
   end
 
   def check_units
-    if (params[:status]=='Scheduled' && @schedule&.status!='Scheduled' && @schedule&.status!='Rendered') && @schedule&.client_enrollment_service&.left_units<params[:units].to_f
+    #update_units_columns(@schedule.client_enrollment_service)
+    if (params[:status]=='scheduled' && !@schedule.scheduled? && !@schedule.rendered?) && @schedule.client_enrollment_service.left_units<params[:units].to_f
       @schedule&.errors&.add(:units, "left in authorization are not enough to update #{@schedule&.status} appointment to scheduled.")
       return false
     elsif params[:units].present? && params[:units].to_f>@schedule&.units && @schedule&.client_enrollment_service&.left_units<(params[:units].to_f-@schedule&.units)
@@ -315,7 +316,7 @@ class SchedulingsController < ApplicationController
         @schedule&.errors&.add(:schedule, 'You are not authorized to render appointment manually.')
         return false
       end
-    elsif @schedule&.status=='Rendered' && params[:status]!='Rendered'
+    elsif @schedule.rendered? && params[:status]!='rendered'
       if current_user.role_name=='super_admin'
         update_scheduling 
         @schedule&.rendered_at = nil

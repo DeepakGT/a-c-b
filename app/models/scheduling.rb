@@ -100,7 +100,7 @@ class Scheduling < ApplicationRecord
   end
 
   def validate_units
-    return if (self.client_enrollment_service.blank? || (self.status!='Scheduled' && self.status!='Rendered'))
+    return if (self.client_enrollment_service.blank? || (!self.scheduled? && !self.rendered? && !self.auth_pending?))
 
     schedules = Scheduling.where.not(id: self.id).where(client_enrollment_service_id: self.client_enrollment_service.id).with_rendered_or_scheduled_as_status
     completed_schedules = schedules.completed_scheduling
