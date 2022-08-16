@@ -1,5 +1,5 @@
 class MetaDataController < ApplicationController
-  before_action :authenticate_user!
+  before_action :authenticate_user!, except: :select_payor_types
 
   def selectable_options
     @selectable_options = selectable_options_data
@@ -33,6 +33,10 @@ class MetaDataController < ApplicationController
     else
       @billable_funding_sources = FundingSource.billable_funding_sources
     end
+  end
+  
+  def select_payor_types
+    @payor_types = FundingSource.transform_payor_types
   end
 
   private

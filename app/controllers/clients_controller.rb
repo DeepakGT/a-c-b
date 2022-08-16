@@ -1,7 +1,7 @@
 require 'will_paginate/array'
 class ClientsController < ApplicationController
   before_action :authenticate_user!
-  before_action :authorize_user
+  before_action :authorize_user, except: :past_appointments
   before_action :set_client, only: %i[show update destroy]
   before_action :remove_trailing_space, only: %i[create update]
 
@@ -31,6 +31,13 @@ class ClientsController < ApplicationController
   def destroy
     SoapNote.by_client(@client.id).destroy_all
     @client.destroy
+  end
+
+  def past_appointments
+    @client = Client.find(params[:client_id]) rescue nil
+    @schedules = Scheduling.joins(client_enrollment_service: :client_enrollment).by_client_ids(@client&.id).completed_scheduling
+    @schedules = filter_schedules(@schedules) if params[:staff_ids].present? || params[:service_ids].present?
+    @schedules = @schedules.paginate(page: params[:page]) if params[:page].present?
   end
 
   private
@@ -143,6 +150,11 @@ class ClientsController < ApplicationController
     params[:first_name].strip! if params[:first_name].present?
     params[:last_name].strip! if params[:last_name].present?
   end
-  # end of private
 
+  def filter_schedules(schedules)
+    schedules = schedules.by_staff_ids(params[:staff_ids]) if params[:staff_ids].present?
+    schedules = schedules.by_service_ids(params[:service_ids]) if params[:service_ids].present?
+    schedules
+  end
+  # end of private
 end

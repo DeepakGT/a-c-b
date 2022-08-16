@@ -24,4 +24,15 @@ RSpec.describe FundingSource, type: :model do
       expect(funding_source.errors[:funding_source]).to include('cannot be made non-billable as it has authorization with service that is not an early code.')
     end
   end
+  
+  describe 'Assigning payor type' do
+    context 'When the payor_type field is assigned the value third_party_contract' do
+      let!(:clinic) { create (:clinic)}
+      let!(:funding_source) { create(:funding_source, clinic_id: clinic.id, payor_type: 'third_party_contract') }
+
+      it 'The payor type should be equal to the value of the enum in the key 3' do
+        expect(funding_source.payor_type).to eq(FundingSource.payor_types.key(3))
+      end
+    end
+  end
 end
