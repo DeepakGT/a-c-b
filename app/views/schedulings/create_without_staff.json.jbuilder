@@ -1,1 +1,1 @@
-json.partial! 'scheduling_detail', schedule: @schedule.reload
+json.partial! 'scheduling_detail', schedule: @schedule.reload, action: nil

@@ -51,7 +51,6 @@ json.data do
           json.service_address_is_default service_address.is_default
           json.service_address_address_name service_address.address_name
         end
-        end
         # # json.staff_id schedule.staff_id
         json.staff_name "#{staff.first_name} #{staff.last_name}" if staff.present?
         # # json.service_id service&.id
@@ -64,9 +63,9 @@ json.data do
         json.end_time schedule.end_time&.in_time_zone&.strftime("%I:%M %p")
         # json.is_rendered schedule.is_rendered
         if schedule.rendered_at.present?
-        json.is_rendered true
+          json.is_rendered true
         else
-        json.is_rendered false
+          json.is_rendered false
         end
         json.unrendered_reasons schedule.unrendered_reason
         json.rendered_at schedule.rendered_at
@@ -88,26 +87,7 @@ json.data do
         #   json.updator_id nil
         #   json.updator_name nil
         # end
+      end
     end
-    json.unrendered_reasons schedule.unrendered_reason
-    json.rendered_at schedule.rendered_at
-    json.units schedule.units
-    json.minutes schedule.minutes
-    # if schedule.creator_id.present?
-    #   creator = User.find(schedule.creator_id)
-    #   json.creator_id schedule.creator_id
-    #   json.creator_name "#{creator&.first_name} #{creator&.last_name}"
-    # else
-    #   json.creator_id nil
-    #   json.creator_name nil
-    # end
-    # if schedule.updator_id.present?
-    #   updator = User.find(schedule.updator_id)
-    #   json.updator_id schedule.updator_id
-    #   json.updator_name "#{updator&.first_name} #{updator&.last_name}"
-    # else
-    #   json.updator_id nil
-    #   json.updator_name nil
-    # end
   end
 end
