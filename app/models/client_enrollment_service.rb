@@ -34,14 +34,17 @@ class ClientEnrollmentService < ApplicationRecord
   scope :before_date, ->(date){ where('start_date < ?', date.to_time.strftime(DATE_FORMAT)) }
   scope :expired, ->{ where('end_date < ?', Time.current.strftime(DATE_FORMAT))}
   scope :by_unassigned_appointments_allowed, -> { where('services.is_unassigned_appointment_allowed = ?', true)}
-  scope :excluding_early_codes, -> { joins(:service).where.not('services.is_early_code': true)}
+  scope :excluding_early_codes, -> { where.not('services.is_early_code': true)}
+  scope :excluding_97151_service, -> { where.not('services.display_code': '97151') }
+  scope :including_early_codes, -> { where('services.is_early_code': true)}
+  scope :with_funding_sources, ->{ where.not('client_enrollments.funding_source_id': nil) }
   scope :not_expired_before_30_days, ->{ where.not('end_date <= ?', (Time.current.to_date-30))}
   scope :with_funding_source, ->{ where.not('client_enrollments.funding_source_id': nil) }
   scope :with_early_code_services, ->{ where('services.is_early_code': true) }
   scope :with_zero_schedulings, ->{ left_outer_joins(:schedulings).select('client_enrollment_services.*').group('id').having('count(schedulings.*) = ?', 0) }
   
   def used_units
-    schedules = self.schedulings.where(status: 'rendered')
+    schedules = self.schedulings.where('status = ? OR status = ?', 'rendered', 'auth_pending')
     if schedules.any?
       used_units = schedules.with_units.pluck(:units).sum.to_f
       used_units = 0 if used_units.blank?
@@ -52,7 +55,7 @@ class ClientEnrollmentService < ApplicationRecord
   end
 
   def used_minutes
-    schedules = self.schedulings.where(status: 'rendered')
+    schedules = self.schedulings.where('status = ? OR status = ?', 'rendered', 'auth_pending')
     if schedules.any?
       used_minutes = schedules.with_minutes.pluck(:minutes).sum.to_f
       used_minutes = 0 if used_minutes.blank?

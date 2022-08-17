@@ -58,6 +58,7 @@ class Scheduling < ApplicationRecord
   scope :with_active_client, ->{ where('clients.status = ?', 0) }
   scope :post_30_may_schedules, ->{ where('date>? and date <?', '2022-05-30', Time.current.strftime('%Y-%m-%d')) }
   scope :within_dates, ->(start_date, end_date){ where('date>=? AND date<=?', start_date, end_date) }
+  scope :completed_todays_schedulings, ->{ where('date = ? AND end_time < ?', Time.current.to_date, Time.current.strftime('%H:%M'))}
 
   def calculate_units(minutes)
     rem = minutes%15

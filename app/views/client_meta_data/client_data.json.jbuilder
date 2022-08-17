@@ -3,8 +3,7 @@ json.data do
   primary_client_enrollment = @client.client_enrollments.active&.order(is_primary: :desc)&.first
   json.partial! 'clients/client_detail', client: @client
   json.created_date @client.created_at&.strftime('%Y-%m-%d')
-  days_since_creation = (Time.current.to_date - (@client.created_at).to_date).to_s[0..-3]
-  json.days_since_creation days_since_creation
+  json.days_since_creation @client.days_since_creation
   if primary_client_enrollment.present?
     if primary_client_enrollment.source_of_payment=='self_pay' || primary_client_enrollment.funding_source.blank?
       json.payor nil

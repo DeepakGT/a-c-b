@@ -33,6 +33,8 @@ class SchedulingMetaDataController < ApplicationController
     @past_schedules = past_schedules
     catalyst_data = CatalystData.select(CATALYST_QUERY).joins(CATALYST_LEFT_JOIN_QUERY).joins(CATALYST_LEFT_JOIN_WITH_CLINIC).post_30_may_catalyst_data.by_catalyst_user_id(current_user.id).removed_from_dashboard.and(CatalystData.with_no_appointments).uniq
     @action_items_array = past_schedules&.uniq&.concat(catalyst_data)
+    @total_count = @action_items_array.length
+    @action_items_array = filter_by_client(@action_items_array) if params[:client_name].present?
     @action_items_array = sort_action_items(@action_items_array)
     @action_items_array = @action_items_array&.paginate(page: params[:page]) if params[:page].present?
   end
@@ -47,11 +49,13 @@ class SchedulingMetaDataController < ApplicationController
     end
     past_schedules = past_schedules&.select(SCHEDULE_QUERY)
     @past_schedules = past_schedules
-    @client_enrollment_services = ClientEnrollmentService.by_bcba_ids(current_user.id).excluding_early_codes
+    @client_enrollment_services = ClientEnrollmentService.by_bcba_ids(current_user.id).joins(:service).excluding_early_codes
                                                          .and(ClientEnrollmentService.about_to_expire.or(ClientEnrollmentService.expired))
                                                          .includes(:client_enrollment, client_enrollment: :client)
     catalyst_data = CatalystData.select(CATALYST_QUERY).joins(CATALYST_LEFT_JOIN_QUERY).joins(CATALYST_LEFT_JOIN_WITH_CLINIC).post_30_may_catalyst_data.by_catalyst_user_id(current_user.id).removed_from_dashboard.and(CatalystData.with_no_appointments).uniq
     @action_items_array = past_schedules&.uniq&.concat(catalyst_data)
+    @total_count = @action_items_array.length
+    @action_items_array = filter_by_client(@action_items_array) if params[:client_name].present?
     @action_items_array = sort_action_items(@action_items_array)
     @action_items_array = @action_items_array&.paginate(page: params[:page]) if params[:page].present?
   end
@@ -68,7 +72,7 @@ class SchedulingMetaDataController < ApplicationController
     end
     past_schedules = past_schedules&.select(SCHEDULE_QUERY)
     @past_schedules = past_schedules
-    @client_enrollment_services = ClientEnrollmentService.by_client(client_ids).excluding_early_codes.and(ClientEnrollmentService.about_to_expire.or(ClientEnrollmentService.expired))
+    @client_enrollment_services = ClientEnrollmentService.by_client(client_ids).joins(:service).excluding_early_codes.and(ClientEnrollmentService.about_to_expire.or(ClientEnrollmentService.expired))
                                                          .includes(:service, :staff, :service_providers, :client_enrollment, client_enrollment: %i[client funding_source]).uniq
     change_requests = SchedulingChangeRequest.by_approval_status
     @change_requests = change_requests&.by_client_ids(client_ids)
@@ -83,7 +87,7 @@ class SchedulingMetaDataController < ApplicationController
   end
 
   def billing_dashboard
-    @authorizations_expire_in_5_days = ClientEnrollmentService.expire_in_5_days.excluding_early_codes
+    @authorizations_expire_in_5_days = ClientEnrollmentService.expire_in_5_days.joins(:service).excluding_early_codes
     @authorizations_renewal_in_5_to_20_days = authorization_renewals_in_5_to_20_days
     @authorizations_renewal_in_21_to_60_days = authorization_renewals_in_21_to_60_days
     @client_with_no_authorizations = Client.with_no_authorizations
