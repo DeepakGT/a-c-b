@@ -22,10 +22,7 @@ namespace :import_availity_mapping_csv do
     payer_mapping = {}
     CSV.foreach(Rails.root.join("lib/Availity/payer_mapping.csv"), headers: true) do |row|
       payer_mapping[row["cmd_payer_id"]] = {
-        availity_payer_id: row["availity_payer_id"].strip,
-        submitter_id: row["submitter_id"].strip,
-        submitter_last_name: row["submitter_last_name"].strip,
-        provider_last_name: row["provider_last_name"].strip
+        availity_payer_id: row["availity_payer_id"].split("/")&.first&.strip
       } unless payer_mapping.key?(row["cmd_payer_id"])
     end
     config_rec = ApplicationConfig.find_by(config_key: payer_mapping_key)
@@ -33,6 +30,25 @@ namespace :import_availity_mapping_csv do
       config_rec.update!(config_value: payer_mapping.to_json)
     else
       ApplicationConfig.create!(config_key: payer_mapping_key, config_value: payer_mapping.to_json)
+    end
+  end
+
+  desc "Create Provider Mapping"
+  task create_provider_mapping: :environment do
+    provider_mapping_key = "availity_provider_mapping"
+    provider_mapping = {}
+    CSV.foreach(Rails.root.join("lib/Availity/provider_mapping.csv"), headers: true) do |row|
+      provider_mapping[row["cmd_provider_seq"]] = {
+        submitter_id: row["submitter_id"].strip,
+        submitter_last_name: row["submitter_last_name"].strip,
+        provider_last_name: row["provider_last_name"].strip
+      } unless provider_mapping.key?(row["cmd_provider_seq"])
+    end
+    config_rec = ApplicationConfig.find_by(config_key: provider_mapping_key)
+    if config_rec.present?
+      config_rec.update!(config_value: provider_mapping.to_json)
+    else
+      ApplicationConfig.create!(config_key: provider_mapping_key, config_value: provider_mapping.to_json)
     end
   end
 end

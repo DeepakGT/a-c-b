@@ -2,11 +2,11 @@ module Availity
   module ProcessClaimsOperation
     AVAILITY_LOG_PATH = "log/availity".freeze
     AVAILITY_STATUS = "AVAILITY_STATUS".freeze
-    CLAIM_NUMBER = "CLAIMNUMBER".freeze
-    PAYORID = "PAYORID".freeze
+    PAYOR_ID = "PAYORID".freeze
+    PROVIDER_SEQ = "PROVIDERSEQ".freeze
     
     class << self
-      def process_claims(rows, field_mapping_key, payer_mapping_key)
+      def process_claims(rows, field_mapping_key, payer_mapping_key, provider_mapping_key)
         # get the field mapping between Availity API parameters and S3 data fields
         # example:
         # [
@@ -20,11 +20,20 @@ module Availity
         # get the payer mapping between CollabMD and Availity where each key is a CollabMD Payer Id
         # example:
         # {
-        #   "12857650" => { "availity_payer_id": "UMR", "submitter_id": "837903", "submitter_last_name": "ABA CENTERS OF FLORIDA", "provider_last_name": "ABA CENTERS OF FLORIDA" },
-        #   "12966144" => { "availity_payer_id": "BCBSF", "submitter_id": "837903", "submitter_last_name": "ABA CENTERS OF AMERICA", "provider_last_name": "ABA CENTERS OF AMERICA" }
+        #   "12857650" => { "availity_payer_id": "UMR" },
+        #   "12966144" => { "availity_payer_id": "BCBSF" }
         # }
         config_value = ApplicationConfig.find_by(config_key: payer_mapping_key).config_value rescue nil
         payer_mapping = JSON.parse(config_value) rescue {}
+
+        # get the provider mapping where each key is a Provider Sequence
+        # example:
+        # {
+        #   "10144208" => { "submitter_id": "848414", "submitter_last_name": "ABA CENTERS OF AMERICA LLC", "provider_last_name": "ABA CENTERS OF AMERICA LLC" },
+        #   "10143647" => { "submitter_id": "1000922", "submitter_last_name": "ABA CENTERS OF AMERICA", "provider_last_name": "ABA CENTERS OF AMERICA" }
+        # }
+        config_value = ApplicationConfig.find_by(config_key: provider_mapping_key).config_value rescue nil
+        provider_mapping = JSON.parse(config_value) rescue {}
 
         # create log file
         log_path = Rails.root.join(AVAILITY_LOG_PATH)
@@ -71,7 +80,8 @@ module Availity
 
           if payer_mapping[cmd_payer].present?
             # additional fields required by Availity API but not in S3 data file
-            parameters = "#{parameters}&providers.lastName=#{payer_mapping[cmd_payer]['provider_last_name']}&submitter.lastName=#{payer_mapping[cmd_payer]['submitter_last_name']}&submitter.id=#{payer_mapping[cmd_payer]['submitter_id']}"
+            provider_seq = claim[PROVIDER_SEQ]
+            parameters = "#{parameters}&providers.lastName=#{provider_mapping[provider_seq]['provider_last_name']}&submitter.lastName=#{provider_mapping[provider_seq]['submitter_last_name']}&submitter.id=#{provider_mapping[provider_seq]['submitter_id']}"
 
             # get claim status by required parameters
             url = "#{Availity::AvailityApiServices::AVAILITY_CLAIM_STATUS_URL}?#{parameters}"
@@ -123,7 +133,7 @@ module Availity
             claim[AVAILITY_STATUS] = resp_claim["statusDetails"]
           end
         else
-          err = { "claim_number" => claim[CLAIM_NUMBER], "payer" => claim[PAYORID], "error" => "#{response.code}-#{response.message}" }
+          err = { "payer_id" => claim[PAYOR_ID], "provider_seq" => claim[PROVIDER_SEQ], "error" => "#{response.code}-#{response.message}" }
           err["details"] = response.code == "400" ? resp_data["errors"]&.map { |e| e.slice("field", "errorMessage") } : response
           claim[AVAILITY_STATUS] = err.slice("error", "details")
           log.error(err)
