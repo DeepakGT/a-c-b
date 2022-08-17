@@ -1,6 +1,6 @@
 json.status 'success'
 json.data do
-  json.partial! 'scheduling_detail', schedule: @schedule.reload
+  json.partial! 'scheduling_detail', schedule: @schedule
   if @schedule.rendered_at.present?
     json.rendered_message "Appointment has been created and rendered successfully."
   elsif @schedule.unrendered_reason.present?

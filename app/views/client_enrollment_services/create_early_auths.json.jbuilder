@@ -10,4 +10,4 @@ json.data do
     end
   end
 end
-json.errors @client.reload.errors.full_messages
+json.errors @client.errors.full_messages
