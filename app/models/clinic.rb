@@ -5,6 +5,8 @@ class Clinic < ApplicationRecord
   has_many :staff, through: :staff_clinics
   has_many :clients, dependent: :destroy
   has_many :funding_sources, dependent: :destroy
+  belongs_to :region, optional: true
+
 
   belongs_to :organization
 
@@ -14,6 +16,7 @@ class Clinic < ApplicationRecord
   enum status: {active: 0, inactive: 1}
 
   delegate :name, to: :organization, prefix: true
+  delegate :name, to: :region, prefix: true
 
   scope :by_org_id, ->(org_id){ where('organization_id': org_id) }
 end

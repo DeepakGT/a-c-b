@@ -9,8 +9,9 @@ json.data do
     end
   end
 end
-if @service_addresses.where(address_name: 'Office').present?
+if @service_addresses.where(line1: @client.clinic.address&.line1).present?
   json.office_address true
 else
   json.office_address false
 end
+

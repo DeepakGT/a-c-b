@@ -13,6 +13,7 @@ class OrganizationsController < ApplicationController
   end
 
   def create
+    # TODO: change to id autoincrement in database
     @organization = Organization.new(organization_params)
     @organization&.id = Organization.ids.max+1
     @organization&.admin_id = current_user.id
@@ -27,12 +28,18 @@ class OrganizationsController < ApplicationController
     @organization&.destroy
   end
 
+  def regions_organizations
+    @organization = Organization.find_by(id: params[:id]) 
+    @regions = @organization.regions if @organization.present?
+  end
+
   private
 
   def organization_params
+    # TODO: need change to strong params
     params.permit(:name, :aka, :web, :email, :status, address_attributes: 
     %i[line1 line2 line3 zipcode city state country addressable_type addressable_id],
-    phone_number_attributes: %i[phone_type number])
+    phone_number_attributes: %i[phone_type number], id_regions: [])
   end
 
   def set_organization
