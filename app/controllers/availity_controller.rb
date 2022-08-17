@@ -21,14 +21,14 @@ class AvailityController < ApplicationController
     end
 
     # process claims
-    Availity::ProcessClaimsOperation.process_claims(rows, "availity_field_mapping", "availity_payer_mapping")
+    Availity::ProcessClaimsOperation.process_claims(rows, "availity_field_mapping", "availity_payer_mapping", "availity_provider_mapping")
 
     if params[:testing] == "true"
       # save to csv file
       # for privacy, only save some columns
       CSV.open("#{Rails.root.join(Availity::ProcessClaimsOperation::AVAILITY_LOG_PATH)}/test.csv", "wb") do |csv|
-        csv << [Availity::ProcessClaimsOperation::CLAIM_NUMBER, Availity::ProcessClaimsOperation::PAYORID, Availity::ProcessClaimsOperation::AVAILITY_STATUS]
-        rows.each { |row| csv << [row[Availity::ProcessClaimsOperation::CLAIM_NUMBER], row[Availity::ProcessClaimsOperation::PAYORID], row[Availity::ProcessClaimsOperation::AVAILITY_STATUS]] }
+        csv << [Availity::ProcessClaimsOperation::PAYOR_ID, Availity::ProcessClaimsOperation::PROVIDER_SEQ, Availity::ProcessClaimsOperation::AVAILITY_STATUS]
+        rows.each { |row| csv << [row[Availity::ProcessClaimsOperation::PAYOR_ID], row[Availity::ProcessClaimsOperation::PROVIDER_SEQ], row[Availity::ProcessClaimsOperation::AVAILITY_STATUS]] }
       end
     else
       # upload data to S3
