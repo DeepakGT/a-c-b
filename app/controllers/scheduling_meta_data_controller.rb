@@ -86,7 +86,7 @@ class SchedulingMetaDataController < ApplicationController
     change_requests = SchedulingChangeRequest.by_approval_status
     @change_requests = change_requests.by_client_ids(client_ids)
     catalyst_patient_ids = Client.where(id: client_ids).pluck(:catalyst_patient_id).compact
-    catalyst_data = CatalystData.select(CATALYST_QUERY).joins(CATALYST_LEFT_JOIN_QUERY).joins(CATALYST_LEFT_JOIN_WITH_CLINIC).post_30_may_catalyst_data.by_catalyst_user_id(current_user.id).removed_from_dashboard.and(CatalystData.with_no_appointments).uniq
+    catalyst_data = CatalystData.select(CATALYST_QUERY).joins(CATALYST_LEFT_JOIN_QUERY).joins(CATALYST_LEFT_JOIN_WITH_CLINIC).post_30_may_catalyst_data.by_catalyst_patient_ids(catalyst_patient_ids).removed_from_dashboard.and(CatalystData.with_no_appointments).uniq
     @action_items_array = past_schedules.uniq.concat(catalyst_data)
     @total_count = @action_items_array.length
     @action_items_array = filter_by_client(@action_items_array) if params[:client_name].present?
