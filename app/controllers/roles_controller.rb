@@ -5,7 +5,7 @@ class RolesController < ApplicationController
 
   def index
     @roles = Role.except_system_admin.order(:name)
-    @roles = @roles.paginate(page: params[:page]) if params[:page].present?
+    @roles = @roles&.paginate(page: params[:page]) if params[:page].present?
   end
 
   def show
@@ -19,11 +19,11 @@ class RolesController < ApplicationController
   def update
     params_to_update = {permissions: params[:permissions]}
     params_to_update.merge!(name: params[:name]) if params[:change_role_name].to_bool.true?
-    @role.update(params_to_update)
+    @role&.update(params_to_update)
   end
 
   def destroy
-    @role.destroy
+    @role&.destroy
   end
 
   def roles_list
@@ -37,8 +37,7 @@ class RolesController < ApplicationController
   end
 
   def set_role
-    @role = Role.find(params[:id])
+    @role = Role.find(params[:id]) rescue nil
   end
   # end of private
-  
 end

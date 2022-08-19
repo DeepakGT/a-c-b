@@ -7,9 +7,8 @@ class ClientEnrollmentServicesController < ApplicationController
 
   def create
     set_client_enrollment
-    @enrollment_service = @client_enrollment.client_enrollment_services.create(enrollment_service_params)
+    @enrollment_service = @client_enrollment&.client_enrollment_services&.create(enrollment_service_params)
     update_staff_legacy_numbers
-    #update_units_columns(@enrollment_service)
   end
 
   def show
@@ -19,35 +18,35 @@ class ClientEnrollmentServicesController < ApplicationController
   def update
     ClientEnrollmentService.transaction do
       remove_service_providers if params[:service_providers_attributes].present?
-      @enrollment_service.update(enrollment_service_params)
+      @enrollment_service&.update(enrollment_service_params)
       update_client_enrollment if params[:funding_source_id].present?
       update_staff_legacy_numbers
     end
   end
 
   def destroy
-    @enrollment_service.destroy
+    @enrollment_service&.destroy
   end
 
   def create_early_auths
     @client = Client.find(early_auth_params[:client_id]) rescue nil
     authorize @client, policy_class: ClientEnrollmentServicePolicy if current_user.role_name!='super_admin'
-    authorizations = ClientEnrollmentService.by_client(@client.id).joins(:service).where('services.is_early_code': true).where('client_enrollments.funding_source_id': early_auth_params[:funding_source_id])
+    authorizations = ClientEnrollmentService.by_client(@client&.id).joins(:service).where('services.is_early_code': true).where('client_enrollments.funding_source_id': early_auth_params[:funding_source_id])
     if authorizations.present?
       @client.errors.add(:early_authorization, 'is already present for this non-billable funding source.')
     else
       end_date = (Time.current+90.days).strftime(FORMAT_DATE)
-      @client_enrollment = @client.client_enrollments.create(funding_source_id: early_auth_params[:funding_source_id], enrollment_date: Time.current.strftime(FORMAT_DATE), terminated_on: end_date, source_of_payment: 'insurance')
+      @client_enrollment = @client&.client_enrollments&.create(funding_source_id: early_auth_params[:funding_source_id], enrollment_date: Time.current.strftime(FORMAT_DATE), terminated_on: end_date, source_of_payment: 'insurance')
       services = Service.all.map{|service| service if JSON.parse(service&.selected_payors)&.pluck('payor_id')&.include?("#{early_auth_params[:funding_source_id]}")}.compact
 
       if services.present?
         services.each do |service|
           @client_enrollment.client_enrollment_services.create(service_id: service.id, start_date: Time.current.strftime(FORMAT_DATE), end_date: end_date, units: service.max_units, minutes: (service.max_units)*15)
         end
-        delete_client_enrollment if @client_enrollment.client_enrollment_services.blank?
+        delete_client_enrollment if @client_enrollment&.client_enrollment_services.blank?
       else 
-        delete_client_enrollment if @client_enrollment.client_enrollment_services.blank?
-        @client.errors.add(:funding_source, 'is not present in selected payors list of any service.')
+        delete_client_enrollment if @client_enrollment&.client_enrollment_services.blank?
+        @client&.errors&.add(:funding_source, 'is not present in selected payors list of any service.')
       end
     end
   end
@@ -74,22 +73,22 @@ class ClientEnrollmentServicesController < ApplicationController
   end
 
   def set_client_enrollment
-    client = Client.find(params[:client_id])
+    client = Client.find(params[:client_id])  rescue nil
     if params[:funding_source_id].present?
-      @client_enrollment = client.client_enrollments.find_by(funding_source_id: params[:funding_source_id])
+      @client_enrollment = client&.client_enrollments&.find_by(funding_source_id: params[:funding_source_id])
     else
-      @client_enrollment = client.client_enrollments.find_by(source_of_payment: 'self_pay')
+      @client_enrollment = client&.client_enrollments&.find_by(source_of_payment: 'self_pay')
     end
   end
 
   def set_client_enrollment_service
-    @enrollment_service = ClientEnrollmentService.find(params[:id])
+    @enrollment_service = ClientEnrollmentService.find(params[:id]) rescue nil
   end
 
   def update_client_enrollment
     set_client_enrollment 
-    @enrollment_service.client_enrollment = @client_enrollment
-    @enrollment_service.save
+    @enrollment_service&.client_enrollment = @client_enrollment
+    @enrollment_service&.save
   end
 
   def enrollment_service_params
@@ -98,7 +97,7 @@ class ClientEnrollmentServicesController < ApplicationController
   end
 
   def remove_service_providers
-    @enrollment_service.service_providers.destroy_all
+    @enrollment_service&.service_providers&.destroy_all
   end
 
   def check_rendering_provider_condition(schedule)
@@ -123,18 +122,18 @@ class ClientEnrollmentServicesController < ApplicationController
       Staff.find_by(id: item[:staff_id])&.update(legacy_number: item[:legacy_number])
     end
   end
-  
+
   def early_auth_params
     params.permit(:client_id, :funding_source_id)
   end
 
   def delete_client_enrollment
-    @client_enrollment.destroy
+    @client_enrollment&.destroy
     @client_enrollment = nil
   end
   
   def delete_early_authorization
-    @early_authorization.destroy
+    @early_authorization&.destroy
     @early_authorization = nil
   end
   # end of private

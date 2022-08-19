@@ -4,15 +4,14 @@ class QualificationsController < ApplicationController
   before_action :set_qualification, only: %i[show update destroy]
 
   def index
-    # if page parameter would be pass then return paginated records otherwise return all records
     @qualifications = Qualification.order(:created_at)
-    @qualifications = @qualifications.paginate(page: params[:page]) if params[:page].present?
+    @qualifications = @qualifications&.paginate(page: params[:page]) if params[:page].present?
   end
 
   def create
     @qualification = Qualification.new(qualification_params)
-    @qualification.id = Qualification.ids.max+1
-    @qualification.save
+    @qualification&.id = Qualification.ids.max+1
+    @qualification&.save
   end
 
   def show
@@ -20,11 +19,11 @@ class QualificationsController < ApplicationController
   end
 
   def update
-    @qualification.update(qualification_params)
+    @qualification&.update(qualification_params)
   end
 
   def destroy
-    @qualification.destroy
+    @qualification&.destroy
   end
 
   def types
@@ -38,12 +37,11 @@ class QualificationsController < ApplicationController
   end
 
   def set_qualification
-    @qualification = Qualification.find(params[:id])
+    @qualification = Qualification.find(params[:id]) rescue nil
   end
 
   def authorize_user
     authorize Qualification if current_user.role_name!='super_admin'
   end
   # end of private
-
 end

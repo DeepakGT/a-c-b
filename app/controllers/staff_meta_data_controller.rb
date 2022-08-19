@@ -6,11 +6,11 @@ class StaffMetaDataController < ApplicationController
     when 'rbt'
       clients = Client.by_staff_id_in_scheduling(current_user.id)
       clients = filter_by_location(clients) if params[:default_location_id].present?
-      @clients = clients.uniq.sort_by(&:id)
+      @clients = clients&.uniq&.sort_by(&:id)
     when 'bcba'
       clients = Client.by_staff_id_in_scheduling(current_user.id).or(Client.by_bcbas(current_user.id))
       clients = filter_by_location(clients) if params[:default_location_id].present?
-      @clients = clients.uniq.sort_by(&:id)
+      @clients = clients&.uniq&.sort_by(&:id)
     else
       puts "clinics_list"
     end

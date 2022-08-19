@@ -171,7 +171,6 @@ RSpec.describe SchedulingsController, type: :controller do
       end
 
       context "and catalyst data id is present" do
-        # let(:catalyst_data){ create(:catalyst_data, is_appointment_found: false, start_time: '12:30', end_time: '13:30', units: 4, minutes: 60) }
         let(:catalyst_data){ create(:catalyst_data, start_time: '12:30', end_time: '13:30', units: 4, minutes: 60) }
         it "should create scheduling using catalyst data successfully" do
           set_auth_headers(auth_headers)
@@ -465,7 +464,7 @@ RSpec.describe SchedulingsController, type: :controller do
         expect(response_body['data']['is_rendered']).to eq(true)
         expect(response_body['data']['rendered_at']).not_to eq(nil)
         expect(response_body['data']['rendered_by']).not_to eq(nil)
-        expect(response_body['data']['status']).not_to eq('Scheduled')
+        expect(response_body['data']['status']).not_to eq('scheduled')
       end
     end
   end
@@ -485,8 +484,8 @@ RSpec.describe SchedulingsController, type: :controller do
           client_enrollment_service_id: client_enrollment_service.id,
           client_id: client.id,
           staff_id: staff.id,
-          split_schedules: [{start_time: '09:00', end_time: '09:30', catalyst_data_id: catalyst_data1.id, units: 2, status: 'Scheduled'}, 
-                            {start_time: '09:30', end_time: '10:00', catalyst_data_id: catalyst_data2.id, units: 2, status: 'Scheduled'}]
+          split_schedules: [{start_time: '09:00', end_time: '09:30', catalyst_data_id: catalyst_data1.id, units: 2, status: 'scheduled'}, 
+                            {start_time: '09:30', end_time: '10:00', catalyst_data_id: catalyst_data2.id, units: 2, status: 'scheduled'}]
         }
         response_body = JSON.parse(response.body)
 

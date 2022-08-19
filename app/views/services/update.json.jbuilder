@@ -4,6 +4,6 @@ if @service.reload.errors.any?
 else
   json.status 'success'
   json.data do
-    json.partial! 'service_detail', service: @service.reload, action: 'update'
+    json.partial! 'service_detail', service: @service
   end
 end

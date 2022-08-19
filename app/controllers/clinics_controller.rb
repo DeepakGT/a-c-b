@@ -5,16 +5,16 @@ class ClinicsController < ApplicationController
 
   def index
     @clinics = Clinic.all
-    @clinics = @clinics.by_org_id(params[:organization_id]) if params[:organization_id].present?
-    @clinics = @clinics.order(:name)
-    @clinics = @clinics.paginate(page: params[:page]) if params[:page].present?
+    @clinics = @clinics&.by_org_id(params[:organization_id]) if params[:organization_id].present?
+    @clinics = @clinics&.order(:name)
+    @clinics = @clinics&.paginate(page: params[:page]) if params[:page].present?
   end
 
   def create
     # TODO: change to id autoincrement in database
     @clinic = Clinic.new(clinic_params)
-    @clinic.id = Clinic.ids.max+1 if Clinic.ids.present?
-    @clinic.save
+    @clinic&.id = Clinic.ids.max+1 if Clinic.ids.present?
+    @clinic&.save
   end
 
   def show
@@ -22,17 +22,17 @@ class ClinicsController < ApplicationController
   end
 
   def update
-    @clinic.update(clinic_params)
+    @clinic&.update(clinic_params)
   end
 
   def destroy
-    @clinic.destroy
+    @clinic&.destroy
   end
 
   private
 
   def set_clinic
-    @clinic = Clinic.find(params[:id])
+    @clinic = Clinic.find(params[:id]) rescue nil
   end
 
   def clinic_params

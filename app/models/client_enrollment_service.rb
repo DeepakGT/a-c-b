@@ -11,7 +11,6 @@ class ClientEnrollmentService < ApplicationRecord
   accepts_nested_attributes_for :service_providers
 
   validate :validate_service_providers
-  # validate :validate_units_and_minutes
   validate :validate_count_of_units, on: :update
   validate :validate_dates
 
@@ -45,7 +44,7 @@ class ClientEnrollmentService < ApplicationRecord
   scope :with_zero_schedulings, ->{ left_outer_joins(:schedulings).select('client_enrollment_services.*').group('id').having('count(schedulings.*) = ?', 0) }
   
   def used_units
-    schedules = self.schedulings.where('status = ? OR status = ?', 'Rendered', 'Auth_Pending')
+    schedules = self.schedulings.where('status = ? OR status = ?', 'rendered', 'auth_pending')
     if schedules.any?
       used_units = schedules.with_units.pluck(:units).sum.to_f
       used_units = 0 if used_units.blank?
@@ -56,7 +55,7 @@ class ClientEnrollmentService < ApplicationRecord
   end
 
   def used_minutes
-    schedules = self.schedulings.where('status = ? OR status = ?', 'Rendered', 'Auth_Pending')
+    schedules = self.schedulings.where('status = ? OR status = ?', 'rendered', 'auth_pending')
     if schedules.any?
       used_minutes = schedules.with_minutes.pluck(:minutes).sum.to_f
       used_minutes = 0 if used_minutes.blank?
@@ -106,13 +105,6 @@ class ClientEnrollmentService < ApplicationRecord
     errors.add(:service_providers, 'must be absent.') if self.service.is_service_provider_required.to_bool.false? && self.service_providers.present?
     errors.add(:service_providers, 'must be present.') if self.service.is_service_provider_required.to_bool.true? && self.service_providers.blank?
   end
-
-  # def validate_units_and_minutes
-  #   if self.units.present? && self.minutes.present?
-  #     minutes = self.units*15
-  #     errors.add(:client_enrollment_service, "The units/minutes are wrong. 1 unit is equivalent to 15 minutes, and vice versa.") if minutes != self.minutes
-  #   end
-  # end
 
   def set_units_and_minutes
     if self.units.present? && self.minutes.blank?

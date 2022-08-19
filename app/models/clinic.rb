@@ -19,7 +19,4 @@ class Clinic < ApplicationRecord
   delegate :name, to: :region, prefix: true
 
   scope :by_org_id, ->(org_id){ where('organization_id': org_id) }
-
-  # validates :name, presence: true
-  # validates_uniqueness_of :name, scope: :organization_id
 end
