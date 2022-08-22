@@ -20,7 +20,7 @@ RSpec.describe SchedulingChangeRequest, type: :model do
     end
     context "No further change requests" do
       let(:scheduling) {create(:scheduling, status: 'Client_No_Show')}
-      let(:scheduling_change_request) {build :scheduling_change_request, status: 'Client_Cancel_Greater_Than_24_h', scheduling_id: scheduling.id}
+      let(:scheduling_change_request) {build :scheduling_change_request, status: 'Client_Cancel_Greater_than_24_h', scheduling_id: scheduling.id}
       it "No further change requests" do
         scheduling_change_request.validate
         expect(scheduling_change_request.errors[:status]).to include('No further change requests for given schedule can be created.')
@@ -31,7 +31,7 @@ RSpec.describe SchedulingChangeRequest, type: :model do
   describe "#validate_change_request" do
     context "validate change requests" do
       let!(:scheduling) { create(:scheduling, status: 'Scheduled') }
-      let!(:scheduling_change_request1) { create(:scheduling_change_request, scheduling_id: scheduling.id, status: 'Client_Cancel_Greater_Than_24_h', approval_status: nil) }
+      let!(:scheduling_change_request1) { create(:scheduling_change_request, scheduling_id: scheduling.id, status: 'Client_Cancel_Greater_than_24_h', approval_status: nil) }
       let(:scheduling_change_request) { build :scheduling_change_request, scheduling_id: scheduling.id }
 
       it "No further change requests for given schedule" do

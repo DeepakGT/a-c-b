@@ -77,7 +77,7 @@ RSpec.describe ClientMetaDataController, type: :controller do
       let!(:soap_notes){ create_list(:soap_note, 5, scheduling_id: scheduling.id, user: user, client_id: client.id)}
       let!(:notes) { create_list(:client_note, 5, client_id: client.id)}
       let!(:attachments){ create_list(:attachment, 5, attachable_id: client.id, attachable_type: 'Client')}
-      let!(:schedulings) {create_list(:scheduling, 3, units: '2', client_enrollment_service_id: client_enrollment_service.id, status: 'Client_Cancel_Less_Than_24_h')}
+      let!(:schedulings) {create_list(:scheduling, 3, units: '2', client_enrollment_service_id: client_enrollment_service.id, status: 'Client_Cancel_Less_than_24_h')}
       it "should fetch client data detail successfully" do
         set_auth_headers(auth_headers)
         
