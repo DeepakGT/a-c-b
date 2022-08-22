@@ -1,3 +1,5 @@
+require 'csv'
+
 module Availity
   module ProcessClaimsOperation
     AVAILITY_LOG_PATH = "log/availity".freeze
@@ -6,6 +8,39 @@ module Availity
     PROVIDER_SEQ = "PROVIDERSEQ".freeze
     
     class << self
+      def process_s3_claims(bucket, source_file, target_file, field_mapping_key, payer_mapping_key, provider_mapping_key, testing_mode)
+        # get data from S3
+        s3_client = S3::S3ApiServices.get_s3_client
+        s3_data = S3::S3ApiServices.get_file(s3_client, bucket, source_file)
+
+        # parse S3 data
+        rows = CSV.parse(s3_data, headers: true)
+        rows.each do |row|
+          row[AVAILITY_STATUS] = ""
+        end
+
+        # process claims
+        process_claims(rows, field_mapping_key, payer_mapping_key, provider_mapping_key)
+
+        if testing_mode
+          # save to csv file
+          # for privacy, only save some columns
+          CSV.open("#{Rails.root.join(AVAILITY_LOG_PATH)}/test.csv", "wb") do |csv|
+            csv << [PAYOR_ID, PROVIDER_SEQ, AVAILITY_STATUS]
+            rows.each { |row| csv << [row[PAYOR_ID], row[PROVIDER_SEQ], row[AVAILITY_STATUS]] }
+          end
+        else
+          # upload data to S3
+          updated_s3_data = CSV.generate(headers: true) do |csv|
+            csv << rows.headers
+            rows.each { |row| csv << row }
+          end
+          S3::S3ApiServices.put_file(s3_client, bucket, target_file, updated_s3_data)
+        end
+      end
+
+      private
+
       def process_claims(rows, field_mapping_key, payer_mapping_key, provider_mapping_key)
         # get the field mapping between Availity API parameters and S3 data fields
         # example:
@@ -102,14 +137,13 @@ module Availity
             url = "#{Availity::AvailityApiServices::AVAILITY_CLAIM_STATUS_URL}/#{item[:availity_id]}"
             get_status(item[:claim], access_token, url, retry_claims, log)
           rescue => e
+            retry_claims << { claim: item[:claim], availity_id: item[:availity_id] }
             log.error("#{e.message} => #{e.backtrace}")
           end
         end
 
         log.info("****** END CLAIM STATUS UPDATE PROCESS ******")
       end
-
-      private
 
       def get_status(claim, access_token, url, retry_claims, log)
         # send Availity API request to get claim status
