@@ -4,7 +4,7 @@ class RolesController < ApplicationController
   before_action :set_role, only: %i[show update destroy]
 
   def index
-    @roles = Role.order(:name)
+    @roles = Role.except_system_admin.order(:name)
     @roles = @roles.paginate(page: params[:page]) if params[:page].present?
   end
 
@@ -25,7 +25,7 @@ class RolesController < ApplicationController
   end
 
   def roles_list
-    @roles = Role.where.not(name: 'super_admin')
+    @roles = Role.except_super_admin.except_system_admin
   end
 
   private

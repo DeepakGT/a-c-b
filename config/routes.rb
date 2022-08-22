@@ -101,5 +101,8 @@ Rails.application.routes.draw do
 
     get '/setting', to: 'settings#show'
     put '/setting', to: 'settings#update'
+
+    get '/super_admins_list', to: 'users#super_admins_list'
+    post '/create_super_admin', to: 'users#create_super_admin'
   end
 end
