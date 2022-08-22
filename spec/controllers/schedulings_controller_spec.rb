@@ -154,7 +154,7 @@ RSpec.describe SchedulingsController, type: :controller do
           date: Time.current.to_date,
           start_time: '16:00',
           end_time: '17:00',
-          status: 'scheduled',
+          status: 'Scheduled',
           minutes: '288'
         }
         response_body = JSON.parse(response.body)
@@ -166,7 +166,7 @@ RSpec.describe SchedulingsController, type: :controller do
         expect(response_body['data']['date']).to eq(Time.current.to_date.to_s)
         expect(response_body['data']['start_time']).to eq('16:00')
         expect(response_body['data']['end_time']).to eq('17:00')
-        expect(response_body['data']['status']).to eq('scheduled')
+        expect(response_body['data']['status']).to eq('Scheduled')
         expect(response_body['data']['minutes']).to eq(288.0)
       end
 
@@ -179,7 +179,7 @@ RSpec.describe SchedulingsController, type: :controller do
             catalyst_data_id: catalyst_data.id,
             client_enrollment_service_id: client_enrollment_service.id,
             staff_id: staff.id,
-            status: 'scheduled'
+            status: 'Scheduled'
           }
           response_body = JSON.parse(response.body)
           
@@ -190,7 +190,7 @@ RSpec.describe SchedulingsController, type: :controller do
           expect(response_body['data']['date']).to eq(catalyst_data.date.strftime('%Y-%m-%d'))
           expect(response_body['data']['start_time']).to eq(catalyst_data.start_time)
           expect(response_body['data']['end_time']).to eq(catalyst_data.end_time)
-          expect(response_body['data']['status']).to eq('scheduled')
+          expect(response_body['data']['status']).to eq('Scheduled')
           expect(response_body['data']['units']).to eq(catalyst_data.units)
           expect(response_body['data']['minutes']).to eq(catalyst_data.minutes)
         end
@@ -464,7 +464,7 @@ RSpec.describe SchedulingsController, type: :controller do
         expect(response_body['data']['is_rendered']).to eq(true)
         expect(response_body['data']['rendered_at']).not_to eq(nil)
         expect(response_body['data']['rendered_by']).not_to eq(nil)
-        expect(response_body['data']['status']).not_to eq('scheduled')
+        expect(response_body['data']['status']).not_to eq('Scheduled')
       end
     end
   end
@@ -484,8 +484,8 @@ RSpec.describe SchedulingsController, type: :controller do
           client_enrollment_service_id: client_enrollment_service.id,
           client_id: client.id,
           staff_id: staff.id,
-          split_schedules: [{start_time: '09:00', end_time: '09:30', catalyst_data_id: catalyst_data1.id, units: 2, status: 'scheduled'}, 
-                            {start_time: '09:30', end_time: '10:00', catalyst_data_id: catalyst_data2.id, units: 2, status: 'scheduled'}]
+          split_schedules: [{start_time: '09:00', end_time: '09:30', catalyst_data_id: catalyst_data1.id, units: 2, status: 'Scheduled'}, 
+                            {start_time: '09:30', end_time: '10:00', catalyst_data_id: catalyst_data2.id, units: 2, status: 'Scheduled'}]
         }
         response_body = JSON.parse(response.body)
 

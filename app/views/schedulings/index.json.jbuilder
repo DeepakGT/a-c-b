@@ -32,7 +32,7 @@ json.data do
     json.start_time schedule.start_time&.in_time_zone&.strftime("%I:%M %p")
     json.end_time schedule.end_time&.in_time_zone&.strftime("%I:%M %p")
     # json.is_rendered schedule.is_rendered
-    if schedule.rendered_at.present? && schedule.status == 'rendered'
+    if schedule.rendered_at.present? && schedule.status == 'Rendered'
       json.is_rendered true
     else
       json.is_rendered false
