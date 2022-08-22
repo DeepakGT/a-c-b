@@ -26,4 +26,24 @@ RSpec.describe UserPolicy, type: :policy do
       expect(subject).to permit(user2)
     end
   end
+
+  permissions :super_admin_detail? do
+    it "denies access for roles other than system admin" do
+      expect(subject).not_to permit(user1)
+    end
+
+    it "grants access to system admin" do
+      expect(subject).to permit(user2)
+    end
+  end
+
+  permissions :update_super_admin? do
+    it "denies access for roles other than system admin" do
+      expect(subject).not_to permit(user1)
+    end
+
+    it "grants access to system admin" do
+      expect(subject).to permit(user2)
+    end
+  end
 end

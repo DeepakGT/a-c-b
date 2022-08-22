@@ -78,4 +78,42 @@ RSpec.describe UsersController, type: :controller do
       end
     end
   end
+
+  describe "GET #super_admin_detail" do
+    context "when sign in" do
+      let!(:user){create(:user, :with_role, role_name: 'system_administrator')}
+      let!(:auth_headers){user.create_new_auth_token}
+      let!(:super_admin){ create(:user, :with_role, role_name: 'super_admin') }
+      it "should display super admins list successfully" do
+        set_auth_headers(auth_headers)
+
+        get :super_admin_detail, params: {id: super_admin.id}
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']). to eq('success')
+        expect(response_body['data']['id']).to eq(super_admin.id)
+      end
+    end
+  end
+
+  describe "PUT #update_super_admin" do
+    context "when sign in" do
+      let!(:user){create(:user, :with_role, role_name: 'system_administrator')}
+      let!(:auth_headers){user.create_new_auth_token}
+      let!(:super_admin){ create(:user, :with_role, role_name: 'super_admin') }
+      it "should display super admins list successfully" do
+        set_auth_headers(auth_headers)
+
+        put :update_super_admin, params: {id: super_admin.id, first_name: 'abcd', terminated_on: '2052-12-31'}
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']). to eq('success')
+        expect(response_body['data']['id']).to eq(super_admin.id)
+        expect(response_body['data']['first_name']).to eq('abcd')
+        expect(response_body['data']['terminated_on']).to eq('2052-12-31')
+      end
+    end
+  end
 end
