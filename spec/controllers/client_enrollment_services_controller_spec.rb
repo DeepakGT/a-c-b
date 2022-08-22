@@ -251,11 +251,11 @@ RSpec.describe ClientEnrollmentServicesController, type: :controller do
       let!(:non_billable_funding_source) { create(:funding_source, clinic_id: clinic.id, network_status: 'non_billable') }
       let!(:client_enrollment1){ create(:client_enrollment, client_id: client.id, funding_source_id: non_billable_funding_source.id) }
       let!(:client_enrollment_service1){ create(:client_enrollment_service, client_enrollment_id: client_enrollment1.id, service_id: early_service.id, start_date: (Time.current - 5.days).to_date, end_date: (Time.current + 5.days).to_date) }
-      let!(:scheduling1){ create(:scheduling, client_enrollment_service_id: client_enrollment_service1.id, date: (Time.current - 2.days).to_date, status: 'auth_pending', start_time: '10:00', end_time: '11:00', units: 4, staff_id: staff.id) }
+      let!(:scheduling1){ create(:scheduling, client_enrollment_service_id: client_enrollment_service1.id, date: (Time.current - 2.days).to_date, status: 'Auth_Pending', start_time: '10:00', end_time: '11:00', units: 4, staff_id: staff.id) }
       let!(:staff1){ create(:staff, :with_role, role_name: 'rbt') }
-      let!(:scheduling2){ create(:scheduling, client_enrollment_service_id: client_enrollment_service1.id, date: (Time.current + 2.days).to_date, status: 'scheduled', start_time: '10:00', end_time: '11:00', units: 4, staff_id: staff1.id) }
+      let!(:scheduling2){ create(:scheduling, client_enrollment_service_id: client_enrollment_service1.id, date: (Time.current + 2.days).to_date, status: 'Scheduled', start_time: '10:00', end_time: '11:00', units: 4, staff_id: staff1.id) }
       let!(:staff2){ create(:staff, :with_role, role_name: 'bcba') }
-      let!(:scheduling2){ create(:scheduling, client_enrollment_service_id: client_enrollment_service1.id, date: (Time.current + 2.days).to_date, status: 'scheduled', start_time: '10:00', end_time: '11:00', units: 4, staff_id: staff2.id) }
+      let!(:scheduling2){ create(:scheduling, client_enrollment_service_id: client_enrollment_service1.id, date: (Time.current + 2.days).to_date, status: 'Scheduled', start_time: '10:00', end_time: '11:00', units: 4, staff_id: staff2.id) }
       let!(:funding_source1) { create(:funding_source, clinic_id: clinic.id) }
       let!(:client_enrollment2) { create(:client_enrollment, client_id: client.id, funding_source_id: funding_source.id) }
       let!(:service1) { create(:service, is_service_provider_required: true, selected_payors: [{'payor_id': funding_source1.id, 'is_legacy_required': false}]) }

@@ -18,12 +18,12 @@ class Scheduling < ApplicationRecord
   validate :validate_units, on: :create
   # validate :validate_staff, on: :create
   
-  enum status: { scheduled: 'scheduled', rendered: 'rendered', auth_pending: 'auth_pending', non_billable: 'non_billable', 
-                 duplicate: 'duplicate', error: 'error', client_cancel_greater_than_24_h: 'client_cancel_greater_than_24_h', 
-                 client_cancel_less_than_24_h: 'client_cancel_less_than_24_h', client_no_show: 'client_no_show', 
-                 staff_cancellation: 'staff_cancellation', staff_cancellation_due_to_illness: 'staff_cancellation_due_to_illness', 
-                 cancellation_related_to_covid: 'cancellation_related_to_covid', unavailable: 'unavailable', 
-                 inclement_weather_cancellation: 'inclement_weather_cancellation'}
+  enum status: { Scheduled: 'Scheduled', Rendered: 'Rendered', Auth_Pending: 'Auth_Pending', Non_Billable: 'Non_Billable', 
+                 Duplicate: 'Duplicate', Error: 'Error', Client_Cancel_Greater_than_24_h: 'Client_Cancel_Greater_than_24_h', 
+                 Client_Cancel_Less_than_24_h: 'Client_Cancel_Less_than_24_h', Client_No_Show: 'Client_No_Show', 
+                 Staff_Cancellation: 'Staff_Cancellation', Staff_Cancellation_Due_To_Illness: 'Staff_Cancellation_Due_To_Illness', 
+                 Cancellation_Related_to_COVID: 'Cancellation_Related_to_COVID', Unavailable: 'Unavailable', 
+                 Inclement_Weather_Cancellation: 'Inclement_Weather_Cancellation'}
 
   before_save :set_units_and_minutes
 
@@ -49,7 +49,7 @@ class Scheduling < ApplicationRecord
   scope :exceeded_24_h_scheduling, ->{ where(DATE_RANGE_QUERY, Time.current.to_date-1, Time.current.to_date-1, Time.current.strftime('%H:%M')) }
   scope :exceeded_3_days_scheduling, ->{ where(DATE_RANGE_QUERY, Time.current.to_date-3, Time.current.to_date-3, Time.current.strftime('%H:%M')) }
   scope :exceeded_5_days_scheduling, ->{ where(DATE_RANGE_QUERY, Time.current.to_date-5, Time.current.to_date-5, Time.current.strftime('%H:%M')) }
-  scope :partially_rendered_schedules, ->{ where(status: 'auth_pending', rendered_at: nil)}
+  scope :partially_rendered_schedules, ->{ where(status: 'Auth_Pending', rendered_at: nil)}
   scope :past_60_days_schedules, ->{ where('date>=? AND date<?', (Time.current-60.days).strftime('%Y-%m-%d'), Time.current.strftime('%Y-%m-%d')) }
   scope :without_staff, ->{ where(staff_id: nil) }
   scope :with_staff, ->{ where.not(staff_id: nil) }
@@ -100,7 +100,7 @@ class Scheduling < ApplicationRecord
   end
 
   def validate_units
-    return if (self.client_enrollment_service.blank? || (self.status!='scheduled' && self.status!='rendered'))
+    return if (self.client_enrollment_service.blank? || (self.status!='Scheduled' && self.status!='Rendered'))
 
     schedules = Scheduling.where.not(id: self.id).where(client_enrollment_service_id: self.client_enrollment_service.id).with_rendered_or_scheduled_as_status
     completed_schedules = schedules.completed_scheduling

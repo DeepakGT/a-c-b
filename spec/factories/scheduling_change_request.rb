@@ -4,6 +4,6 @@ FactoryBot.define do
     date { '2876-07-15' }
     start_time { (DateTime.current+0.1).strftime('%H:%M') }
     end_time { (DateTime.current+0.3).strftime('%H:%M') }
-    status {'client_cancel_greater_than_24_h'}
+    status {'Client_Cancel_Greater_than_24_h'}
   end
 end

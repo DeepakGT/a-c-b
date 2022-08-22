@@ -6,7 +6,7 @@ namespace :update_partial_scheduling do
         schedules.each do |schedule|
             service_code = schedule.client_enrollment_service.service.display_code
             puts "schedule ID - #{schedule.id}, Service Code - #{service_code}"
-            schedule.update(status: 'auth_pending', rendered_at: nil) if early_codes.include? service_code
+            schedule.update(status: 'Auth_Pending', rendered_at: nil) if early_codes.include? service_code
         end
     end
   end
