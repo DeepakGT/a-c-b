@@ -11,7 +11,7 @@ module RenderAppointments
         schedules = Scheduling.where(client_enrollment_service_id: client_enrollment_services_ids)
         schedules = schedules&.partially_rendered_schedules.and(schedules.completed_scheduling.or(schedules.completed_todays_schedulings))
         schedules&.each do |schedule|
-          schedule&.status = 'rendered'
+          schedule&.status = 'Rendered'
           schedule&.rendered_at = DateTime.current
           schedule&.save
         end
