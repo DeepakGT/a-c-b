@@ -3,6 +3,7 @@ class ClientsController < ApplicationController
   before_action :authenticate_user!
   before_action :authorize_user
   before_action :set_client, only: %i[show update destroy]
+  before_action :remove_trailing_space, only: %i[create update]
 
   def index
     clients = filter_by_logged_in_user
@@ -148,6 +149,11 @@ class ClientsController < ApplicationController
                        .or(clients.by_bcba_last_name(fname))
     end
     clients
+  end
+
+  def remove_trailing_space
+    params[:first_name].strip! if params[:first_name].present?
+    params[:last_name].strip! if params[:last_name].present?
   end
   # end of private
 
