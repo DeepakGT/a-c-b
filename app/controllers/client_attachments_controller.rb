@@ -5,7 +5,7 @@ class ClientAttachmentsController < ApplicationController
   before_action :set_attachment, only: %i[show update destroy]
 
   def index
-    @attachments = @client.attachments.order(:created_at)
+    @attachments = @client&.attachments&.order(:created_at)
   end
 
   def show
@@ -13,15 +13,15 @@ class ClientAttachmentsController < ApplicationController
   end
 
   def create
-    @attachment = @client.attachments.create(attachment_params)
+    @attachment = @client&.attachments&.create(attachment_params)
   end
 
   def update
-    @attachment.update(attachment_params)
+    @attachment&.update(attachment_params)
   end
 
   def destroy
-    @attachment.destroy
+    @attachment&.destroy
   end
 
   private
@@ -31,11 +31,11 @@ class ClientAttachmentsController < ApplicationController
   end
 
   def set_client
-    @client = Client.find(params[:client_id])
+    @client = Client.find(params[:client_id]) rescue nil
   end
 
   def set_attachment
-    @attachment = @client.attachments.find(params[:id])
+    @attachment = @client.attachments.find(params[:id]) rescue nil
   end
 
   def attachment_params

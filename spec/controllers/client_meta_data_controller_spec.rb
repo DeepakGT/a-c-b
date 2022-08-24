@@ -17,7 +17,6 @@ RSpec.describe ClientMetaDataController, type: :controller do
 
   describe "GET #selectable_options" do
     context "when sign in" do
-      # let(:client_enrollments) { client.client_enrollments.active.where.not(source_of_payment: 'self_pay') }
       it "should fetch client selectable options list successfully" do
         set_auth_headers(auth_headers)
         
@@ -27,7 +26,6 @@ RSpec.describe ClientMetaDataController, type: :controller do
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
         expect(response_body['data']['services'].count).to eq(Service.all.count)
-        # expect(response_body['data']['funding_sources'].count).to eq(client_enrollments.count)
       end
     end
   end

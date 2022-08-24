@@ -99,7 +99,6 @@ RSpec.describe MetaDataController, type: :controller do
   
           expect(response.status).to eq(200)
           expect(response_body['status']).to eq('success')
-          # expect(response_body['data'].count).to eq(2)
         end 
       end
     end
@@ -118,6 +117,22 @@ RSpec.describe MetaDataController, type: :controller do
         expect(response_body['status']).to eq('success')
         expect(response_body['data'].count).to eq(rbts.count)
       end 
+    end
+  end
+
+  describe "GET #select_payor_types" do
+    context "when the response is successful " do
+      let!(:payor_types){ FundingSource.transform_payor_types }
+
+      it "should get the selectable options from the payer successfully" do
+
+        get :select_payor_types
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data']['payor_types']).to eq(payor_types)
+      end
     end
   end
   

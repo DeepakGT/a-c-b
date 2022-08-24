@@ -4,8 +4,4 @@ json.data do
     json.partial! 'service_detail', service: service
   end
 end
-if params[:page].present?
-  json.total_records @services.total_entries
-  json.limit @services.per_page
-  json.page params[:page]
-end
+json.partial! '/pagination_detail', list: @services, page_number: params[:page]

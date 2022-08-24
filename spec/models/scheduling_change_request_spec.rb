@@ -2,8 +2,6 @@ require 'rails_helper'
 
 RSpec.describe SchedulingChangeRequest, type: :model do
   describe '#associations' do
-    # subject { create(:scheduling_change_request) }
-    # it { should belong_to(:scheduling) }
     it { SchedulingChangeRequest.reflect_on_association(:scheduling).macro.should eq(:belongs_to) }
   end
   subject { build :scheduling_change_request }
@@ -32,7 +30,7 @@ RSpec.describe SchedulingChangeRequest, type: :model do
 
   describe "#validate_change_request" do
     context "validate change requests" do
-      let!(:scheduling) { create(:scheduling, status: 'scheduled') }
+      let!(:scheduling) { create(:scheduling, status: 'Scheduled') }
       let!(:scheduling_change_request1) { create(:scheduling_change_request, scheduling_id: scheduling.id, status: 'Client_Cancel_Greater_than_24_h', approval_status: nil) }
       let(:scheduling_change_request) { build :scheduling_change_request, scheduling_id: scheduling.id }
 

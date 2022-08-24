@@ -12,16 +12,18 @@ class Scheduling < ApplicationRecord
   attr_accessor :user
 
   validates_presence_of :date, :start_time, :end_time, :status
-  # validates_presence_of :units, message: "or minutes, any one must be present.", if: proc { |obj| obj.minutes.blank? }
-  # validates_absence_of :units, message: "or minutes, only one must be present.", if: proc { |obj| obj.minutes.present? }
 
   # validate :validate_time
   validate :validate_past_appointments, on: :create
   validate :validate_units, on: :create
   # validate :validate_staff, on: :create
-  # validate :validate_units_and_minutes
   
-  enum status: {Scheduled: 0, Rendered: 1, Auth_Pending: 2, Non_Billable: 3, Duplicate: 4, Error: 5, Client_Cancel_Greater_than_24_h: 6, Client_Cancel_Less_than_24_h: 7, Client_No_Show: 8, Staff_Cancellation: 9, Staff_Cancellation_Due_To_Illness: 10, Cancellation_Related_to_COVID: 11, Unavailable: 12, Inclement_Weather_Cancellation: 13}
+  enum status: { Scheduled: 'Scheduled', Rendered: 'Rendered', Auth_Pending: 'Auth_Pending', Non_Billable: 'Non_Billable', 
+                 Duplicate: 'Duplicate', Error: 'Error', Client_Cancel_Greater_than_24_h: 'Client_Cancel_Greater_than_24_h', 
+                 Client_Cancel_Less_than_24_h: 'Client_Cancel_Less_than_24_h', Client_No_Show: 'Client_No_Show', 
+                 Staff_Cancellation: 'Staff_Cancellation', Staff_Cancellation_Due_To_Illness: 'Staff_Cancellation_Due_To_Illness', 
+                 Cancellation_Related_to_COVID: 'Cancellation_Related_to_COVID', Unavailable: 'Unavailable', 
+                 Inclement_Weather_Cancellation: 'Inclement_Weather_Cancellation'}
 
   before_save :set_units_and_minutes
 
@@ -55,6 +57,8 @@ class Scheduling < ApplicationRecord
   scope :without_client, ->{ where(client_enrollment_service_id: nil) }
   scope :with_active_client, ->{ where('clients.status = ?', 0) }
   scope :post_30_may_schedules, ->{ where('date>? and date <?', '2022-05-30', Time.current.strftime('%Y-%m-%d')) }
+  scope :within_dates, ->(start_date, end_date){ where('date>=? AND date<=?', start_date, end_date) }
+  scope :completed_todays_schedulings, ->{ where('date = ? AND end_time < ?', Time.current.to_date, Time.current.strftime('%H:%M'))}
 
   def calculate_units(minutes)
     rem = minutes%15
@@ -96,7 +100,7 @@ class Scheduling < ApplicationRecord
   end
 
   def validate_units
-    return if self.client_enrollment_service.blank?
+    return if (self.client_enrollment_service.blank? || (self.status!='Scheduled' && self.status!='Rendered'))
 
     schedules = Scheduling.where.not(id: self.id).where(client_enrollment_service_id: self.client_enrollment_service.id).with_rendered_or_scheduled_as_status
     completed_schedules = schedules.completed_scheduling
@@ -111,13 +115,6 @@ class Scheduling < ApplicationRecord
   #   schedules = self.staff&.schedulings&.unrendered_schedulings&.exceeded_5_days_scheduling
   #   if schedules.any?
   #     errors.add(:staff, 'No further appointments can be created for given staff unless exceeded 5 days past appointments are rendered.')
-  #   end
-  # end
-
-  # def validate_units_and_minutes
-  #   if self.units.present? && self.minutes.present?
-  #     minutes = self.units*15
-  #     errors.add(:scheduling, "The units/minutes are wrong. 1 unit is equivalent to 15 minutes, and vice versa.") if minutes != self.minutes
   #   end
   # end
 
@@ -136,6 +133,5 @@ class Scheduling < ApplicationRecord
       end
     end 
   end
-
   # end of private
 end

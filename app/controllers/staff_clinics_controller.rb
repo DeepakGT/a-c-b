@@ -5,7 +5,7 @@ class StaffClinicsController < ApplicationController
   before_action :set_staff_clinic, only: %i[show update destroy]
 
   def index 
-    @staff_clinics = @staff.staff_clinics.order(is_home_clinic: :desc)
+    @staff_clinics = @staff&.staff_clinics&.order(is_home_clinic: :desc)
   end
 
   def show
@@ -13,32 +13,32 @@ class StaffClinicsController < ApplicationController
   end
   
   def create
-    @staff_clinic = @staff.staff_clinics.new(staff_clinic_params)
+    @staff_clinic = @staff&.staff_clinics&.new(staff_clinic_params)
     remove_home_clinic if params[:is_home_clinic].to_bool.true?
-    @staff_clinic.save
+    @staff_clinic&.save
   end
 
   def update
     StaffClinic.transaction do
-      remove_services # if params[:staff_clinic_services_attributes].present?
+      remove_services
       remove_home_clinic if params[:is_home_clinic].to_bool.true?
-      @staff_clinic.update(staff_clinic_params)
+      @staff_clinic&.update(staff_clinic_params)
     end
   end
 
   def destroy
-    if @staff_clinic.is_home_clinic.to_bool.true?
-      other_staff_clinics = @staff_clinic.staff.staff_clinics.except_ids(@staff_clinic.id)
+    if @staff_clinic&.is_home_clinic&.to_bool&.true?
+      other_staff_clinics = @staff_clinic&.staff&.staff_clinics&.except_ids(@staff_clinic&.id)
       if other_staff_clinics.any?
-        staff_clinic = other_staff_clinics.first
-        staff_clinic.is_home_clinic = true
-        staff_clinic.save(validate: false)
-        @staff_clinic.destroy
+        staff_clinic& = other_staff_clinics.first
+        staff_clinic&.is_home_clinic = true
+        staff_clinic&.save(validate: false)
+        @staff_clinic&.destroy
       else
-        @staff_clinic.errors.add(:is_home_clinic, 'Please add another home location first.')
+        @staff_clinic&.errors&.add(:is_home_clinic, 'Please add another home location first.')
       end
     else
-      @staff_clinic.destroy
+      @staff_clinic&.destroy
     end
   end
 
@@ -49,11 +49,11 @@ class StaffClinicsController < ApplicationController
   end
 
   def set_staff
-    @staff = Staff.find(params[:staff_id])
+    @staff = Staff.find(params[:staff_id]) rescue nil
   end
 
   def set_staff_clinic
-    @staff_clinic = @staff.staff_clinics.find(params[:id])
+    @staff_clinic = @staff&.staff_clinics&.find(params[:id]) rescue nil
   end
 
   def staff_clinic_params
@@ -61,11 +61,11 @@ class StaffClinicsController < ApplicationController
   end
 
   def remove_services
-    @staff_clinic.staff_clinic_services.destroy_all
+    @staff_clinic&.staff_clinic_services&.destroy_all
   end
 
   def remove_home_clinic
-    home_clinics = @staff.staff_clinics.where(is_home_clinic: true)
+    home_clinics = @staff&.staff_clinics&.where(is_home_clinic: true)
     home_clinics.update_all(is_home_clinic: false) if home_clinics.present?
   end
   # end of private

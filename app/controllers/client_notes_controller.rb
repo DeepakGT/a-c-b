@@ -5,13 +5,13 @@ class ClientNotesController < ApplicationController
   before_action :set_client_note, only: %i[show update destroy]
 
   def index
-    @client_notes = @client.notes.order(:created_at)
+    @client_notes = @client&.notes&.order(:created_at)
   end
 
   def create
-    @client_note = @client.notes.new(client_note_params)
+    @client_note = @client&.notes&.new(client_note_params)
     set_creator_id
-    @client_note.save
+    @client_note&.save
   end
 
   def show
@@ -19,21 +19,21 @@ class ClientNotesController < ApplicationController
   end
 
   def update
-    @client_note.update(client_note_params)
+    @client_note&.update(client_note_params)
   end
 
   def destroy
-    @client_note.destroy
+    @client_note&.destroy
   end
 
   private
   
   def set_client
-    @client = Client.find(params[:client_id])
+    @client = Client.find(params[:client_id]) rescue nil
   end
 
   def set_client_note
-    @client_note = @client.notes.find(params[:id])
+    @client_note = @client.notes.find(params[:id]) rescue nil
   end
 
   def client_note_params
@@ -45,7 +45,7 @@ class ClientNotesController < ApplicationController
   end
 
   def set_creator_id
-    @client_note.creator_id = current_user.id
+    @client_note&.creator_id = current_user.id
   end
   # end of private
 end
