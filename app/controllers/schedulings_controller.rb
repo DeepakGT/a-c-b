@@ -25,6 +25,7 @@ class SchedulingsController < ApplicationController
     else
       @schedule.save
     end
+    update_staff_legacy_number
   end
 
   # Creating split appointments
@@ -55,6 +56,7 @@ class SchedulingsController < ApplicationController
     return if !check_units
     
     update_status if params[:status].present?
+    update_staff_legacy_number
   end
 
   def destroy
@@ -70,7 +72,7 @@ class SchedulingsController < ApplicationController
 
   def create_without_staff
     @schedule = @client_enrollment_service.schedulings.new(scheduling_params)
-    @schedule.status = 'Non-Billable' if params[:status].blank?
+    @schedule.status = 'Non_Billable' if params[:status].blank?
     @schedule.creator_id = current_user.id
     @schedule.user = current_user
     @schedule.id = Scheduling.last.id + 1
@@ -85,7 +87,7 @@ class SchedulingsController < ApplicationController
   
   def create_without_client
     @schedule = Scheduling.new(create_without_client_params)
-    @schedule.status = 'Non-Billable'
+    @schedule.status = 'Non_Billable'
     @schedule.creator_id = current_user.id
     @schedule.user = current_user
     @schedule.id = Scheduling.last.id + 1
@@ -363,6 +365,12 @@ class SchedulingsController < ApplicationController
   def set_db_time_format
     params[:start_time] = params[:start_time].in_time_zone.strftime("%H:%M") if params[:start_time].present?
     params[:end_time] = params[:end_time].in_time_zone.strftime("%H:%M") if params[:end_time].present?
+  end
+
+  def update_staff_legacy_number
+    return if params[:legacy_number].blank?
+    
+    @schedule&.staff&.update(legacy_number: params[:legacy_number])
   end
   # end of private
 end

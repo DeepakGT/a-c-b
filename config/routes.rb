@@ -71,6 +71,7 @@ Rails.application.routes.draw do
     get '/clinics_list',to: 'meta_data#clinics_list'
     get '/bcba_list',to: 'meta_data#bcba_list'
     get '/rbt_list',to: 'meta_data#rbt_list'
+    get '/services_and_funding_sources_list', to: 'meta_data#services_and_funding_sources_list'
     get '/rbt_appointments', to: 'scheduling_meta_data#rbt_appointments'
     get '/bcba_appointments', to: 'scheduling_meta_data#bcba_appointments'
     get '/executive_director_appointments', to: 'scheduling_meta_data#executive_director_appointments'
