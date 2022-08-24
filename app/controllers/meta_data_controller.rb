@@ -1,5 +1,5 @@
 class MetaDataController < ApplicationController
-  before_action :authenticate_user!, except: :select_payor_types
+  before_action :authenticate_user!, except: %i[select_payor_types attachment_permissions_options]
 
   def selectable_options
     @selectable_options = selectable_options_data
@@ -35,6 +35,10 @@ class MetaDataController < ApplicationController
   
   def select_payor_types
     @payor_types = FundingSource.transform_payor_types
+  end
+
+  def attachment_permissions_options
+    render json: {status: :success, data: Attachment::PERMISSIONS}, status: 200
   end
 
   private

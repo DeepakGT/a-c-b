@@ -61,10 +61,11 @@ RSpec.describe ClientAttachmentsController, type: :controller do
     context "when sign in" do
       it "should create client attachment successfully" do
         set_auth_headers(auth_headers)
+        attachment_category = create(:attachment_category)
 
         post :create, params: {
           client_id: client.id,
-          category: 'image',
+          attachment_category_id: attachment_category.id,
           base64: 'data:image/gif;base64,R0lGODdhAQABAPAAAP8AAAAAACwAAAAAAQABAAACAkQBADs=',
           file_name: 'test-file'
         }
@@ -73,7 +74,7 @@ RSpec.describe ClientAttachmentsController, type: :controller do
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
         expect(response_body['data']['client_id']).to eq(client.id) 
-        expect(response_body['data']['category']).to eq('image')
+        expect(response_body['data']['category']).to eq('VOB')
         expect(response_body['data']['url']).not_to eq(nil)
       end
 
@@ -92,7 +93,8 @@ RSpec.describe ClientAttachmentsController, type: :controller do
 
   describe "GET #show" do
     context "when sign in" do
-      let(:client_attachment) { create(:attachment, attachable_id: client.id, attachable_type: 'Client', category: 'image')}
+      let(:attachment_category) {create(:attachment_category)}
+      let(:client_attachment) { create(:attachment, attachable_id: client.id, attachable_type: 'Client', attachment_category_id: attachment_category.id)}
       it "should fetch client attachment detail successfully" do
         set_auth_headers(auth_headers)
 
@@ -131,18 +133,19 @@ RSpec.describe ClientAttachmentsController, type: :controller do
 
   describe "PUT #update" do
     context "when sign in" do
-      let(:client_attachment) { create(:attachment, attachable_id: client.id, attachable_type: 'Client', category: 'image')}
-      let(:updated_category) { 'png' }
+      let(:attachment_category) {create(:attachment_category)}
+      let(:client_attachment) { create(:attachment, attachable_id: client.id, attachable_type: 'Client', attachment_category_id: attachment_category.id)}
+      let(:updated_category) { create(:attachment_category, name: 'LMN') }
       it "should update client attachment successfully" do
         set_auth_headers(auth_headers)
 
-        put :update, params: {id: client_attachment.id, client_id: client.id, category: updated_category}
+        put :update, params: {id: client_attachment.id, client_id: client.id, attachment_category_id: updated_category.id}
         response_body = JSON.parse(response.body)
 
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
         expect(response_body['data']['id']).to eq(client_attachment.id)
-        expect(response_body['data']['category']).to eq(updated_category)       
+        expect(response_body['data']['category']).to eq(updated_category.name)
       end
 
       context "when client_id is not present" do
@@ -171,7 +174,8 @@ RSpec.describe ClientAttachmentsController, type: :controller do
 
   describe "DELETE #destroy" do
     context "when sign in" do
-      let(:client_attachment) { create(:attachment, attachable_id: client.id, attachable_type: 'Client', category: 'image')}
+      let(:attachment_category) {create(:attachment_category)}
+      let(:client_attachment) { create(:attachment, attachable_id: client.id, attachable_type: 'Client', attachment_category_id: attachment_category.id)}
       it "should delete client attachment successfully" do
         set_auth_headers(auth_headers)
         delete :destroy, params: {client_id: client.id, id: client_attachment.id} 

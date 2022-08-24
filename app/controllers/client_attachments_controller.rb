@@ -1,6 +1,6 @@
 class ClientAttachmentsController < ApplicationController
   before_action :authenticate_user!
-  before_action :authorize_user
+  before_action :authorize_user, except: %i[show]
   before_action :set_client
   before_action :set_attachment, only: %i[show update destroy]
 
@@ -9,7 +9,8 @@ class ClientAttachmentsController < ApplicationController
   end
 
   def show
-    @attachment  
+    @attachment
+    authorize @attachment if current_user.role_name != 'super_admin'
   end
 
   def create
@@ -39,7 +40,7 @@ class ClientAttachmentsController < ApplicationController
   end
 
   def attachment_params
-    params.permit(:category, :base64, :file_name)
+    params.permit(:base64, :file_name, :attachment_category_id, permissions: [])
   end
-  # end of private
+
 end
