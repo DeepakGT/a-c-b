@@ -6,10 +6,14 @@ class SettingsController < ApplicationController
   def show; end
 
   def update 
-    @setting.update(welcome_note: params[:welcome_note])
+    @setting.update(update_params)
   end
 
   private
+
+  def update_params
+    params.permit(:welcome_note, roles_ids:[])
+  end
 
   def set_setting
     @setting = Setting.first
