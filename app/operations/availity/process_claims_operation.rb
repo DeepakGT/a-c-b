@@ -1,3 +1,5 @@
+require 'csv'
+
 module Availity
   module ProcessClaimsOperation
     AVAILITY_LOG_PATH = "log/availity".freeze
@@ -6,6 +8,39 @@ module Availity
     PROVIDER_SEQ = "PROVIDERSEQ".freeze
     
     class << self
+      def process_s3_claims(bucket, source_file, target_file, field_mapping_key, payer_mapping_key, provider_mapping_key, testing_mode)
+        # get data from S3
+        s3_client = S3::S3ApiServices.get_s3_client
+        s3_data = S3::S3ApiServices.get_file(s3_client, bucket, source_file)
+
+        # parse S3 data
+        rows = CSV.parse(s3_data, headers: true)
+        rows.each do |row|
+          row[AVAILITY_STATUS] = ""
+        end
+
+        # process claims
+        process_claims(rows, field_mapping_key, payer_mapping_key, provider_mapping_key)
+
+        if testing_mode
+          # save to csv file
+          # for privacy, only save some columns
+          CSV.open("#{Rails.root.join(AVAILITY_LOG_PATH)}/test.csv", "wb") do |csv|
+            csv << [PAYOR_ID, PROVIDER_SEQ, AVAILITY_STATUS]
+            rows.each { |row| csv << [row[PAYOR_ID], row[PROVIDER_SEQ], row[AVAILITY_STATUS]] }
+          end
+        else
+          # upload data to S3
+          updated_s3_data = CSV.generate(headers: true) do |csv|
+            csv << rows.headers
+            rows.each { |row| csv << row }
+          end
+          S3::S3ApiServices.put_file(s3_client, bucket, target_file, updated_s3_data)
+        end
+      end
+
+      private
+
       def process_claims(rows, field_mapping_key, payer_mapping_key, provider_mapping_key)
         # get the field mapping between Availity API parameters and S3 data fields
         # example:
@@ -44,7 +79,6 @@ module Availity
         # get access token from Availity
         access_token = Availity::AvailityApiServices.get_access_token
         retry_claims = []
-        missing_payerid_errors = []
 
         rows.each do |claim|
           # loop through each field and build the list of parameters
@@ -61,10 +95,6 @@ module Availity
                   value = ""
                   err = "Not found Availity Payer Id for CollabMD Payer #{cmd_payer}"
                   claim[AVAILITY_STATUS] = { "error" => err, "details" => err }
-                  if missing_payerid_errors.exclude?(err)
-                    missing_payerid_errors << err
-                    log.error(err)
-                  end
                 else
                   value = payer_mapping[cmd_payer]["availity_payer_id"]
                 end
@@ -85,7 +115,7 @@ module Availity
 
             # get claim status by required parameters
             url = "#{Availity::AvailityApiServices::AVAILITY_CLAIM_STATUS_URL}?#{parameters}"
-            get_status(claim, access_token, url, retry_claims, log)
+            get_status(claim, access_token, url, retry_claims)
           end
         rescue => e
           log.error("#{e.message} => #{e.backtrace}")
@@ -94,13 +124,15 @@ module Availity
         # for claim status requests where Availity has not received a response from the payer system,
         # follow up with get claim status by id to get the actual status of the claim
         2.times do
-          sleep 4
+          sleep 5
           retries = retry_claims
           retry_claims = []
           retries.each do |item|
-            # get claim status by Availity id
-            url = "#{Availity::AvailityApiServices::AVAILITY_CLAIM_STATUS_URL}/#{item[:availity_id]}"
-            get_status(item[:claim], access_token, url, retry_claims, log)
+            if item[:availity_id].present?
+              # get claim status by Availity id
+              url = "#{Availity::AvailityApiServices::AVAILITY_CLAIM_STATUS_URL}/#{item[:availity_id]}"
+              get_status(item[:claim], access_token, url, retry_claims)
+            end
           rescue => e
             log.error("#{e.message} => #{e.backtrace}")
           end
@@ -109,9 +141,7 @@ module Availity
         log.info("****** END CLAIM STATUS UPDATE PROCESS ******")
       end
 
-      private
-
-      def get_status(claim, access_token, url, retry_claims, log)
+      def get_status(claim, access_token, url, retry_claims)
         # send Availity API request to get claim status
         response = Availity::AvailityApiServices.get_claim_data(access_token, url)
         if response.code == "401"
@@ -123,11 +153,12 @@ module Availity
         resp_data = JSON.parse(response.body)
         case response.code
         when "200", "202"
-          resp_claim = resp_data["claimStatuses"].first
-          if resp_claim["statusDetails"].blank? || (resp_claim["status"] == "In Progress" && resp_claim["statusCode"] == "0")
+          resp_claim = resp_data["claimStatuses"].first rescue nil
+          if resp_claim.blank? || resp_claim["statusDetails"].blank? || (resp_claim["status"] == "In Progress" && resp_claim["statusCode"] == "0")
             # Availity is in the process of retrieving the claim status from the health plan (payer system)
             # get Availity id to obtain the actual status of the claim later
-            retry_claims << { claim: claim, availity_id: resp_claim["id"] }
+            availity_id = resp_claim.blank? ? resp_data["id"] : resp_claim["id"]
+            retry_claims << { claim: claim, availity_id: availity_id }
           else
             # Availity successfully retrieved an existing claim status from the health plan (payer system)
             claim[AVAILITY_STATUS] = resp_claim["statusDetails"]
@@ -136,7 +167,6 @@ module Availity
           err = { "payer_id" => claim[PAYOR_ID], "provider_seq" => claim[PROVIDER_SEQ], "error" => "#{response.code}-#{response.message}" }
           err["details"] = response.code == "400" ? resp_data["errors"]&.map { |e| e.slice("field", "errorMessage") } : response
           claim[AVAILITY_STATUS] = err.slice("error", "details")
-          log.error(err)
         end
       end
     end
