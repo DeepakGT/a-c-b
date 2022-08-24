@@ -134,9 +134,8 @@ RSpec.describe MetaDataController, type: :controller do
 
           expect(response.status).to eq(200)
           expect(response_body['status']).to eq('success')
-          expect(response_body['data']['non_billable_funding_sources'].count).to eq(funding_sources_list.count)
+          expect(response_body['data']['funding_sources'].count).to eq(funding_sources_list.count)
           expect(response_body['data']['non_early_services'].count).to eq(services_list.count)
-          expect(response_body['data']['billable_funding_sources']).to eq(nil)
         end
       end
 
@@ -150,9 +149,26 @@ RSpec.describe MetaDataController, type: :controller do
 
           expect(response.status).to eq(200)
           expect(response_body['status']).to eq('success')
-          expect(response_body['data']['billable_funding_sources'].count).to eq(funding_sources_list.count)
+          expect(response_body['data']['funding_sources'].count).to eq(funding_sources_list.count)
           expect(response_body['data']['non_early_services']).to eq(nil)
-          expect(response_body['data']['non_billable_funding_sources']).to eq(nil)
+        end
+      end
+
+      context "and client_id is present" do
+        let!(:clinic) { create(:clinic) }
+        let!(:client) { create(:client) }
+        let!(:funding_source1){ create(:funding_source, clinic_id: clinic.id, network_status: 'non_billable') }
+        let!(:funding_source2){ create(:funding_source, clinic_id: clinic.id, network_status: 'non_billable') }
+        let!(:client_enrollment) { create(:client_enrollment, client_id: client.id, source_of_payment: 'insurance', funding_source_id: funding_source1.id) }
+        it "should display non billable funding sources that have no client enrollment created" do
+          set_auth_headers(auth_headers)
+
+          get :services_and_funding_sources_list, params: {is_early_code: true, client_id: client.id}
+          response_body = JSON.parse(response.body)
+
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data']['funding_sources'].count).to eq(1)
         end
       end
     end

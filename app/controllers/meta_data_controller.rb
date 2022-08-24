@@ -28,7 +28,13 @@ class MetaDataController < ApplicationController
 
   def services_and_funding_sources_list
     if params[:is_early_code].to_bool.true?
-      @non_billable_funding_sources = FundingSource.non_billable_funding_sources
+      if params[:client_id].present?
+        client = Client.find(params[:client_id]) rescue nil
+        funding_sources_ids = client&.client_enrollments&.pluck(:funding_source_id)&.uniq&.compact
+        @non_billable_funding_sources = FundingSource.where.not(id: funding_sources_ids).non_billable_funding_sources
+      else
+        @non_billable_funding_sources = FundingSource.non_billable_funding_sources
+      end
       @non_early_services = Service.non_early_services
     else
       @billable_funding_sources = FundingSource.billable_funding_sources
