@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe AttachmentPolicy, type: :policy do
   let!(:role1) { create(:role, name: 'executive_director') }
   let!(:user1) { create(:user, :with_role, role_name: role1.name)}
-  let!(:role2) { create(:role, name: 'administrator', permissions: ['client_files_view', 'client_files_update', 'client_files_delete']) }
+  let!(:role2) { create(:role, name: 'administrator', permissions: %w[client_files_view client_files_update client_files_delete]) }
   let!(:user2) { create(:user, :with_role, role_name: role2.name)}
   subject { described_class }
 
@@ -16,14 +16,16 @@ RSpec.describe AttachmentPolicy, type: :policy do
       expect(subject).to permit(user2)
     end
   end
+  
+  let!(:attachment) {create(:attachment, attachable: user2, permissions: ['bcba'])}
 
   permissions :show? do
     it "denies access if permission is not included" do
-      expect(subject).not_to permit(user1)
+      expect(subject).not_to permit(user1, attachment)
     end
 
     it "grants access if permission is included" do
-      expect(subject).to permit(user2)
+      expect(subject).to permit(user2, attachment)
     end
   end
 
