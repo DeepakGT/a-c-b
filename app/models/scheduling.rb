@@ -25,6 +25,8 @@ class Scheduling < ApplicationRecord
                  cancellation_related_to_covid: 'cancellation_related_to_covid', unavailable: 'unavailable', 
                  inclement_weather_cancellation: 'inclement_weather_cancellation'}
 
+  after_update :send_mail     
+
   before_save :set_units_and_minutes
 
   serialize :unrendered_reason, Array
@@ -194,6 +196,10 @@ class Scheduling < ApplicationRecord
   end
   
   private
+
+  def send_mail           
+    StaffMailer.schedule_update(self).deliver.first 
+  end
 
   # def validate_time
   #   possible_schedules = Scheduling.where.not(id: self.id)

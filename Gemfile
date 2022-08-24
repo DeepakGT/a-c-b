@@ -58,6 +58,10 @@ gem 'sidekiq'
 gem 'sidekiq-cron'
 gem 'sidekiq-failures'
 
+
+# for tempate mailing
+gem 'bootstrap-email', '~> 1.0'
+
 # Rack::Cors provides support for Cross-Origin Resource Sharing (CORS) 
 # for Rack compatible web applications.
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
