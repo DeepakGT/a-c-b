@@ -21,7 +21,7 @@ class UpdateUserStatusWorker
       if staff.terminated_on.present? && staff.terminated_on <= Time.current.to_date
         staff.status = Staff.statuses['inactive']
         staff.save(validate: false)
-        if staff.inactive?
+        if staff.status=='inactive'
           Loggers::UpdateUserStatusLoggerService.call(staff.id, "Staff #{staff.id} status is updated to inactive.")
         else
           Loggers::UpdateUserStatusLoggerService.call(staff.id, "Staff #{staff.id} status cannot be updated to inactive.")
