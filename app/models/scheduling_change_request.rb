@@ -20,8 +20,6 @@ class SchedulingChangeRequest < ApplicationRecord
 
   def validate_change_request
     schedule = Scheduling.find(self.scheduling_id)
-    # if schedule.scheduling_change_requests.by_approval_status.any? && self.status!='Client_No_Show'
-    errors.add(:approval_status, 'No further change requests for given schedule can be created unless old change requests are approved or declined.') if schedule.scheduling_change_requests.by_approval_status.any? && self.status!='client_no_show'
-    # end
+    errors.add(:approval_status, 'No further change requests for given schedule can be created unless old change requests are approved or declined.') if schedule.scheduling_change_requests.by_approval_status.any? && self.status!='Client_No_Show'
   end
 end

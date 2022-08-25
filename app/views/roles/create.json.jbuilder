@@ -1,7 +1,5 @@
 json.status @role.errors.any? ? 'failure' : 'success'
 json.data do
-  json.id @role.id
-  json.name @role.name
-  json.permissions @role.permissions
+  json.partial! 'role_detail', role: @role
 end
 json.errors @role.errors.full_messages

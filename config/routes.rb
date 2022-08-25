@@ -25,7 +25,9 @@ Rails.application.routes.draw do
       registrations: 'overrides/registrations'
     }
 
+    resources :regions, only: [:index ]
     resources :organizations
+    get '/regions_organizations/:id', to: 'organizations#regions_organizations'
     
     resources :clinics do
       resources :funding_sources
@@ -49,8 +51,8 @@ Rails.application.routes.draw do
       get '/soap_notes/:id', to: 'client_meta_data#soap_note_detail'
       resources :service_addresses, controller: 'client_service_addresses'
       post '/create_office_address', to: 'client_service_addresses#create_office_address'
-      put '/replace_early_auth', to: 'client_enrollment_services#replace_early_auth'
       post '/create_early_auths', to: 'client_enrollment_services#create_early_auths'
+      put '/replace_early_auth', to: 'client_enrollment_services#replace_early_auth'
       get '/past_appointments', to: 'clients#past_appointments'
     end
     
@@ -60,8 +62,9 @@ Rails.application.routes.draw do
 
     resources :services
 
-    resources :roles 
+    resources :roles
 
+    put '/availity/update_claim_statuses', to: 'availity#update_claim_statuses'
     get 'meta_data/selectable_options'
     get 'meta_data/select_payor_types'
     get '/supervisor_list', to: 'staff#supervisor_list'

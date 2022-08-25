@@ -8,18 +8,18 @@ class UsersController < ApplicationController
 
   def update_default_schedule_view
     @user = current_user
-    @user.update(default_schedule_view: params[:default_schedule_view])
+    @user&.update(default_schedule_view: params[:default_schedule_view])
   end
 
   def super_admins_list
     @super_admins = User.by_roles('super_admin')
-    @super_admins = @super_admins.paginate(page: params[:page]) if params[:page].present?
+    @super_admins = @super_admins&.paginate(page: params[:page]) if params[:page].present?
   end
 
   def create_super_admin
     @super_admin = User.new(create_params)
-    @super_admin.role = Role.find_by(name: 'super_admin')
-    @super_admin.save
+    @super_admin&.role = Role.find_by(name: 'super_admin')
+    @super_admin&.save
   end
 
   private
