@@ -35,7 +35,5 @@ class Attachment < ApplicationRecord
       Rails.application.config.active_storage.service = :local
     end
   end
-
   # end of private
-
 end

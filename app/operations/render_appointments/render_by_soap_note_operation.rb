@@ -34,9 +34,13 @@ module RenderAppointments
         #   schedule.save(validate: false)
         # end
         if schedule.unrendered_reason.blank?
-          # schedule.is_rendered = true
-          schedule.status = 'Rendered' if schedule.client_enrollment_service&.client_enrollment&.funding_source&.name!='ABA Centers of America'
-          schedule.rendered_at = DateTime.current
+          if schedule.client_enrollment_service&.service&.is_early_code?
+            schedule.status = 'auth_pending'
+            schedule.rendered_at = nil
+          else
+            schedule.status = 'rendered' 
+            schedule.rendered_at = DateTime.current
+          end
           schedule.save(validate: false)
         end
       end

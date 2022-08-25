@@ -3,7 +3,9 @@ class SettingsController < ApplicationController
   before_action :authorize_user
   before_action :set_setting
 
-  def show; end
+  def show
+    @setting
+  end
 
   def update 
     @setting.update(update_params)

@@ -13,4 +13,8 @@ class Organization < ApplicationRecord
 
   validates :name, presence: true
   validates_uniqueness_of :name
+
+  def regions
+    id_regions.map {|id_region| Region.find_by(id: id_region) }
+  end
 end

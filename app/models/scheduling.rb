@@ -1,6 +1,8 @@
 require 'audited.rb'
+DATE_RANGE_QUERY = 'date < ? OR (date = ? AND end_time < ?)'.freeze
+
 class Scheduling < ApplicationRecord
-  audited only: %i[start_time end_time units date], on: :update
+  audited only: %i[start_time end_time units date status], on: :update
 
   belongs_to :staff, optional: true
   belongs_to :client_enrollment_service, optional: true
@@ -10,14 +12,18 @@ class Scheduling < ApplicationRecord
   attr_accessor :user
 
   validates_presence_of :date, :start_time, :end_time, :status
-  # validates_presence_of :units, message: "or minutes, any one must be present.", if: proc { |obj| obj.minutes.blank? }
-  # validates_absence_of :units, message: "or minutes, only one must be present.", if: proc { |obj| obj.minutes.present? }
 
   # validate :validate_time
   validate :validate_past_appointments, on: :create
   validate :validate_units, on: :create
   # validate :validate_staff, on: :create
-  # validate :validate_units_and_minutes
+  
+  enum status: { scheduled: 'scheduled', rendered: 'rendered', auth_pending: 'auth_pending', non_billable: 'non_billable', 
+                 duplicate: 'duplicate', error: 'error', client_cancel_greater_than_24_h: 'client_cancel_greater_than_24_h', 
+                 client_cancel_less_than_24_h: 'client_cancel_less_than_24_h', client_no_show: 'client_no_show', 
+                 staff_cancellation: 'staff_cancellation', staff_cancellation_due_to_illness: 'staff_cancellation_due_to_illness', 
+                 cancellation_related_to_covid: 'cancellation_related_to_covid', unavailable: 'unavailable', 
+                 inclement_weather_cancellation: 'inclement_weather_cancellation'}
 
   before_save :set_units_and_minutes
 
@@ -40,10 +46,10 @@ class Scheduling < ApplicationRecord
   scope :by_staff_clinic, ->(location_id) { where('staff_clinics.clinic_id': location_id) }
   scope :by_staff_home_clinic, ->(location_id) { where('staff_clinics.clinic_id = ? AND staff_clinics.is_home_clinic = ?', location_id, true) }
   scope :on_date, ->(date){ where(date: date) }
-  scope :exceeded_24_h_scheduling, ->{ where('date < ? OR (date = ? AND end_time < ?)', Time.current.to_date-1, Time.current.to_date-1, Time.current.strftime('%H:%M')) }
-  scope :exceeded_3_days_scheduling, ->{ where('date < ? OR (date = ? AND end_time < ?)', Time.current.to_date-3, Time.current.to_date-3, Time.current.strftime('%H:%M')) }
-  scope :exceeded_5_days_scheduling, ->{ where('date < ? OR (date = ? AND end_time < ?)', Time.current.to_date-5, Time.current.to_date-5, Time.current.strftime('%H:%M')) }
-  scope :partially_rendered_schedules, ->{ where.not(rendered_at: nil)}
+  scope :exceeded_24_h_scheduling, ->{ where(DATE_RANGE_QUERY, Time.current.to_date-1, Time.current.to_date-1, Time.current.strftime('%H:%M')) }
+  scope :exceeded_3_days_scheduling, ->{ where(DATE_RANGE_QUERY, Time.current.to_date-3, Time.current.to_date-3, Time.current.strftime('%H:%M')) }
+  scope :exceeded_5_days_scheduling, ->{ where(DATE_RANGE_QUERY, Time.current.to_date-5, Time.current.to_date-5, Time.current.strftime('%H:%M')) }
+  scope :partially_rendered_schedules, ->{ where(status: 'auth_pending', rendered_at: nil)}
   scope :past_60_days_schedules, ->{ where('date>=? AND date<?', (Time.current-60.days).strftime('%Y-%m-%d'), Time.current.strftime('%Y-%m-%d')) }
   scope :without_staff, ->{ where(staff_id: nil) }
   scope :with_staff, ->{ where.not(staff_id: nil) }
@@ -51,6 +57,19 @@ class Scheduling < ApplicationRecord
   scope :without_client, ->{ where(client_enrollment_service_id: nil) }
   scope :with_active_client, ->{ where('clients.status = ?', 0) }
   scope :post_30_may_schedules, ->{ where('date>? and date <?', '2022-05-30', Time.current.strftime('%Y-%m-%d')) }
+  scope :within_dates, ->(start_date, end_date){ where('date>=? AND date<=?', start_date, end_date) }
+  scope :completed_todays_schedulings, ->{ where('date = ? AND end_time < ?', Time.current.to_date, Time.current.strftime('%H:%M'))}
+
+  def calculate_units(minutes)
+    rem = minutes%15
+    if rem == 0
+      minutes/15
+    elsif rem < 8
+      (minutes - rem)/15
+    else
+      (minutes + 15 - rem)/15
+    end
+  end
 
   private
 
@@ -81,7 +100,7 @@ class Scheduling < ApplicationRecord
   end
 
   def validate_units
-    return if self.client_enrollment_service.blank?
+    return if (self.client_enrollment_service.blank? || (!self.scheduled? && !self.rendered? && !self.auth_pending?))
 
     schedules = Scheduling.where.not(id: self.id).where(client_enrollment_service_id: self.client_enrollment_service.id).with_rendered_or_scheduled_as_status
     completed_schedules = schedules.completed_scheduling
@@ -99,24 +118,18 @@ class Scheduling < ApplicationRecord
   #   end
   # end
 
-  # def validate_units_and_minutes
-  #   if self.units.present? && self.minutes.present?
-  #     minutes = self.units*15
-  #     errors.add(:scheduling, "The units/minutes are wrong. 1 unit is equivalent to 15 minutes, and vice versa.") if minutes != self.minutes
-  #   end
-  # end
-
   def set_units_and_minutes
     if self.units.present? && self.minutes.blank?
       self.minutes = self.units*15
     elsif self.minutes.present? && self.units.blank?
-      rem = self.minutes%15
-      if rem == 0
-        self.units = self.minutes/15
-      elsif rem < 8
-        self.units = (self.minutes - rem)/15
+      self.units = self.calculate_units(self.minutes)
+    else
+      if self.units.blank? && self.minutes.blank? && self.start_time.present? && self.end_time.present?
+        self.minutes = (self.end_time.to_time - self.start_time.to_time) / 1.minutes
+        self.units = self.calculate_units(self.minutes)
       else
-        self.units = (self.minutes + 15 - rem)/15
+        self.units ||= 0
+        self.minutes ||= 0
       end
     end 
   end
