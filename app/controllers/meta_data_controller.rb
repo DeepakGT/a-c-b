@@ -44,7 +44,7 @@ class MetaDataController < ApplicationController
   end
 
   def attachment_permissions_options
-    render json: {status: :success, data: Attachment::PERMISSIONS}, status: 200
+    render json: { status: :success, data: Attachment::PERMISSIONS }, status: 200
   end
 
   private

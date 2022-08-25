@@ -32,7 +32,7 @@ class ApplicationController < ActionController::API
   end
 
   def unprosessable_entity_response(model)
-    render json: {status: :failed, error: model.errors.full_messages}, status: 422
+    render json: { status: :failed, error: model.errors.full_messages }, status: 422
   end
 
   def string_to_array(value)
