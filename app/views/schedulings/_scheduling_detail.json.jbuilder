@@ -61,6 +61,8 @@ json.rendered_at schedule.rendered_at
 json.units schedule.units
 json.minutes schedule.minutes
 json.created_at schedule.created_at
+json.appointment_office_id schedule&.appointment_office_id
+json.appointment_office Clinic.find_by(id: schedule&.appointment_office_id)&.name
 if schedule.creator_id.present?
   creator = User.find_by(id: schedule.creator_id)
   json.creator_id schedule.creator_id

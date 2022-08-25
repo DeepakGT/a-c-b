@@ -59,6 +59,8 @@ class Scheduling < ApplicationRecord
   scope :post_30_may_schedules, ->{ where('date>? and date <?', '2022-05-30', Time.current.strftime('%Y-%m-%d')) }
   scope :within_dates, ->(start_date, end_date){ where('date>=? AND date<=?', start_date, end_date) }
   scope :completed_todays_schedulings, ->{ where('date = ? AND end_time < ?', Time.current.to_date, Time.current.strftime('%H:%M'))}
+  scope :future_schedulings, ->{where('date > ?', Time.current.strftime('%Y-%m-%d')).or(where('date = ? AND start_time >= ?', Time.current.strftime('%Y-%m-%d'), Time.current.strftime('%H:%M')))}
+  scope :by_appointment_office, ->(clinic_ids){ where(appointment_office_id: clinic_ids) }
 
   def calculate_units(minutes)
     rem = minutes%15
@@ -70,7 +72,7 @@ class Scheduling < ApplicationRecord
       (minutes + 15 - rem)/15
     end
   end
-
+  
   private
 
   # def validate_time

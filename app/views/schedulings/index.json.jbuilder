@@ -6,6 +6,9 @@ json.data do
     staff = schedule&.staff
     json.id schedule.id
     json.cross_site_allowed schedule.cross_site_allowed
+    json.appointment_office_id schedule&.appointment_office_id
+    json.appointment_office Clinic.find_by(id: schedule&.appointment_office_id)&.name
+    # # json.client_id client&.id
     json.client_name "#{client.first_name} #{client.last_name}" if client.present?
     if schedule.service_address_id.present?
       service_address = Address.find_by(id: schedule.service_address_id)
