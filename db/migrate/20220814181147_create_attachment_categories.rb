@@ -2,7 +2,6 @@ class CreateAttachmentCategories < ActiveRecord::Migration[6.1]
   def change
     create_table :attachment_categories do |t|
       t.string :name
-      t.boolean :delete_status, default: false
 
       t.timestamps
     end

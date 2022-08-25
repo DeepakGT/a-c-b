@@ -1,7 +1,11 @@
 class AttachmentCategory < ApplicationRecord
   has_many :attachments
-
+  before_validation :transform_name
   validates :name, presence: true, uniqueness: true
 
-  scope :all_active_categories, ->{ where(delete_status: false).order(name: :asc) }
+  private
+
+  def transform_name
+    self.name = self.name.downcase
+  end
 end
