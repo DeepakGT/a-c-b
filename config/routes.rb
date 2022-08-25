@@ -66,10 +66,13 @@ Rails.application.routes.draw do
 
     resources :roles
 
+    resources :meta_data do
+      get '/selectable_options', to: 'meta_data#selectable_options', on: :collection
+      get '/select_payor_types', to: 'meta_data#select_payor_types', on: :collection
+      get '/attachment_permissions_options', to: 'meta_data#attachment_permissions_options', on: :collection
+    end
+
     put '/availity/update_claim_statuses', to: 'availity#update_claim_statuses'
-    get 'meta_data/selectable_options'
-    get 'meta_data/select_payor_types'
-    get 'meta_data/attachment_permissions_options'
     get '/supervisor_list', to: 'staff#supervisor_list'
     get '/addresses/country_list', to: 'addresses#country_list'
     get '/roles_list', to: 'roles#roles_list'

@@ -10,7 +10,7 @@ class ClientAttachmentsController < ApplicationController
 
   def show
     @attachment
-    authorize @attachment if current_user.role_name != 'super_admin'
+    authorize @attachment if current_user.role_name != 'super_admin' && @attachment.present?
   end
 
   def create
@@ -40,7 +40,7 @@ class ClientAttachmentsController < ApplicationController
   end
 
   def attachment_params
-    params.permit(:base64, :file_name, :attachment_category_id, permissions: [])
+    params.permit(:base64, :file_name, :attachment_category_id, role_permissions: [])
   end
 
 end

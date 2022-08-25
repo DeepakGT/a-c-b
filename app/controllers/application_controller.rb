@@ -31,6 +31,10 @@ class ApplicationController < ActionController::API
     render json: {status: :failure, errors: ['you are not authorized to perform this action.']}, status: 401
   end
 
+  def unprosessable_entity_response(model)
+    render json: {status: :failed, error: model.errors.full_messages}, status: 422
+  end
+
   def string_to_array(value)
     value = value.gsub(/\[|\]/, '').split(',')
   end
