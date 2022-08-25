@@ -40,4 +40,4 @@ json.data do
     end
   end
 end
-json.errors @client.errors.full_messages&.map{|x| x.gsub!('Address ', '')}
+json.errors @client.errors.full_messages&.map{|x| x.gsub('Address ', '')}

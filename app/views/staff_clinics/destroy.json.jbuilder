@@ -13,4 +13,4 @@ json.data do
     end
   end
 end
-json.errors @staff_clinic.errors.full_messages&.map{|x| x.gsub!('Is home clinic ', '')}
+json.errors @staff_clinic.errors.full_messages&.map{|x| x.gsub('Is home clinic ', '')}

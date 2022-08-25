@@ -13,4 +13,4 @@ json.data do
   json.is_default @office_address.is_default
   json.address_name @office_address.address_name
 end
-json.errors @office_address.errors.full_messages&.map{|x| x.gsub!('Address ', '')}
+json.errors @office_address.errors.full_messages&.map{|x| x.gsub('Address ', '')}

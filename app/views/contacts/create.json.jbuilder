@@ -33,4 +33,4 @@ json.data do
     end
   end
 end
-json.errors @contact.errors.full_messages&.map{|x| x.gsub!('Address ', '')}
+json.errors @contact.errors.full_messages&.map{|x| x.gsub('Address ', '')}
