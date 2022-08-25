@@ -1,5 +1,5 @@
 FactoryBot.define do
   factory :attachment_category do
-    name { 'VOB' }
+    sequence(:name) { |n| "test-cat #{n}" }
   end
 end

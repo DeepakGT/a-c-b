@@ -17,7 +17,7 @@ RSpec.describe AttachmentPolicy, type: :policy do
     end
   end
   
-  let!(:attachment) {create(:attachment, attachable: user2, permissions: ['bcba'])}
+  let!(:attachment) {create(:attachment, attachable: user2, role_permissions: ['bcba'])}
 
   permissions :show? do
     it "denies access if permission is not included" do
@@ -25,7 +25,7 @@ RSpec.describe AttachmentPolicy, type: :policy do
     end
 
     it "grants access if permission is included" do
-      expect(subject).to permit(user2, attachment)
+      expect(subject).not_to permit(user2, attachment)
     end
   end
 

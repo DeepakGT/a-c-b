@@ -1,6 +1,6 @@
 class Attachment < ApplicationRecord
 
-  PERMISSIONS = {:bcba => 'bcba', :ccc => 'ccc', :ed => 'ed'}.freeze
+  PERMISSIONS = [{'value' => 'bcba', 'title' => 'bcba'}, {'value' =>'ccc', 'title' => 'ccc'}, {'value' => 'ed','title' => 'ed'}].freeze
 
   attr_accessor :base64
   

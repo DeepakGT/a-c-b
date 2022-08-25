@@ -4,7 +4,7 @@ class AttachmentCategoriesController < ApplicationController
 
 
   def index
-    @attachment_categories = AttachmentCategory.all.sort_by(&:id)
+    @attachment_categories = AttachmentCategory.all_active_categories
   end
 
   def show
@@ -12,31 +12,28 @@ class AttachmentCategoriesController < ApplicationController
   end
 
   def create
-    @attachment_category = AttachmentCategory.create(attachment_category_params)
+    @attachment_category = AttachmentCategory.new(attachment_category_params)
 
     if @attachment_category.valid?
-      @attachment_category
+      @attachment_category.save!
     else
-      render json: {status: :failed, error: @attachment_category.errors.full_messages}, status: 422
+      unprosessable_entity_response(@attachment_category)
     end
   end
 
   def update
-    @attachment_category.update(attachment_category_params)
-    
-    if @attachment_category.valid?
+    if @attachment_category.update(attachment_category_params)
       @attachment_category
     else
-      render json: {status: :failed, error: @attachment_category.errors.full_messages}, status: 422
+      unprosessable_entity_response(@attachment_category)
     end
   end
 
   def destroy
-    @attachment_category.destroy
+    @attachment_category.update(delete_status: true) if current_user.role_name == "super_admin"
   end
 
   private
-
 
   def set_attachment_category
     @attachment_category = AttachmentCategory.find(params[:id])

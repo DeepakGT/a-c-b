@@ -92,7 +92,7 @@ RSpec.describe AttachmentCategoriesController, type: :controller do
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
         expect(response_body['data']['id']).to eq(attachment_category.id)
-        expect(AttachmentCategory.find_by_id(attachment_category.id)).to eq(nil)
+        expect(AttachmentCategory.find_by_id(attachment_category.id).delete_status).to eq(true)
       end
     end
   end
