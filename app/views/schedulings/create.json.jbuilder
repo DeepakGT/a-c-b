@@ -1,4 +1,4 @@
-json.status 'success'
+json.status @schedule.errors.any? ? 'failure' : 'success'
 json.data do
   json.partial! 'scheduling_detail', schedule: @schedule
   if @schedule.rendered_at.present?
