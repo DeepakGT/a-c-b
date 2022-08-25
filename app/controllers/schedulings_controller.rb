@@ -16,18 +16,11 @@ class SchedulingsController < ApplicationController
   end
 
   def create
-<<<<<<< HEAD
     @schedule = @client_enrollment_service&.schedulings&.new(scheduling_params)
+    set_appointment_office(@schedule, scheduling_params[:location_id])
     @schedule&.creator_id = current_user.id
     @schedule&.user = current_user
     @schedule&.id = Scheduling.last.id + 1
-=======
-    @schedule = @client_enrollment_service.schedulings.new(scheduling_params)
-    set_appointment_office(@schedule, scheduling_params[:location_id])
-    @schedule.creator_id = current_user.id
-    @schedule.user = current_user
-    @schedule.id = Scheduling.last.id + 1
->>>>>>> ABA-448
     if is_create_request_via_catalyst_data
       update_data 
     else
@@ -79,22 +72,13 @@ class SchedulingsController < ApplicationController
   end
 
   def create_without_staff
-<<<<<<< HEAD
-    @schedule = @client_enrollment_service&.schedulings&.new(scheduling_params)
-    @schedule&.status = 'non_billable' if params[:status].blank?
-    @schedule&.creator_id = current_user.id
-    @schedule&.user = current_user
-    @schedule&.id = Scheduling.last.id + 1
-    @schedule&.save
-=======
     @schedule = @client_enrollment_service.schedulings.new(scheduling_params)
     set_appointment_office(@schedule, scheduling_params[:location_id])
-    @schedule.status = 'Non-Billable' if params[:status].blank?
+    @schedule.status = 'non_billable' if params[:status].blank?
     @schedule.creator_id = current_user.id
     @schedule.user = current_user
     @schedule.id = Scheduling.last.id + 1
     @schedule.save
->>>>>>> ABA-448
   end
 
   # Render Appointment manually upon user request
@@ -105,19 +89,8 @@ class SchedulingsController < ApplicationController
   
   def create_without_client
     @schedule = Scheduling.new(create_without_client_params)
-<<<<<<< HEAD
-    @schedule&.status = 'non_billable' if params[:status].blank?
-    @schedule&.creator_id = current_user.id
-    @schedule&.user = current_user
-    @schedule&.id = Scheduling.last.id + 1
-    @schedule&.save
-  end
-
-  def update_without_client
-    @schedule&.update(create_without_client_params)
-=======
     set_appointment_office(@schedule, create_without_client_params[:location_id])
-    @schedule.status = 'Non-Billable'
+    @schedule.status = 'non_billable'
     @schedule.creator_id = current_user.id
     @schedule.user = current_user
     @schedule.id = Scheduling.last.id + 1
@@ -128,7 +101,6 @@ class SchedulingsController < ApplicationController
     @schedule.update(create_without_client_params)
     set_appointment_office(@schedule, create_without_client_params[:location_id])
     @schedule.save
->>>>>>> ABA-448
   end
 
   # GET all the details of the appointment along with soap notes
