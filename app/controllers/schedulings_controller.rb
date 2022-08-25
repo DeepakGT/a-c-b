@@ -14,7 +14,6 @@ class SchedulingsController < ApplicationController
 
   def create
     @schedule = @client_enrollment_service.schedulings.new(scheduling_params)
-    set_appointment_office(@schedule, scheduling_params[:location_id])
     @schedule.creator_id = current_user.id
     @schedule.user = current_user
     @schedule.id = Scheduling.last.id + 1
@@ -69,7 +68,6 @@ class SchedulingsController < ApplicationController
 
   def create_without_staff
     @schedule = @client_enrollment_service.schedulings.new(scheduling_params)
-    set_appointment_office(@schedule, scheduling_params[:location_id])
     @schedule.status = 'Non-Billable' if params[:status].blank?
     @schedule.creator_id = current_user.id
     @schedule.user = current_user
@@ -85,7 +83,6 @@ class SchedulingsController < ApplicationController
   
   def create_without_client
     @schedule = Scheduling.new(create_without_client_params)
-    set_appointment_office(@schedule, create_without_client_params[:location_id])
     @schedule.status = 'Non-Billable'
     @schedule.creator_id = current_user.id
     @schedule.user = current_user
@@ -95,7 +92,6 @@ class SchedulingsController < ApplicationController
 
   def update_without_client
     @schedule.update(create_without_client_params)
-    set_appointment_office(@schedule, create_without_client_params[:location_id])
     @schedule.save
   end
 
@@ -112,7 +108,7 @@ class SchedulingsController < ApplicationController
 
   def scheduling_params
     arr = %i[ status date start_time end_time units minutes 
-              client_enrollment_service_id cross_site_allowed service_address_id location_id]
+              client_enrollment_service_id cross_site_allowed service_address_id appointment_office_id]
 
     arr.concat(%i[staff_id catalyst_soap_note_id]) if params[:action] == 'create'
     arr.concat(%i[staff_id]) if params[:action] == 'update'
@@ -156,7 +152,7 @@ class SchedulingsController < ApplicationController
   end
 
   def create_without_client_params
-    params.permit(:staff_id, :date, :start_time, :end_time, :non_billable_reason, :location_id)
+    params.permit(:staff_id, :date, :start_time, :end_time, :non_billable_reason, :appointment_office_id)
   end
 
   def scheduling_params_when_bcba
@@ -222,7 +218,6 @@ class SchedulingsController < ApplicationController
 
   def update_scheduling
     @schedule.update(scheduling_params)
-    set_appointment_office(@schedule, scheduling_params[:location_id])
     @schedule.updator_id = current_user.id
     update_render_service if params[:is_rendered].present? || params[:status]=='Rendered'
     update_client_enrollment_service if params[:client_enrollment_service_id].present?
@@ -359,10 +354,6 @@ class SchedulingsController < ApplicationController
   # Render an appointment manually
   def manual_rendering
     @schedule.update(status: 'Rendered',rendered_at: Time.current,is_manual_render: true, rendered_by_id: current_user.id, user: current_user)
-  end
-
-  def set_appointment_office(schedule, location_id)
-    schedule.appointment_office_id = location_id
   end
   # end of private
 end
