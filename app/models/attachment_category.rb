@@ -6,6 +6,8 @@ class AttachmentCategory < ApplicationRecord
   private
 
   def transform_name
-    self.name = self.name.downcase
+    if name.present?
+      self.name = name.downcase unless name.blank?
+    end
   end
 end
