@@ -6,6 +6,7 @@ module Availity
     AVAILITY_STATUS = "AVAILITY_STATUS".freeze
     PAYOR_ID = "PAYORID".freeze
     PROVIDER_SEQ = "PROVIDERSEQ".freeze
+    ACTIVE_PAYER_KEY = "availity_active_276_type_payers".freeze
     
     class << self
       def process_s3_claims(bucket, source_file, target_file, field_mapping_key, payer_mapping_key, provider_mapping_key, testing_mode)
@@ -70,6 +71,15 @@ module Availity
         config_value = ApplicationConfig.find_by(config_key: provider_mapping_key).config_value rescue nil
         provider_mapping = JSON.parse(config_value) rescue {}
 
+        # get the list of availity payer ids that currently support 276 claim statuses transaction type (active payers)
+        # example:
+        # {
+        #   "39180" => true,
+        #   "AMTAS00428" => true
+        # }
+        config_value = ApplicationConfig.find_by(config_key: ACTIVE_PAYER_KEY).config_value rescue nil
+        active_payers = JSON.parse(config_value) rescue {}
+
         # create log file
         log_path = Rails.root.join(AVAILITY_LOG_PATH)
         Dir.mkdir(log_path) unless Dir.exist?(log_path)
@@ -86,7 +96,7 @@ module Availity
           parameters = ""
           field_mapping.each do |item|
             field = item["availity_param"]
-            value = claim[item["data_field"]] rescue nil
+            value = claim[item["data_field"]].strip rescue nil
             if value.present?
               case field
               when "payer.id"
@@ -116,6 +126,21 @@ module Availity
             # get claim status by required parameters
             url = "#{Availity::AvailityApiServices::AVAILITY_CLAIM_STATUS_URL}?#{parameters}"
             get_status(claim, access_token, url, retry_claims)
+          end
+
+          if payer_mapping[cmd_payer].present?
+            if active_payers[payer_mapping[cmd_payer]['availity_payer_id']] == true
+              # additional fields required by Availity API but not in S3 data file
+              provider_seq = claim[PROVIDER_SEQ]
+              parameters = "#{parameters}&providers.lastName=#{provider_mapping[provider_seq]['provider_last_name']}&submitter.lastName=#{provider_mapping[provider_seq]['submitter_last_name']}&submitter.id=#{provider_mapping[provider_seq]['submitter_id']}"
+
+              # get claim status by required parameters
+              url = "#{Availity::AvailityApiServices::AVAILITY_CLAIM_STATUS_URL}?#{parameters}"
+              get_status(claim, access_token, url, retry_claims)
+            else
+              err = "Availity Payer #{payer_mapping[cmd_payer]['availity_payer_id']} currently not support claim status"
+              claim[AVAILITY_STATUS] = { "error" => err, "details" => err }
+            end
           end
         rescue => e
           log.error("#{e.message} => #{e.backtrace}")
