@@ -310,6 +310,24 @@ RSpec.describe SchedulingsController, type: :controller do
               expect(response_body['data']['end_time']).to eq('13:10')
             end
           end
+
+          context "when logged_in user is super_admin, ccc or cd and tries to confirm draft appointment" do
+            let!(:role1) { create(:role, name: 'client_care_coordinator', permissions: ['schedule_view', 'schedule_update', 'schedule_delete', 'schedule_update_for_unassigned_staff', 'schedule_update_for_unassigned_client'])}
+            let!(:user1) { create(:user, :with_role, role_name: role1.name) }
+            let!(:auth_headers1) { user1.create_new_auth_token }
+            let(:scheduling1) { create(:scheduling, client_enrollment_service_id: client_enrollment_service.id, staff_id: staff.id, start_time: '12:00', end_time: '13:00', units: '4', date: Time.current.to_date+4, status: 'draft') }
+            it "should update appointment successfully" do
+              set_auth_headers(auth_headers1)
+  
+              put :update, params: { id: scheduling1.id, status: 'scheduled'}
+              response_body = JSON.parse(response.body)
+  
+              expect(response.status).to eq(200)
+              expect(response_body['status']).to eq('success')
+              expect(response_body['data']['id']).to eq(scheduling1.id)
+              expect(response_body['data']['status']).to eq('scheduled')
+            end
+          end
         end
       end
     end

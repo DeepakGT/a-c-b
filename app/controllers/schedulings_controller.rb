@@ -327,6 +327,14 @@ class SchedulingsController < ApplicationController
         @schedule&.errors&.add(:schedule, 'You are not authorized to unrender appointment.')
         return false
       end
+    elsif @schedule.draft? && params[:status]!='draft'
+      case current_user.role_name
+      when 'Clinical Director', 'client_care_coordinator', 'super_admin'
+        update_scheduling
+      else
+        @schedule&.errors&.add(:draft, 'appointments can be confirmed by client care coordinator and clinical director only.')
+        return false
+      end
     else
       case current_user.role_name
       when 'administrator', 'executive_director', 'Clinical Director', 'client_care_coordinator', 'super_admin'

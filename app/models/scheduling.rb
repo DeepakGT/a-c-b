@@ -16,6 +16,7 @@ class Scheduling < ApplicationRecord
   # validate :validate_time
   validate :validate_past_appointments, on: :create
   validate :validate_units, on: :create
+  validate :validate_draft_appointments, on: :create
   # validate :validate_staff, on: :create
   
   enum status: { scheduled: 'scheduled', rendered: 'rendered', auth_pending: 'auth_pending', non_billable: 'non_billable', 
@@ -23,7 +24,7 @@ class Scheduling < ApplicationRecord
                  client_cancel_less_than_24_h: 'client_cancel_less_than_24_h', client_no_show: 'client_no_show', 
                  staff_cancellation: 'staff_cancellation', staff_cancellation_due_to_illness: 'staff_cancellation_due_to_illness', 
                  cancellation_related_to_covid: 'cancellation_related_to_covid', unavailable: 'unavailable', 
-                 inclement_weather_cancellation: 'inclement_weather_cancellation'}
+                 inclement_weather_cancellation: 'inclement_weather_cancellation', draft: 'draft'}
 
   before_save :set_units_and_minutes
 
@@ -132,6 +133,12 @@ class Scheduling < ApplicationRecord
         self.minutes ||= 0
       end
     end 
+  end
+
+  def validate_draft_appointments
+    return if !self.draft? || self.user.role_name=='super_admin' || self.user.role_name=='client_care_coordinator' || self.user.role_name=='Clinical Director'
+
+    errors.add(:draft, 'appointments can only be created by client care coordinator or clinical director.')
   end
   # end of private
 end
