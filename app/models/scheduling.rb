@@ -107,23 +107,19 @@ class Scheduling < ApplicationRecord
       cont_recurrences = Constant.zero
       date_initial = Date.today
 
-      recurrences = if option[:monthly]
-                      option[:monthly_recurrences]
-                    elsif option[:yearly]
-                      option[:yearly_recurrences]
-                    end
+      recurrences = option[:quantity]
       
      (Constant.zero..recurrences).each do |index|
         break if index == recurrences
 
-        calcule_date = option[:monthly] ? date_initial + index.month : date_initial + index.year
-        if option[:monthly]
+        calcule_date = option[:recurrence] == Constant.monthly ? date_initial + index.month : date_initial + index.year
+        if option[:recurrence] == Constant.monthly
           if calcule_date.beginning_of_month.cweek < date_initial.cweek
             cont_recurrences += calcule_date.at_end_of_month.cweek - calcule_date.beginning_of_month.cweek - (date_initial.cweek - calcule_date.beginning_of_month.cweek)
           else
             cont_recurrences += calcule_date.at_end_of_month.cweek - calcule_date.beginning_of_month.cweek
           end
-        elsif option[:yearly]
+        elsif option[:recurrence] == Constant.yearly
           cont_recurrences += calcule_date.at_end_of_year.cweek - date_initial.cweek
         end
       end
