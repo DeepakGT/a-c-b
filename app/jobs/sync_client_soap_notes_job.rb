@@ -13,7 +13,6 @@ class SyncClientSoapNotesJob < ApplicationJob
       begin
         puts "Syncing from #{from} - #{(from + 1.months).end_of_month}"
         sync_data(from.strftime(DATE_FORMAT), to.strftime(DATE_FORMAT))
-        # sync_data((Time.current.to_date-60.days).strftime('%m-%d-%Y'), (Time.current.to_date).strftime('%m-%d-%Y'))
       rescue
         puts "Error thrown for #{from} - #{(from + 1.months).end_of_month}"
         next
@@ -28,8 +27,5 @@ class SyncClientSoapNotesJob < ApplicationJob
   def sync_data(start_date, end_date)
     Catalyst::SyncDataOperation.call(start_date, end_date)
     Catalyst::RenderAppointmentsOperation.call
-    # ClientEnrollmentService.all.each do |client_enrollment_service|
-    #   ClientEnrollmentServices::UpdateUnitsColumnsOperation.call(client_enrollment_service)
-    # end
   end
 end

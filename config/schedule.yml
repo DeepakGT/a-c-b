@@ -33,12 +33,12 @@ destroy_unassigned_past_appointments:
   class: "DestroyUnassignedAppointmentsWorker"
   queue: DestroyUnassignedAppointments
 
-process_claim_statuses_every_monday_5am:
-  cron: '0 5 * * 1'
-  class: "AvailityProcessClaimsWorker"
-  queue: AvailityProcessClaims
-
 destroy_unused_expired_early_authorizations:
   cron: '0 1 * * *'
   class: "DestroyUnusedExpiredEarlyAuthorizationsWorker"
   queue: DestroyUnusedExpiredEarlyAuthorizations
+
+process_claim_statuses_every_monday_5am:
+  cron: '0 5 * * 1'
+  class: "AvailityProcessClaimsWorker"
+  queue: AvailityProcessClaims

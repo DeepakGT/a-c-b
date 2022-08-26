@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_06_14_062016) do
+ActiveRecord::Schema.define(version: 2022_08_08_144400) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -88,8 +88,6 @@ ActiveRecord::Schema.define(version: 2022_06_14_062016) do
     t.text "provider_signature"
     t.float "units"
     t.float "minutes"
-    t.boolean "is_appointment_found"
-    t.string "multiple_schedulings_ids", default: [], array: true
     t.datetime "date_revision_made"
     t.string "catalyst_patient_id"
     t.string "catalyst_user_id"
@@ -105,6 +103,12 @@ ActiveRecord::Schema.define(version: 2022_06_14_062016) do
     t.bigint "staff_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.float "left_units", default: 0.0
+    t.float "used_units", default: 0.0
+    t.float "scheduled_units", default: 0.0
+    t.float "left_minutes", default: 0.0
+    t.float "used_minutes", default: 0.0
+    t.float "scheduled_minutes", default: 0.0
     t.index ["client_enrollment_service_id"], name: "index_on_service_provider"
     t.index ["staff_id"], name: "index_client_enrollment_service_providers_on_staff_id"
   end
@@ -114,17 +118,13 @@ ActiveRecord::Schema.define(version: 2022_06_14_062016) do
     t.date "end_date"
     t.float "units"
     t.float "minutes"
+    t.boolean "is_appointment_found"
+    t.string "multiple_schedulings_ids", default: [], array: true
     t.string "service_number"
     t.bigint "client_enrollment_id", null: false
     t.bigint "service_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.float "left_units", default: 0.0
-    t.float "used_units", default: 0.0
-    t.float "scheduled_units", default: 0.0
-    t.float "left_minutes", default: 0.0
-    t.float "used_minutes", default: 0.0
-    t.float "scheduled_minutes", default: 0.0
     t.index ["client_enrollment_id"], name: "index_client_enrollment_services_on_client_enrollment_id"
     t.index ["service_id"], name: "index_client_enrollment_services_on_service_id"
   end
@@ -193,7 +193,9 @@ ActiveRecord::Schema.define(version: 2022_06_14_062016) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.text "catalyst_clinic_id"
+    t.bigint "region_id"
     t.index ["organization_id"], name: "index_clinics_on_organization_id"
+    t.index ["region_id"], name: "index_clinics_on_region_id"
   end
 
   create_table "contacts", force: :cascade do |t|
@@ -243,6 +245,7 @@ ActiveRecord::Schema.define(version: 2022_06_14_062016) do
     t.bigint "admin_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.jsonb "id_regions", default: []
     t.index ["admin_id"], name: "index_organizations_on_admin_id"
   end
 
@@ -273,6 +276,12 @@ ActiveRecord::Schema.define(version: 2022_06_14_062016) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["user_id"], name: "index_rbt_supervisions_on_user_id"
+  end
+
+  create_table "regions", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "roles", force: :cascade do |t|
@@ -464,6 +473,7 @@ ActiveRecord::Schema.define(version: 2022_06_14_062016) do
   add_foreign_key "client_notes", "users", column: "creator_id"
   add_foreign_key "clients", "users", column: "bcba_id"
   add_foreign_key "clinics", "organizations"
+  add_foreign_key "clinics", "regions"
   add_foreign_key "funding_sources", "clinics"
   add_foreign_key "organizations", "users", column: "admin_id"
   add_foreign_key "rbt_supervisions", "users"

@@ -4,8 +4,4 @@ json.data do
     json.partial! 'super_admin_detail', super_admin: super_admin
   end
 end
-if params[:page].present?
-  json.total_records @super_admins.total_entries
-  json.limit @super_admins.per_page
-  json.page params[:page]
-end
+json.partial! '/pagination_detail', list: @super_admins, page_number: params[:page]

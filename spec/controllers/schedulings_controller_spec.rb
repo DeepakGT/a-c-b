@@ -154,7 +154,7 @@ RSpec.describe SchedulingsController, type: :controller do
           date: Time.current.to_date,
           start_time: '16:00',
           end_time: '17:00',
-          status: 'scheduled',
+          status: 'Scheduled',
           minutes: '288'
         }
         response_body = JSON.parse(response.body)
@@ -166,12 +166,11 @@ RSpec.describe SchedulingsController, type: :controller do
         expect(response_body['data']['date']).to eq(Time.current.to_date.to_s)
         expect(response_body['data']['start_time']).to eq('16:00')
         expect(response_body['data']['end_time']).to eq('17:00')
-        expect(response_body['data']['status']).to eq('scheduled')
+        expect(response_body['data']['status']).to eq('Scheduled')
         expect(response_body['data']['minutes']).to eq(288.0)
       end
 
       context "and catalyst data id is present" do
-        # let(:catalyst_data){ create(:catalyst_data, is_appointment_found: false, start_time: '12:30', end_time: '13:30', units: 4, minutes: 60) }
         let(:catalyst_data){ create(:catalyst_data, start_time: '12:30', end_time: '13:30', units: 4, minutes: 60) }
         it "should create scheduling using catalyst data successfully" do
           set_auth_headers(auth_headers)
@@ -180,7 +179,7 @@ RSpec.describe SchedulingsController, type: :controller do
             catalyst_data_id: catalyst_data.id,
             client_enrollment_service_id: client_enrollment_service.id,
             staff_id: staff.id,
-            status: 'scheduled'
+            status: 'Scheduled'
           }
           response_body = JSON.parse(response.body)
           
@@ -191,7 +190,7 @@ RSpec.describe SchedulingsController, type: :controller do
           expect(response_body['data']['date']).to eq(catalyst_data.date.strftime('%Y-%m-%d'))
           expect(response_body['data']['start_time']).to eq(catalyst_data.start_time)
           expect(response_body['data']['end_time']).to eq(catalyst_data.end_time)
-          expect(response_body['data']['status']).to eq('scheduled')
+          expect(response_body['data']['status']).to eq('Scheduled')
           expect(response_body['data']['units']).to eq(catalyst_data.units)
           expect(response_body['data']['minutes']).to eq(catalyst_data.minutes)
         end

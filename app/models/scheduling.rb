@@ -12,14 +12,11 @@ class Scheduling < ApplicationRecord
   attr_accessor :user
 
   validates_presence_of :date, :start_time, :end_time, :status
-  # validates_presence_of :units, message: "or minutes, any one must be present.", if: proc { |obj| obj.minutes.blank? }
-  # validates_absence_of :units, message: "or minutes, only one must be present.", if: proc { |obj| obj.minutes.present? }
 
   # validate :validate_time
   validate :validate_past_appointments, on: :create
   validate :validate_units, on: :create
   # validate :validate_staff, on: :create
-  # validate :validate_units_and_minutes
   
   enum status: { scheduled: 'scheduled', rendered: 'rendered', auth_pending: 'auth_pending', non_billable: 'non_billable', 
                  duplicate: 'duplicate', error: 'error', client_cancel_greater_than_24_h: 'client_cancel_greater_than_24_h', 
@@ -61,6 +58,7 @@ class Scheduling < ApplicationRecord
   scope :with_active_client, ->{ where('clients.status = ?', 0) }
   scope :post_30_may_schedules, ->{ where('date>? and date <?', '2022-05-30', Time.current.strftime('%Y-%m-%d')) }
   scope :within_dates, ->(start_date, end_date){ where('date>=? AND date<=?', start_date, end_date) }
+  scope :completed_todays_schedulings, ->{ where('date = ? AND end_time < ?', Time.current.to_date, Time.current.strftime('%H:%M'))}
 
   def calculate_units(minutes)
     rem = minutes%15
@@ -102,7 +100,7 @@ class Scheduling < ApplicationRecord
   end
 
   def validate_units
-    return if (self.client_enrollment_service.blank? || (self.scheduled? && self.rendered? && self.status.auth_pending?))
+    return if (self.client_enrollment_service.blank? || (!self.scheduled? && !self.rendered? && !self.auth_pending?))
 
     schedules = Scheduling.where.not(id: self.id).where(client_enrollment_service_id: self.client_enrollment_service.id).with_rendered_or_scheduled_as_status
     completed_schedules = schedules.completed_scheduling
@@ -117,13 +115,6 @@ class Scheduling < ApplicationRecord
   #   schedules = self.staff&.schedulings&.unrendered_schedulings&.exceeded_5_days_scheduling
   #   if schedules.any?
   #     errors.add(:staff, 'No further appointments can be created for given staff unless exceeded 5 days past appointments are rendered.')
-  #   end
-  # end
-
-  # def validate_units_and_minutes
-  #   if self.units.present? && self.minutes.present?
-  #     minutes = self.units*15
-  #     errors.add(:scheduling, "The units/minutes are wrong. 1 unit is equivalent to 15 minutes, and vice versa.") if minutes != self.minutes
   #   end
   # end
 
@@ -142,6 +133,5 @@ class Scheduling < ApplicationRecord
       end
     end 
   end
-
   # end of private
 end

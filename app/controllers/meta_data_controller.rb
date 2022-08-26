@@ -1,5 +1,5 @@
 class MetaDataController < ApplicationController
-  before_action :authenticate_user!
+  before_action :authenticate_user!, except: :select_payor_types
 
   def selectable_options
     @selectable_options = selectable_options_data
@@ -16,10 +16,8 @@ class MetaDataController < ApplicationController
   end
 
   def bcba_list
-    # bcbas = Staff.joins(:role).by_role('bcba')
     bcbas = Staff.joins(:role).by_roles(['bcba', 'Clinical Director', 'Lead RBT']).active
-    # bcbas = bcbas.by_clinic(params[:location_id]) if params[:location_id].present?
-    @bcbas = bcbas.order(:first_name, :last_name)
+    @bcbas = bcbas&.order(:first_name, :last_name)
   end
 
   def rbt_list
@@ -33,6 +31,10 @@ class MetaDataController < ApplicationController
     else
       @billable_funding_sources = FundingSource.billable_funding_sources
     end
+  end
+  
+  def select_payor_types
+    @payor_types = FundingSource.transform_payor_types
   end
 
   private
@@ -52,8 +54,8 @@ class MetaDataController < ApplicationController
   def country_list
     countries = Country.order(:name)
     prioritize_country = Country.find_by(name: "United States of America")
-    countries = countries.to_a.prepend(prioritize_country)
-    countries = countries.uniq
+    countries = countries&.to_a&.prepend(prioritize_country)
+    countries = countries&.uniq
   end
 
   # end of private
