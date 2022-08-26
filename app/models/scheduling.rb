@@ -9,7 +9,7 @@ class Scheduling < ApplicationRecord
   has_many :soap_notes, dependent: :destroy
   has_many :scheduling_change_requests, dependent: :destroy
 
-  attr_accessor :user
+  attr_accessor :user, :error_msgs
 
   validates_presence_of :date, :start_time, :end_time, :status
 
@@ -72,6 +72,185 @@ class Scheduling < ApplicationRecord
       (minutes + 15 - rem)/15
     end
   end
+
+  class << self
+    def range_recurrences(range, schedule, current_user)
+      error_msgs = []
+      error_msgs.push('we have an error, you should add the dates for the recurring range option') if range[:start].nil? || range[:end].nil?
+      error_msgs.push("the start date must be greater than or equal to today's date") if range[:start].to_date < Date.today
+      return reponse_recurrence(error_msgs.uniq, Constant.empty) if error_msgs.any?
+
+      schedulings = (Constant.zero..(range[:end].to_date - range[:start].to_date).to_i).each_with_object([]) do |index, array|
+        array << fill_schedules(schedule, (range[:start].to_date + index.day).strftime('%Y-%m-%d'), current_user.id)
+      end
+
+      check_recurrence(schedulings)
+    end
+
+    def pattern_recurrences(option, schedule, current_user)
+      error_msgs = []
+      error_msgs.push('we have an error, you must add a recurring appointment pattern') if option[:daily] == false && option[:weekly] == false && option[:monthly] == false && option[:yearly] == false  
+      return reponse_recurrence(error_msgs.uniq, Constant.empty) if error_msgs.any?
+
+      schedulings = check_option(option, schedule, current_user)
+      check_recurrence(schedulings)
+    end
+
+    def check_option(option, schedule, current_user)
+      option_select = nil
+      if option[:daily]
+        option_select = fill_recurrences(option[:daily_recurrences], schedule, current_user, option)
+      elsif option[:weekly]
+        option_select = fill_recurrences(option[:weekly_recurrences], schedule, current_user, option)
+      elsif option[:monthly]
+        option_select = fill_recurrences(option[:monthly_recurrences], schedule, current_user, option)
+      elsif option[:yearly]
+        option_select = fill_recurrences(option[:yearly_recurrences], schedule, current_user, option)
+      end
+      option_select
+    end
+
+    def fill_recurrences(recurrences, schedule, current_user, option)
+      calcule_dates = calcule_dates(recurrences, option)
+
+
+      (Constant.zero..(calcule_dates.present? ? calcule_dates&.count : recurrences)).each_with_object([]) do |index, array|
+        break array if index == (calcule_dates.present? ? calcule_dates&.count : recurrences)
+
+        array << fill_schedules(schedule, calcule_dates.present? ? calcule_dates[index].strftime('%Y-%m-%d') : Date.today + index.day, current_user.id)
+      end
+    end
+
+    def calcule_dates(recurrences, option)
+      calcule_dates = nil
+
+      if option[:daily] && option[:daily_days]&.any?
+        calcule_dates = fetch_date(option[:daily_days], recurrences)
+      elsif option[:weekly]
+        calcule_dates = fetch_date(option[:weekly_days]&.any? ? option[:weekly_days] : Constant.all_days, recurrences)
+      elsif option[:monthly]
+        calcule_dates = fetch_date(option[:monthly_days]&.any? ? option[:monthly_days] : Constant.all_days, month_year_recurrences(option))
+      elsif option[:yearly]
+        calcule_dates = fetch_date(option[:yearly_days]&.any? ? option[:yearly_days] : Constant.all_days, month_year_recurrences(option))
+      end
+
+      calcule_dates
+    end
+
+    def month_year_recurrences(option)
+      cont_recurrences = Constant.zero
+      date_initial = Date.today
+
+      recurrences = if option[:monthly]
+                      option[:monthly_recurrences]
+                    elsif option[:yearly]
+                      option[:yearly_recurrences]
+                    end
+      
+     (Constant.zero..recurrences).each do |index|
+        break if index == recurrences
+
+        calcule_date = option[:monthly] ? date_initial + index.month : date_initial + index.year
+        if option[:monthly]
+          if calcule_date.beginning_of_month.cweek < date_initial.cweek
+            cont_recurrences += calcule_date.at_end_of_month.cweek - calcule_date.beginning_of_month.cweek - (date_initial.cweek - calcule_date.beginning_of_month.cweek)
+          else
+            cont_recurrences += calcule_date.at_end_of_month.cweek - calcule_date.beginning_of_month.cweek
+          end
+        elsif option[:yearly]
+          cont_recurrences += calcule_date.at_end_of_year.cweek - date_initial.cweek
+        end
+      end
+    
+      cont_recurrences
+    end
+
+    def fetch_date(number_days, recurrences)
+      dates = []
+      (Constant.zero..recurrences).each do |index|
+        break if index == recurrences
+
+        date_initial = Date.today.beginning_of_week + index.week
+        number_days.each do |number_day|
+          case number_day.to_i
+          when Constant.days['monday']
+            dates.push(calcule_day(date_initial, recurrences, 'monday'))
+          when Constant.days['tuesday']
+            dates.push(calcule_day(date_initial, recurrences, 'tuesday'))
+          when Constant.days['wednesday']
+            dates.push(calcule_day(date_initial, recurrences, 'wednesday'))
+          when Constant.days['thursday']
+            dates.push(calcule_day(date_initial, recurrences, 'thursday'))
+          when Constant.days['friday']
+            dates.push(calcule_day(date_initial, recurrences, 'friday'))
+          when Constant.days['saturday']
+            dates.push(calcule_day(date_initial, recurrences, 'saturday'))
+          when Constant.days['sunday']
+            dates.push(calcule_day(date_initial, recurrences, 'sunday'))
+          end
+        end
+      end
+
+      dates
+    end
+
+    def calcule_day(date_initial, recurrences, name_day)
+      date = nil
+      finish_date = date_initial + Constant.days["#{name_day}"].day
+      
+      if finish_date < Date.today
+        date = finish_date + recurrences.week
+      else
+        date = finish_date
+      end
+
+      date
+    end
+
+    def fill_schedules(schedule, date, uid)
+      {
+        status: schedule[:status], date: date,
+        start_time: schedule[:start_time], end_time: schedule[:end_time], units: schedule[:units],
+        minutes: schedule[:minutes], client_enrollment_service_id: schedule[:client_enrollment_service_id],
+        cross_site_allowed: schedule[:cross_site_allowed], service_address_id: schedule[:service_address_id],
+        creator_id: uid, staff_id: schedule[:staff_id]
+      }
+    end
+
+    def check_recurrence(schedulings)
+      error_msgs = []
+      cont_units = Constant.zero
+      cont_limit = Constant.zero
+      schedulings.each do |scheduling|
+        client_enrollment_service = ClientEnrollmentService.find_by id: scheduling[:client_enrollment_service_id]
+        cont_units += scheduling[:units].to_i if scheduling[:units].present? && scheduling[:units].to_i.positive?
+        error_msgs.push('range of recurrences exceeds one authorization') if scheduling[:date].to_date > client_enrollment_service.end_date.to_date
+        error_msgs.push('Units may not be blank or empty') if scheduling[:units].nil?
+        error_msgs.push('over pass authorization units') if cont_units > client_enrollment_service.units
+        error_msgs.push('an appointment is already scheduled, try again to reschedul  e it') if self.any? && check_date_available(scheduling[:date], scheduling[:start_time], scheduling[:end_time]).any?
+        error_msgs.push('limit reached, try again') if cont_limit > Constant.limit_appointment_recurrence
+        cont_limit += Constant.one
+      end
+      
+      reponse_recurrence(error_msgs.uniq, error_msgs.any? ? Constant.empty : create_all(schedulings))
+    end
+
+    def check_date_available(date, start_time, end_time)
+      where(date: date).where('start_time >= ? and end_time <= ? ', start_time, end_time)
+    end
+
+    def create_all(schedulings)
+      schedulings.each { |scheduling| Scheduling.create scheduling }
+    end
+
+    def reponse_recurrence(errors, response_successfully)
+      if errors.any?
+        {status: 'errors', data: errors}
+      else
+        {status: 'success', data: response_successfully}
+      end
+    end
+  end
   
   private
 
@@ -90,13 +269,14 @@ class Scheduling < ApplicationRecord
   # end
 
   def validate_past_appointments
-    return if self.user.role_name=='super_admin' || self.date.blank?
+    rser = User.find_by(id: creator_id)
+    return if user.role_name=='super_admin' || date.blank?
 
-    if self.user.role_name=='executive_director' || self.user.role_name=='Clinical Director' || self.user.role_name=='client_care_coordinator'
-      errors.add(:scheduling, 'You are not authorized to create appointments for 3 days ago.') if self.date<(Time.current.to_date-3)
-    elsif self.user.role_name=='bcba'
-      errors.add(:scheduling, 'You are not authorized to create appointment past 24 hrs.') if self.date<(Time.current-1.day).to_date || (self.date==(Time.current-1.day).to_date && self.start_time<Time.current.strftime('%H:%M'))
-    elsif (self.date<Time.current.to_date || (self.date==Time.current.to_date && self.start_time<=Time.current.strftime('%H:%M')))
+    if user.role_name == 'executive_director' || user.role_name == 'Clinical Director' || user.role_name == 'client_care_coordinator'
+      errors.add(:scheduling, 'You are not authorized to create appointments for 3 days ago.') if date < Date.today - Constant.third.days
+    elsif user.role_name == 'bcba'
+      errors.add(:scheduling, 'You are not authorized to create appointment past 24 hrs.') if date < Date.today - Constant.one.day || (date == Date.today - Constant.one.day && start_time < Time.current.strftime('%H:%M'))
+    elsif (date < Date.today || (date == Date.today && start_time <= Time.current.strftime('%H:%M')))
       errors.add(:scheduling, 'You are not authorized to create appointment in past.')
     end
   end

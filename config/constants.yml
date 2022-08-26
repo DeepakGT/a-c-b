@@ -1,0 +1,25 @@
+defaults: &defaults
+  one: 1
+  zero: 0
+  third: 3
+  limit_appointment_recurrence: 30
+  all_days: [0,1,2,3,4,5,6]
+  empty: []
+  daily: 'daily'
+  weekly: 'weekly'
+  monthly: 'monthly'
+  yearly: 'yearly'
+  days:
+    sunday: 0
+    monday: 1
+    tuesday: 2
+    wednesday: 3
+    thursday: 4
+    friday: 5
+    saturday: 6
+development:
+  <<: *defaults
+test:
+  <<: *defaults
+production:
+  <<: *defaults
