@@ -5,6 +5,7 @@ RSpec.describe AttachmentCategoriesController, type: :controller do
   before :each do
     request.headers["accept"] = 'application/json'
   end
+
   before do
     @request.env["devise.mapping"] = Devise.mappings[:user]
   end
@@ -15,7 +16,7 @@ RSpec.describe AttachmentCategoriesController, type: :controller do
 
   describe 'GET #index' do
     context 'when sign in' do
-      it 'should fetch attachment category list successfully' do
+      it 'returns the list of attachment categories ' do
         set_auth_headers(auth_headers)
 
         get :index
@@ -30,7 +31,7 @@ RSpec.describe AttachmentCategoriesController, type: :controller do
 
   describe 'POST #create' do
     context 'when sign in' do
-      it 'should add attachment category successfully' do
+      it 'Add an attachment category' do
         set_auth_headers(auth_headers)
 
         post :create, params: { name: 'Image' }

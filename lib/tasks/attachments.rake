@@ -2,9 +2,11 @@ namespace :attachments do
   desc 'Insert initial records from current registers'
   task fill_attachment_category_id: :environment do
     puts 'Init fill process'
+
     Attachment.all.group_by(&:category).each do |category,attachments|
       id_cat = AttachmentCategory.find_or_create_by(name:category.downcase).id
       case category.downcase
+
       when 'lmn'
         attachments.each { |att| att.update(attachment_category_id: id_cat) }
       when 'dx'
@@ -42,6 +44,7 @@ namespace :attachments do
     attachment_category_data.each do |category_data|
       AttachmentCategory.find_or_create_by(category_data)
     end
+
     puts 'End creation of category data'
   end
 end
