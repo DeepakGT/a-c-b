@@ -14,9 +14,12 @@ namespace :user do
 
   desc "Add system administrator"
   task add_system_administrator: :environment do
-    role = Role.new(name: 'system_administrator', permissions: ['super_admins_view', 'super_admins_update'])
-    role.id = Role.last.id + 1
-    role.save(validate: false)
+    role = Role.find_by(name: 'system_administrator')
+    if role.nil?
+      role = Role.new(name: 'system_administrator', permissions: ['super_admins_view', 'super_admins_update'])
+      role.id = Role.last.id + 1
+      role.save(validate: false)
+    end
 
     User.find_or_initialize_by(email: "aba_emr_sa@abacenters.com") do |u|
       u.first_name = 'aba-emr-sa'
