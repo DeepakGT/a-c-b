@@ -10,9 +10,14 @@ module RenderAppointments
       def manual_render_appointment(schedule_id, catalyst_notes_ids, current_user)
         schedule = Scheduling.find(schedule_id)
         schedule.is_manual_render = true
-        schedule.status = 'Rendered' if schedule.client_enrollment_service&.client_enrollment&.funding_source&.name!='ABA Centers of America'
         schedule.unrendered_reason = []
-        schedule.rendered_at = DateTime.current
+        if schedule.client_enrollment_service&.service&.is_early_code?
+          schedule.rendered_at = nil
+          schedule.status = 'auth_pending' 
+        else
+          schedule.rendered_at = DateTime.current
+          schedule.status = 'rendered' 
+        end
         schedule.rendered_by_id = current_user.id
         if catalyst_notes_ids.present? && !catalyst_notes_ids.empty?
           @catalyst_notes = CatalystData.where('id IN (?)', catalyst_notes_ids)

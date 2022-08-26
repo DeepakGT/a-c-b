@@ -18,6 +18,7 @@ json.data do
       json.terminated_on staff.terminated_on
       json.title staff.role_name
       json.gender staff.gender
+      json.legacy_number staff.legacy_number
     end
   end
   json.services do
@@ -25,6 +26,7 @@ json.data do
       json.id service.id
       json.name service.name
       json.display_code service.display_code
+      json.is_early_code service&.is_early_code
       json.is_service_provider_required service.is_service_provider_required
     end
   end

@@ -12,7 +12,9 @@ class StaffQualificationsController < ApplicationController
     @staff_qualification = @staff.staff_qualifications.create(staff_qualification_params)
   end
 
-  def show; end
+  def show
+    @staff_qualification
+  end
 
   def update
     @staff_qualification.update(staff_qualification_params)

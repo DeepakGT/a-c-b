@@ -34,12 +34,13 @@ json.data do
       json.service_id service&.id
       json.service_name service&.name
       json.service_display_code service&.display_code 
+      json.is_early_code service&.is_early_code
       json.status schedule.status
       json.date schedule.date
       json.start_time schedule.start_time
       json.end_time schedule.end_time
       # json.is_rendered schedule.is_rendered
-      if schedule.rendered_at.present? && schedule.status == 'Rendered'
+      if schedule.rendered_at.present? && schedule.status == 'rendered'
         json.is_rendered true
       else
         json.is_rendered false
@@ -163,6 +164,7 @@ json.data do
       json.service_id client_enrollment_service.service_id
       json.service client_enrollment_service.service&.name
       json.service_display_code client_enrollment_service.service&.display_code
+      json.is_early_code client_enrollment_service.service&.is_early_code
       json.is_service_provider_required client_enrollment_service.service&.is_service_provider_required
       json.start_date client_enrollment_service.start_date
       json.end_date client_enrollment_service.end_date
@@ -265,12 +267,13 @@ json.data do
         json.service_id service&.id
         json.service_name service&.name
         json.service_display_code service&.display_code 
+        json.is_early_code service&.is_early_code
         json.status action_item.status
         json.date action_item.date
         json.start_time action_item.start_time
         json.end_time action_item.end_time
         # json.is_rendered action_item.is_rendered
-        if action_item.rendered_at.present? && action_item.status == 'Rendered'
+        if action_item.rendered_at.present? && action_item.status == 'rendered'
           json.is_rendered true
         else
           json.is_rendered false

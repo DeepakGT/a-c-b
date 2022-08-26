@@ -41,10 +41,11 @@ json.data do
   json.service_id service&.id
   json.service_name service&.name
   json.service_display_code service&.display_code 
+  json.is_early_code service&.is_early_code
   json.status @schedule.status
   json.date @schedule.date
-  json.start_time @schedule.start_time
-  json.end_time @schedule.end_time
+  json.start_time @schedule.start_time&.in_time_zone&.strftime("%I:%M %p")
+  json.end_time @schedule.end_time&.in_time_zone&.strftime("%I:%M %p")
   if @schedule.rendered_at.present?
     json.is_rendered true
   else

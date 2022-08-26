@@ -14,12 +14,14 @@ class ClientsController < ApplicationController
     @clients = @clients.paginate(page: params[:page]) if params[:page].present?
   end
 
-  def show; end
+  def show
+    @client
+  end
 
   def create
     @client = Client.new(client_params)
     @client.save_with_exception_handler
-    create_office_address_for_client
+    create_office_address_for_client if !@client.id.nil?
   end
 
   def update
@@ -96,15 +98,9 @@ class ClientsController < ApplicationController
     if params[:search_by].present?
       case params[:search_by]
       when "name"
-        fname, lname = params[:search_value].split(' ')
-        if fname.present? && lname.blank?
-          clients = clients.by_first_name(fname).or(clients.by_last_name(fname))
-        elsif fname.present? && lname.present?
-          clients = clients.by_first_name(fname)
-          clients = clients.by_last_name(lname)
-        else
-          clients = clients.by_first_name(fname) # if fname.present?
-          clients = clients.by_last_name(lname) # if lname.present?
+        names = params[:search_value].split(' ')
+        names.each do |name|
+          clients = clients.by_first_name(name).or(clients.by_last_name(name))
         end
         return clients
       when "gender"
@@ -113,11 +109,9 @@ class ClientsController < ApplicationController
       when "payor_status"
         clients.by_payor_status(params[:search_value]&.downcase)
       when "bcba"
-        fname, lname = params[:search_value].split
-        if lname.present?
-          clients = clients.by_bcba_full_name(fname, lname)
-        else
-          clients = clients.by_bcba_first_name(fname).or(clients.by_bcba_last_name(fname))
+        names = params[:search_value].split
+        names.each do |name|
+          clients = clients.by_bcba_first_name(name).or(clients.by_bcba_last_name(name))
         end
         return clients
       when "payor"
@@ -132,21 +126,15 @@ class ClientsController < ApplicationController
 
   def search_on_all_fields(query, clients)
     query = query&.downcase
-    fname, lname = query.split
-    if lname.present?
+    names = query.split
+    names.each do |name|
       clients = clients.by_payor(query)
-                       .or(clients.by_first_name(fname).by_last_name(lname))
-                       .or(clients.by_gender(query))
-                       .or(clients.by_payor_status(query))
-                       .or(clients.by_bcba_full_name(fname,lname))
-    else
-      clients = clients.by_payor(query)
-                       .or(clients.by_first_name(fname))
-                       .or(clients.by_last_name(fname))
-                       .or(clients.by_payor_status(query))
-                       .or(clients.by_gender(query))
-                       .or(clients.by_bcba_first_name(fname))
-                       .or(clients.by_bcba_last_name(fname))
+                       .or(clients.by_first_name(name))
+                       .or(clients.by_last_name(name))
+                       .or(clients.by_gender(name))
+                       .or(clients.by_payor_status(name))
+                       .or(clients.by_bcba_first_name(name))
+                       .or(clients.by_bcba_last_name(name))
     end
     clients
   end

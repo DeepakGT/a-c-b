@@ -1,3 +1,5 @@
+DATE_FORMAT = '%Y-%m-%d'.freeze
+
 class ClientEnrollmentService < ApplicationRecord
   belongs_to :client_enrollment
   belongs_to :service
@@ -26,18 +28,21 @@ class ClientEnrollmentService < ApplicationRecord
   scope :by_client_enrollment, ->(client_enrollment_id){ where(client_enrollment_id: client_enrollment_id)}
   scope :by_funding_source, ->(funding_source_id){ where('client_enrollments.funding_source_id': funding_source_id) }
   scope :expire_in_5_days, ->{ where('end_date >= ? AND end_date<=?', Time.current.to_date, (Time.current.to_date+4))}
-  scope :started_between_5_to_20_days_past_from_today, ->{where('start_date>=? AND start_date<=?', (Time.current-20.days).strftime('%Y-%m-%d'), (Time.current-5.days).strftime('%Y-%m-%d'))}
-  scope :started_between_21_to_60_days_past_from_today, ->{where('start_date>=? AND start_date<=?', (Time.current-60.days).strftime('%Y-%m-%d'), (Time.current-21.days).strftime('%Y-%m-%d'))}
+  scope :started_between_5_to_20_days_past_from_today, ->{where('start_date>=? AND start_date<=?', (Time.current-20.days).strftime(DATE_FORMAT), (Time.current-5.days).strftime(DATE_FORMAT))}
+  scope :started_between_21_to_60_days_past_from_today, ->{where('start_date>=? AND start_date<=?', (Time.current-60.days).strftime(DATE_FORMAT), (Time.current-21.days).strftime(DATE_FORMAT))}
   scope :except_self, ->(self_id){ where.not(id: self_id) }
-  scope :active, ->{ where('end_date >= ?', Time.current.strftime('%Y-%m-%d')) }
-  scope :before_date, ->(date){ where('start_date < ?', date.to_time.strftime('%Y-%m-%d')) }
-  scope :expired, ->{ where('end_date < ?', Time.current.strftime('%Y-%m-%d'))}
+  scope :active, ->{ where('end_date >= ?', Time.current.strftime(DATE_FORMAT)) }
+  scope :before_date, ->(date){ where('start_date < ?', date.to_time.strftime(DATE_FORMAT)) }
+  scope :expired, ->{ where('end_date < ?', Time.current.strftime(DATE_FORMAT))}
   scope :by_unassigned_appointments_allowed, -> { where('services.is_unassigned_appointment_allowed = ?', true)}
-  scope :excluding_early_codes, -> { joins(:service).where.not('services.display_code': ['99998', '99999', '99997', '98888'])}
+  scope :excluding_early_codes, -> { joins(:service).where.not('services.is_early_code': true)}
   scope :not_expired_before_30_days, ->{ where.not('end_date <= ?', (Time.current.to_date-30))}
+  scope :with_funding_source, ->{ where.not('client_enrollments.funding_source_id': nil) }
+  scope :with_early_code_services, ->{ where('services.is_early_code': true) }
+  scope :with_zero_schedulings, ->{ left_outer_joins(:schedulings).select('client_enrollment_services.*').group('id').having('count(schedulings.*) = ?', 0) }
   
   def used_units
-    schedules = self.schedulings.where(status: 'Rendered')
+    schedules = self.schedulings.where(status: 'rendered')
     if schedules.any?
       used_units = schedules.with_units.pluck(:units).sum.to_f
       used_units = 0 if used_units.blank?
@@ -48,7 +53,7 @@ class ClientEnrollmentService < ApplicationRecord
   end
 
   def used_minutes
-    schedules = self.schedulings.where(status: 'Rendered')
+    schedules = self.schedulings.where(status: 'rendered')
     if schedules.any?
       used_minutes = schedules.with_minutes.pluck(:minutes).sum.to_f
       used_minutes = 0 if used_minutes.blank?

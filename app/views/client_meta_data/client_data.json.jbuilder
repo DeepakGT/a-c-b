@@ -19,6 +19,8 @@ json.data do
   json.disqualified_reason @client.dq_reason if @client.disqualified?
   json.payor_status @client.payor_status
   json.created_date @client.created_at&.strftime('%Y-%m-%d')
+  days_since_creation = (Time.current.to_date - (@client.created_at).to_date).to_s[0..-3]
+  json.days_since_creation days_since_creation
   if primary_client_enrollment.present?
     if primary_client_enrollment.source_of_payment=='self_pay' || primary_client_enrollment.funding_source.blank?
       json.payor nil
@@ -63,12 +65,13 @@ json.data do
         json.service_id service&.id
         json.service_name service&.name
         json.service_display_code service&.display_code 
+        json.is_early_code service&.is_early_code
         json.status schedule.status
         json.date schedule.date
         json.start_time schedule.start_time
         json.end_time schedule.end_time
         # json.is_rendered schedule.is_rendered
-        if schedule.rendered_at.present? && schedule.status == 'Rendered'
+        if schedule.rendered_at.present? && schedule.status == 'rendered'
           json.is_rendered true
         else
           json.is_rendered false
@@ -91,8 +94,9 @@ json.data do
         # scheduled_minutes = scheduled_schedules.with_minutes.pluck(:minutes).sum
         json.id client_enrollment_service.id
         json.service_id client_enrollment_service.service_id
-        json.service_name client_enrollment_service.service&.name
+        json.service client_enrollment_service.service&.name
         json.service_display_code client_enrollment_service.service&.display_code
+        json.is_early_code client_enrollment_service.service&.is_early_code
         json.is_service_provider_required client_enrollment_service.service&.is_service_provider_required
         json.start_date client_enrollment_service.start_date
         json.end_date client_enrollment_service.end_date

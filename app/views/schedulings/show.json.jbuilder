@@ -39,15 +39,19 @@ json.data do
   json.staff_name "#{@schedule.staff.first_name} #{@schedule.staff.last_name}" if @schedule.staff.present?
   json.staff_role @schedule.staff.role_name if @schedule.staff.present?
   json.staff_email @schedule.staff.email if @schedule.staff.present?
+  json.staff_legacy_number @schedule.staff.legacy_number if @schedule.staff.present?
+  selected_payor = JSON.parse(@schedule&.client_enrollment_service&.service&.selected_payors)&.select{|payor| payor['payor_id']=="#{@schedule&.client_enrollment_service&.client_enrollment.funding_source&.id}"}&.first
+  json.is_legacy_required selected_payor['is_legacy_required'] if (@schedule&.client_enrollment_service&.service.is_service_provider_required.to_bool.true? && selected_payor.present?)
   json.service_id service&.id
   json.service_name service&.name
   json.service_display_code service&.display_code 
+  json.is_early_code service&.is_early_code
   json.status @schedule.status
   json.date @schedule.date
-  json.start_time @schedule.start_time
-  json.end_time @schedule.end_time
+  json.start_time @schedule.start_time&.in_time_zone&.strftime("%I:%M %p")
+  json.end_time @schedule.end_time&.in_time_zone&.strftime("%I:%M %p")
   # json.is_rendered @schedule.is_rendered
-  if @schedule.rendered_at.present? && @schedule.status == 'Rendered'
+  if @schedule.rendered_at.present? && @schedule.status == 'rendered'
     json.is_rendered true
   else
     json.is_rendered false

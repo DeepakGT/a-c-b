@@ -42,12 +42,15 @@ Rails.application.routes.draw do
       resources :notes, controller: 'client_notes'
       resources :attachments, controller: 'client_attachments'
       get '/meta_data', to: 'client_meta_data#selectable_options'
+      get '/funding_sources_list', to: 'client_meta_data#funding_sources_list'
       get '/service_providers_list', to: 'client_meta_data#service_providers_list'
       get '/client_data', to: 'client_meta_data#client_data'
       get '/soap_notes', to: 'client_meta_data#soap_notes'
       get '/soap_notes/:id', to: 'client_meta_data#soap_note_detail'
       resources :service_addresses, controller: 'client_service_addresses'
       post '/create_office_address', to: 'client_service_addresses#create_office_address'
+      put '/replace_early_auth', to: 'client_enrollment_services#replace_early_auth'
+      post '/create_early_auths', to: 'client_enrollment_services#create_early_auths'
     end
     
     resources :credentials, controller: 'qualifications' do
@@ -70,6 +73,7 @@ Rails.application.routes.draw do
     get '/clinics_list',to: 'meta_data#clinics_list'
     get '/bcba_list',to: 'meta_data#bcba_list'
     get '/rbt_list',to: 'meta_data#rbt_list'
+    get '/services_and_funding_sources_list', to: 'meta_data#services_and_funding_sources_list'
     get '/rbt_appointments', to: 'scheduling_meta_data#rbt_appointments'
     get '/bcba_appointments', to: 'scheduling_meta_data#bcba_appointments'
     get '/executive_director_appointments', to: 'scheduling_meta_data#executive_director_appointments'
@@ -101,5 +105,8 @@ Rails.application.routes.draw do
 
     get '/setting', to: 'settings#show'
     put '/setting', to: 'settings#update'
+
+    get '/super_admins_list', to: 'users#super_admins_list'
+    post '/create_super_admin', to: 'users#create_super_admin'
   end
 end

@@ -24,7 +24,7 @@ RSpec.describe SchedulingChangeRequestsController, type: :controller do
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
         expect(response_body['data']['start_time']).to eq('10.00')
-        expect(response_body['data']['status']).to eq('Client_No_Show')
+        expect(response_body['data']['status']).to eq('client_no_show')
       end
     end
   end

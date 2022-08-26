@@ -17,7 +17,7 @@ RSpec.describe ClientMetaDataController, type: :controller do
 
   describe "GET #selectable_options" do
     context "when sign in" do
-      let(:client_enrollments) { client.client_enrollments.active.where.not(source_of_payment: 'self_pay') }
+      # let(:client_enrollments) { client.client_enrollments.active.where.not(source_of_payment: 'self_pay') }
       it "should fetch client selectable options list successfully" do
         set_auth_headers(auth_headers)
         
@@ -27,7 +27,7 @@ RSpec.describe ClientMetaDataController, type: :controller do
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
         expect(response_body['data']['services'].count).to eq(Service.all.count)
-        expect(response_body['data']['funding_sources'].count).to eq(client_enrollments.count)
+        # expect(response_body['data']['funding_sources'].count).to eq(client_enrollments.count)
       end
     end
   end
@@ -79,7 +79,7 @@ RSpec.describe ClientMetaDataController, type: :controller do
       let!(:soap_notes){ create_list(:soap_note, 5, scheduling_id: scheduling.id, user: user, client_id: client.id)}
       let!(:notes) { create_list(:client_note, 5, client_id: client.id)}
       let!(:attachments){ create_list(:attachment, 5, attachable_id: client.id, attachable_type: 'Client')}
-      let!(:schedulings) {create_list(:scheduling, 3, units: '2', client_enrollment_service_id: client_enrollment_service.id, status: 'Client_Cancel_Less_than_24_h')}
+      let!(:schedulings) {create_list(:scheduling, 3, units: '2', client_enrollment_service_id: client_enrollment_service.id, status: 'client_cancel_less_than_24_h')}
       it "should fetch client data detail successfully" do
         set_auth_headers(auth_headers)
         
@@ -146,6 +146,44 @@ RSpec.describe ClientMetaDataController, type: :controller do
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
         expect(response_body['data']['note']).to eq("test-note")
+      end
+    end
+  end
+
+  describe "GET #funding_sources_list" do
+    context "when sign in" do
+      context "and service is an early code" do
+        let!(:service1){create(:service, is_early_code: true)}
+        let!(:funding_source1){create(:funding_source, clinic_id: clinic.id, network_status: 'non_billable')}
+        let!(:client_enrollment1){create(:client_enrollment, source_of_payment: 'insurance', funding_source_id: funding_source1.id, client_id: client.id)}
+        it "should display non-billable funding sources list successfully" do
+          set_auth_headers(auth_headers)
+
+          get :funding_sources_list, params: {client_id: client.id, service_id: service1.id}
+          response_body = JSON.parse(response.body)
+
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data'].count).to eq(1)
+          expect(response_body['data'].first['id']).to eq(funding_source1.id)
+        end
+      end
+
+      context "and service is not an early code" do
+        let!(:service2){create(:service, is_early_code: false)}
+        let!(:funding_source2){create(:funding_source, clinic_id: clinic.id, network_status: 'in_network')}
+        let!(:client_enrollment1){create(:client_enrollment, source_of_payment: 'insurance', funding_source_id: funding_source2.id, client_id: client.id)}
+        it "should display billable funding sources list successfully" do
+          set_auth_headers(auth_headers)
+
+          get :funding_sources_list, params: {client_id: client.id, service_id: service2.id}
+          response_body = JSON.parse(response.body)
+
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data'].count).to eq(1)
+          expect(response_body['data'].first['id']).to eq(funding_source2.id)
+        end
       end
     end
   end
