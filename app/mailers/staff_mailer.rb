@@ -3,11 +3,9 @@ class StaffMailer < ApplicationMailer
     @schedule = schedule    
     if Rails.env.development?
       @url = "http://localhost:4000/schedule/view/#{schedule.id}"    
-    elsif  
-      Rails.env.test?
+    elsif Rails.env.test?
       @url = "https://stage989800.abaconnectemr.com/schedule/view#{schedule.id}"    
-    else
-      Rails.env.production?
+    else Rails.env.production?
       @url = "https://abaconnectemr.com/schedule/view/#{schedule.id}"    
     end    
     bootstrap_mail(
