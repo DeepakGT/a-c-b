@@ -29,7 +29,6 @@ class Scheduling < ApplicationRecord
 
   serialize :unrendered_reason, Array
 
-  #scopes
   scope :by_status, ->{ where('lower(schedulings.status) = ?','scheduled') }
   scope :with_rendered_or_scheduled_as_status, ->{ where('lower(schedulings.status) = ? OR lower(schedulings.status) = ?', 'scheduled', 'rendered') }
   scope :completed_scheduling, ->{ where('date < ?',Time.current.to_date) }
@@ -80,61 +79,28 @@ class Scheduling < ApplicationRecord
       error_msgs.push("the start date must be greater than or equal to today's date") if range[:start].to_date < Date.today
       return reponse_recurrence(error_msgs.uniq, Constant.empty) if error_msgs.any?
 
-      schedulings = (Constant.zero..(range[:end].to_date - range[:start].to_date).to_i).each_with_object([]) do |index, array|
-        array << fill_schedules(schedule, (range[:start].to_date + index.day).strftime('%Y-%m-%d'), current_user.id)
-      end
-
+      schedulings = (Constant.zero..(range[:end].to_date - range[:start].to_date).to_i).map { |index|
+        fill_schedules(schedule, (range[:start].to_date + index.day).strftime('%Y-%m-%d'), current_user.id)
+      }
       check_recurrence(schedulings)
     end
 
     def pattern_recurrences(option, schedule, current_user)
       error_msgs = []
-      error_msgs.push('we have an error, you must add a recurring appointment pattern') if option[:daily] == false && option[:weekly] == false && option[:monthly] == false && option[:yearly] == false  
-      return reponse_recurrence(error_msgs.uniq, Constant.empty) if error_msgs.any?
+      error_msgs.push('we have an error, you must add a recurring appointment pattern') if option[:recurrence].nil? || option[:quantity].nil? || option[:quantity].zero? 
+      return reponse_recurrence(error_msgs.uniq) if error_msgs.any?
 
-      schedulings = check_option(option, schedule, current_user)
+      schedulings = fill_recurrences(option, schedule, current_user)
       check_recurrence(schedulings)
     end
 
-    def check_option(option, schedule, current_user)
-      option_select = nil
-      if option[:daily]
-        option_select = fill_recurrences(option[:daily_recurrences], schedule, current_user, option)
-      elsif option[:weekly]
-        option_select = fill_recurrences(option[:weekly_recurrences], schedule, current_user, option)
-      elsif option[:monthly]
-        option_select = fill_recurrences(option[:monthly_recurrences], schedule, current_user, option)
-      elsif option[:yearly]
-        option_select = fill_recurrences(option[:yearly_recurrences], schedule, current_user, option)
-      end
-      option_select
-    end
-
-    def fill_recurrences(recurrences, schedule, current_user, option)
-      calcule_dates = calcule_dates(recurrences, option)
-
-
+    def fill_recurrences(option, schedule, current_user)
+      calcule_dates = fetch_date(option, option[:recurrence] == Constant.monthly || option[:recurrence] == Constant.yearly ? month_year_recurrences(option) : nil) 
       (Constant.zero..(calcule_dates.present? ? calcule_dates&.count : recurrences)).each_with_object([]) do |index, array|
         break array if index == (calcule_dates.present? ? calcule_dates&.count : recurrences)
 
         array << fill_schedules(schedule, calcule_dates.present? ? calcule_dates[index].strftime('%Y-%m-%d') : Date.today + index.day, current_user.id)
       end
-    end
-
-    def calcule_dates(recurrences, option)
-      calcule_dates = nil
-
-      if option[:daily] && option[:daily_days]&.any?
-        calcule_dates = fetch_date(option[:daily_days], recurrences)
-      elsif option[:weekly]
-        calcule_dates = fetch_date(option[:weekly_days]&.any? ? option[:weekly_days] : Constant.all_days, recurrences)
-      elsif option[:monthly]
-        calcule_dates = fetch_date(option[:monthly_days]&.any? ? option[:monthly_days] : Constant.all_days, month_year_recurrences(option))
-      elsif option[:yearly]
-        calcule_dates = fetch_date(option[:yearly_days]&.any? ? option[:yearly_days] : Constant.all_days, month_year_recurrences(option))
-      end
-
-      calcule_dates
     end
 
     def month_year_recurrences(option)
@@ -165,29 +131,15 @@ class Scheduling < ApplicationRecord
       cont_recurrences
     end
 
-    def fetch_date(number_days, recurrences)
+    def fetch_date(option, month_yearly = nil)
       dates = []
+      recurrences = option[:quantity] || month_yearly
       (Constant.zero..recurrences).each do |index|
         break if index == recurrences
 
         date_initial = Date.today.beginning_of_week + index.week
-        number_days.each do |number_day|
-          case number_day.to_i
-          when Constant.days['monday']
-            dates.push(calcule_day(date_initial, recurrences, 'monday'))
-          when Constant.days['tuesday']
-            dates.push(calcule_day(date_initial, recurrences, 'tuesday'))
-          when Constant.days['wednesday']
-            dates.push(calcule_day(date_initial, recurrences, 'wednesday'))
-          when Constant.days['thursday']
-            dates.push(calcule_day(date_initial, recurrences, 'thursday'))
-          when Constant.days['friday']
-            dates.push(calcule_day(date_initial, recurrences, 'friday'))
-          when Constant.days['saturday']
-            dates.push(calcule_day(date_initial, recurrences, 'saturday'))
-          when Constant.days['sunday']
-            dates.push(calcule_day(date_initial, recurrences, 'sunday'))
-          end
+        option[:days].each do |number_day|
+          dates.push(calcule_day(date_initial, recurrences, Constant.days_name[number_day]))
         end
       end
 
@@ -195,16 +147,8 @@ class Scheduling < ApplicationRecord
     end
 
     def calcule_day(date_initial, recurrences, name_day)
-      date = nil
       finish_date = date_initial + Constant.days["#{name_day}"].day
-      
-      if finish_date < Date.today
-        date = finish_date + recurrences.week
-      else
-        date = finish_date
-      end
-
-      date
+      finish_date < Date.today ? finish_date + recurrences.week : finish_date
     end
 
     def fill_schedules(schedule, date, uid)
@@ -243,7 +187,7 @@ class Scheduling < ApplicationRecord
       schedulings.each { |scheduling| Scheduling.create scheduling }
     end
 
-    def reponse_recurrence(errors, response_successfully)
+    def reponse_recurrence(errors, response_successfully = [])
       if errors.any?
         {status: 'errors', data: errors}
       else
@@ -269,7 +213,7 @@ class Scheduling < ApplicationRecord
   # end
 
   def validate_past_appointments
-    rser = User.find_by(id: creator_id)
+    user = User.find_by(id: creator_id)
     return if user.role_name=='super_admin' || date.blank?
 
     if user.role_name == 'executive_director' || user.role_name == 'Clinical Director' || user.role_name == 'client_care_coordinator'
@@ -296,10 +240,7 @@ class Scheduling < ApplicationRecord
   # def validate_staff
   #   schedules = self.staff&.schedulings&.unrendered_schedulings&.exceeded_5_days_scheduling
   #   if schedules.any?
-  #     errors.add(:staff, 'No further appointments can be created for given staff unless exceeded 5 days past appointments are rendered.')
-  #   end
-  # end
-
+  #     eScheduled
   def set_units_and_minutes
     if self.units.present? && self.minutes.blank?
       self.minutes = self.units*15
