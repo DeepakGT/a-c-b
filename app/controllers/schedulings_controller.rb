@@ -52,7 +52,6 @@ class SchedulingsController < ApplicationController
       schedule_details_hash = build_schedule_details_hash(schedule)
       schedule_params = schedule_hash.merge!(schedule_details_hash.merge(appointment_office_id: parent_schedule.appointment_office_id))
       @schedule = Scheduling.new(schedule_params)
-      # TODO: because before save add validate in false?
       @schedule&.save(validate: false)
       update_catalyst_data_and_soap_notes_for_split_appointment(schedule)
       ids.push @schedule&.id
@@ -286,7 +285,6 @@ class SchedulingsController < ApplicationController
       elsif @schedule&.staff&.role_name=='bcba' && catalyst_data&.provider_signature.present?
         soap_note&.bcba_signature = true
       end
-      # TODO: because before save add validate in false?
       soap_note&.save(validate: false)
     end
     soap_note&.client_id = @schedule&.client_enrollment_service&.client_enrollment&.client_id
@@ -300,7 +298,6 @@ class SchedulingsController < ApplicationController
   end
 
   def check_units
-    # TODO: if not used, it must be removed
     #update_units_columns(@schedule.client_enrollment_service)
     if (params[:status]=='scheduled' && !@schedule.scheduled? && !@schedule.rendered?) && @schedule.client_enrollment_service.left_units<params[:units].to_f
       @schedule&.errors&.add(:units, "left in authorization are not enough to update #{@schedule&.status} appointment to scheduled.")

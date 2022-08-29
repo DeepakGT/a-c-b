@@ -184,7 +184,7 @@ class Scheduling < ApplicationRecord
     end
 
     def reponse_recurrence(errors, response_successfully = [])
-      if errors.any?
+      if errors.present?
         {status: 'errors', data: errors}
       else
         {status: 'success', data: response_successfully}
@@ -236,7 +236,10 @@ class Scheduling < ApplicationRecord
   # def validate_staff
   #   schedules = self.staff&.schedulings&.unrendered_schedulings&.exceeded_5_days_scheduling
   #   if schedules.any?
-  #     eScheduled
+  #     errors.add(:staff, 'No further appointments can be created for given staff unless exceeded 5 days past appointments are rendered.')
+  #   end
+  # end
+
   def set_units_and_minutes
     if self.units.present? && self.minutes.blank?
       self.minutes = self.units*15
