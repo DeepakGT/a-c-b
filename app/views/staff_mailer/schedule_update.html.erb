@@ -17,8 +17,8 @@
 
             </p>            
           </div>
-          <hr>          
-          <%= link_to "Visit changes", @url , target:"_blank" ,class:"btn btn-primary " %>
+          <hr>            
+          <%= link_to "Visit changes","#{ENV["DOMAIN"]}/#{@schedule.id}"    , target:"_blank" ,class:"btn btn-primary " %>
         </div>
       </div>
     </div>

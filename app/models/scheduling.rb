@@ -25,7 +25,7 @@ class Scheduling < ApplicationRecord
                  cancellation_related_to_covid: 'cancellation_related_to_covid', unavailable: 'unavailable', 
                  inclement_weather_cancellation: 'inclement_weather_cancellation'}
 
-  after_update :send_mail     
+  after_update  :mail_change_appoitment   
 
   before_save :set_units_and_minutes
 
@@ -197,8 +197,8 @@ class Scheduling < ApplicationRecord
   
   private
 
-  def send_mail           
-    StaffMailer.schedule_update(self).deliver.first 
+  def mail_change_appoitment
+    StaffMailer.schedule_update(self).deliver.first
   end
 
   # def validate_time
