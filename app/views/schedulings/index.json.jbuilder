@@ -90,6 +90,7 @@ json.data do
   end
 end
 json.show_inactive params[:show_inactive] if (params[:show_inactive] == 1 || params[:show_inactive] == "1")
+json.billable_hours current_user.billable_hours_for_current_week if current_user.type=='Staff'
 if params[:page].present?
   json.total_records @schedules.total_entries
   json.limit @schedules.per_page
