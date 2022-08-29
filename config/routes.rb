@@ -112,5 +112,7 @@ Rails.application.routes.draw do
 
     get '/super_admins_list', to: 'users#super_admins_list'
     post '/create_super_admin', to: 'users#create_super_admin'
+    get '/super_admin_detail/:id', to: 'users#super_admin_detail'
+    put '/update_super_admin/:id', to: 'users#update_super_admin'
   end
 end
