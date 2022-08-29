@@ -176,7 +176,7 @@ class Scheduling < ApplicationRecord
     end
 
     def check_date_available(date, start_time, end_time)
-      where(date: date).where('start_time >= ? and end_time <= ? ', start_time, end_time)
+      where(date: date, start_time: start_time.., end_time: ..end_time)
     end
 
     def create_all(schedulings)
