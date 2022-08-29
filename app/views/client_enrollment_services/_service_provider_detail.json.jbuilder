@@ -6,7 +6,7 @@ if object_type=='arrays'
   end
 else
   json.service_providers do
-    json.array! @enrollment_service.service_providers do |service_provider|
+    json.array! enrollment_service.service_providers do |service_provider|
       json.id service_provider.staff_id
       json.name "#{service_provider.staff&.first_name} #{service_provider.staff&.last_name}"
       json.role service_provider.staff&.role_name
