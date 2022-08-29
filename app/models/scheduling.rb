@@ -25,7 +25,8 @@ class Scheduling < ApplicationRecord
                  cancellation_related_to_covid: 'cancellation_related_to_covid', unavailable: 'unavailable', 
                  inclement_weather_cancellation: 'inclement_weather_cancellation'}
 
-  after_update  :mail_change_appoitment   
+  #TODO: uncoment this line after understand why the update method is called three times from the frontend
+  #after_update :mail_change_appoitment   
 
   before_save :set_units_and_minutes
 
@@ -198,9 +199,11 @@ class Scheduling < ApplicationRecord
   private
 
   def mail_change_appoitment
-    StaffMailer.schedule_update(self).deliver.first
+    StaffMailer.schedule_update(self).deliver
   end
 
+
+  private
   # def validate_time
   #   possible_schedules = Scheduling.where.not(id: self.id)
   #   same_day_schedules = possible_schedules.where(staff_id: self.staff_id, client_enrollment_service_id: self.client_enrollment_service_id, date: self.date)

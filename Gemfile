@@ -70,6 +70,9 @@ gem 'will_paginate', '~> 3.3'
 # to perform job daily
 gem 'whenever', require: false
 
+#for Loads environment variables
+gem 'dotenv-rails', '~> 2.8', '>= 2.8.1'
+
 group :development, :test do
   gem 'bullet'
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

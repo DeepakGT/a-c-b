@@ -14,11 +14,10 @@
               the start time is <%= @schedule.start_time %> 
               the end time is <%= @schedule.end_time %>
               also it is in a status of <%= @schedule.status %>
-
             </p>            
           </div>
           <hr>            
-          <%= link_to "Visit changes","#{ENV["DOMAIN"]}/#{@schedule.id}"    , target:"_blank" ,class:"btn btn-primary " %>
+          <%= link_to "Visit changes","#{ENV["DOMAIN"]}#{ENV["SCHEDULE_PATH"]}#{@schedule.id}", target:"_blank" ,class:"btn btn-primary " %>
         </div>
       </div>
     </div>
