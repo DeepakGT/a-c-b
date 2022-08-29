@@ -87,7 +87,7 @@ class Scheduling < ApplicationRecord
 
     def pattern_recurrences(option, schedule, current_user)
       error_msgs = []
-      error_msgs.push('we have an error, you must add a recurring appointment pattern') if option[:recurrence].nil? || option[:quantity].nil? || option[:quantity].zero? 
+      error_msgs.push('we have an error, you must add a recurring appointment pattern') if option[:recurrence].nil? || option[:quantity].nil? || option[:quantity].to_i.zero? 
       return reponse_recurrence(error_msgs.uniq) if error_msgs.any?
 
       schedulings = fill_recurrences(option, schedule, current_user)
@@ -107,7 +107,7 @@ class Scheduling < ApplicationRecord
       cont_recurrences = Constant.zero
       date_initial = Date.today
 
-      recurrences = option[:quantity]
+      recurrences = option[:quantity].to_i
       
      (Constant.zero..recurrences).each do |index|
         break if index == recurrences
@@ -129,13 +129,14 @@ class Scheduling < ApplicationRecord
 
     def fetch_date(option, month_yearly = nil)
       dates = []
-      recurrences = option[:quantity] || month_yearly
+      recurrences = option[:quantity].to_i || month_yearly
       (Constant.zero..recurrences).each do |index|
         break if index == recurrences
 
         date_initial = Date.today.beginning_of_week + index.week
+        option[:days] = Constant.all_days if option[:days].empty?
         option[:days].each do |number_day|
-          dates.push(calcule_day(date_initial, recurrences, Constant.days_name[number_day]))
+          dates.push(calcule_day(date_initial, recurrences, Constant.days_name[number_day.to_i]))
         end
       end
 
@@ -255,5 +256,6 @@ class Scheduling < ApplicationRecord
       end
     end 
   end
+
   # end of private
 end
