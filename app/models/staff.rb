@@ -43,7 +43,7 @@ class Staff < User
     start_date = Time.current.at_beginning_of_week.to_date
     end_date = Time.current.at_end_of_week.to_date
     appointments = Scheduling.within_dates(start_date, end_date).where(status: ['auth_pending', 'scheduled', 'rendered'])
-    billable_hours = appointments.present? ? (appointments.pluck(:minutes)&.sum).to_f/60.0 : 0
+    appointments.present? ? (appointments.pluck(:minutes)&.sum).to_f/60.0 : 0
   end
 
   private
