@@ -44,6 +44,6 @@ module AbaCentreBe
 
     config.time_zone = 'Eastern Time (US & Canada)'
     
-    config.hosts << "abaconnectemr.com"
+    config.hosts << ENV['DOMAIN']
   end
 end
