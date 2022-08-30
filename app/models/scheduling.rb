@@ -120,19 +120,19 @@ class Scheduling < ApplicationRecord
           if calcule_date.beginning_of_month.cweek < date_initial.cweek
             cont_recurrences += calcule_date.at_end_of_month.cweek - calcule_date.beginning_of_month.cweek - (date_initial.cweek - calcule_date.beginning_of_month.cweek)
           else
-            cont_recurrences += calcule_date.at_end_of_month.cweek - calcule_date.beginning_of_month.cweek
+            cont_recurrences += (calcule_date.at_end_of_month.cweek - calcule_date.beginning_of_month.cweek) * recurrences
           end
         elsif option[:recurrence] == Constant.yearly
-          cont_recurrences += calcule_date.at_end_of_year.cweek - date_initial.cweek
+          cont_recurrences += calcule_date.at_end_of_year.year <= date_initial.year ? calcule_date.at_end_of_year.cweek - date_initial.cweek : calcule_date.at_end_of_year.cweek
         end
       end
-    
+      
       cont_recurrences
     end
 
     def fetch_date(option, month_yearly = nil)
       dates = []
-      recurrences = option[:quantity].to_i || month_yearly
+      recurrences = month_yearly.present? ? month_yearly : option[:quantity].to_i
       (Constant.zero..recurrences).each do |index|
         break if index == recurrences
 
