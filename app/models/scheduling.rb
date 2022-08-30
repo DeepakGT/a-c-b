@@ -173,14 +173,14 @@ class Scheduling < ApplicationRecord
         cont_limit += Constant.one
       end
       
-      reponse_recurrence(error_msgs.uniq, error_msgs.any? ? Constant.empty : create_all(schedulings))
+      reponse_recurrence(error_msgs.uniq, error_msgs.any? ? Constant.empty : create_recur(schedulings))
     end
 
     def check_date_available(date, start_time, end_time)
       where(date: date, start_time: start_time.., end_time: ..end_time)
     end
 
-    def create_all(schedulings)
+    def create_recur(schedulings)
       schedulings.each { |scheduling| Scheduling.create scheduling }
     end
 
