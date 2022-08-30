@@ -38,7 +38,7 @@ destroy_unused_expired_early_authorizations:
   class: "DestroyUnusedExpiredEarlyAuthorizationsWorker"
   queue: DestroyUnusedExpiredEarlyAuthorizations
 
-process_claim_statuses_every_monday_5am:
-  cron: '0 5 * * 1'
+process_claim_statuses_every_monday_9am_utc:
+  cron: '0 9 * * 1'
   class: "AvailityProcessClaimsWorker"
   queue: AvailityProcessClaims
