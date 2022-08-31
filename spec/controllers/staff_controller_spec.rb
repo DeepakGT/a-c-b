@@ -242,6 +242,7 @@ RSpec.describe StaffController, type: :controller do
           phone_numbers_attributes: [{ number: '9898767655'}, {number: '8787876565'}],
           rbt_supervision_attributes: { status: 'requires'},
           role_name: 'bcba',
+          npi: '0123456789',
           staff_location_id: clinic.id
         }
         
@@ -255,6 +256,7 @@ RSpec.describe StaffController, type: :controller do
         expect(response_body['data']['address']['country']).to eq('India')
         expect(response_body['data']['phone_numbers'].count).to eq(2)
         expect(response_body['data']['rbt_supervision']['status']).to eq('requires')
+        expect(response_body['data']['npi']).to eq('0123456789')
         expect(response_body['data']['staff_clinics']).not_to eq(nil)
         expect(response_body['data']['staff_clinics'].count).to eq(1)
       end
