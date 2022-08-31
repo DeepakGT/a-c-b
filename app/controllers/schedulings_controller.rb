@@ -120,7 +120,7 @@ class SchedulingsController < ApplicationController
 
   def scheduling_params
     params.permit(
-      :status, :date, :start_time, :end_time, :units, :minutes, :staff_id, :service_id,
+      :status, :date, :start_time, :end_time, :units, :minutes, :staff_id,
       :client_enrollment_service_id, :cross_site_allowed, :service_address_id, :catalyst_soap_note_id,
       range_recurrences: %I[start end], recurrcer_pattern: [:recurrence, :quantity, {days: []}]
     )
