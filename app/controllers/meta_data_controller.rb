@@ -43,10 +43,6 @@ class MetaDataController < ApplicationController
     @payor_types = FundingSource.transform_payor_types
   end
 
-  def attachment_permissions_options
-    render json: { status: :success, data: Attachment::PERMISSIONS }, status: 200
-  end
-
   private
 
   def selectable_options_data
