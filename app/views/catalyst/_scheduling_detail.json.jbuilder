@@ -49,6 +49,8 @@ elsif @schedule.unrendered_reason.present?
 end
 json.units schedule.units
 json.minutes schedule.minutes
+json.appointment_office_id schedule&.appointment_office_id
+json.appointment_office Clinic.find_by(id: schedule&.appointment_office_id)&.name
 if schedule.creator_id.present?
   creator = User.find_by(id: schedule.creator_id)
   json.creator_id schedule.creator_id

@@ -102,9 +102,13 @@ Rails.application.routes.draw do
     post '/schedulings/create_split_appointment', to: 'schedulings#create_split_appointment'
     get '/catalyst/:catalyst_data_id/matching_appointments_list', to: 'catalyst#matching_appointments_list'
     resources :schedulings do
-      post '/create_without_staff', to: 'schedulings#create_without_staff', on: :collection
-      post '/create_without_client', to: 'schedulings#create_without_client', on: :collection
-      put '/update_without_client/:id', to: 'schedulings#update_without_client', on: :collection
+      collection do
+        post '/create_without_staff', to: 'schedulings#create_without_staff'
+        post '/range_recurrences', to: 'schedulings#range_recurrences'
+        post '/pattern_recurrences', to: 'schedulings#pattern_recurrences'
+        post '/create_without_client', to: 'schedulings#create_without_client'
+        put '/update_without_client/:id', to: 'schedulings#update_without_client'
+      end
       resources :soap_notes
       resources :change_requests, controller: 'scheduling_change_requests', only: %i[create update]
     end
@@ -117,5 +121,7 @@ Rails.application.routes.draw do
 
     get '/super_admins_list', to: 'users#super_admins_list'
     post '/create_super_admin', to: 'users#create_super_admin'
+    get '/super_admin_detail/:id', to: 'users#super_admin_detail'
+    put '/update_super_admin/:id', to: 'users#update_super_admin'
   end
 end

@@ -48,7 +48,7 @@ json.date schedule.date
 json.start_time schedule.start_time&.in_time_zone&.strftime("%I:%M %p")
 json.end_time schedule.end_time&.in_time_zone&.strftime("%I:%M %p")
 json.non_billable_reason schedule.non_billable_reason
-if schedule.rendered_at.present? && schedule.status == 'Rendered'
+if schedule.rendered_at.present? && schedule.status == 'rendered'
   json.is_rendered true
 else
   json.is_rendered false
@@ -61,6 +61,8 @@ json.rendered_at schedule.rendered_at
 json.units schedule.units
 json.minutes schedule.minutes
 json.created_at schedule.created_at
+json.appointment_office_id schedule&.appointment_office_id
+json.appointment_office Clinic.find_by(id: schedule&.appointment_office_id)&.name
 if schedule.creator_id.present?
   creator = User.find_by(id: schedule.creator_id)
   json.creator_id schedule.creator_id
