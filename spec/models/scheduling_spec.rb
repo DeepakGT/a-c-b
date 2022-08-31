@@ -102,4 +102,15 @@ RSpec.describe Scheduling, type: :model do
       end
     end
   end
+
+  describe "#validate_draft_appointments" do
+    context "when logged in user is other than ccc, cd or super_admin" do
+      let(:scheduling) { build :scheduling, staff_id: staff.id, client_enrollment_service_id: client_enrollment_service.id, start_time: '16:00', end_time: '17:00', date: Time.current.to_date+6, units: '8', status: 'draft' }
+      it "should not be allowed to create draft appointments" do
+        scheduling.user = user
+        scheduling.validate
+        expect(scheduling.errors[:draft]).to include('appointments can only be created by client care coordinator or clinical director.')
+      end
+    end
+  end
 end
