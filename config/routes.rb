@@ -71,6 +71,7 @@ Rails.application.routes.draw do
         get '/selectable_options', to: 'meta_data#selectable_options'
         get '/select_payor_types', to: 'meta_data#select_payor_types'
         get '/select_scheduling_status', to: 'meta_data#select_scheduling_status'
+        get '/select_service_address_types', to: 'meta_data#select_service_address_types'
         get '/gender_list', to: 'meta_data#gender_list'
       end
     end
