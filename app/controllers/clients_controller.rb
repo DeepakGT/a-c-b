@@ -73,12 +73,13 @@ class ClientsController < ApplicationController
   def filter_by_logged_in_user
     case current_user.role_name
     when 'rbt'
-      Client.by_staff_id_in_scheduling(current_user.id)
+      clients = Client.by_staff_id_in_scheduling(current_user.id).with_appointment_after_last_30_days
     when 'bcba'
-      Client.by_staff_id_in_scheduling(current_user.id).or(Client.by_bcbas(current_user.id))
+      clients = Client.by_staff_id_in_scheduling(current_user.id).with_appointment_after_last_30_days.or(Client.by_bcbas(current_user.id))
     else
-      Client.all
+      clients = Client.all
     end
+    clients
   end
   
   def filter_by_status(clients)

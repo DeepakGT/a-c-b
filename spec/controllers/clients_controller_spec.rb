@@ -80,6 +80,10 @@ RSpec.describe ClientsController, type: :controller do
           let!(:client_enrollment) { create(:client_enrollment, client_id: client1.id) }
           let!(:client_enrollment_service) { create(:client_enrollment_service, client_enrollment_id: client_enrollment.id, service_id: service.id) }
           let!(:schedule) {create(:scheduling, staff_id: staff.id, client_enrollment_service_id: client_enrollment_service.id)}
+          let!(:client_enrollment1) { create(:client_enrollment, client_id: client2.id) }
+          let!(:client_enrollment_service1) { create(:client_enrollment_service, client_enrollment_id: client_enrollment1.id, service_id: service.id) }
+          let!(:schedule1) {create(:scheduling, staff_id: staff.id, client_enrollment_service_id: client_enrollment_service1.id, date: Date.current-35.days)}
+          let!(:clients_count){Client.by_staff_id_in_scheduling(staff.id).with_appointment_after_last_30_days.count}
           it "should display clients that have appointments with rbt" do
             set_auth_headers(staff_auth_headers)
 
@@ -88,7 +92,7 @@ RSpec.describe ClientsController, type: :controller do
 
             expect(response.status).to eq(200)
             expect(response_body['status']).to eq('success')
-            expect(response_body['data'].count).to eq(Client.by_staff_id_in_scheduling(staff.id).count)
+            expect(response_body['data'].count).to eq(clients_count)
           end
         end
 
@@ -103,7 +107,10 @@ RSpec.describe ClientsController, type: :controller do
           let!(:client_enrollment) { create(:client_enrollment, client_id: client1.id) }
           let!(:client_enrollment_service) { create(:client_enrollment_service, client_enrollment_id: client_enrollment.id, service_id: service.id) }
           let!(:schedule) {create(:scheduling, staff_id: staff.id, client_enrollment_service_id: client_enrollment_service.id)}
-          let!(:clients_count) {Client.by_staff_id_in_scheduling(staff.id).or(Client.by_bcbas(staff.id)).count}
+          let!(:client_enrollment1) { create(:client_enrollment, client_id: client2.id) }
+          let!(:client_enrollment_service1) { create(:client_enrollment_service, client_enrollment_id: client_enrollment1.id, service_id: service.id) }
+          let!(:schedule1) {create(:scheduling, staff_id: staff.id, client_enrollment_service_id: client_enrollment_service1.id, date: Date.current-40.days)}
+          let!(:clients_count) {Client.by_staff_id_in_scheduling(staff.id).with_appointment_after_last_30_days.or(Client.by_bcbas(staff.id)).count}
           it "should display clients that have appointments with bcba or are under that bcba" do
             set_auth_headers(staff_auth_headers)
 
