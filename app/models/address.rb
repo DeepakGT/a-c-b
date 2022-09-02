@@ -9,6 +9,8 @@ class Address < ApplicationRecord
 
   scope :by_service_address, ->{ where(address_type: 'service_address') }
 
+  delegate :name, to: :service_address_type, prefix: true
+
   private
 
   def is_country_usa?

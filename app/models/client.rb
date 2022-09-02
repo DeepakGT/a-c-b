@@ -70,6 +70,15 @@ class Client < ApplicationRecord
     self.early_authorizations.map{|authorization| authorization.client_enrollment.funding_source_id}.uniq.compact
   end
 
+  def create_office_address_for_client
+    return true unless clinic.address.present?
+
+    addresses.create(
+      line1: clinic.address.line1, line2: clinic.address.line2, line3: clinic.address.line3, city: clinic.address.city, state: clinic.address.state, country: clinic.address.country,
+      zipcode: clinic.address.zipcode, address_type: Constant.service_address, is_default: false, is_hidden: false, service_address_type_id: Constant.office
+    )
+  end
+
   private
 
   def set_default_service_address

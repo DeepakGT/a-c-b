@@ -3,6 +3,8 @@ zero: 0
 third: 3
 limit_appointment_recurrence: 30
 limit_service_address_type: 250
+service_address: 'service_address'
+office: 2
 all_days: [0,1,2,3,4,5,6]
 days_name: ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
 daily: 'daily'

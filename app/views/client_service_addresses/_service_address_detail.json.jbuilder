@@ -9,5 +9,6 @@ json.city service_address.city
 json.state service_address.state
 json.country service_address.country
 json.is_default service_address.is_default
-json.address_name service_address.address_name
 json.is_hidden service_address.is_hidden
+json.service_address_type_id service_address.service_address_type_id if service_address.service_address_type_id.present?
+json.service_address_type_name service_address.service_address_type_name if service_address.service_address_type_id.present?
