@@ -1,5 +1,5 @@
 class MetaDataController < ApplicationController
-  before_action :authenticate_user!, except: %i[select_payor_types attachment_permissions_options]
+  before_action :authenticate_user!, except: %i[select_payor_types attachment_permissions_options select_service_address_types]
 
   def selectable_options
     @selectable_options = selectable_options_data
@@ -41,6 +41,10 @@ class MetaDataController < ApplicationController
   
   def select_payor_types
     @payor_types = FundingSource.transform_payor_types
+  end
+
+  def select_service_address_types
+    render json: { status: 'success', data: ServiceAddressType.all.map { |service_address_type| {id: service_address_type.id, name: service_address_type.name} } }
   end
 
   private

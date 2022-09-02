@@ -67,8 +67,11 @@ Rails.application.routes.draw do
     resources :roles
 
     resources :meta_data do
-      get '/selectable_options', to: 'meta_data#selectable_options', on: :collection
-      get '/select_payor_types', to: 'meta_data#select_payor_types', on: :collection
+      collection do
+        get '/selectable_options', to: 'meta_data#selectable_options'
+        get '/select_payor_types', to: 'meta_data#select_payor_types'
+        get '/select_service_address_types', to: 'meta_data#select_service_address_types'
+      end
     end
 
     put '/availity/update_claim_statuses', to: 'availity#update_claim_statuses'

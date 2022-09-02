@@ -188,4 +188,19 @@ RSpec.describe MetaDataController, type: :controller do
       end
     end
   end
+
+  describe "GET #select_service_address_types" do
+    context "when the response is successfull " do
+      let!(:service_address_types) { create_list(:service_address_type, 6)}
+
+      it "should get the selectable options from the service address types successfully" do
+        get :select_service_address_types
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data'].count).to eq(service_address_types.count)
+      end
+    end
+  end
 end
