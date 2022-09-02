@@ -21,7 +21,7 @@ class ClientsController < ApplicationController
   def create
     @client = Client.new(client_params)
     @client&.save_with_exception_handler
-    create_office_address_for_client if !@client.id.nil?
+    @client.create_office_address_for_client if @client.present?
   end
 
   def update
@@ -69,19 +69,6 @@ class ClientsController < ApplicationController
     authorize Client if current_user.role_name!='super_admin'
   end
 
-  def create_office_address_for_client
-    office_address = @client&.addresses&.new(address_name: 'Office', address_type: 'service_address', is_default: false, is_hidden: false)
-    if @client&.clinic&.address.present?
-      office_address.line1 = @client.clinic.address.line1
-      office_address.line2 = @client.clinic.address.line2
-      office_address.line3 = @client.clinic.address.line3
-      office_address.city = @client.clinic.address.city
-      office_address.state = @client.clinic.address.state
-      office_address.country = @client.clinic.address.country
-      office_address.zipcode = @client.clinic.address.zipcode
-    end
-    office_address&.save
-  end
 
   def filter_by_location(clients)
     if params[:default_location_id].present? && params[:search_cross_location]!=1 && params[:search_cross_location]!="1" 
@@ -169,5 +156,4 @@ class ClientsController < ApplicationController
     schedules = schedules.by_service_ids(params[:service_ids]) if params[:service_ids].present?
     schedules
   end
-  # end of private
 end
