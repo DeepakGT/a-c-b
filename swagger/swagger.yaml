@@ -8422,6 +8422,12 @@ definitions:
         type: "integer"
       is_service_provider_required:
         type: "boolean"
+      is_early_code: 
+        type: "boolean"
+      max_units:
+        type: "string"
+      selected_non_early_service_id:
+        type: "integer"
       service_qualifications_attributes:
         type: "object"
         properties:
@@ -8430,6 +8436,15 @@ definitions:
             properties:
               qualification_id:
                 type: "integer"
+      selected_payors:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            payor_id:
+              type: "integer"
+            is_legacy_required:
+              type: "boolean"
 
   FundingSourceCreateUpdateParameters:
     type: "object"
@@ -8894,18 +8909,21 @@ definitions:
         type: "string"
       split_schedules: 
         type: "array"
-        start_time:
-          type: "string"
-        end_time:
-          type: "string"
-        service_address_id:
-          type: "integer"
-        units:
-          type: "integer"
-        catalyst_data_id:
-          type: "integer"
-        status:
-          type: "string"
+        items:
+          type: "object"
+          properties:
+            start_time:
+              type: "string"
+            end_time:
+              type: "string"
+            service_address_id:
+              type: "integer"
+            units:
+              type: "integer"
+            catalyst_data_id:
+              type: "integer"
+            status:
+              type: "string"
 
   CreateUpdateWithoutClientParameters:
     type: "object"
