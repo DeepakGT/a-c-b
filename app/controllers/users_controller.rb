@@ -50,8 +50,6 @@ class UsersController < ApplicationController
     @user.update(deactivated_at: email_notification_params[:deactivated_at])
   end
 
-  private
-
   def email_notification_params
     params.permit(:user_id, :deactivated_at)
   end

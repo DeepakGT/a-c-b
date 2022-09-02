@@ -1,7 +1,6 @@
 json.status 'success'
 json.data do
   json.array! @staff do |staff|
-    staff_clinic = staff.staff_clinics.order(is_home_clinic: :desc).first
     json.partial! 'staff_detail', staff: staff
     if staff_clinic.present?
       json.organization_id staff_clinic.clinic&.organization_id
