@@ -55,6 +55,6 @@ class ClientServiceAddressesController < ApplicationController
   end
 
   def authorize_user
-    authorize Address if current_user.role_name!='super_admin'
+    authorize Address if current_user.role_name != 'super_admin'
   end
 end
