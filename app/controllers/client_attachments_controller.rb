@@ -1,27 +1,28 @@
 class ClientAttachmentsController < ApplicationController
   before_action :authenticate_user!
-  before_action :authorize_user
+  before_action :authorize_user, except: %i[show]
   before_action :set_client
   before_action :set_attachment, only: %i[show update destroy]
 
   def index
-    @attachments = @client.attachments.order(:created_at)
+    @attachments = @client&.attachments&.order(:created_at)
   end
 
   def show
-    @attachment  
+    @attachment
+    authorize @attachment if need_show_permissions?(@attachment)
   end
 
   def create
-    @attachment = @client.attachments.create(attachment_params)
+    @attachment = @client&.attachments&.create(attachment_params)
   end
 
   def update
-    @attachment.update(attachment_params)
+    @attachment&.update(attachment_params)
   end
 
   def destroy
-    @attachment.destroy
+    @attachment&.destroy
   end
 
   private
@@ -31,15 +32,19 @@ class ClientAttachmentsController < ApplicationController
   end
 
   def set_client
-    @client = Client.find(params[:client_id])
+    @client = Client.find(params[:client_id]) rescue nil
   end
 
   def set_attachment
-    @attachment = @client.attachments.find(params[:id])
+    @attachment = @client.attachments.find(params[:id]) rescue nil
   end
 
   def attachment_params
-    params.permit(:category, :base64, :file_name)
+    params.permit(:base64, :file_name, :attachment_category_id, role_permissions: [])
   end
-  # end of private
+
+  def need_show_permissions?(attachment)
+    current_user.role_name != 'super_admin' && current_user.role_name != 'administrator' && attachment.present?
+  end
+
 end

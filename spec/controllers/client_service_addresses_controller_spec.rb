@@ -55,6 +55,30 @@ RSpec.describe ClientServiceAddressesController, type: :controller do
           expect(response_body['data'].count).to eq(0)
         end
       end
+
+      context "when there is a service address with the current clinic address" do
+        it "should return true in the response on the office_address key" do
+          set_auth_headers(auth_headers)
+          create(:address,
+                 addressable_type: 'Client',
+                 addressable_id: client.id,
+                 address_type: 'service_address',
+                 line1: clinic.address.line1,
+                 city: clinic.address.city,
+                 state: clinic.address.state,
+                 country: clinic.address.country,
+                 zipcode: clinic.address.zipcode,
+          )
+
+          get :index, params: { client_id: client.id }
+          response_body = JSON.parse(response.body)
+
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data'].count).to eq(client_service_addresses.count + 2)
+          expect(response_body['office_address']).to eq(true)
+        end
+      end
     end
   end
   

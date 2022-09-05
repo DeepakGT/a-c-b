@@ -1,6 +1,5 @@
 json.status @setting.errors.any? ? 'failure' : 'success'
 json.data do
-  json.id @setting.id
-  json.welcome_note @setting.welcome_note
+  json.partial! 'welcome_note', setting: @setting
 end
 json.errors @setting.errors.full_messages

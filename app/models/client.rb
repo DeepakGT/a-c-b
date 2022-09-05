@@ -19,7 +19,7 @@ class Client < ApplicationRecord
   accepts_nested_attributes_for :phone_number, update_only: true
 
   enum status: {active: 0, inactive: 1}
-  enum gender: {male: 0, female: 1}
+  enum gender: {male: 'M', female: 'F'}
   enum preferred_language: {english: 0, spanish: 1}
   enum dq_reason: { lost_contact: 0, not_clinically_appropriate: 1, insurance_denial: 2, no_longer_interested: 3, 
                     competitor: 4, not_ready_to_move_forward: 5, other: 6}
@@ -52,6 +52,22 @@ class Client < ApplicationRecord
     self.update(client_params)
   rescue StandardError => e
     errors.add(:address_type, "already present.") if e.is_a? ActiveRecord::RecordNotUnique
+  end
+
+  def days_since_creation
+    (Time.current.to_date - (self.created_at).to_date).to_i
+  end
+
+  def early_authorizations
+    ClientEnrollmentService.by_client(self.id).joins(:service).including_early_codes.joins(:client_enrollment).with_funding_sources
+  end
+
+  def non_early_authorizations_except_97151
+    ClientEnrollmentService.by_client(self.id).joins(:service).excluding_early_codes.excluding_97151_service.joins(:client_enrollment).with_funding_sources
+  end
+
+  def funding_source_ids
+    self.early_authorizations.map{|authorization| authorization.client_enrollment.funding_source_id}.uniq.compact
   end
 
   private

@@ -14,6 +14,8 @@ class Service < ApplicationRecord
   # Enums
   enum status: {active: 0, inactive: 1}
 
+  scope :non_early_services, ->{where(is_early_code: false)}
+  
   def is_early_code?
     self&.is_early_code&.to_bool&.true?
   end

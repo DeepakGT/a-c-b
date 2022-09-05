@@ -17,7 +17,6 @@ RSpec.describe ClientMetaDataController, type: :controller do
 
   describe "GET #selectable_options" do
     context "when sign in" do
-      # let(:client_enrollments) { client.client_enrollments.active.where.not(source_of_payment: 'self_pay') }
       it "should fetch client selectable options list successfully" do
         set_auth_headers(auth_headers)
         
@@ -27,7 +26,6 @@ RSpec.describe ClientMetaDataController, type: :controller do
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
         expect(response_body['data']['services'].count).to eq(Service.all.count)
-        # expect(response_body['data']['funding_sources'].count).to eq(client_enrollments.count)
       end
     end
   end
@@ -79,7 +77,7 @@ RSpec.describe ClientMetaDataController, type: :controller do
       let!(:soap_notes){ create_list(:soap_note, 5, scheduling_id: scheduling.id, user: user, client_id: client.id)}
       let!(:notes) { create_list(:client_note, 5, client_id: client.id)}
       let!(:attachments){ create_list(:attachment, 5, attachable_id: client.id, attachable_type: 'Client')}
-      let!(:schedulings) {create_list(:scheduling, 3, units: '2', client_enrollment_service_id: client_enrollment_service.id, status: 'Client_Cancel_Less_than_24_h')}
+      let!(:schedulings) {create_list(:scheduling, 3, units: '2', client_enrollment_service_id: client_enrollment_service.id, status: 'client_cancel_less_than_24_h')}
       it "should fetch client data detail successfully" do
         set_auth_headers(auth_headers)
         
