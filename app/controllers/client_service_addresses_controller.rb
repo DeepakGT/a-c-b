@@ -9,7 +9,7 @@ class ClientServiceAddressesController < ApplicationController
   end
 
   def create
-    @service_address = @client.addresses.new(service_address_params)
+    @service_address = @client.addresses.build(service_address_params)
     @service_address.address_type = 'service_address'
     set_default
     @service_address.save

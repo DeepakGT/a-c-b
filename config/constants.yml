@@ -1,5 +1,6 @@
-one: 1
 zero: 0
+one: 1
+two: 2
 third: 3
 limit_appointment_recurrence: 30
 limit_service_address_type: 250
