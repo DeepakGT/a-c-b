@@ -1,5 +1,5 @@
 class MetaDataController < ApplicationController
-  before_action :authenticate_user!, except: :select_payor_types
+  before_action :authenticate_user!, except: %i[select_payor_types attachment_permissions_options]
 
   def selectable_options
     @selectable_options = selectable_options_data

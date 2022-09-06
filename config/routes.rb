@@ -27,6 +27,8 @@ Rails.application.routes.draw do
 
     resources :regions, only: [:index ]
     resources :organizations
+    resources :attachment_categories
+
     get '/regions_organizations/:id', to: 'organizations#regions_organizations'
     
     resources :clinics do
@@ -64,9 +66,12 @@ Rails.application.routes.draw do
 
     resources :roles
 
+    resources :meta_data do
+      get '/selectable_options', to: 'meta_data#selectable_options', on: :collection
+      get '/select_payor_types', to: 'meta_data#select_payor_types', on: :collection
+    end
+
     put '/availity/update_claim_statuses', to: 'availity#update_claim_statuses'
-    get 'meta_data/selectable_options'
-    get 'meta_data/select_payor_types'
     get '/supervisor_list', to: 'staff#supervisor_list'
     get '/addresses/country_list', to: 'addresses#country_list'
     get '/roles_list', to: 'roles#roles_list'
@@ -97,9 +102,13 @@ Rails.application.routes.draw do
     post '/schedulings/create_split_appointment', to: 'schedulings#create_split_appointment'
     get '/catalyst/:catalyst_data_id/matching_appointments_list', to: 'catalyst#matching_appointments_list'
     resources :schedulings do
-      post '/create_without_staff', to: 'schedulings#create_without_staff', on: :collection
-      post '/create_without_client', to: 'schedulings#create_without_client', on: :collection
-      put '/update_without_client/:id', to: 'schedulings#update_without_client', on: :collection
+      collection do
+        post '/create_without_staff', to: 'schedulings#create_without_staff'
+        post '/range_recurrences', to: 'schedulings#range_recurrences'
+        post '/pattern_recurrences', to: 'schedulings#pattern_recurrences'
+        post '/create_without_client', to: 'schedulings#create_without_client'
+        put '/update_without_client/:id', to: 'schedulings#update_without_client'
+      end
       resources :soap_notes
       resources :change_requests, controller: 'scheduling_change_requests', only: %i[create update]
     end

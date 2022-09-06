@@ -18,8 +18,6 @@ class SchedulingsController < ApplicationController
   def create
     @schedule = @client_enrollment_service&.schedulings&.new(scheduling_params)
     @schedule&.creator_id = current_user.id
-    @schedule&.user = current_user
-    @schedule&.id = Scheduling.last.id + 1
     if is_create_request_via_catalyst_data
       update_data 
     else
@@ -28,7 +26,24 @@ class SchedulingsController < ApplicationController
     update_staff_legacy_number
   end
 
-  # Creating split appointments
+  def range_recurrences
+    ranges = Scheduling.range_recurrences(params[:range_recurrences], scheduling_params, current_user)
+    if ranges[:status] == 'success'
+      render json: ranges, status: :ok
+    else
+      render json: ranges, status: :bad_request
+    end
+  end
+
+  def pattern_recurrences
+    pattern = Scheduling.pattern_recurrences(params[:recurrcer_pattern], scheduling_params, current_user)
+    if pattern[:status] == 'success'
+      render json: pattern, status: :ok
+    else
+      render json: pattern, status: :bad_request
+    end
+  end
+
   def create_split_appointment
     ids = []
     schedule_hash = build_schedule_hash
@@ -37,7 +52,6 @@ class SchedulingsController < ApplicationController
       schedule_details_hash = build_schedule_details_hash(schedule)
       schedule_params = schedule_hash.merge!(schedule_details_hash.merge(appointment_office_id: parent_schedule.appointment_office_id))
       @schedule = Scheduling.new(schedule_params)
-      @schedule&.id = Scheduling.last.id + 1
       @schedule&.save(validate: false)
       update_catalyst_data_and_soap_notes_for_split_appointment(schedule)
       ids.push @schedule&.id
@@ -74,12 +88,9 @@ class SchedulingsController < ApplicationController
     @schedule = @client_enrollment_service.schedulings.new(scheduling_params)
     @schedule.status = 'non_billable' if params[:status].blank?
     @schedule.creator_id = current_user.id
-    @schedule.user = current_user
-    @schedule.id = Scheduling.last.id + 1
     @schedule.save
   end
 
-  # Render Appointment manually upon user request
   def render_appointment
     @schedule = Scheduling.find(params[:scheduling_id]) rescue nil
     manual_rendering
@@ -89,8 +100,6 @@ class SchedulingsController < ApplicationController
     @schedule = Scheduling.new(create_without_client_params)
     @schedule.status = 'non_billable'
     @schedule.creator_id = current_user.id
-    @schedule.user = current_user
-    @schedule.id = Scheduling.last.id + 1
     @schedule.save
   end
 
@@ -99,7 +108,6 @@ class SchedulingsController < ApplicationController
     @schedule.save
   end
 
-  # GET all the details of the appointment along with soap notes
   def split_appointment_detail
     @schedule = Scheduling.find(params[:id]) rescue nil
   end
@@ -111,16 +119,13 @@ class SchedulingsController < ApplicationController
   end
 
   def scheduling_params
-    arr = %i[ status date start_time end_time units minutes 
-              client_enrollment_service_id cross_site_allowed service_address_id appointment_office_id]
-
-    arr.concat(%i[staff_id catalyst_soap_note_id]) if params[:action] == 'create'
-    arr.concat(%i[staff_id]) if params[:action] == 'update'
-
-    params.permit(arr)
+    params.permit(
+      :status, :date, :start_time, :end_time, :units, :minutes, :staff_id,
+      :client_enrollment_service_id, :cross_site_allowed, :service_address_id, :catalyst_soap_note_id,
+      range_recurrences: %I[start end], recurrcer_pattern: [:recurrence, :quantity, {days: []}]
+    )
   end
 
-  # Building info common for both splitted appointments
   def build_schedule_hash
     {
       date: params[:date],
@@ -131,7 +136,6 @@ class SchedulingsController < ApplicationController
     }
   end
 
-  # Building appointment specific hash for split appointment
   def build_schedule_details_hash(schedule)
     {
       start_time: schedule[:start_time],
@@ -142,14 +146,12 @@ class SchedulingsController < ApplicationController
     }
   end
 
-  # Once splitted appointment is created update the respective catalyst data and soap notes with the scheduling id
   def update_catalyst_data_and_soap_notes_for_split_appointment(schedule)
     catalyst_data = CatalystData.find(schedule[:catalyst_data_id]) rescue nil
     catalyst_data&.update(system_scheduling_id: @schedule&.id)
     create_or_update_soap_note(catalyst_data)
   end
 
-  # remove the appoitment after creating split appointments
   def delete_old_schedule(schedule_id)
     CatalystData.where(system_scheduling_id: schedule_id)&.update_all(system_scheduling_id: nil)
     Scheduling.find_by(id: schedule_id)&.destroy
@@ -227,6 +229,7 @@ class SchedulingsController < ApplicationController
     @schedule&.updator_id = current_user.id
     update_render_service if params[:is_rendered].present? || params[:status]=='rendered'
     update_client_enrollment_service if params[:client_enrollment_service_id].present?
+    # @schedule.mail_change_appoitment if @schedule&.save
     @schedule&.save
   end
 
@@ -252,7 +255,6 @@ class SchedulingsController < ApplicationController
     @schedule&.date = catalyst_data&.date
     @schedule&.catalyst_data_ids.push(catalyst_data&.id)
     @schedule&.catalyst_data_ids.uniq!
-    @schedule&.id = Scheduling.last.id + 1
     if current_user.role_name=='super_admin' || current_user.role_name=='executive_director' || current_user.role_name=='client_care_coordinator' || current_user.role_name=='Clinical Director'
       @schedule&.save(validate: false)
       create_or_update_soap_note(catalyst_data)
@@ -328,6 +330,14 @@ class SchedulingsController < ApplicationController
         @schedule&.errors&.add(:schedule, 'You are not authorized to unrender appointment.')
         return false
       end
+    elsif @schedule.draft? && params[:status]!='draft'
+      case current_user.role_name
+      when 'Clinical Director', 'client_care_coordinator', 'super_admin'
+        update_scheduling
+      else
+        @schedule&.errors&.add(:draft, 'appointments can be confirmed by client care coordinator and clinical director only.')
+        return false
+      end
     else
       case current_user.role_name
       when 'administrator', 'executive_director', 'Clinical Director', 'client_care_coordinator', 'super_admin'
@@ -341,7 +351,6 @@ class SchedulingsController < ApplicationController
     true
   end
 
-  # Render an appointment manually
   def manual_rendering
     @schedule&.update(status: 'rendered',rendered_at: Time.current,is_manual_render: true, rendered_by_id: current_user.id, user: current_user)
   end
@@ -356,5 +365,4 @@ class SchedulingsController < ApplicationController
     
     @schedule&.staff&.update(legacy_number: params[:legacy_number])
   end
-  # end of private
 end
