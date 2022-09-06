@@ -18,6 +18,7 @@ class User < ActiveRecord::Base
   has_one :user_role, dependent: :destroy
   has_one :address, as: :addressable, dependent: :destroy, inverse_of: :addressable
   has_many :phone_numbers, as: :phoneable, dependent: :destroy, inverse_of: :phoneable
+  has_many :notifications, as: :recipient, dependent: :destroy
   has_one :rbt_supervision, dependent: :destroy
   
   has_one :role, through: :user_role
