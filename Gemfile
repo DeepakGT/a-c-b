@@ -75,6 +75,7 @@ gem 'whenever', require: false
 
 #for Loads environment variables
 gem 'dotenv-rails', '~> 2.8', '>= 2.8.1'
+gem 'noticed'
 
 group :development, :test do
   gem 'bullet'
