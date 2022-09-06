@@ -123,5 +123,10 @@ Rails.application.routes.draw do
     post '/create_super_admin', to: 'users#create_super_admin'
     get '/super_admin_detail/:id', to: 'users#super_admin_detail'
     put '/update_super_admin/:id', to: 'users#update_super_admin'
+
+    resources :users do
+      get 'notifications', to: 'notifications#index', on: :collection
+      put 'set_notifications_read', to: 'notifications#set_notifications_read', on: :collection
+    end
   end
 end
