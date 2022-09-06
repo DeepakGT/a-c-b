@@ -34,7 +34,7 @@ class ClientsController < ApplicationController
   private
 
   def client_params
-    params.permit(:first_name, :last_name, :status, :gender, :email, :dob, :clinic_id, :payor_status, :preferred_language, 
+    params.permit(:first_name, :last_name, :status, :gender, :email, :dob, :clinic_id, :preferred_language,
                   :disqualified, :dq_reason, :bcba_id, :tracking_id, addresses_attributes: 
                   %i[id line1 line2 line3 zipcode city state country address_type addressable_type addressable_id],
                   phone_number_attributes: %i[phone_type number])
@@ -110,8 +110,6 @@ class ClientsController < ApplicationController
       when "gender"
         gender_value = params[:search_value]&.downcase
         clients.by_gender(gender_value)
-      when "payor_status"
-        clients.by_payor_status(params[:search_value]&.downcase)
       when "bcba"
         fname, lname = params[:search_value].split
         if lname.present?
@@ -137,13 +135,11 @@ class ClientsController < ApplicationController
       clients = clients.by_payor(query)
                        .or(clients.by_first_name(fname).by_last_name(lname))
                        .or(clients.by_gender(query))
-                       .or(clients.by_payor_status(query))
                        .or(clients.by_bcba_full_name(fname,lname))
     else
       clients = clients.by_payor(query)
                        .or(clients.by_first_name(fname))
                        .or(clients.by_last_name(fname))
-                       .or(clients.by_payor_status(query))
                        .or(clients.by_gender(query))
                        .or(clients.by_bcba_first_name(fname))
                        .or(clients.by_bcba_last_name(fname))

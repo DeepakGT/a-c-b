@@ -5,7 +5,6 @@ FactoryBot.define do
       "testclient#{n}@yopmail.com"
     end
 
-    payor_status { 'insurance' }
     first_name {Faker::Name.name}
     last_name {Faker::Name.name}
   end

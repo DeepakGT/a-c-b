@@ -31,6 +31,10 @@ class ClientEnrollmentsController < ApplicationController
     @client_enrollment.destroy
   end
 
+  def get_source_of_payments
+    @source_of_payments = ClientEnrollment.translate_source_of_payments
+  end
+
   private
 
   def authorize_user
