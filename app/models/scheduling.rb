@@ -197,9 +197,9 @@ class Scheduling < ApplicationRecord
     end
   end
   
-  # def mail_change_appoitment
-  #   StaffMailer.schedule_update(self).deliver
-  # end
+   def mail_change_appoitment
+     StaffMailer.schedule_update(self).deliver
+   end
 
   private
   # def validate_time

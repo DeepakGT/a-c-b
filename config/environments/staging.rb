@@ -68,10 +68,11 @@ Rails.application.configure do
   config.action_mailer.perform_deliveries = true
   config.action_mailer.default_url_options = { host: 'stage989800.abaconnectemr.com' }
   config.action_mailer.smtp_settings = {
-    address:              'smtp.sendgrid.net',
-    port:                 587,
-    authentication:       'plain',
-    user_name:            Rails.application.credentials[:smtp][:username],
-    password:             Rails.application.credentials[:smtp][:password]
+    address:              ENV["ADDRES_MAIL"],
+    port:                 ENV["PORT_MAIL"],
+    authentication:       ENV["AUTHENTICATION_MAIL"],
+    user_name:            ENV["USER_MAIL"],
+    password:             ENV["PASS_MAIL"],
+    enable_starttls_auto: true
   }
 end
