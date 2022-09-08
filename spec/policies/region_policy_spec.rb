@@ -8,31 +8,31 @@ RSpec.describe RegionPolicy, type: :policy do
   subject { described_class }
 
   permissions :index? do
-    it "denies access if permission is not included" do
+    it 'denies access if permission is not included' do
       expect(subject).not_to permit(user1)
     end
 
-    it "grants access if permission is included" do
+    it 'grants access if permission is included' do
       expect(subject).to permit(user2)
     end
   end
 
   permissions :create? do
-    it "denies access if permission is not included" do
+    it 'denies access if permission is not included' do
       expect(subject).not_to permit(user1)
     end
 
-    it "grants access if permission is included" do
+    it 'grants access if permission is included' do
       expect(subject).to permit(user2)
     end
   end
 
   permissions :update? do
-    it "denies access if permission is not included" do
+    it 'denies access if permission is not included' do
       expect(subject).not_to permit(user1)
     end
 
-    it "grants access if permission is included" do
+    it 'grants access if permission is included' do
       expect(subject).to permit(user2)
     end
   end
