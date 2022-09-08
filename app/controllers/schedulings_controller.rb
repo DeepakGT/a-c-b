@@ -229,7 +229,8 @@ class SchedulingsController < ApplicationController
     @schedule&.updator_id = current_user.id
     update_render_service if params[:is_rendered].present? || params[:status]=='rendered'
     update_client_enrollment_service if params[:client_enrollment_service_id].present?
-    @schedule.mail_change_appoitment if @schedule&.save
+    # @schedule.mail_change_appoitment if @schedule&.save
+    @schedule&.save
   end
 
   def is_create_request_via_catalyst_data

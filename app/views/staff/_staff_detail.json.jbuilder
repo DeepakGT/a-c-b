@@ -2,7 +2,7 @@ json.id staff.id
 json.first_name staff.first_name
 json.last_name staff.last_name
 json.email staff.email
-json.role staff.role.name
+json.role staff.role_name
 json.title staff.role_name
 json.status staff.status
 json.terminated_on staff.terminated_on
