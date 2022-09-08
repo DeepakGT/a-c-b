@@ -221,7 +221,7 @@ class SchedulingsController < ApplicationController
     @schedule&.updator_id = current_user.id
     update_render_service if params[:is_rendered].present? || params[:status]=='rendered'
     update_client_enrollment_service if params[:client_enrollment_service_id].present?
-    # TODO Once the triple update problem is solved, this trigger will be migrated to a callback of the model.
+    # TODO This action can change to trigger model when solved problem on update process.
     @schedule.mail_change_appoitment if @schedule&.save
   end
 
@@ -229,7 +229,7 @@ class SchedulingsController < ApplicationController
     @schedule&.update(scheduling_params_when_bcba)
     @schedule&.updator_id = current_user.id
     update_render_service if params[:is_rendered].present? || params[:status]=='rendered'
-    update_client_enrollment_service if params[:client_enrollment_service_id].present?    
+    update_client_enrollment_service if params[:client_enrollment_service_id].present?
     @schedule&.save
   end
 

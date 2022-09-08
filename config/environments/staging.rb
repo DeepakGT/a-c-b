@@ -68,11 +68,11 @@ Rails.application.configure do
   config.action_mailer.perform_deliveries = true
   config.action_mailer.default_url_options = { host: 'stage989800.abaconnectemr.com' }
   config.action_mailer.smtp_settings = {
-    address:              ENV["ADDRES_MAIL"],
-    port:                 ENV["PORT_MAIL"],
-    authentication:       ENV["AUTHENTICATION_MAIL"],
-    user_name:            ENV["USER_MAIL"],
-    password:             ENV["PASS_MAIL"],
+    address:              Rails.application.credentials[:smtp][:address],
+    port:                 Rails.application.credentials[:smtp][:port],
+    authentication:       Rails.application.credentials[:smtp][:authentication],
+    user_name:            Rails.application.credentials[:smtp][:user_name],
+    password:             Rails.application.credentials[:smtp][:password],
     enable_starttls_auto: true
-  }
+  }  
 end
