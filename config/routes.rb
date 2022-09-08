@@ -25,7 +25,7 @@ Rails.application.routes.draw do
       registrations: 'overrides/registrations'
     }
 
-    resources :regions, only: [:index ]
+    resources :regions, except: %i[show destroy]
     resources :organizations
     resources :attachment_categories
 
