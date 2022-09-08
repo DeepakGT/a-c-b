@@ -1,0 +1,14 @@
+<body class="bg-light">
+<div class="container">
+  <div class="card my-10">
+    <div class="card-body text-center">
+      <h1 class="h3 mb-2 ">New change in <%= "#{@params[:affected]}" %></h1>
+      <h5 class="text-teal-700">
+        <%= "#{@user.first_name} has #{@params[:message]}"%>
+      </h5>
+      <hr>
+      <%= link_to "Visit changes","#{@params[:notification_url]}", target:"_blank" ,class:"btn btn-primary " %>
+    </div>
+  </div>
+</div>
+</body>
