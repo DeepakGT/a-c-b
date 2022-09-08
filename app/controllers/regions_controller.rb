@@ -27,7 +27,7 @@ class RegionsController < ApplicationController
   end
   
   def authorize_user
-    authorize Region if current_user.role_name != Constant.super_admin
+    authorize Region
   end
 end
   
