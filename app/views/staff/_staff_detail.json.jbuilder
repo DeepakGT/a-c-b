@@ -11,6 +11,7 @@ json.job_type staff.job_type
 json.supervisor_id staff.supervisor_id
 json.immediate_supervisor "#{staff&.supervisor&.first_name} #{staff&.supervisor&.last_name}"
 json.legacy_number staff.legacy_number
+json.npi staff.npi
 json.hired_at staff.hired_at
 json.phone_numbers do
   json.array! staff.phone_numbers do |phone|
