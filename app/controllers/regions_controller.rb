@@ -30,3 +30,4 @@ class RegionsController < ApplicationController
     authorize Region if current_user.role_name != Constant.super_admin
   end
 end
+  
