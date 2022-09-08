@@ -1,7 +1,7 @@
 json.id funding_source.id
 json.name funding_source.name
 json.plan_name funding_source.plan_name
-json.payor_type funding_source.payor_type
+json.payor_type I18n.t("activerecord.attributes.funding_source.payor_types.#{funding_source.payor_type}")
 json.network_status funding_source.network_status
 json.status funding_source.status
 json.email funding_source.email
