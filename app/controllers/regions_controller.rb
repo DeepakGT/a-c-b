@@ -1,6 +1,7 @@
 class RegionsController < ApplicationController
-  # before_action :authenticate_user!
+  before_action :authenticate_user!
   before_action :set_region, only: %I[update]
+  before_action :authorize_user
 
   def index
     @regions = Region.all
@@ -8,21 +9,12 @@ class RegionsController < ApplicationController
   
   def create
     @region = Region.new(regions_params)
-    if @region.save
-      render json: {status: 'success', data: [id: @region.id, name: @region.name]}, status: :ok
-    else
-      render json: {status: 'errors', errors: @region.errors.full_messages}, status: :bad_request
-    end
+    @region.save ? @region : unprosessable_entity_response(@region)
   end
 
   def update
-    if @region.update_attributes(regions_params)
-      redirect_to @object
-    else
-      render 'edit'
-    end
+    @region.update(regions_params) ? @region : unprosessable_entity_response(@region)
   end
-  
   
   private
 
@@ -30,8 +22,11 @@ class RegionsController < ApplicationController
     @region = Region.find(params[:id]) rescue nil
   end
   
-
   def regions_params
     params.permit(:name)
+  end
+  
+  def authorize_user
+    authorize Region if current_user.role_name != Constant.super_admin
   end
 end
