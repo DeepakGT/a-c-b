@@ -221,6 +221,7 @@ class SchedulingsController < ApplicationController
     @schedule&.updator_id = current_user.id
     update_render_service if params[:is_rendered].present? || params[:status]=='rendered'
     update_client_enrollment_service if params[:client_enrollment_service_id].present?
+    # TODO Once the triple update problem is solved, this trigger will be migrated to a callback of the model.
     @schedule.mail_change_appoitment if @schedule&.save
   end
 
