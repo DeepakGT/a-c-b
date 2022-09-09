@@ -13,10 +13,10 @@ module RenderAppointments
         schedule&.unrendered_reason = []
         if schedule&.client_enrollment_service&.service&.is_early_code?
           schedule&.rendered_at = nil
-          schedule&.status = 'Auth_Pending' 
+          schedule&.status = 'auth_pending' 
         else
           schedule&.rendered_at = DateTime.current
-          schedule&.status = 'Rendered' 
+          schedule&.status = 'rendered' 
         end
         schedule&.rendered_by_id = current_user.id
         if catalyst_notes_ids.present? && !catalyst_notes_ids.empty?

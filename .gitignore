@@ -27,10 +27,20 @@
 !/storage/.keep
 .byebug_history
 
+#ignore enviroment variables
+/config/locales/.env
+.env
+
 # Ignore master key for decrypting credentials and more.
 /config/master.key
 /bitbucket-pipelines.yml
 
+# Credential
 /config/credentials/staging.key
-
 /config/credentials/production.key
+
+# Schema
+db/schema.rb
+
+# Gemfile.lock
+Gemfile.lock

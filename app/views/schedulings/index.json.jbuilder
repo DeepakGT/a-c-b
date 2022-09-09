@@ -6,6 +6,9 @@ json.data do
     staff = schedule&.staff
     json.id schedule.id
     json.cross_site_allowed schedule.cross_site_allowed
+    json.appointment_office_id schedule&.appointment_office_id
+    json.appointment_office Clinic.find_by(id: schedule&.appointment_office_id)&.name
+    # # json.client_id client&.id
     json.client_name "#{client.first_name} #{client.last_name}" if client.present?
     if schedule.service_address_id.present?
       service_address = Address.find_by(id: schedule.service_address_id)
@@ -32,7 +35,7 @@ json.data do
     json.start_time schedule.start_time&.in_time_zone&.strftime("%I:%M %p")
     json.end_time schedule.end_time&.in_time_zone&.strftime("%I:%M %p")
     # json.is_rendered schedule.is_rendered
-    if schedule.rendered_at.present? && schedule.status == 'Rendered'
+    if schedule.rendered_at.present? && schedule.status == 'rendered'
       json.is_rendered true
     else
       json.is_rendered false
@@ -44,4 +47,5 @@ json.data do
   end
 end
 json.show_inactive params[:show_inactive] if (params[:show_inactive] == 1 || params[:show_inactive] == "1")
+json.billable_hours current_user.billable_hours_for_current_week if current_user.type=='Staff'
 json.partial! '/pagination_detail', list: @schedules, page_number: params[:page]

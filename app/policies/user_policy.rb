@@ -8,4 +8,12 @@ class UserPolicy < ApplicationPolicy
   def create_super_admin?
     super_admins_list?
   end
+
+  def super_admin_detail?
+    super_admins_list?
+  end
+
+  def update_super_admin?
+    super_admins_list?
+  end
 end

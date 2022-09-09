@@ -9,3 +9,4 @@ json.data do
     json.clinic_name staff_clinic.clinic&.name
   end
 end
+json.billable_hours @staff.billable_hours_for_current_week if @staff.type=='Staff'

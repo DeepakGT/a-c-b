@@ -1,6 +1,11 @@
 json.status 'success'
 json.data do
-  json.setting_data Setting.first&.welcome_note
+  if Setting.first&.roles_ids.include?(current_user&.role&.id)
+    json.setting_data Setting.first&.welcome_note
+  else
+    json.setting_data nil
+  end
+
   json.authorizations_expire_in_5_days do
     json.array! @authorizations_expire_in_5_days do |client_enrollment_service|
       json.partial! 'client_enrollment_service_detail', client_enrollment_service: client_enrollment_service

@@ -1,6 +1,11 @@
 json.status 'success'
 json.data do
-  json.setting_data Setting.first&.welcome_note
+  if Setting.first&.roles_ids.include?(current_user&.role&.id)
+    json.setting_data Setting.first&.welcome_note
+  else
+    json.setting_data nil
+  end
+
   json.todays_schedules do
     json.array! @todays_appointments do |schedule|
       json.partial! 'schedulings/scheduling_detail', schedule: schedule
