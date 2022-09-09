@@ -197,11 +197,15 @@ class Scheduling < ApplicationRecord
     end
   end
   
-   def mail_change_appoitment
-     StaffMailer.schedule_update(self).deliver
-   end
+  def mail_change_appoitment
+    StaffMailer.schedule_update(self).deliver
+  end
 
   private
+  #TODO: uncoment this line after understand why the update method is called three times from the frontend and comment this same method outside the privates methods
+  # def mail_change_appoitment
+  #   StaffMailer.schedule_update(self).deliver
+  # end
   # def validate_time
   #   possible_schedules = Scheduling.where.not(id: self.id)
   #   same_day_schedules = possible_schedules.where(staff_id: self.staff_id, client_enrollment_service_id: self.client_enrollment_service_id, date: self.date)
