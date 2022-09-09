@@ -221,7 +221,8 @@ class SchedulingsController < ApplicationController
     @schedule&.updator_id = current_user.id
     update_render_service if params[:is_rendered].present? || params[:status]=='rendered'
     update_client_enrollment_service if params[:client_enrollment_service_id].present?
-    @schedule&.save
+    # TODO This action can change to trigger model in the method in the after_update action, when solved problem on update process.
+    @schedule.mail_change_appoitment if @schedule&.save
   end
 
   def update_scheduling_when_bcba
@@ -229,7 +230,6 @@ class SchedulingsController < ApplicationController
     @schedule&.updator_id = current_user.id
     update_render_service if params[:is_rendered].present? || params[:status]=='rendered'
     update_client_enrollment_service if params[:client_enrollment_service_id].present?
-    # @schedule.mail_change_appoitment if @schedule&.save
     @schedule&.save
   end
 
