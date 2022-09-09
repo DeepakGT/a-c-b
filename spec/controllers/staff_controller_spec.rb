@@ -12,7 +12,7 @@ RSpec.describe StaffController, type: :controller do
   let!(:role_admin) { create(:role, name: 'executive_director', permissions: ['staff_view', 'staff_update', 'staff_delete'])}
   let!(:user) { create(:user, :with_role, role_name: role_admin.name, first_name: 'admin', last_name: 'user') }
   let!(:auth_headers) { user.create_new_auth_token }
-  let!(:organization) { create(:organization, name: 'org1', admin_id: user.id) } 
+  let!(:organization) { create(:organization, name: 'test org', admin_id: user.id) } 
   let!(:role) { create(:role, name: 'bcba')}
   let!(:clinic) { create(:clinic, name: 'clinic1', organization_id: organization.id) }  
 
@@ -36,17 +36,6 @@ RSpec.describe StaffController, type: :controller do
         expect(response_body['data'].count).to eq(Staff.joins(:role).by_role('billing').count)
       end
 
-      it "should fetch the first page record by default" do
-        set_auth_headers(auth_headers)
-        
-        get :index
-        response_body = JSON.parse(response.body)
-
-        expect(response.status).to eq(200)
-        expect(response_body['status']).to eq('success')
-        expect(response_body['page']).to eq(1)
-      end
-
       it "should fetch the given page record" do
         set_auth_headers(auth_headers)
         
@@ -56,6 +45,20 @@ RSpec.describe StaffController, type: :controller do
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
         expect(response_body['page']).to eq("2")
+      end
+
+      context "when show_inactive is selected" do
+        let(:staff) {create(:staff, :with_role, role_name: 'billing', status: 'inactive')}
+        it "should display inactive staff only" do
+          set_auth_headers(auth_headers)
+        
+          get :index, params: { page: 1, show_inactive: 1}
+          response_body = JSON.parse(response.body)
+
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data'].count).to eq(Staff.inactive.count)
+        end
       end
 
       context "when search_by is name" do
@@ -70,13 +73,27 @@ RSpec.describe StaffController, type: :controller do
           expect(response_body['data'].count).to eq(1)
           expect(response_body['data'].first['first_name'].downcase).to eq('test1')  
         end
+
+        let!(:staff){create(:staff, :with_role, role_name: 'bcba', first_name: 'test', last_name: 'staff')}
+        it "should staff filter by name successfully" do
+          set_auth_headers(auth_headers)
+          
+          get :index, params: { search_by:"name", search_value: "test staff"}
+          response_body = JSON.parse(response.body)
+          
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data'].count).to eq(1)
+          expect(response_body['data'].first['first_name'].downcase).to eq('test')  
+          expect(response_body['data'].first['last_name'].downcase).to eq('staff')  
+        end
       end
 
-      context "when search_by is title" do
+      context "when search_by is role" do
         it "should list staff filtered by role successfully" do
           set_auth_headers(auth_headers)
 
-          get :index, params: { search_by:"title", search_value: "billing"}
+          get :index, params: { search_by:"role", search_value: "billing"}
           response_body = JSON.parse(response.body)
 
           expect(response.status).to eq(200)
@@ -109,7 +126,6 @@ RSpec.describe StaffController, type: :controller do
           expect(response.status).to eq(200)
           expect(response_body['status']).to eq('success')
           expect(response_body['data'].count).to eq(2)
-          expect(response_body['page']).to eq(1)
         end
       end
 
@@ -125,6 +141,31 @@ RSpec.describe StaffController, type: :controller do
           expect(response_body['data'].count).to eq(2)
           expect(response_body['data'].first['supervisor_id']).to eq(user.id)
         end
+
+        it "should list staff filtered by supervisor successfully" do
+          set_auth_headers(auth_headers)
+          
+          get :index, params: { search_by:"immediate_supervisor", search_value: 'admin'}
+          response_body = JSON.parse(response.body)
+          
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data'].count).to eq(2)
+          expect(response_body['data'].first['supervisor_id']).to eq(user.id)
+        end
+      end
+
+      context "when search_by is other than name, organization, immediate_supervisor, role, location" do
+        it "should display all staff" do
+          set_auth_headers(auth_headers)
+          
+          get :index, params: { search_by: "abcd", search_value: 'admin'}
+          response_body = JSON.parse(response.body)
+          
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data'].count).to eq(Staff.active.count)
+        end
       end
 
       context "when search_by is absent but search_value is present" do
@@ -138,17 +179,28 @@ RSpec.describe StaffController, type: :controller do
           expect(response_body['status']).to eq('success')
           expect(response_body['data'].count).to eq(2)
         end
+
+        it "should list staff filtered by name, role, location, organization, supervisor successfully" do
+          set_auth_headers(auth_headers)
+          
+          get :index, params: { search_value: 'bcba'}
+          response_body = JSON.parse(response.body)
+          
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data'].count).to eq(Staff.joins(:role).by_role('bcba').count)
+        end
       end
 
       context "when default_location_id is present" do
-        let!(:staff_clinic1) { create(:staff_clinic, staff_id: Staff.first.id, clinic_id: clinic.id) }
-        let!(:staff_clinic2) { create(:staff_clinic, staff_id: Staff.last.id, clinic_id: clinic.id) }
+        let!(:staff_clinic1) { create(:staff_clinic, staff_id: Staff.first.id, clinic_id: clinic.id, is_home_clinic: true) }
+        let!(:staff_clinic2) { create(:staff_clinic, staff_id: Staff.last.id, clinic_id: clinic.id, is_home_clinic: true) }
         it "should list staff filtered by location successfully" do
           set_auth_headers(auth_headers)
           
           get :index, params: { default_location_id: clinic.id}
           response_body = JSON.parse(response.body)
-          
+      
           expect(response.status).to eq(200)
           expect(response_body['status']).to eq('success')
           expect(response_body['data'].count).to eq(2)
@@ -158,7 +210,7 @@ RSpec.describe StaffController, type: :controller do
   end
 
   describe "GET #show" do 
-    let!(:staff) { create(:staff, :with_role, role_name: 'billing', last_name: 'Zachary',clinic_id: clinic.id) }   
+    let!(:staff) { create(:staff, :with_role, role_name: 'billing', last_name: 'Zachary') }   
     context "when sign in" do
       it "should fetch clinic staff" do
         set_auth_headers(auth_headers)
@@ -189,7 +241,10 @@ RSpec.describe StaffController, type: :controller do
           address_attributes: { country: 'India'},
           phone_numbers_attributes: [{ number: '9898767655'}, {number: '8787876565'}],
           rbt_supervision_attributes: { status: 'requires'},
-          role_name: 'bcba'
+          role_name: 'bcba',
+          npi: '0123456789',
+          staff_location_id: clinic.id,
+          legacy_number: '6758399746578493'
         }
         
         response_body = JSON.parse(response.body)
@@ -202,12 +257,16 @@ RSpec.describe StaffController, type: :controller do
         expect(response_body['data']['address']['country']).to eq('India')
         expect(response_body['data']['phone_numbers'].count).to eq(2)
         expect(response_body['data']['rbt_supervision']['status']).to eq('requires')
+        expect(response_body['data']['npi']).to eq('0123456789')
+        expect(response_body['data']['staff_clinics']).not_to eq(nil)
+        expect(response_body['data']['staff_clinics'].count).to eq(1)
+        expect(response_body['data']['legacy_number']).to eq('6758399746578493')
       end
     end
   end
 
   describe "PUT #update" do 
-    let!(:staff) { create(:staff, :with_role, role_name: 'bcba', first_name: 'Zachary',clinic_id: clinic.id) }   
+    let!(:staff) { create(:staff, :with_role, role_name: 'bcba', first_name: 'Zachary') }   
     context "when sign in" do
       it "should update staff successfully" do
         set_auth_headers(auth_headers)
@@ -308,7 +367,7 @@ RSpec.describe StaffController, type: :controller do
 
   describe "DELETE #destroy" do
     context "when sign in" do
-      let!(:staff) { create(:staff, :with_role, role_name: 'billing', last_name: 'Zachary',clinic_id: clinic.id) }   
+      let!(:staff) { create(:staff, :with_role, role_name: 'billing', last_name: 'Zachary') }   
       it "should delete staff successfully" do
         set_auth_headers(auth_headers)
 

@@ -7,5 +7,6 @@ FactoryBot.define do
     city {'Indore'}
     state {'Madhyapradesh'}
     country {'India'}
+    association :addressable, factory: :user
   end
 end

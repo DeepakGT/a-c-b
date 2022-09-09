@@ -29,7 +29,6 @@ module CsvImport
             if client_name.present?
               if appointment[:clientname]=='Syed Abraham Hasan' || appointment[:clientname]=='Syed Adam Hasan' || appointment[:clientname]=='Ana Clara El-Gamel'
                 client_name[2] = "#{client_name[1]} #{client_name[2]}"
-                # client_name[1] = "#{client_name[2]}"
               elsif client_name.count==3
                 client_name[0] = "#{client_name[0]} #{client_name[1]}"
               elsif client_name.count==4
@@ -39,19 +38,15 @@ module CsvImport
               end
               client = Client.find_by(dob: appointment[:clientdob]&.to_time&.strftime('%Y-%m-%d'), first_name: client_name&.last, last_name: client_name&.first)
             end
-            if appointment[:clientname]=='Tanay Toth, Peter '
-              client = Client.find(1894)
-            end
+            client = Client.find(1894) if appointment[:clientname]=='Tanay Toth, Peter '
             if client.present?
               if client.clinic_id==clinic_id
                 count = count+1
                 if appointment[:fundingsource].present?
-                  funding_source_id = get_funding_source(appointment[:fundingsource], client)
+                  funding_source_id = get_funding_source(appointment[:fundingsource])
                   if funding_source_id.present?
                     service = Service.where('lower(name) = ?', appointment[:servicename]&.downcase).first
-                    if appointment[:servicename]=='Supervision'
-                      service = Service.find(17)
-                    end
+                    service = Service.find(17) if appointment[:servicename]=='Supervision'
                     if service.present?
                       client_enrollment_services = ClientEnrollmentService.by_client(client.id).by_funding_source(funding_source_id).by_service(service.id).by_date(appointment[:apptdate]&.to_time&.strftime('%Y-%m-%d'))
                       if client_enrollment_services.present?
@@ -95,9 +90,7 @@ module CsvImport
                 else
                   #self_pay
                   service = Service.where('lower(name) = ?', appointment[:servicename]&.downcase).first
-                  if appointment[:servicename]=='Supervision'
-                    service = Service.find(17)
-                  end
+                  service = Service.find(17) if appointment[:servicename]=='Supervision'
                   if service.present?
                     client_enrollment_services = ClientEnrollmentService.by_client(client.id).where('client_enrollments.source_of_payment = ?', 'self_pay').by_service(service.id).by_date(appointment[:apptdate]&.to_time&.strftime('%Y-%m-%d'))
                     if client_enrollment_services.present?
@@ -146,7 +139,7 @@ module CsvImport
         Loggers::SnowflakeSchedulingLoggerService.call(seed_count, "#{seed_count} appointments of clinic #{clinic.name} seeded.")
       end
 
-      def get_funding_source(funding_source_name,client)
+      def get_funding_source(funding_source_name)
         case funding_source_name
         when 'BCBS NH'
           return FundingSource.find_by(name: 'New Hampshire BCBS').id
@@ -195,7 +188,7 @@ module CsvImport
         end
       end
 
-      def create_scheduling(appointment, client_enrollment_service, staff, client, i)
+      def create_scheduling(appointment, client_enrollment_service, staff, client, ind)
         schedule = Scheduling.find_or_initialize_by(snowflake_appointment_id: appointment[:appointmentid])
         schedule.client_enrollment_service_id = client_enrollment_service.id
         schedule.staff_id = staff.id
@@ -206,16 +199,13 @@ module CsvImport
         rem = schedule.minutes%15
         if rem == 0
           schedule.units = schedule.minutes/15
+        elsif rem < 8
+          schedule.units = (schedule.minutes - rem)/15
         else
-          if rem < 8
-            schedule.units = (schedule.minutes - rem)/15
-          else
-            schedule.units = (schedule.minutes + 15 - rem)/15
-          end
+          schedule.units = (schedule.minutes + 15 - rem)/15
         end 
         if appointment[:isrendered]=='Yes'
           schedule.status = 'Rendered'
-          # schedule.is_rendered = true
           schedule.rendered_at = appointment[:renderedtime]&.to_datetime if appointment[:renderedtime].present?
         else
           case appointment[:apptstatus]
@@ -242,10 +232,10 @@ module CsvImport
         schedule.cross_site_allowed = true if appointment[:crossofficeappt].present? && appointment[:crossofficeappt].split('/').count>1
         schedule.service_address_id = client.addresses&.by_service_address&.find_by(city: appointment[:clientcity], zipcode: appointment[:clientzip])&.id
         schedule.save(validate: false)
-        if schedule.id==nil
-          Loggers::SnowflakeSchedulingLoggerService.call(i, 'Schedule cannot be saved.')
+        if schedule.id.nil?
+          Loggers::SnowflakeSchedulingLoggerService.call(ind, 'Schedule cannot be saved.')
         else
-          Loggers::SnowflakeSchedulingLoggerService.call(i, 'Schedule is saved.')
+          Loggers::SnowflakeSchedulingLoggerService.call(ind, 'Schedule is saved.')
         end
       end
     end

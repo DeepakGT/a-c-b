@@ -2,14 +2,13 @@ require 'rails_helper'
 
 RSpec.describe StaffQualification, type: :model do
   let!(:clinic) { create(:clinic, name: 'clinic1') }
-  let!(:user) { create(:user, :with_role, role_name: 'rbt', clinic_id: clinic.id) }
+  let!(:user) { create(:user, :with_role, role_name: 'rbt') }
   let!(:auth_headers) { user.create_new_auth_token }
   let!(:qualification) { create(:qualification, lifetime: true)}
   subject { create(:staff_qualification, staff_id: user.id, credential_id: qualification.id)}
   
   describe 'associations' do
     it { should belong_to(:staff).class_name('User')} 
-    # it { should belong_to(:qualification).with_foreign_key('credential_id') }
     it { StaffQualification.reflect_on_association(:qualification).macro.should eq(:belongs_to) } 
   end
 

@@ -5,7 +5,6 @@ RSpec.describe ClientEnrollmentService, type: :model do
     let!(:service) { create(:service, is_service_provider_required: false) }
     subject { create(:client_enrollment_service, service_id: service.id) }
     it { should belong_to(:client_enrollment) } 
-    # it { should belong_to(:service) } 
     it { ClientEnrollmentService.reflect_on_association(:service).macro.should  eq(:belongs_to) }
 
     it { should have_many(:service_providers).class_name('ClientEnrollmentServiceProvider').dependent(:destroy) } 
@@ -35,4 +34,28 @@ RSpec.describe ClientEnrollmentService, type: :model do
       end
     end
   end
+
+  describe "#validate_count_of_units" do 
+    let!(:client_enrollment_service) { create(:client_enrollment_service,  units: 7) }
+    let!(:scheduling) { create(:scheduling, status: 'Scheduled', units: 2, client_enrollment_service_id: client_enrollment_service.id) }
+    
+    it "validate count of units" do
+      client_enrollment_service.units = 1
+      client_enrollment_service.validate
+      expect(client_enrollment_service.errors[:units]).to include('Units entered in client_enrollment service are less than 2.0 units used in schedulings.')
+    end
+  end
+
+  describe "#validate_dates" do
+    let!(:client_enrollment){ create(:client_enrollment) }  
+    let!(:service) { create(:service) }
+    let!(:client_enrollment_service1){ create(:client_enrollment_service, client_enrollment_id: client_enrollment.id, service_id: service.id, start_date: Date.today-2, end_date: Date.tomorrow+2, units: 5, minutes: 75) }
+    let(:client_enrollment_service){ build :client_enrollment_service, client_enrollment_id: client_enrollment.id, service_id: service.id }   
+  
+    it "validate dates" do
+      client_enrollment_service.validate
+      expect(client_enrollment_service.errors[:client_enrollment_service]).to include('cannot be created for given start date and end date.')
+    end
+  end
+
 end

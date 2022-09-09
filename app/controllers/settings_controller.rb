@@ -3,13 +3,19 @@ class SettingsController < ApplicationController
   before_action :authorize_user
   before_action :set_setting
 
-  def show; end
+  def show
+    @setting
+  end
 
   def update 
-    @setting.update(welcome_note: params[:welcome_note])
+    @setting.update(update_params)
   end
 
   private
+
+  def update_params
+    params.permit(:welcome_note, roles_ids:[])
+  end
 
   def set_setting
     @setting = Setting.first

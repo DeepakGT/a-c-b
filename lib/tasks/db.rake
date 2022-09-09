@@ -19,7 +19,7 @@ namespace :db do
         # This block will run only on create new records
         # i.e. if record found, this block would be skip
         u.first_name, u.last_name = Faker::Name.unique.name.split(' ')
-        u.password = Rails.application.credentials.dig(:default_super_admin_password)
+        u.password = Rails.application.credentials[:default_super_admin_password]
         u.role = Role.find_by(name: 'super_admin')
       end
 
@@ -28,7 +28,7 @@ namespace :db do
         # This block will run only on create new records
         # i.e. if record found, this block would be skip
         u.first_name, u.last_name = Faker::Name.unique.name.split(' ')
-        u.password = Rails.application.credentials.dig(:default_super_admin_password)
+        u.password = Rails.application.credentials[:default_super_admin_password]
         u.role = Role.find_by(name: 'executive_director')
       end
     

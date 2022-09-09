@@ -1,0 +1,16 @@
+availity_param,data_field
+payer.id,PAYORID
+providers.npi,CORP_NPI
+providers.taxId,CORP_TAXID
+fromDate,FROMDATE
+toDate,TODATE
+patient.lastName,LASTNAME
+patient.firstName,FIRSTNAME
+patient.birthDate,BIRTHDATE
+patient.genderCode,GENDERCODE
+patient.accountNumber,ACCOUNTNUMBER
+subscriber.memberId,MEMBERID
+subscriber.lastName,SUBSCLAST
+subscriber.firstName,SUBSCFIRST
+claimNumber,CLAIMNUMBER
+claimAmount,CLAIMAMOUNT

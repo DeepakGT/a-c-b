@@ -1,9 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe AddressPolicy, type: :policy do
-  let!(:role1) { create(:role, name: 'super_admin') }
+  let!(:role1) { create(:role, name: 'super_admin', permissions: ['client_service_address_delete']) }
   let!(:user1) { create(:user, :with_role, role_name: role1.name)}
-  let!(:role2) { create(:role, name: 'administrator') }
+  let!(:role2) { create(:role, name: 'administrator', permissions: ['client_service_address_update', 'client_service_address_delete']) }
   let!(:user2) { create(:user, :with_role, role_name: role2.name)}
   let!(:client) { create(:client)}
   let!(:record1) { create(:address, address_type: 'service_address', addressable_type: 'Client', addressable_id: client.id)}

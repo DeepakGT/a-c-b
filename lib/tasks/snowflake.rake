@@ -1,6 +1,6 @@
 namespace :snowflake do
   desc "Seed staff, client, client_enrollment, client_enrollment_service, scheduling from snowflake"
-  task :seed_snowflake_data, [:username, :password] => [:environment] do |t, args|
+  task :seed_snowflake_data, %i[username password] => [:environment] do |_t, args|
     # seed staff data
     # Scheduling.delete_all
     # ClientEnrollmentService.delete_all

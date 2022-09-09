@@ -3,33 +3,36 @@ class StaffController < ApplicationController
   before_action :authenticate_user!
   before_action :authorize_user, except: %i[phone_types supervisor_list]
   before_action :set_staff, only: %i[show update destroy]
+  before_action :remove_trailing_space, only: %i[create update]
 
   def index
     staff = Staff.all
     staff = do_filter(staff) if params[:search_value].present?
     staff = filter_by_status(staff)
     staff = filter_by_location(staff) 
-    @staff = staff.uniq.sort_by(&:first_name)
-    @staff = @staff.paginate(page: params[:page]) if params[:page].present?
+    @staff = staff&.uniq&.sort_by(&:first_name)
+    @staff = @staff&.paginate(page: params[:page]) if params[:page].present?
   end
 
-  def show; end
+  def show
+    @staff
+  end
 
   def update
     set_role if params[:role_name].present?
     set_password
-    @staff.update(staff_params)
+    @staff&.update(staff_params)
   end
   
   def create
     @staff = Staff.new(staff_params)
     set_role
-    @staff.save
-    set_home_clinic if !@staff.id.nil?
+    @staff&.save
+    set_home_clinic if !@staff&.id.nil?
   end
 
   def destroy
-    @staff.destroy
+    @staff&.destroy
   end
 
   def phone_types
@@ -43,7 +46,7 @@ class StaffController < ApplicationController
   private
 
   def staff_params
-    arr = %i[first_name last_name hired_at terminated_on email supervisor_id job_type]
+    arr = %i[first_name last_name hired_at terminated_on email supervisor_id job_type legacy_number npi]
     
     arr.concat(%i[password password_confirmation]) if params[:action] == 'create'
     
@@ -56,24 +59,24 @@ class StaffController < ApplicationController
   end
 
   def set_role
-    @staff.role = Role.find_by(name: params[:role_name])
+    @staff&.role = Role.find_by(name: params[:role_name])
   end
 
   def set_staff
-    @staff = Staff.find(params[:id])
+    @staff = Staff.find(params[:id]) rescue nil
   end
 
   def set_password
     return if params[:password].blank? || params[:password_confirmation].blank?
     
-    @staff.password = params[:password]
-    @staff.password_confirmation = params[:password_confirmation]
+    @staff&.password = params[:password]
+    @staff&.password_confirmation = params[:password_confirmation]
   end
 
   def set_home_clinic
     return if params[:staff_location_id].blank?
 
-    @staff.staff_clinics.create(clinic_id: params[:staff_location_id], is_home_clinic: true)
+    @staff&.staff_clinics&.create(clinic_id: params[:staff_location_id], is_home_clinic: true)
   end
 
   def do_filter(staff)
@@ -83,12 +86,9 @@ class StaffController < ApplicationController
         fname, lname = params[:search_value].split(' ')
         if fname.present? && lname.blank?
           staff = staff.by_first_name(fname).or(staff.by_last_name(fname))
-        elsif fname.present? && lname.present?
-          staff = staff.by_first_name(fname)
-          staff = staff.by_last_name(lname)
         else
-          staff = staff.by_first_name(fname) # if fname.present?
-          staff = staff.by_last_name(lname) # if lname.present?
+          staff = staff.by_first_name(fname) 
+          staff = staff.by_last_name(lname) 
         end
         return staff
       when "organization"
@@ -114,7 +114,6 @@ class StaffController < ApplicationController
 
   def search_on_all_fields(query)
     staff = Staff.left_joins(:role, :address, clinics: :organization).all
-    # formated_val = query.split.map{|x| "%#{x}%"}
     fname, lname = query.split
     if lname.present?
       staff = staff.by_first_name(fname).by_last_name(lname)
@@ -150,6 +149,11 @@ class StaffController < ApplicationController
     else
       staff = staff.active
     end
+  end
+
+  def remove_trailing_space
+    params[:first_name].strip! if params[:first_name].present?
+    params[:last_name].strip! if params[:last_name].present?
   end
   # end of private
 end

@@ -4,15 +4,19 @@ RSpec.describe User, type: :model do
   describe 'associations' do
     it { should have_one(:user_role).dependent(:destroy)}
     it { should have_one(:rbt_supervision).dependent(:destroy)}
-
+    it { should have_one(:address).dependent(:destroy)}
+    it { should have_many(:phone_numbers).dependent(:destroy) } 
     it { should have_one(:role).through(:user_role)}
   end
 
   it { should accept_nested_attributes_for(:rbt_supervision).update_only(true) }
+  it { should accept_nested_attributes_for(:address).update_only(true) }
+  it { should accept_nested_attributes_for(:phone_numbers).update_only(true) }
 
   describe 'enums' do
     it { should define_enum_for(:status)}
     it { should define_enum_for(:gender)}
+    it { should define_enum_for(:job_type).backed_by_column_of_type(:string)}     
   end
 
   describe 'callbacks' do
@@ -40,7 +44,6 @@ RSpec.describe User, type: :model do
       end
     end
   end
-
 
   describe 'validations' do
     it { should validate_presence_of(:email) }

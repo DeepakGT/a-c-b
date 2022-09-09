@@ -25,9 +25,6 @@ module RenderAppointments
           else
             schedule.unrendered_reason = ['multiple_soap_notes_found']
             schedule.save(validate: false)
-          # elsif session_locations.present? && session_locations.count == catalyst_data_ids.count
-          #   schedule.unrendered_reason = ['multiple_soap_notes_of_different_locations_found']
-          #   schedule.save(validate: false)
           end
         end
       end

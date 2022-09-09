@@ -20,7 +20,7 @@ module Snowflake
           client = Client.find_by(dob: appointment['clientdob']&.to_time&.strftime('%Y-%m-%d'), first_name: client_name&.last, last_name: client_name&.first)
           if client.present?
             if appointment['fundingsource'].present?
-              funding_source_id = get_funding_source(appointment['fundingsource'], client)
+              funding_source_id = get_funding_source(appointment['fundingsource'])
               if funding_source_id.present?
                 service = Service.where('lower(name) = ?', appointment['servicename']&.downcase).first
                 if service.present?
@@ -34,14 +34,6 @@ module Snowflake
                         client_enrollment_service = client_enrollment_services.first
                       else
                         client_enrollment_services.each do |authorization|
-                          # schedules = authorization.schedulings&.with_rendered_or_scheduled_as_status
-                          # completed_schedules = schedules&.completed_scheduling
-                          # scheduled_schedules = schedules&.scheduled_scheduling
-                          # used_units = completed_schedules&.with_units&.pluck(:units)&.sum
-                          # used_units = 0 if used_units.blank?
-                          # scheduled_units = scheduled_schedules&.with_units&.pluck(:units)&.sum
-                          # scheduled_units = 0 if scheduled_units.blank?
-                          # left_units = authorization&.units - (used_units + scheduled_units)
                           if authorization.left_units >= appointment['actualunits'].to_f
                             client_enrollment_service = authorization
                             break
@@ -65,7 +57,6 @@ module Snowflake
                       schedule.minutes = appointment['durationmins'].to_f
                       if appointment['isrendered']=='Yes'
                         schedule.status = 'Rendered'
-                        # schedule.is_rendered = true
                         schedule.rendered_at = appointment['renderedtime']&.to_datetime if appointment['renderedtime'].present?
                       else
                         case appointment['apptstatus']
@@ -123,14 +114,6 @@ module Snowflake
                       client_enrollment_service = client_enrollment_services.first
                     else
                       client_enrollment_services.each do |authorization|
-                        # schedules = authorization.schedulings&.with_rendered_or_scheduled_as_status
-                        # completed_schedules = schedules&.completed_scheduling
-                        # scheduled_schedules = schedules&.scheduled_scheduling
-                        # used_units = completed_schedules&.with_units&.pluck(:units)&.sum
-                        # used_units = 0 if used_units.blank?
-                        # scheduled_units = scheduled_schedules&.with_units&.pluck(:units)&.sum
-                        # scheduled_units = 0 if scheduled_units.blank?
-                        # left_units = authorization&.units - (used_units + scheduled_units)
                         if authorization.left_units >= appointment['actualunits'].to_f
                           client_enrollment_service = authorization
                           break
@@ -154,7 +137,6 @@ module Snowflake
                     schedule.minutes = appointment['durationmins'].to_f
                     if appointment['isrendered']=='Yes'
                       schedule.status = 'Rendered'
-                      # schedule.is_rendered = true
                       schedule.rendered_at = appointment['renderedtime']&.to_datetime if appointment['renderedtime'].present?
                     else
                       case appointment['apptstatus']
@@ -205,7 +187,7 @@ module Snowflake
         Loggers::SnowflakeSchedulingLoggerService.call(seed_count, "#{seed_count} schedulings seeded.")
       end
 
-      def get_funding_source(funding_source_name,client)
+      def get_funding_source(funding_source_name)
         case funding_source_name
         when 'BCBS NH'
           return FundingSource.find_by(name: 'New Hampshire BCBS').id

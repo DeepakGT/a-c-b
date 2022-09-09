@@ -13,7 +13,7 @@ RSpec.describe ClientServiceAddressesController, type: :controller do
   let!(:user) { create(:user, :with_role, role_name: role.name) }
   let!(:auth_headers) { user.create_new_auth_token }
   let!(:organization) {create(:organization, name: 'test-organization', admin_id: user.id)}
-  let!(:clinic) {create(:clinic, name: 'test-clinic', organization_id: organization.id)}
+  let!(:clinic) {create(:clinic, name: 'test-clinic', organization_id: organization.id, address_attributes: {city: 'Bangalore'})}
   let!(:client) { create(:client, clinic_id: clinic.id)}
 
   describe "GET #index" do
@@ -53,6 +53,30 @@ RSpec.describe ClientServiceAddressesController, type: :controller do
           expect(response.status).to eq(200)
           expect(response_body['status']).to eq('success')
           expect(response_body['data'].count).to eq(0)
+        end
+      end
+
+      context "when there is a service address with the current clinic address" do
+        it "should return true in the response on the office_address key" do
+          set_auth_headers(auth_headers)
+          create(:address,
+                 addressable_type: 'Client',
+                 addressable_id: client.id,
+                 address_type: 'service_address',
+                 line1: clinic.address.line1,
+                 city: clinic.address.city,
+                 state: clinic.address.state,
+                 country: clinic.address.country,
+                 zipcode: clinic.address.zipcode,
+          )
+
+          get :index, params: { client_id: client.id }
+          response_body = JSON.parse(response.body)
+
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data'].count).to eq(client_service_addresses.count + 2)
+          expect(response_body['office_address']).to eq(true)
         end
       end
     end
@@ -146,6 +170,22 @@ RSpec.describe ClientServiceAddressesController, type: :controller do
         expect(response_body['data']['is_default']).to eq(true)
       end
 
+      context "and try to uncheck is_default" do
+        let(:client_service_address) { create(:address, addressable_type: 'Client', addressable_id: client.id, is_default: true, address_type: 'service_address', city: 'Indore') }
+        it "should update is_default successfully" do
+          set_auth_headers(auth_headers)
+  
+          put :update, params: {id: client_service_address.id, client_id: client.id, is_default: false}
+          response_body = JSON.parse(response.body)
+  
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data']['client_id']).to eq(client.id) 
+          expect(response_body['data']['id']).to eq(client_service_address.id)
+          expect(response_body['data']['is_default']).to eq(false)
+        end  
+      end
+
       context "when client_id is not present" do
         it "should raise error" do
           set_auth_headers(auth_headers)
@@ -204,6 +244,24 @@ RSpec.describe ClientServiceAddressesController, type: :controller do
           
           expect(response_body['errors']).to include("record not found")
         end
+      end
+    end
+  end
+
+  describe "POST #create_office_address" do
+    context "when sign in" do
+      it "should create office address for client successfully" do
+        set_auth_headers(auth_headers)
+
+        post :create_office_address, params: {client_id: client.id}
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data']['client_id']).to eq(client.id) 
+        expect(response_body['data']['type']).to eq('service_address')
+        expect(response_body['data']['address_name']).to eq('Office')
+        expect(response_body['data']['city']).to eq(clinic.address.city)
       end
     end
   end
