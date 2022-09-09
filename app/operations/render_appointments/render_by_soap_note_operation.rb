@@ -42,6 +42,7 @@ module RenderAppointments
             schedule.rendered_at = DateTime.current
           end
           schedule.save(validate: false)
+          schedule.audits.order(:created_at).last.update(user_type: 'System')
         end
       end
     end
