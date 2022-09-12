@@ -20,7 +20,7 @@ json.creator "#{user&.first_name} #{user&.last_name}"
 json.create_date soap_note.created_at
 if current_user.role_name == 'super_admin' || current_user.role_name == 'bcba'  || current_user.role_name == 'system_administrator' || current_user.role_name == 'rbt'
   json.note_audits do
-    json.array! soap_note.audits do |audit|    
+    json.array! soap_note.audits.reorder('id DESC') do |audit|
       auditor = User.find_by(id: audit.user_id) if audit.user_type=='User'
       json.audited_changes audit.audited_changes
       json.last_modified_by "#{auditor&.first_name} #{auditor&.last_name}"
