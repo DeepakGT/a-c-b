@@ -4,7 +4,8 @@ class RegionsController < ApplicationController
   before_action :authorize_user
 
   def index
-    @regions = Region.all
+    @regions = Region.order(:name)
+    @regions = @regions.paginate(page: params[:page]) if params[:page].present?
   end
   
   def create
