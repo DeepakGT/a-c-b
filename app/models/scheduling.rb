@@ -266,9 +266,9 @@ class Scheduling < ApplicationRecord
   end
 
   def validate_draft_appointments
-    return if !self.draft? || self.user.role_name=='super_admin' || self.user.role_name=='client_care_coordinator' || self.user.role_name=='Clinical Director'
+    user = User.find_by(id: creator_id)
+    return if !draft? || user.role_name == 'super_admin' || user.role_name == 'client_care_coordinator' || user.role_name == 'Clinical Director'
 
     errors.add(:draft, 'appointments can only be created by client care coordinator or clinical director.')
   end
-  # end of private
 end
