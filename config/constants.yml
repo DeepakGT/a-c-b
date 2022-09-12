@@ -16,3 +16,7 @@ days:
   thursday: 3
   friday: 4
   saturday: 5
+roles:
+  super_admin: super_admin
+  ccc: client_care_coordinator
+  cd: Clinical Director
