@@ -70,6 +70,7 @@ Rails.application.routes.draw do
     resources :meta_data do
       get '/selectable_options', to: 'meta_data#selectable_options', on: :collection
       get '/select_payor_types', to: 'meta_data#select_payor_types', on: :collection
+      get '/select_scheduling_status', to: 'meta_data#select_scheduling_status', on: :collection
       get '/gender_list', to: 'meta_data#gender_list', on: :collection
     end
 

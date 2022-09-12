@@ -25,7 +25,7 @@ class Scheduling < ApplicationRecord
                  client_cancel_less_than_24_h: 'client_cancel_less_than_24_h', client_no_show: 'client_no_show', 
                  staff_cancellation: 'staff_cancellation', staff_cancellation_due_to_illness: 'staff_cancellation_due_to_illness', 
                  cancellation_related_to_covid: 'cancellation_related_to_covid', unavailable: 'unavailable', 
-                 inclement_weather_cancellation: 'inclement_weather_cancellation', draft: 'draft'}
+                 inclement_weather_cancellation: 'inclement_weather_cancellation', draft: 'draft' }
 
   #TODO: uncoment this line after understand why the update method is called three times from the frontend
   #after_update :mail_change_appoitment   
@@ -300,4 +300,11 @@ class Scheduling < ApplicationRecord
 
     errors.add(:draft, I18n.t('.activerecord.models.scheduling.validate_draft'))
   end
+
+  def self.transform_statuses
+    statuses.map do |type, _|
+      {'value' => type, 'title'=> I18n.t("activerecord.attributes.scheduling.statuses.#{type}").capitalize }
+    end
+  end
+  # end of private
 end

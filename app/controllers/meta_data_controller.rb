@@ -1,5 +1,5 @@
 class MetaDataController < ApplicationController
-  before_action :authenticate_user!, except: %i[select_payor_types attachment_permissions_options gender_list]
+  before_action :authenticate_user!, except: %i[select_payor_types attachment_permissions_options gender_list select_scheduling_status]
 
   def selectable_options
     @selectable_options = selectable_options_data
@@ -41,6 +41,10 @@ class MetaDataController < ApplicationController
   
   def select_payor_types
     @payor_types = FundingSource.transform_payor_types
+  end
+
+  def select_scheduling_status
+    render json: { status: :success, scheduling_statuses: Scheduling.transform_statuses }, status: 200
   end
 
   def gender_list
