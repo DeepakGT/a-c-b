@@ -169,11 +169,11 @@ class Scheduling < ApplicationRecord
       schedulings.each do |scheduling|
         client_enrollment_service = ClientEnrollmentService.find_by id: scheduling[:client_enrollment_service_id]
         cont_units += scheduling[:units].to_i if scheduling[:units].present? && scheduling[:units].to_i.positive?
-        error_msgs.push('range of recurrences exceeds one authorization') if scheduling[:date].to_date > client_enrollment_service.end_date.to_date
-        error_msgs.push('Units may not be blank or empty') if scheduling[:units].nil?
-        error_msgs.push('over pass authorization units') if cont_units > client_enrollment_service.units
-        error_msgs.push('an appointment is already scheduled, try again to reschedul  e it') if self.any? && check_date_available(scheduling[:date], scheduling[:start_time], scheduling[:end_time]).any?
-        error_msgs.push('limit reached, try again') if cont_limit > Constant.limit_appointment_recurrence
+        error_msgs.push(I18n.t('.activerecord.models.scheduling.errors.range')) if scheduling[:date].to_date > client_enrollment_service.end_date.to_date
+        error_msgs.push(I18n.t('.activerecord.models.scheduling.errors.units_blank')) if scheduling[:units].nil?
+        error_msgs.push(I18n.t('.activerecord.models.scheduling.errors.limit_autorization')) if cont_units > client_enrollment_service.units
+        error_msgs.push(I18n.t('.activerecord.models.scheduling.errors.any_appointment')) if self.any? && check_date_available(scheduling[:date], scheduling[:start_time], scheduling[:end_time]).any?
+        error_msgs.push(I18n.t('.activerecord.models.scheduling.errors.limit_recurrence')) if cont_limit > Constant.limit_appointment_recurrence
         cont_limit += Constant.one
       end
       

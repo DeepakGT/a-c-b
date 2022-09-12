@@ -32,6 +32,13 @@
 en:
   activerecord:
     models:
+      scheduling:
+        errors:
+          range: range of recurrences exceeds one authorization
+          units_blank: Units may not be blank or empty
+          limit_autorization: over pass authorization units
+          any_appointment: 'an appointment is already scheduled, try again to reschedule it'
+          limit_recurrence: 'limit reached, try again'
     attributes:
       funding_source:
         payor_types:
