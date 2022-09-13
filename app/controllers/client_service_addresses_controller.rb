@@ -11,7 +11,7 @@ class ClientServiceAddressesController < ApplicationController
   def create
     @service_address = @client.addresses.build(service_address_params)
     @service_address.address_type = 'service_address'
-    set_default 
+    set_default if @service_address.is_default.present?
     @service_address.save
   end
 
@@ -21,7 +21,7 @@ class ClientServiceAddressesController < ApplicationController
 
   def update
     authorize @service_address
-    set_default
+    set_default if @service_address.is_default_changed?
     @service_address.update(service_address_params)
   end
 
