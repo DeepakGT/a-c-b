@@ -18,6 +18,8 @@ class Client < ApplicationRecord
   accepts_nested_attributes_for :addresses, update_only: true
   accepts_nested_attributes_for :phone_number, update_only: true
 
+  attr_accessor :errors
+
   enum status: {active: 0, inactive: 1}
   enum gender: {male: 'male', female: 'female', no_binary: 'no_binary'}
   enum preferred_language: {english: 0, spanish: 1}
@@ -76,12 +78,15 @@ class Client < ApplicationRecord
   end
 
   def create_office_address_for_client
-    return true unless clinic.address.present?
+    self.errors = ["office address no present?"] unless clinic.address.present?
+    return self unless clinic.address.present?
 
-    addresses.create(
+    office_address = self.addresses.build(
       line1: clinic.address.line1, line2: clinic.address.line2, line3: clinic.address.line3, city: clinic.address.city, state: clinic.address.state, country: clinic.address.country,
       zipcode: clinic.address.zipcode, address_type: Constant.service_address, is_default: false, is_hidden: false, service_address_type_id: Constant.office
     )
+    office_address.save
+    office_address
   end
 
   private
