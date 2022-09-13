@@ -1,7 +1,7 @@
 require 'will_paginate/array'
 class ClientsController < ApplicationController
   before_action :authenticate_user!
-  before_action :authorize_user
+  before_action :authorize_user, except: :soap_notes_pdf
   before_action :set_client, only: %i[show update destroy]
   before_action :remove_trailing_space, only: %i[create update]
 
@@ -31,6 +31,14 @@ class ClientsController < ApplicationController
     @client.destroy
   end
 
+  def soap_notes_pdf
+    @client = Client.find(soap_notes_pdf_params[:client_id]) rescue nil
+    @soap_notes = SoapNote.by_client(@client&.id)
+    @soap_notes = soap_notes_pdf_params[:soap_notes_ids].present? ? @soap_notes.by_ids(soap_notes_pdf_params[:soap_notes_ids]) : @soap_notes
+    job = GeneratePdfWorker.perform_in(30.seconds, @client&.id, @soap_notes&.ids, current_user&.id)
+    @success =  Sidekiq::ScheduledSet.new.map{|job| job['jid']}.include?(job) ? true : false
+  end
+
   private
 
   def client_params
@@ -38,6 +46,10 @@ class ClientsController < ApplicationController
                   :disqualified, :dq_reason, :bcba_id, :tracking_id, addresses_attributes: 
                   %i[id line1 line2 line3 zipcode city state country address_type addressable_type addressable_id],
                   phone_number_attributes: %i[phone_type number])
+  end
+
+  def soap_notes_pdf_params
+    params.permit(:client_id, :soap_notes_ids)
   end
 
   def set_client
@@ -156,5 +168,4 @@ class ClientsController < ApplicationController
     params[:last_name].strip! if params[:last_name].present?
   end
   # end of private
-
 end
