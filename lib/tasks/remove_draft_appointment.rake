@@ -1,9 +1,9 @@
 namespace :remove_draft_appointment do
-  desc 'eliminate appointment drafts'
+  desc 'remove draft appointments'
   task remove: :environment do
-    Scheduling.where(status: 'draft', date: ..Date.today).each do |scheduling_draft|
+    Scheduling.where(status: 'draft', date: ..Date.today + Constant.third.days).each do |scheduling_draft|
       scheduled_draft = Scheduling.find_by(id: scheduling_draft.id)
-      scheduled_draft.destroy if scheduled_draft.date < Date.today
+      scheduled_draft.destroy
     end
   end
 end
