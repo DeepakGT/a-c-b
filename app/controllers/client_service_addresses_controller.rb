@@ -1,6 +1,6 @@
 class ClientServiceAddressesController < ApplicationController
   before_action :authenticate_user!
-  before_action :authorize_user, only: %i[index show create]
+  before_action :authorize_user, only: %i[index show create update destroy]
   before_action :set_client
   before_action :set_service_address, only: %i[show update destroy]
 
@@ -15,18 +15,19 @@ class ClientServiceAddressesController < ApplicationController
     @service_address.save
   end
 
-  def show
-    @service_address
-  end
+  def show; end
 
   def update
-    authorize @service_address
+    @service_address.assign_attributes(service_address_params)
     set_default if @service_address.is_default_changed?
-    @service_address.update(service_address_params)
+    if @service_address.save
+      @service_address
+    else
+      unprosessable_entity_response(@service_address)
+    end
   end
 
   def destroy
-    authorize @service_address
     @service_address.destroy
   end
 
