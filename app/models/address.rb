@@ -12,6 +12,10 @@ class Address < ApplicationRecord
 
   delegate :name, to: :service_address_type, prefix: true
 
+  def full_address
+    "#{try(:service_address_type).try(:name)} - #{try(:line1)} "
+  end
+
   private
 
   def is_country_usa?
