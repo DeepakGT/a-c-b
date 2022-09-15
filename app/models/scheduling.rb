@@ -214,7 +214,7 @@ class Scheduling < ApplicationRecord
   def recipients
     recipients = [staff]
     recipients << Staff.find_by(id: creator_id)
-    recipients << Staff.active.joins(:role,:clinics).where('clinics.id': 1,'roles.name': ['executive_director']).to_ary
+    recipients << Staff.active.joins(:role,:clinics).where('clinics.id': staff.home_clinic, 'roles.name': ['executive_director']).to_ary
     recipients.flatten
   end
 
