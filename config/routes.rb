@@ -128,8 +128,10 @@ Rails.application.routes.draw do
     put '/update_super_admin/:id', to: 'users#update_super_admin'
 
     resources :users do
-      get 'notifications', to: 'notifications#index', on: :collection
-      put 'set_notifications_read', to: 'notifications#set_notifications_read', on: :collection
+      collection do
+        put 'set_notifications_read', to: 'notifications#set_notifications_read'
+        get 'notifications', to: 'notifications#index'
+      end
     end
   end
 end
