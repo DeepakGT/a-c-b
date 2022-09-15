@@ -113,7 +113,7 @@ class Scheduling < ApplicationRecord
 
       recurrences = option[:quantity].to_i
       
-     (Constant.zero..recurrences).each do |index|
+      (Constant.zero..recurrences).each do |index|
         break if index == recurrences
 
         calcule_date = option[:recurrence] == Constant.monthly ? date_initial + index.month : date_initial + index.year
@@ -201,7 +201,22 @@ class Scheduling < ApplicationRecord
     StaffMailer.schedule_update(self).deliver
   end
 
+  def notification_draft_appointment
+    params = {
+      message: I18n.t('.notification.draft_appointment.message'),
+      notification_url: "#{ENV["DOMAIN"]}#{ENV["SCHEDULING_PATH"]}#{self.id}",
+      affected_id: self.id,
+      affected: self.class.name
+    }
+    DraftNotification.with(params).deliver(recipients)
+  end
+
+  def recipients
+    recipients = [staff]
+  end
+
   private
+
   # def validate_time
   #   possible_schedules = Scheduling.where.not(id: self.id)
   #   same_day_schedules = possible_schedules.where(staff_id: self.staff_id, client_enrollment_service_id: self.client_enrollment_service_id, date: self.date)

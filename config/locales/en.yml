@@ -30,6 +30,10 @@
 # available at https://guides.rubyonrails.org/i18n.html.
 
 en:
+  notification:
+    draft_appointment: 
+      message: "Approval of the day and client appointment project is approaching."
+      subject: You must approve the draft appointment
   activerecord:
     models:
     attributes:
