@@ -46,6 +46,10 @@ class Staff < User
     appointments.present? ? (appointments.pluck(:minutes)&.sum).to_f/60.0 : 0
   end
 
+  def home_clinic
+    staff_clinics.where(is_home_clinic: true)
+  end
+
   private
 
   def validate_role
