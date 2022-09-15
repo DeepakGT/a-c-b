@@ -47,7 +47,7 @@ class Staff < User
   end
 
   def home_clinic
-    staff_clinics.where(is_home_clinic: true)
+    staff_clinics.where(is_home_clinic: true).map {|home_clinic| home_clinic.clinic_id}[Constant.zero]
   end
 
   private
