@@ -28,3 +28,4 @@ json.data do
     end
   end
 end
+json.errors @clinic.errors.full_messages
