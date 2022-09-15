@@ -214,9 +214,12 @@ class Scheduling < ApplicationRecord
 
   def recipients
     recipients = [staff]
+<<<<<<< HEAD
     recipients << Staff.creator(creator_id)
     recipients << Staff.active.joins(:role, :clinics).where('clinics.id': staff.staff_clinics.home_clinic.first[:clinic_id], 'roles.name': [Constant.roles['ed']]).to_ary
     recipients.flatten
+=======
+>>>>>>> add module notifications add new notifications for cronjob
   end
 
   private
