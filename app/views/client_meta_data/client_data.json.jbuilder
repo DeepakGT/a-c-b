@@ -7,8 +7,18 @@ json.data do
   json.email @client.email
   json.clinic_id @client.clinic_id
   json.clinic_name @client.clinic.name
-  json.bcba_id @client.bcba_id
-  json.bcba_name "#{@client.bcba&.first_name} #{@client.bcba&.last_name}"
+  json.primary_bcba_id @client.primary_bcba_id
+  json.secondary_bcba_id @client.secondary_bcba_id
+  json.primary_rbt_id @client.primary_rbt_id
+  json.secondary_rbt_id @client.secondary_rbt_id
+  primary_bcba = User.find(@client.primary_bcba_id)
+  json.primary_bcba_name "#{primary_bcba&.first_name} #{primary_bcba&.last_name}"
+  secondary_bcba = User.find(@client.secondary_bcba_id)
+  json.secondary_bcba_name "#{secondary_bcba&.first_name} #{secondary_bcba&.last_name}"
+  primary_rbt = User.find(@client.primary_rbt_id)
+  json.primary_rbt_name "#{primary_rbt&.first_name} #{primary_rbt&.last_name}"
+  secondary_rbt = User.find(@client.secondary_rbt_id)
+  json.secondary_rbt_name "#{secondary_rbt&.first_name} #{secondary_rbt&.last_name}"
   json.email @client.email
   json.dob @client.dob
   json.gender @client.gender

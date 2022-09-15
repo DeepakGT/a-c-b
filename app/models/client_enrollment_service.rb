@@ -21,7 +21,7 @@ class ClientEnrollmentService < ApplicationRecord
   scope :by_service, ->(service_ids){ where(service_id: service_ids) }
   scope :by_staff_qualifications, ->(staff_qualification_ids) { where('service_qualifications.qualification_id': staff_qualification_ids) }
   scope :by_service_with_no_qualification, ->{select("client_enrollment_services.*").group("client_enrollment_services.id").having("count(service_qualifications.*) = ?",0)}
-  scope :by_bcba_ids, ->(bcba_ids){ joins(client_enrollment: :client).where('clients.bcba_id': bcba_ids) }
+  scope :by_bcba_ids, ->(bcba_ids){ joins(client_enrollment: :client).where('clients.primary_bcba_id': bcba_ids).or(where('clients.secondary_bcba_id': bcba_ids)) }
   scope :about_to_expire, ->{ where('end_date>=? AND end_date<=?', Time.current.to_date, (Time.current.to_date+9)) }
   scope :by_client_enrollment, ->(client_enrollment_id){ where(client_enrollment_id: client_enrollment_id)}
   scope :by_funding_source, ->(funding_source_id){ where('client_enrollments.funding_source_id': funding_source_id) }
