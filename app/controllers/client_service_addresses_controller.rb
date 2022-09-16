@@ -19,7 +19,7 @@ class ClientServiceAddressesController < ApplicationController
 
   def update
     @service_address.assign_attributes(service_address_params)
-    set_default if @service_address.is_default_changed?
+    set_default if @service_address.is_default_changed? && !@service_address.is_default.nil?
     if @service_address.save
       @service_address
     else
