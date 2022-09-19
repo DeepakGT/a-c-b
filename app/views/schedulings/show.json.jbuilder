@@ -12,7 +12,7 @@ json.data do
     end
   end
   json.audits do
-    json.array! @schedule.audits do |audit|
+    json.array! @schedule.audits.sort_by(&:created_at).reverse do |audit|
       if audit.user_type=='User'
         auditor = User.find_by(id: audit.user_id) 
         json.auditor_name "#{auditor&.first_name} #{auditor&.last_name}"
