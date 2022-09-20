@@ -44,3 +44,6 @@ db/schema.rb
 
 # Gemfile.lock
 Gemfile.lock
+
+# Database configuration
+config/database.yml
