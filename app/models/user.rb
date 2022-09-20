@@ -82,7 +82,7 @@ class User < ActiveRecord::Base
   end
 
   def allow_email_notifications?
-    return true if self.deactive_at.nil?
+    return true if self.deactivated_at.nil?
 
     false
   end
