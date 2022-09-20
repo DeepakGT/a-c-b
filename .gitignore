@@ -36,7 +36,7 @@
 /bitbucket-pipelines.yml
 
 # Credential
-/config/credentials/*
+config/credentials/*
 
 # Schema
 db/schema.rb
