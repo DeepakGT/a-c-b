@@ -95,7 +95,7 @@ RSpec.describe User, type: :model do
     end
 
     context "when user has disallowed email notifications" do
-      let!(:user) { create(:user, :with_role, role_name: 'administrator', deactive_at: Time.current) } 
+      let!(:user) { create(:user, :with_role, role_name: 'administrator', deactivated_at: Time.current) } 
       it "should return false" do
         expect(user.allow_email_notifications?).to eq(false)
       end
