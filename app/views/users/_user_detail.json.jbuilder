@@ -5,7 +5,7 @@ json.email user.email
 json.status user.status
 json.title user.role_name
 json.gender user.gender
-json.deactive_at user.deactive_at
+json.deactivated_at user.deactivated_at
 json.is_email_notification_allowed user.allow_email_notifications?
 json.default_schedule_view user.default_schedule_view
 json.phone_numbers do

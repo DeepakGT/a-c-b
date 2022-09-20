@@ -9,7 +9,7 @@ json.terminated_on staff&.terminated_on
 json.title staff&.role_name
 json.job_type staff&.job_type
 json.gender staff&.gender
-json.deactive_at staff&.deactive_at
+json.deactivated_at staff&.deactivated_at
 if staff_clinic.present?
   json.organization_id staff_clinic.clinic&.organization_id
   json.organization_name staff_clinic.clinic&.organization_name
