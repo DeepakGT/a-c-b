@@ -1,7 +1,10 @@
 namespace :service do
   desc "Update early code flag"
   task update_is_early_code: :environment do
-    FundingSource.find_by(name: "ABA Centers of America").update(network_status: "non_billable")
+    # Updating ABA Centers of America as non billable payor
+    funding_source = FundingSource.find_by(name: "ABA Centers of America")
+    funding_source.network_status = 'non_billable'
+    funding_source.save(validate:false) # since there might be some non early services provided by ABA centers updating without validating
     services = Service.where(display_code: ['99997', '99998', '99999', '98888'])
     funding_source_id = FundingSource.find_by_name('ABA Centers of America')&.id
     services.each do |service|
