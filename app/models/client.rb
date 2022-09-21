@@ -76,4 +76,11 @@ class Client < ApplicationRecord
     client_service_address = self.addresses.by_service_address&.order(:created_at)
     client_service_address.first.update(is_default: true) if client_service_address.present? && client_service_address.where(is_default: true).blank?
   end
+
+  def self.transform_gender
+    genders.map do |type, _|
+      {'value' => type, 'title'=> I18n.t("activerecord.attributes.client.gender.#{type}").capitalize }
+    end
+  end
+
 end
