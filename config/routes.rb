@@ -68,18 +68,12 @@ Rails.application.routes.draw do
     resources :roles
 
     resources :meta_data do
-<<<<<<< HEAD
-      get '/selectable_options', to: 'meta_data#selectable_options', on: :collection
-      get '/select_payor_types', to: 'meta_data#select_payor_types', on: :collection
-      get '/select_scheduling_status', to: 'meta_data#select_scheduling_status', on: :collection
-      get '/gender_list', to: 'meta_data#gender_list', on: :collection
-=======
       collection do
         get '/selectable_options', to: 'meta_data#selectable_options'
         get '/select_payor_types', to: 'meta_data#select_payor_types'
         get '/select_scheduling_status', to: 'meta_data#select_scheduling_status'
+        get '/gender_list', to: 'meta_data#gender_list'
       end
->>>>>>> 24e89e7... ABA-431 small refactor meta_data routes
     end
 
     put '/availity/update_claim_statuses', to: 'availity#update_claim_statuses'
