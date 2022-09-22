@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe RegionsController, type: :routing do
-  let!(:region) {create(:region)}
+  let!(:region) { create(:region) }
 
   describe 'routing' do
     it 'routes to #index' do

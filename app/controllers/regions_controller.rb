@@ -10,7 +10,11 @@ class RegionsController < ApplicationController
   
   def create
     @region = Region.new(regions_params)
-    @region.save ? @region : unprosessable_entity_response(@region)
+    if @region.save
+      @region
+    else
+      unprosessable_entity_response(@region)
+    end
   end
 
   def update
