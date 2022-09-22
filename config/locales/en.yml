@@ -53,6 +53,9 @@ en:
           male: male
           female: female
           no_binary: no binary
+      scheduling:
+        validate_draft: 'appointments can only be created by client care coordinator or clinical director.'
+    
 
 
   devise_token_auth:

@@ -1,4 +1,3 @@
-staff_clinic = staff&.staff_clinics.order(is_home_clinic: :desc).first
 json.id staff&.id
 json.first_name staff&.first_name
 json.last_name staff&.last_name
@@ -13,12 +12,12 @@ json.gender staff&.gender
 json.deactivated_at staff&.deactivated_at
 json.legacy_number staff.legacy_number
 json.npi staff.npi
-if staff_clinic.present?
-  json.organization_id staff_clinic.clinic&.organization_id
-  json.organization_name staff_clinic.clinic&.organization_name
-  json.clinic_id staff_clinic.clinic_id
-  json.clinic_name staff_clinic.clinic&.name
-end
+
+json.organization_id staff.staff_clinics.home_clinic.first.clinic&.organization_id
+json.organization_name staff.staff_clinics.home_clinic.first.clinic&.organization_name
+json.clinic_id staff.staff_clinics.home_clinic.first.clinic_id
+json.clinic_name staff.staff_clinics.home_clinic.first.clinic&.name
+
 if staff&.supervisor.present?
   json.supervisor_id staff.supervisor_id
   json.immediate_supervisor "#{staff.supervisor&.first_name} #{staff.supervisor&.last_name}"
