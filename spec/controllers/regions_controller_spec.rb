@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'support/render_views'
 RSpec.describe RegionsController, type: :controller do
-  let!(:role) { create(:role, name: Constant.super_admin, permissions: ['regions_view', 'regions_update']) }
+  let!(:role) { create(:role, name: Constant.role['super_admin'], permissions: ['regions_view', 'regions_update']) }
   let!(:user) { create(:user, :with_role, role_name: role.name) }
   let!(:auth_headers) { user.create_new_auth_token }
   let!(:regions) { create_list(:region, 4) }
