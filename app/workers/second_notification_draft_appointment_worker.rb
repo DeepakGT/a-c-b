@@ -6,10 +6,10 @@ class SecondNotificationDraftAppointmentWorker
                                         
   def perform
     puts "#{DateTime.current}"
-    puts "second_notification_draft_appointment_worker is started"
+    puts 'second_notification_draft_appointment_worker is started'
     second_notification_draft_appointment_worker
-    puts "second_notification_draft_appointment_worker is completed"
-    puts ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"               
+    puts 'second_notification_draft_appointment_worker is completed'
+    puts '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>'               
   end
 
   private
