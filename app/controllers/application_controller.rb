@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::API
   include DeviseTokenAuth::Concerns::SetUserByToken
-  include Pundit
+  include Pundit::Authorization
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :set_active_storage_host
   rescue_from ActiveRecord::RecordNotFound, with: :send_record_not_found_response
@@ -24,17 +24,17 @@ class ApplicationController < ActionController::API
   end
 
   def send_record_not_found_response
-    render json: {status: :failure, errors: ['record not found']}, status: 404
+    render json: {status: :failure, errors: ['record not found']}, status: :bad_request
   end
 
   def not_authorized
-    render json: {status: :failure, errors: ['you are not authorized to perform this action.']}, status: 401
+    render json: {status: :failure, errors: ['you are not authorized to perform this action.']}, status: :unauthorized
   end
 
   def unprosessable_entity_response(model)
-    render json: { status: :failed, error: model.errors.full_messages }, status: 422
+    render json: { status: :failed, error: model.errors.full_messages }, status: :unprocessable_entity
   end
-
+  
   def string_to_array(value)
     value = value.gsub(/\[|\]/, '').split(',')
   end
