@@ -36,13 +36,16 @@ en:
       subject: You must approve the draft appointment
   activerecord:
     models:
-    attributes:
-      funding_source:
-        payor_types:
-          commercial: commercial
-          medicaid: medicaid
-          medicare: medicare
-          third_party_contract: third party contract
+      attributes:
+        funding_source:
+          payor_types:
+            commercial: commercial
+            medicaid: medicaid
+            medicare: medicare
+            third_party_contract: third party contract
+      scheduling:
+        validate_draft: 'appointments can only be created by client care coordinator or clinical director.'
+    
 
 
   devise_token_auth:

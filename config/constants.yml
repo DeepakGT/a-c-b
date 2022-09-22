@@ -20,3 +20,4 @@ roles:
   super_admin: super_admin
   ccc: client_care_coordinator
   cd: Clinical Director
+  ed: executive_director
