@@ -30,6 +30,11 @@
 # available at https://guides.rubyonrails.org/i18n.html.
 
 en:
+  application_controller:
+    controllers:
+      notification:
+        messages:
+          error: 'the :ids parameter must have at minimum a valid numeric value'
   activerecord:
     models:
     attributes:

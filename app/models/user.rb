@@ -80,6 +80,10 @@ class User < ActiveRecord::Base
     super and self.active?
   end
 
+  def mark_notifications_as_read(ids)
+    notifications.by_ids(ids).mark_as_read!
+  end
+
   def allow_email_notifications?
     return true if self.deactivated_at.nil?
 

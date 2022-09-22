@@ -10,12 +10,18 @@ class NotificationsController < ApplicationController
 
   def set_notifications_read
     if params[:ids].present?
-      current_user.notifications.by_ids(params[:ids]).mark_as_read!
-      render json: { success: true }, status: 200
+      current_user.mark_notifications_as_read(notification_params[:ids])
+      render json: { success: true }, status: :ok
     else
-      render json: { success: false, error: 'The :ids parameter must have at minimum a valid numeric value' }, status: 400
+      render json: { success: false, error: I18n.t("application_controller.controllers.notification.messages.error").capitalize }, status: :forbidden
     end
   rescue => e
-    render json: { success: false, error: e.message }, status: 400
+    render json: { success: false, error: e.message }, status: :not_found
+  end
+
+  private
+
+  def notification_params
+    params.permit(ids: [])
   end
 end

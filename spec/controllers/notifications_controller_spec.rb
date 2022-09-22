@@ -44,7 +44,6 @@ RSpec.describe NotificationsController, type: :controller do
         expect(response_body['data'].count).to eq(notifications_lists.count - 1)
       end
     end
-
   end
 
   describe 'PUT #set_notifications_read' do
@@ -70,7 +69,7 @@ RSpec.describe NotificationsController, type: :controller do
         put :set_notifications_read, params: { ids:[] }
         response_body = JSON.parse(response.body)
 
-        expect(response.status).to eq(400)
+        expect(response.status).to eq(403)
         expect(response_body['success']).to eq(false)
         expect(response_body['error']).to eq('The :ids parameter must have at minimum a valid numeric value')
       end
