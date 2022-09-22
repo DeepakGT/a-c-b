@@ -26,7 +26,11 @@ class ClinicsController < ApplicationController
   end
 
   def destroy
-    @clinic&.destroy
+    unless current_user.role_name == 'super_admin'
+      @clinic&.errors&.add(:clinic, "You are not authorized to destroy the location.")
+    else
+      @clinic&.clients&.present? || @clinic&.staff&.present? ? @clinic&.errors&.add(:clinic, "cannot be removed since it has clients and staffs associated with it.") : @clinic&.destroy
+    end
   end
 
   private
