@@ -99,7 +99,6 @@ RSpec.describe MetaDataController, type: :controller do
   
           expect(response.status).to eq(200)
           expect(response_body['status']).to eq('success')
-          # expect(response_body['data'].count).to eq(2)
         end 
       end
     end
@@ -120,5 +119,73 @@ RSpec.describe MetaDataController, type: :controller do
       end 
     end
   end
+
+  describe "GET #select_payor_types" do
+    context "when the response is successful " do
+      let!(:payor_types){ FundingSource.transform_payor_types }
+
+      it "should get the selectable options from the payer successfully" do
+
+        get :select_payor_types
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data']['payor_types']).to eq(payor_types)
+      end
+    end
+  end
   
+  describe "GET #services_and_funding_sources_list" do
+    context "when sign in" do
+      context "and is_early_code is selected" do
+        let!(:funding_sources_list){create_list(:funding_source, 5, network_status: 'non_billable')}
+        let!(:services_list){create_list(:service, 3, is_early_code: false)}
+        it "should display non-early services and non billable funding sources list successfully" do
+          set_auth_headers(auth_headers)
+
+          get :services_and_funding_sources_list, params: {is_early_code: true}
+          response_body = JSON.parse(response.body)
+
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data']['funding_sources'].count).to eq(funding_sources_list.count)
+          expect(response_body['data']['non_early_services'].count).to eq(services_list.count)
+        end
+      end
+
+      context "and is_early_code is not selected and rendering_provider_required is selected" do
+        let!(:funding_sources_list){create_list(:funding_source, 5, network_status: 'in_network')}
+        it "should display billable funding sources list successfully" do
+          set_auth_headers(auth_headers)
+
+          get :services_and_funding_sources_list, params: {is_early_code: false}
+          response_body = JSON.parse(response.body)
+
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data']['funding_sources'].count).to eq(funding_sources_list.count)
+          expect(response_body['data']['non_early_services']).to eq(nil)
+        end
+      end
+
+      context "and client_id is present" do
+        let!(:clinic) { create(:clinic) }
+        let!(:client) { create(:client) }
+        let!(:funding_source1){ create(:funding_source, clinic_id: clinic.id, network_status: 'non_billable') }
+        let!(:funding_source2){ create(:funding_source, clinic_id: clinic.id, network_status: 'non_billable') }
+        let!(:client_enrollment) { create(:client_enrollment, client_id: client.id, source_of_payment: 'insurance', funding_source_id: funding_source1.id) }
+        it "should display non billable funding sources that have no client enrollment created" do
+          set_auth_headers(auth_headers)
+
+          get :services_and_funding_sources_list, params: {is_early_code: true, client_id: client.id}
+          response_body = JSON.parse(response.body)
+
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data']['funding_sources'].count).to eq(1)
+        end
+      end
+    end
+  end
 end

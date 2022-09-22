@@ -38,4 +38,16 @@ namespace :scheduling do
       end
     end
   end
+
+  desc "Update appointment_office_id in schedulings"
+  task update_appointment_office: :environment do
+    Scheduling.where(appointment_office_id: nil).each do |schedule|
+      if schedule.client_enrollment_service&.present?
+        schedule.appointment_office_id = schedule&.client_enrollment_service&.client_enrollment&.client&.clinic_id
+      else
+        schedule.appointment_office_id = schedule&.staff&.staff_clinics&.home_clinic&.first&.clinic_id
+      end
+      schedule.save(validate: false)
+    end
+  end
 end

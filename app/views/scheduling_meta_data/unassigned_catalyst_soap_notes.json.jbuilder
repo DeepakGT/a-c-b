@@ -1,21 +1,6 @@
 json.status 'success'
 json.data do
   json.array! @unassigned_notes do |unassigned_note|
-    staff = Staff.where(catalyst_user_id: unassigned_note.catalyst_user_id)
-    if staff.count==1
-      staff = staff.first
-    elsif staff.count>1
-      staff = staff.find_by(status: 'active')
-    end
-    json.id unassigned_note.id
-    json.note unassigned_note.note
-    json.catalyst_soap_note_id unassigned_note.catalyst_soap_note_id
-    json.date unassigned_note.date
-    json.start_time unassigned_note.start_time
-    json.end_time unassigned_note.end_time
-    json.units unassigned_note.units
-    json.minutes unassigned_note.minutes
-    json.date_revision_made unassigned_note.date_revision_made
-    json.creator "#{staff&.first_name} #{staff&.last_name}"
+    json.partial! 'catalyst/catalyst_data_detail', catalyst_data: unassigned_note
   end
 end
