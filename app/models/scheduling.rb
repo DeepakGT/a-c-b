@@ -214,8 +214,8 @@ class Scheduling < ApplicationRecord
 
   def recipients
     recipients = [staff]
-    recipients << Staff.find_by(id: creator_id)
-    recipients << Staff.active.joins(:role,:clinics).where('clinics.id': staff.home_clinic, 'roles.name': ['executive_director']).to_ary
+    recipients << Staff.creator(creator_id)
+    recipients << Staff.active.joins(:role, :clinics).where('clinics.id': staff.staff_clinics.home_clinic.first[:clinic_id], 'roles.name': [Constant.roles['ed']]).to_ary
     recipients.flatten
   end
 
@@ -284,9 +284,9 @@ class Scheduling < ApplicationRecord
   end
 
   def validate_draft_appointments
-    user = User.find_by(id: creator_id)
-    return if !draft? || user.role_name == Constant.roles['super_admin'] || user.role_name == Constant.roles['ccc'] || user.role_name == Constant.roles['cd']
+    user = User.creator(creator_id)
+    return true if draft? && (user.role_name == Constant.roles['super_admin'] || user.role_name == Constant.roles['ccc'] || user.role_name == Constant.roles['cd'])
 
-    errors.add(:draft, 'appointments can only be created by client care coordinator or clinical director.')
+    errors.add(:draft, I18n.t('.activerecord.models.scheduling.validate_draft'))
   end
 end
