@@ -17,7 +17,7 @@ RSpec.describe NotificationsController, type: :controller do
     let!(:notifications_lists) { create_list(:notification, 3, recipient: user, type: 'UserNotification') }
 
     context 'when sign in' do
-      it 'it returns all notifications in ascending order' do
+      it 'returns all notifications in ascending order' do
         set_auth_headers(auth_headers)
 
         get :index
@@ -28,13 +28,11 @@ RSpec.describe NotificationsController, type: :controller do
         expect(response_body['data'].count).to eq(notifications_lists.count)
       end
     end
-  end
-
-  describe 'GET #index' do
-    let!(:notifications_lists) { create_list(:notification, 11, recipient: user, type: 'UserNotification') }
 
     context 'when the data limit is 10' do
-      it 'it returns only the last 10 notifications' do
+      let!(:notifications_lists) { create_list(:notification, 11, recipient: user, type: 'UserNotification') }
+
+      it 'returns only the last 10 notifications' do
         set_auth_headers(auth_headers)
 
         get :index, params: { page: 1, per_page: 10 }
@@ -46,13 +44,14 @@ RSpec.describe NotificationsController, type: :controller do
         expect(response_body['data'].count).to eq(notifications_lists.count - 1)
       end
     end
+
   end
 
   describe 'PUT #set_notifications_read' do
     let!(:notifications_lists) { create_list(:notification, 5, recipient: user, type: 'UserNotification') }
 
     context 'when the parameter ids has values' do
-      it 'it updates the read_at field' do
+      it 'updates the read_at field' do
         set_auth_headers(auth_headers)
 
         put :set_notifications_read, params: { ids:[notifications_lists.first.id] }
@@ -65,7 +64,7 @@ RSpec.describe NotificationsController, type: :controller do
     end
 
     context 'when ids parameter is empty' do
-      it 'it returns error message' do
+      it 'returns error message' do
         set_auth_headers(auth_headers)
 
         put :set_notifications_read, params: { ids:[] }
