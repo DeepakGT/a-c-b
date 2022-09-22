@@ -8,7 +8,6 @@ json.terminated_on staff&.terminated_on
 json.title staff&.role_name
 json.job_type staff&.job_type
 json.gender staff&.gender
-json.deactive_at staff&.deactive_at
 json.npi staff.npi
 
 json.organization_id staff.staff_clinics.home_clinic.first.clinic&.organization_id
