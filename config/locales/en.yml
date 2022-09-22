@@ -32,6 +32,13 @@
 en:
   activerecord:
     models:
+      scheduling:
+        errors:
+          range: 'total of unit count exceed the amount of authorized units.'
+          units_blank: 'units field may not be blank or empty'
+          limit_autorization: 'exceeds authorization units'
+          any_appointment: 'appointment scheduled, try another date.'
+          limit_recurrence: 'limit of appointments reached'
     attributes:
       funding_source:
         payor_types:
