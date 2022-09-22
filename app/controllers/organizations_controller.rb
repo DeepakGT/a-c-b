@@ -13,11 +13,9 @@ class OrganizationsController < ApplicationController
   end
 
   def create
-    # TODO: change to id autoincrement in database
     @organization = Organization.new(organization_params)
-    @organization&.id = Organization.ids.max+1
-    @organization&.admin_id = current_user.id
-    @organization&.save
+    @organization.admin_id = current_user.id
+    @organization.save
   end
 
   def update
@@ -36,7 +34,6 @@ class OrganizationsController < ApplicationController
   private
 
   def organization_params
-    # TODO: need change to strong params
     params.permit(:name, :aka, :web, :email, :status, address_attributes: 
     %i[line1 line2 line3 zipcode city state country addressable_type addressable_id],
     phone_number_attributes: %i[phone_type number], id_regions: [])
@@ -49,6 +46,4 @@ class OrganizationsController < ApplicationController
   def authorize_user
     authorize Organization if current_user.role_name!='super_admin'
   end
-  # end of private
-
 end

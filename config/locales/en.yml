@@ -38,7 +38,12 @@ en:
           commercial: commercial
           medicaid: medicaid
           medicare: medicare
-          third_party_contract: third Party Contract
+          third_party_contract: third party contract
+      client:
+        gender:
+          male: male
+          female: female
+          no_binary: no binary
 
 
   devise_token_auth:

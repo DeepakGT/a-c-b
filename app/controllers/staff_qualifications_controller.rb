@@ -5,7 +5,7 @@ class StaffQualificationsController < ApplicationController
   before_action :set_staff_qualification, only: %i[show update destroy]
 
   def index
-    @qualifications = @staff&.qualifications&.order(:created_at)
+    @qualifications = @staff&.staff_qualifications&.order(:created_at)
   end
 
   def create

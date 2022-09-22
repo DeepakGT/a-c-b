@@ -19,7 +19,7 @@ class Client < ApplicationRecord
   accepts_nested_attributes_for :phone_number, update_only: true
 
   enum status: {active: 0, inactive: 1}
-  enum gender: {male: 'M', female: 'F'}
+  enum gender: {male: 'male', female: 'female', no_binary: 'no_binary'}
   enum preferred_language: {english: 0, spanish: 1}
   enum dq_reason: { lost_contact: 0, not_clinically_appropriate: 1, insurance_denial: 2, no_longer_interested: 3, 
                     competitor: 4, not_ready_to_move_forward: 5, other: 6}
@@ -76,4 +76,11 @@ class Client < ApplicationRecord
     client_service_address = self.addresses.by_service_address&.order(:created_at)
     client_service_address.first.update(is_default: true) if client_service_address.present? && client_service_address.where(is_default: true).blank?
   end
+
+  def self.transform_gender
+    genders.map do |type, _|
+      {'value' => type, 'title'=> I18n.t("activerecord.attributes.client.gender.#{type}").capitalize }
+    end
+  end
+
 end
