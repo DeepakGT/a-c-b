@@ -17,6 +17,19 @@ json.caregiver_sign soap_note.signature_file&.blob&.service_url
 json.caregiver_sign_date soap_note.caregiver_signature_datetime
 json.creator_id user&.id
 json.creator "#{user&.first_name} #{user&.last_name}"
+json.create_date soap_note.created_at
+if current_user.role_name == 'super_admin' || current_user.role_name == 'bcba'  || current_user.role_name == 'system_administrator' || current_user.role_name == 'rbt'
+  json.note_audits do
+    json.array! soap_note.audits.reorder('id DESC') do |audit|
+      auditor = User.find_by(id: audit.user_id) if audit.user_type=='User'
+      json.audited_changes audit.audited_changes
+      json.last_modified_by "#{auditor&.first_name} #{auditor&.last_name}"
+      json.last_modified_date audit.created_at
+      json.action audit.action
+    end  
+  end
+end
+
 json.synced_with_catalyst soap_note.synced_with_catalyst
 if soap_note.synced_with_catalyst.to_bool.true?
   json.caregiver_sign_present soap_note.caregiver_signature

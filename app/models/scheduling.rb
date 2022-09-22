@@ -3,6 +3,7 @@ DATE_RANGE_QUERY = 'date < ? OR (date = ? AND end_time < ?)'.freeze
 
 class Scheduling < ApplicationRecord
   audited only: %i[start_time end_time units date status], on: :update
+  has_associated_audits
 
   belongs_to :staff, optional: true
   belongs_to :client_enrollment_service, optional: true

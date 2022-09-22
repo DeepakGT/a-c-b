@@ -1,5 +1,6 @@
 class SoapNote < ApplicationRecord
   attr_accessor :caregiver_sign, :user
+  audited associated_with: :scheduling
 
   belongs_to :scheduling, optional: true
   has_one_attached :signature_file
