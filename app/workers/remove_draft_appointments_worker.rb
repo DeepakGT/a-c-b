@@ -6,10 +6,10 @@ class RemoveDraftAppointmentsWorker
                                         
   def perform
     puts "#{DateTime.current}"
-    puts "RemoveDraftAppointmentsWorker is started"
+    puts 'RemoveDraftAppointmentsWorker is started'
     remove_draft_appointments_worker
-    puts "RemoveDraftAppointmentsWorker is completed"
-    puts ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"               
+    puts 'RemoveDraftAppointmentsWorker is completed'
+    puts '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>'               
   end
 
   private
