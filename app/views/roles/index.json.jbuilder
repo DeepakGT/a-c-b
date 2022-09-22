@@ -1,13 +1,7 @@
 json.status 'success'
 json.data do
   json.array! @roles do |role|
-    json.id role.id
-    json.name role.name
-    json.permissions role.permissions
+    json.partial! 'role_detail', role: role
   end
 end
-if params[:page].present?
-  json.total_records @roles.total_entries
-  json.limit @roles.per_page
-  json.page params[:page]
-end
+json.partial! '/pagination_detail', list: @roles, page_number: params[:page]

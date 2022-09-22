@@ -5,39 +5,43 @@ class ClinicsController < ApplicationController
 
   def index
     @clinics = Clinic.all
-    @clinics = @clinics.by_org_id(params[:organization_id]) if params[:organization_id].present?
-    @clinics = @clinics.order(:name)
-    @clinics = @clinics.paginate(page: params[:page]) if params[:page].present?
+    @clinics = @clinics&.by_org_id(params[:organization_id]) if params[:organization_id].present?
+    @clinics = @clinics&.order(:name)
+    @clinics = @clinics&.paginate(page: params[:page]) if params[:page].present?
   end
 
   def create
+    # TODO: change to id autoincrement in database
     @clinic = Clinic.new(clinic_params)
-    @clinic.id = Clinic.ids.max+1 if Clinic.ids.present?
-    @clinic.save
+    @clinic&.id = Clinic.ids.max+1 if Clinic.ids.present?
+    @clinic&.save
   end
 
-  def show; end
+  def show
+    @clinic
+  end
 
   def update
-    @clinic.update(clinic_params)
+    @clinic&.update(clinic_params)
   end
 
   def destroy
     unless current_user.role_name == 'super_admin'
-      @clinic.errors.add(:clinic, "You are not authorized to destroy the location.")
+      @clinic&.errors&.add(:clinic, "You are not authorized to destroy the location.")
     else
-      @clinic.clients.present? || @clinic.staff.present? ? @clinic.errors.add(:clinic, "cannot be removed since it has clients and staffs associated with it.") : @clinic.destroy
+      @clinic&.clients&.present? || @clinic&.staff&.present? ? @clinic&.errors&.add(:clinic, "cannot be removed since it has clients and staffs associated with it.") : @clinic&.destroy
     end
   end
 
   private
 
   def set_clinic
-    @clinic = Clinic.find(params[:id])
+    @clinic = Clinic.find(params[:id]) rescue nil
   end
 
   def clinic_params
-    params.permit(:name, :organization_id, :aka, :web, :email, :status, address_attributes: 
+    # TODO: change to strong params
+    params.permit(:name, :organization_id, :aka, :web, :email, :status, :region_id, address_attributes: 
     %i[line1 line2 line3 zipcode city state country addressable_type addressable_id],
     phone_number_attributes: %i[phone_type number])
   end

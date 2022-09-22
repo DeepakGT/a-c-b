@@ -5,13 +5,13 @@ if ENV['CLOUD_PLATFORM']!='heroku'
     module GetStaffRosterDataService
       class << self
         def call(db)
-          staff_rosters = get_staff_roster_data(db)
+          get_staff_roster_data(db)
         end
 
         private
 
         def get_staff_roster_data(db)
-          staff_rosters = db.fetch("SELECT * FROM PUBLIC.STAFF_ROSTER;").entries
+          db.fetch("SELECT * FROM PUBLIC.STAFF_ROSTER;").entries
         end
       end
     end
