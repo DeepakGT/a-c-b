@@ -34,11 +34,11 @@ en:
     models:
       scheduling:
         errors:
-          range: Range of recurrences exceeds one authorization
-          units_blank: Units may not be blank or empty
-          limit_autorization: Over pass authorization units
-          any_appointment: 'An appointment is already scheduled, try again to reschedule it'
-          limit_recurrence: 'Limit reached, try again'
+          range: 'Total of unit count exceed the amount of authorized units.'
+          units_blank: 'Units field may not be blank or empty'
+          limit_autorization: 'Exceeds authorization units'
+          any_appointment: 'Appointment scheduled, try another date.'
+          limit_recurrence: 'Limit of appointments reached'
     attributes:
       funding_source:
         payor_types:
