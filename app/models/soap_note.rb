@@ -11,6 +11,7 @@ class SoapNote < ApplicationRecord
   validate :validate_signatures
 
   scope :by_client, ->(client_id){ where(client_id: client_id) }
+  scope :by_ids, ->(ids){ where(id: ids) }
 
   private
 

@@ -58,6 +58,9 @@ gem 'sidekiq'
 gem 'sidekiq-cron'
 gem 'sidekiq-failures'
 
+# gem for pdf generation
+gem 'wkhtmltopdf-binary'
+gem 'wicked_pdf'
 
 # for tempate mailing
 gem 'bootstrap-email', '~> 1.0'

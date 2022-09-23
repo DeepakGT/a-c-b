@@ -561,7 +561,8 @@ paths:
                     "clinic_name": "clinic1",
                     "status": "active",
                     "phone": null,
-                    "phone_numbers": []
+                    "phone_numbers": [],
+                    "deactivated_at": null
                   },
                   {
                     "id": 15,
@@ -578,6 +579,7 @@ paths:
                     "supervisor_id": 3,
                     "immediate_supervisor": "Harland O'Connell",
                     "phone": "9876543212",
+                    "deactivated_at": "Fri, 23 Sep 2024 07:23:03 EST -04:00",
                     "phone_numbers": [
                       {
                         "id": 19,
@@ -634,6 +636,7 @@ paths:
                   "gender": "male",
                   "job_type": "full_time",
                   "supervisor_id": 1,
+                  "deactivated_at": "Fri, 23 Sep 2024 07:23:03 EST -04:00",
                   "phone_numbers": [
                     {
                       "id": 13,
@@ -714,6 +717,7 @@ paths:
                   "clinic_name": "clinic1",
                   "supervisor_id": 3,
                   "immediate_supervisor": "Harland O'Connell",
+                  "deactivated_at": "Fri, 23 Sep 2024 07:23:03 EST -04:00",
                   "phone_numbers": [
                     {
                       "id": 7,
@@ -8202,6 +8206,87 @@ paths:
                 }
               }
 
+  /api/users/{user_id}/email_notifications:
+    put:
+      summary: enable/disable email notifications for user 
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "user_id"
+        description: "User Id"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/UpdateUserEmailNotificationsParameters"
+      responses:
+        "200":
+          description: "enable/disable email notifications for user"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id":1777,
+                  "first_name":"Ms.",
+                  "last_name":"Osvaldo",
+                  "email":"super_admin_user@yopmail.com",
+                  "status":"active",
+                  "title": "rbt",
+                  "gender": "male",
+                  "deactivated_at": null,
+                  "is_email_notification_allowed": true,
+                  "default_schedule_view": "list"
+                }
+              }
+
+  /api/clients/{client_id}/soap_notes_pdf:
+    get:
+      summary: get pdf for soap notes for specific client 
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "Client Id"
+        required: true
+      - in: "query"
+        name: "soap_notes_ids"
+        schema:
+          type: "string"
+        description: "Soap notes ids array to include in pdf & empty array if all soap notes must be present"
+        required: true
+      responses:
+        "200":
+          description: "get pdf for soap notes for specific client "
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "message": "Pdf generation is in progress. Please check your email after sometime."
+              }
 
 definitions:
   UserRegistrationParameters:
@@ -8462,6 +8547,8 @@ definitions:
       job_type:
         type: "string" 
         enum: ["full_time", "part_time"]
+      deactivated_at:
+        type: "string"
       phone_numbers_attributes:
         type: "object"
         properties:
@@ -8525,6 +8612,8 @@ definitions:
       job_type:
         type: "string" 
         enum: ["full_time", "part_time"]
+      deactivated_at:
+        type: "string"
       phone_numbers_attributes:
         type: "object"
         properties:
@@ -9215,4 +9304,10 @@ definitions:
       status: 
         type: "string"
       terminated_on: 
+        type: "string"
+
+  UpdateUserEmailNotificationsParameters:
+    type: "object"
+    properties:
+      deactivated_at:
         type: "string"

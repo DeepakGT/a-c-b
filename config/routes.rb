@@ -53,6 +53,7 @@ Rails.application.routes.draw do
       get '/soap_notes/:id', to: 'client_meta_data#soap_note_detail'
       resources :service_addresses, controller: 'client_service_addresses'
       post '/create_office_address', to: 'client_service_addresses#create_office_address'
+      get '/soap_notes_pdf', to: 'clients#soap_notes_pdf'
       post '/create_early_auths', to: 'client_enrollment_services#create_early_auths'
       put '/replace_early_auth', to: 'client_enrollment_services#replace_early_auth'
       get '/past_appointments', to: 'clients#past_appointments'

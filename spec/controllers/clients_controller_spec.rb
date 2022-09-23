@@ -426,6 +426,22 @@ RSpec.describe ClientsController, type: :controller do
     end
   end
 
+  describe "GET #soap_notes_pdf" do
+    context "when sign in" do
+      let(:client) { create(:client, clinic_id: clinic.id)}
+      it "should add generate pdf job to enqueue" do
+        set_auth_headers(auth_headers)
+
+        get :soap_notes_pdf, params: {client_id: client.id, soap_notes_ids: []}
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['message']).to eq('Pdf generation is in progress. Please check your email after sometime.')
+      end
+    end
+  end
+
   describe "GET #past_appointments" do
     context "when sign in" do
       let!(:client) { create(:client, clinic_id: clinic.id)}
