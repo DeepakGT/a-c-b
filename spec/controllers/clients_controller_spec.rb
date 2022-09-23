@@ -134,17 +134,10 @@ RSpec.describe ClientsController, type: :controller do
 
       context "when search_value is present" do
         let!(:staff) { create(:staff, :with_role, role_name: 'bcba', first_name: 'test', last_name: 'staff') }
-<<<<<<< HEAD
         let!(:clients) { create_list(:client, 4, clinic_id: clinic.id, gender: 1, primary_bcba_id: staff.id)}
         let!(:client1) {create(:client, clinic_id: clinic.id, first_name: 'test', gender: 0, payor_status: 'self_pay', primary_bcba_id: nil)}
         let!(:client2) {create(:client, clinic_id: clinic.id, last_name: 'test', gender: 0, payor_status: 'self_pay', primary_bcba_id: nil)}
         let!(:client3) {create(:client, clinic_id: clinic.id, first_name: 'test', last_name: 'client', gender: 0, primary_bcba_id: nil)}
-=======
-        let!(:clients) { create_list(:client, 4, clinic_id: clinic.id, gender: 'female', bcba_id: staff.id)}
-        let!(:client1) {create(:client, clinic_id: clinic.id, first_name: 'test', gender: "male", payor_status: 'self_pay', bcba_id: nil)}
-        let!(:client2) {create(:client, clinic_id: clinic.id, last_name: 'test', gender: "male", payor_status: 'self_pay', bcba_id: nil)}
-        let!(:client3) {create(:client, clinic_id: clinic.id, first_name: 'test', last_name: 'client', gender: 'female', bcba_id: nil)}
->>>>>>> ca49f892c09b400835e67fb54e0cf7534bd6df89
         let!(:funding_source) {create(:funding_source, clinic_id: clinic.id)}
         let!(:client_enrollment1) {create(:client_enrollment, terminated_on: Time.current.to_date+2, funding_source_id: funding_source.id, is_primary: true, client_id: client1.id)}
         let!(:client_enrollment2) {create(:client_enrollment, funding_source_id: funding_source.id, is_primary: false, client_id: client2.id)}
