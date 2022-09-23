@@ -2,12 +2,6 @@ json.status 'success'
 json.data do
   json.array! @staff do |staff|
     json.partial! 'staff_detail', staff: staff
-    if staff_clinic.present?
-      json.organization_id staff_clinic.clinic&.organization_id
-      json.organization_name staff_clinic.clinic&.organization_name
-      json.clinic_id staff_clinic.clinic_id
-      json.clinic_name staff_clinic.clinic&.name
-    end
   end
 end
 json.show_inactive params[:show_inactive] if (params[:show_inactive] == 1 || params[:show_inactive] == "1")
