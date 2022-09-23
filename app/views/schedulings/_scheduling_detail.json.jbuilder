@@ -6,6 +6,7 @@ json.cross_site_allowed schedule.cross_site_allowed
 json.client_id client&.id
 json.client_name "#{client.first_name} #{client.last_name}" if client.present?
 json.service_address_id schedule.service_address_id
+json.allow_soap_notes_from_connect schedule.client_enrollment_service.service.allow_soap_notes_from_connect
 service_address = Address.find_by(id: schedule.service_address_id)
 if service_address.present?
   json.service_address do
