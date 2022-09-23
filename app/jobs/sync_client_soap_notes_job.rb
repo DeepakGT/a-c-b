@@ -1,3 +1,5 @@
+DATE_FORMAT = "%m-%d-%Y".freeze
+
 class SyncClientSoapNotesJob < ApplicationJob
   queue_as :default
 
@@ -5,13 +7,12 @@ class SyncClientSoapNotesJob < ApplicationJob
     puts "#{DateTime.current}"
     puts "SyncClientSoapNotesJob is started"
     puts "Syncing Catalyst SOAP notes from 01 Feb 2022 to #{Date.current.to_date}"
-    from = Date.strptime("02-01-2022", "%m-%d-%Y").to_date
+    from = Date.strptime("07-01-2022", DATE_FORMAT).to_date
     to = Date.current.end_of_month
     while from < to
       begin
         puts "Syncing from #{from} - #{(from + 1.months).end_of_month}"
-        sync_data(from.strftime('%m-%d-%Y'), to.strftime('%m-%d-%Y'))
-        # sync_data((Time.current.to_date-60.days).strftime('%m-%d-%Y'), (Time.current.to_date).strftime('%m-%d-%Y'))
+        sync_data(from.strftime(DATE_FORMAT), to.strftime(DATE_FORMAT))
       rescue
         puts "Error thrown for #{from} - #{(from + 1.months).end_of_month}"
         next
@@ -24,10 +25,7 @@ class SyncClientSoapNotesJob < ApplicationJob
   end
 
   def sync_data(start_date, end_date)
-    response_data_array = Catalyst::SyncDataOperation.call(start_date, end_date)
-    result = Catalyst::RenderAppointmentsOperation.call
-    # ClientEnrollmentService.all.each do |client_enrollment_service|
-    #   ClientEnrollmentServices::UpdateUnitsColumnsOperation.call(client_enrollment_service)
-    # end
+    Catalyst::SyncDataOperation.call(start_date, end_date)
+    Catalyst::RenderAppointmentsOperation.call
   end
 end

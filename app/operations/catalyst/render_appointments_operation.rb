@@ -20,20 +20,24 @@ module Catalyst
                 schedule.unrendered_reason = []
                 schedule.save(validate: false)
               end
-              if !schedule.unrendered_reason.include?('units_does_not_match') && !schedule.unrendered_reason.include?('multiple_soap_notes_found') && !schedule.unrendered_reason.include?('multiple_soap_notes_of_different_locations_found') && !schedule.unrendered_reason.include?('split_appointments')
-                RenderAppointments::RenderScheduleOperation.call(schedule.id)
-                if schedule.rendered_at.present?
-                  Loggers::Catalyst::SyncSoapNotesLoggerService.call(schedule.id, "Schedule has been rendered successfully.")
-                else
-                  Loggers::Catalyst::SyncSoapNotesLoggerService.call(schedule.id, "Unrendered reason - #{schedule.unrendered_reason}")
-                end
-              else
-                Loggers::Catalyst::SyncSoapNotesLoggerService.call(schedule.id, "Unrendered reason - #{schedule.unrendered_reason}")
-              end
+              render_schedule schedule
             end
           end
         else
           Loggers::Catalyst::SyncSoapNotesLoggerService.call(nil, "Zero schedules found to render.")
+        end
+      end
+
+      def render_schedule(schedule)
+        if !schedule.unrendered_reason.include?('units_does_not_match') && !schedule.unrendered_reason.include?('multiple_soap_notes_found') && !schedule.unrendered_reason.include?('multiple_soap_notes_of_different_locations_found') && !schedule.unrendered_reason.include?('split_appointments')
+          RenderAppointments::RenderScheduleOperation.call(schedule.id)
+          if schedule.rendered_at.present?
+            Loggers::Catalyst::SyncSoapNotesLoggerService.call(schedule.id, "Schedule has been rendered successfully.")
+          else
+            Loggers::Catalyst::SyncSoapNotesLoggerService.call(schedule.id, "Unrendered reason - #{schedule.unrendered_reason}")
+          end
+        else
+          Loggers::Catalyst::SyncSoapNotesLoggerService.call(schedule.id, "Unrendered reason - #{schedule.unrendered_reason}")
         end
       end
     end

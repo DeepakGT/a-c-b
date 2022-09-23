@@ -7,9 +7,12 @@ json.status staff&.status
 json.hired_at staff&.hired_at
 json.terminated_on staff&.terminated_on
 json.title staff&.role_name
+json.role staff&.role_name
 json.job_type staff&.job_type
 json.gender staff&.gender
 json.deactivated_at staff&.deactivated_at
+json.legacy_number staff.legacy_number
+json.npi staff.npi
 if staff_clinic.present?
   json.organization_id staff_clinic.clinic&.organization_id
   json.organization_name staff_clinic.clinic&.organization_name

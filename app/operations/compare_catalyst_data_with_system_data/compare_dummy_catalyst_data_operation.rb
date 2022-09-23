@@ -2,7 +2,7 @@ module CompareCatalystDataWithSystemData
   module CompareDummyCatalystDataOperation
     class << self
       def call
-        response_data_array = compare_dummy_catalyst_data
+        compare_dummy_catalyst_data
       end
 
       private

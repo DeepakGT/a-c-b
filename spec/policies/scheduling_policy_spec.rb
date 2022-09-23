@@ -37,6 +37,26 @@ RSpec.describe SchedulingPolicy, type: :policy do
     end
   end
 
+  permissions :range_recurrences? do
+    it "denies access if permission is not included" do
+      expect(subject).not_to permit(user1)
+    end
+
+    it "grants access if permission is included" do
+      expect(subject).to permit(user2)
+    end
+  end
+
+  permissions :pattern_recurrences? do
+    it "denies access if permission is not included" do
+      expect(subject).not_to permit(user1)
+    end
+
+    it "grants access if permission is included" do
+      expect(subject).to permit(user2)
+    end
+  end
+
   permissions :update? do
     it "denies access if permission is not included" do
       expect(subject).not_to permit(user1)

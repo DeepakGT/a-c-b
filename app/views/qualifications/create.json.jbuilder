@@ -4,10 +4,6 @@ if @qualification.errors.any?
 else
   json.status 'success'
   json.data do
-    json.id @qualification.id
-    json.type @qualification.credential_type
-    json.name @qualification.name
-    json.description @qualification.description
-    json.lifetime @qualification.lifetime
+    json.partial! 'qualification_detail', qualification: @qualification
   end
 end

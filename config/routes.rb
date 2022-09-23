@@ -25,7 +25,11 @@ Rails.application.routes.draw do
       registrations: 'overrides/registrations'
     }
 
+    resources :regions, only: [:index ]
     resources :organizations
+    resources :attachment_categories
+
+    get '/regions_organizations/:id', to: 'organizations#regions_organizations'
     
     resources :clinics do
       resources :funding_sources
@@ -42,12 +46,16 @@ Rails.application.routes.draw do
       resources :notes, controller: 'client_notes'
       resources :attachments, controller: 'client_attachments'
       get '/meta_data', to: 'client_meta_data#selectable_options'
+      get '/funding_sources_list', to: 'client_meta_data#funding_sources_list'
       get '/service_providers_list', to: 'client_meta_data#service_providers_list'
       get '/client_data', to: 'client_meta_data#client_data'
       get '/soap_notes', to: 'client_meta_data#soap_notes'
       get '/soap_notes/:id', to: 'client_meta_data#soap_note_detail'
       resources :service_addresses, controller: 'client_service_addresses'
       post '/create_office_address', to: 'client_service_addresses#create_office_address'
+      post '/create_early_auths', to: 'client_enrollment_services#create_early_auths'
+      put '/replace_early_auth', to: 'client_enrollment_services#replace_early_auth'
+      get '/past_appointments', to: 'clients#past_appointments'
     end
     
     resources :credentials, controller: 'qualifications' do
@@ -56,10 +64,15 @@ Rails.application.routes.draw do
 
     resources :services
 
-    resources :roles 
+    resources :roles
+
+    resources :meta_data do
+      get '/selectable_options', to: 'meta_data#selectable_options', on: :collection
+      get '/select_payor_types', to: 'meta_data#select_payor_types', on: :collection
+      get '/gender_list', to: 'meta_data#gender_list', on: :collection
+    end
 
     put '/availity/update_claim_statuses', to: 'availity#update_claim_statuses'
-    get 'meta_data/selectable_options'
     get '/supervisor_list', to: 'staff#supervisor_list'
     get '/addresses/country_list', to: 'addresses#country_list'
     get '/roles_list', to: 'roles#roles_list'
@@ -70,6 +83,7 @@ Rails.application.routes.draw do
     get '/clinics_list',to: 'meta_data#clinics_list'
     get '/bcba_list',to: 'meta_data#bcba_list'
     get '/rbt_list',to: 'meta_data#rbt_list'
+    get '/services_and_funding_sources_list', to: 'meta_data#services_and_funding_sources_list'
     get '/rbt_appointments', to: 'scheduling_meta_data#rbt_appointments'
     get '/bcba_appointments', to: 'scheduling_meta_data#bcba_appointments'
     get '/executive_director_appointments', to: 'scheduling_meta_data#executive_director_appointments'
@@ -89,9 +103,13 @@ Rails.application.routes.draw do
     post '/schedulings/create_split_appointment', to: 'schedulings#create_split_appointment'
     get '/catalyst/:catalyst_data_id/matching_appointments_list', to: 'catalyst#matching_appointments_list'
     resources :schedulings do
-      post '/create_without_staff', to: 'schedulings#create_without_staff', on: :collection
-      post '/create_without_client', to: 'schedulings#create_without_client', on: :collection
-      put '/update_without_client/:id', to: 'schedulings#update_without_client', on: :collection
+      collection do
+        post '/create_without_staff', to: 'schedulings#create_without_staff'
+        post '/range_recurrences', to: 'schedulings#range_recurrences'
+        post '/pattern_recurrences', to: 'schedulings#pattern_recurrences'
+        post '/create_without_client', to: 'schedulings#create_without_client'
+        put '/update_without_client/:id', to: 'schedulings#update_without_client'
+      end
       resources :soap_notes
       resources :change_requests, controller: 'scheduling_change_requests', only: %i[create update]
     end
@@ -102,5 +120,10 @@ Rails.application.routes.draw do
 
     get '/setting', to: 'settings#show'
     put '/setting', to: 'settings#update'
+
+    get '/super_admins_list', to: 'users#super_admins_list'
+    post '/create_super_admin', to: 'users#create_super_admin'
+    get '/super_admin_detail/:id', to: 'users#super_admin_detail'
+    put '/update_super_admin/:id', to: 'users#update_super_admin'
   end
 end
