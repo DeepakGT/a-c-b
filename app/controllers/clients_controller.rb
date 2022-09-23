@@ -44,7 +44,7 @@ class ClientsController < ApplicationController
 
   def client_params
     params.permit(:first_name, :last_name, :status, :gender, :email, :dob, :clinic_id, :payor_status, :preferred_language, 
-                  :disqualified, :dq_reason, :bcba_id, :tracking_id, addresses_attributes: 
+                  :disqualified, :dq_reason, :primary_bcba_id, :secondary_bcba_id, :primary_rbt_id, :secondary_rbt_id, :tracking_id, addresses_attributes: 
                   %i[id line1 line2 line3 zipcode city state country address_type addressable_type addressable_id],
                   phone_number_attributes: %i[phone_type number])
   end

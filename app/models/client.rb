@@ -28,16 +28,16 @@ class Client < ApplicationRecord
   validates :dq_reason, absence: true, if: ->{ !self.disqualified? }
 
   scope :by_clinic, ->(clinic_id){ where(clinic_id: clinic_id) }
-  scope :by_bcbas, ->(bcba_ids) { where(bcba_id: bcba_ids) }
+  scope :by_bcbas, ->(bcba_ids) { where(primary_bcba_id: bcba_ids).or(where(secondary_bcba_id: bcba_ids)) }
   scope :by_staff_id_in_scheduling, ->(staff_id){ joins(client_enrollments: {client_enrollment_services: :schedulings}).where('schedulings.staff_id = ?', staff_id) }
   scope :with_no_authorizations, ->{ left_outer_joins(client_enrollments: :client_enrollment_services).select('clients.*').group('clients.id').having('count(client_enrollment_services.*) = ?',0) }
   scope :active, ->{ where(status: 'active') }
   scope :inactive, ->{ where(status: 'inactive') }
   scope :by_first_name, ->(fname){ where("first_name ILIKE '%#{fname}%'") }
   scope :by_last_name, ->(lname){ where("last_name ILIKE '%#{lname}%'") }
-  scope :by_bcba_full_name, ->(fname,lname){ where(bcba_id: User.by_roles(CLINIC_ROLES).by_first_name(fname).by_last_name(lname)&.ids) }
-  scope :by_bcba_first_name, ->(fname){ where(bcba_id: User.by_roles(CLINIC_ROLES).by_first_name(fname)&.ids) }
-  scope :by_bcba_last_name, ->(fname){ where(bcba_id: User.by_roles(CLINIC_ROLES).by_last_name(fname).ids) }
+  scope :by_bcba_full_name, ->(fname,lname){ where(primary_bcba_id: User.by_roles(['bcba', 'Clinical Director']).by_first_name(fname).by_last_name(lname)&.ids).or(where(secondary_bcba_id: User.by_roles(['bcba', 'Clinical Director']).by_first_name(fname).by_last_name(lname)&.ids)) }
+  scope :by_bcba_first_name, ->(fname){ where(primary_bcba_id: User.by_roles(['bcba', 'Clinical Director']).by_first_name(fname)&.ids).or(where(secondary_bcba_id: User.by_roles(['bcba', 'Clinical Director']).by_first_name(fname)&.ids)) }
+  scope :by_bcba_last_name, ->(fname){ where(primary_bcba_id: User.by_roles(['bcba', 'Clinical Director']).by_last_name(lname)&.ids).or(where(secondary_bcba_id: User.by_roles(['bcba', 'Clinical Director']).by_last_name(lname)&.ids)) }
   scope :by_gender, ->(gender_value){ where(gender: Client.genders[gender_value] || -1) }
   scope :by_payor_status, ->(payor_status_value){ where("payor_status ILIKE '%#{payor_status_value}%'") }
   scope :by_payor, ->(payor_name){ left_outer_joins(client_enrollments: :funding_source).where("client_enrollments.is_primary = ?", true).where("client_enrollments.terminated_on >= ? OR terminated_on IS NULL", Time.current.strftime('%Y-%m-%d')).where("funding_sources.name ILIKE '%#{payor_name}%'") }
