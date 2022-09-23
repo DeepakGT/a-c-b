@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+  </head>
+  <body>
+    <p>Hello <%= "#{@user&.first_name} #{@user&.last_name}" %>,</p>
+    <p>The soap notes pdf of client <%= "#{@client.first_name} #{@client.last_name}" %> has been attached to the email.</p>
+    <p>Please find attachment.</p>
+    <p>Have a great day ahead!</p>
+  </body>
+</html>

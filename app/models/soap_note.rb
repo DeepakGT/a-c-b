@@ -1,5 +1,6 @@
 class SoapNote < ApplicationRecord
   attr_accessor :caregiver_sign, :user
+  audited associated_with: :scheduling
 
   belongs_to :scheduling, optional: true
   has_one_attached :signature_file
@@ -10,6 +11,7 @@ class SoapNote < ApplicationRecord
   validate :validate_signatures
 
   scope :by_client, ->(client_id){ where(client_id: client_id) }
+  scope :by_ids, ->(ids){ where(id: ids) }
 
   private
 

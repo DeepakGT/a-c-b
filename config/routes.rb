@@ -53,6 +53,7 @@ Rails.application.routes.draw do
       get '/soap_notes/:id', to: 'client_meta_data#soap_note_detail'
       resources :service_addresses, controller: 'client_service_addresses'
       post '/create_office_address', to: 'client_service_addresses#create_office_address'
+      get '/soap_notes_pdf', to: 'clients#soap_notes_pdf'
       post '/create_early_auths', to: 'client_enrollment_services#create_early_auths'
       put '/replace_early_auth', to: 'client_enrollment_services#replace_early_auth'
       get '/past_appointments', to: 'clients#past_appointments'
@@ -69,6 +70,7 @@ Rails.application.routes.draw do
     resources :meta_data do
       get '/selectable_options', to: 'meta_data#selectable_options', on: :collection
       get '/select_payor_types', to: 'meta_data#select_payor_types', on: :collection
+      get '/gender_list', to: 'meta_data#gender_list', on: :collection
     end
 
     put '/availity/update_claim_statuses', to: 'availity#update_claim_statuses'
@@ -115,6 +117,7 @@ Rails.application.routes.draw do
 
     get '/current_user_detail', to: 'users#current_user_detail'
     put '/update_default_schedule_view', to: 'users#update_default_schedule_view'
+    put '/users/:user_id/email_notifications', to: 'users#email_notifications'
 
     get '/setting', to: 'settings#show'
     put '/setting', to: 'settings#update'

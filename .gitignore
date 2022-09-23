@@ -36,11 +36,13 @@
 /bitbucket-pipelines.yml
 
 # Credential
-/config/credentials/staging.key
-/config/credentials/production.key
+config/credentials/*
 
 # Schema
 db/schema.rb
 
 # Gemfile.lock
 Gemfile.lock
+
+# Database configuration
+config/database.yml
