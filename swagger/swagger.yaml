@@ -2086,69 +2086,105 @@ paths:
                 "status": "success",
                 "data": [
                   {
-                    "id": 9,
+                    "id": 1863,
                     "first_name": "Test",
-                    "last_name": "Client7",
-                    "email": "client7@yopmail.com",
+                    "last_name": "Bteaulieu",
                     "clinic_id": 1,
-                    "clinic_name": "clinic1",
-                    "bcba_id": 4,
-                    "bcba_name": "The Hon.",
-                    "email": "testc7@gmail.com",
-                    "dob": "2012-12-12",
+                    "clinic_name": "Bedford, NH",
+                    "email": "",
+                    "dob": "2016-01-22",
                     "gender": "male",
                     "status": "active",
-                    "preferred_language": "english",
-                    "disqualified": true,
-                    "disqualified_reason": "lost_contact"
-                  },
-                  {
-                    "id": 10,
-                    "first_name": "Test",
-                    "last_name": "Client1",
-                    "email": "client1@yopmail.com",
-                    "clinic_id": 1,
-                    "clinic_name": "clinic1",
-                    "bcba_id": 4,
-                    "bcba_name": "The Hon.",
-                    "email": "testc1@gmail.com",
-                    "dob": "2012-12-12",
-                    "gender": "male",
-                    "status": "active",
+                    "primary_bcba_id": 4397,
+                    "secondary_bcba_id": null,
+                    "primary_rbt_id": null,
+                    "secondary_rbt_id": null,
+                    "primary_bcba_name": "Cassandra Test",
+                    "secondary_bcba_name": " ",
+                    "primary_rbt_name": " ",
+                    "secondary_rbt_name": " ",
+                    "tracking_id": "0065e000009Pyw7AAC",
                     "preferred_language": "english",
                     "disqualified": false,
+                    "payor_status": "",
                     "addresses": [
                       {
-                        "id": 3,
-                        "type": "insurance_address",
-                        "line1": "Orbit Mall",
+                        "id": 8684,
+                        "type": "service_address",
+                        "line1": "80 Palomino Lane",
                         "line2": null,
                         "line3": null,
-                        "zipcode": null,
-                        "city": "Delhi",
-                        "state": null,
-                        "country": null
+                        "zipcode": "03110",
+                        "city": "Bedford",
+                        "state": "NH",
+                        "country": "United States of America",
+                        "is_default": false,
+                        "is_hidden": false
                       },
                       {
-                        "id": 4,
+                        "id": 6934,
                         "type": "service_address",
-                        "line1": "C21 Mall",
+                        "line1": null,
                         "line2": null,
                         "line3": null,
-                        "zipcode": null,
-                        "city": "Delhi",
+                        "zipcode": "03873",
+                        "city": "Sandown",
                         "state": null,
-                        "country": null
+                        "country": null,
+                        "is_default": true,
+                        "is_hidden": false
+                      },
+                      {
+                        "id": 7190,
+                        "type": "insurance_address",
+                        "line1": "95 Eagle Ridge Road",
+                        "line2": null,
+                        "line3": null,
+                        "zipcode": "03873",
+                        "city": "Sandown",
+                        "state": "NH",
+                        "country": "United States of America"
                       }
                     ],
                     "phone_number": {
-                      "id": 3,
-                      "phone_type": "home",
-                      "number": "9988998899"
+                      "id": 1364,
+                      "phone_type": "mobile",
+                      "number": ""
+                    },
+                    "payor": "BCBS MA",
+                    "contact": {
+                      "id": 47,
+                      "first_name": "Test",
+                      "last_name": "Bteaulieu",
+                      "email": "bteaulieujm@protonmail.com",
+                      "client_id": 1863,
+                      "type": "parent_or_guardian",
+                      "relation": "mother",
+                      "legal_guardian": false,
+                      "guarantor": true,
+                      "parent_portal_access": false,
+                      "resides_with_client": true,
+                      "address": {
+                        "id": 7191,
+                        "line1": "95 Eagle Ridge Road",
+                        "line2": null,
+                        "line3": null,
+                        "zipcode": "03873",
+                        "city": "Sandown",
+                        "state": "NH",
+                        "country": "United States of America"
+                      },
+                      "phone_numbers": [
+                        {
+                          "id": 1365,
+                          "phone_type": "mobile",
+                          "number": "(339) 234-1190"
+                        }
+                      ]
                     }
                   }
                 ],
-                "total_records": 2,
+                "total_records": 1,
                 "limit": 30,
                 "page": 1
               }
@@ -2180,56 +2216,103 @@ paths:
               example: {
                 "status": "success",
                 "data": {
-                  "id": 10,
+                  "id": 1863,
                   "first_name": "Test",
-                  "last_name": "Client1",
-                  "bcba_id": 4,
-                  "bcba_name": "The Hon.",
-                  "email": "testc1@gmail.com",
-                  "dob": "2012-12-12",
+                  "last_name": "Bteaulieu",
+                  "clinic_id": 1,
+                  "clinic_name": "Bedford, NH",
+                  "email": "",
+                  "dob": "2016-01-22",
                   "gender": "male",
                   "status": "active",
+                  "primary_bcba_id": 4397,
+                  "secondary_bcba_id": null,
+                  "primary_rbt_id": null,
+                  "secondary_rbt_id": null,
+                  "primary_bcba_name": "Cassandra Test",
+                  "secondary_bcba_name": " ",
+                  "primary_rbt_name": " ",
+                  "secondary_rbt_name": " ",
+                  "tracking_id": "0065e000009Pyw7AAC",
+                  "preferred_language": "english",
                   "disqualified": false,
-                  "note": {
-                      "id": 3,
-                      "note": "some-note",
-                      "attachments": [
-                          {
-                            "url": "http://localhost:3000/rails/active_storage/disk/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdDVG9JYTJWNVNTSWhlV1Z2WlcwM2JqTTVOM1J3YXpZMGFETndORzB6YjNoeGF6SnRlQVk2QmtWVU9oQmthWE53YjNOcGRHbHZia2tpUFdsdWJHbHVaVHNnWm1sc1pXNWhiV1U5SW1sdFlXZGxMbXB3WnlJN0lHWnBiR1Z1WVcxbEtqMVZWRVl0T0NjbmFXMWhaMlV1YW5CbkJqc0dWRG9SWTI5dWRHVnVkRjkwZVhCbElnNXBiV0ZuWlM5bmFXWTZFWE5sY25acFkyVmZibUZ0WlRvS2JHOWpZV3c9IiwiZXhwIjoiMjAyMi0wMi0wOVQxMjo1Mjo0Mi4wMjlaIiwicHVyIjoiYmxvYl9rZXkifX0=--6385c3c5fd07b6ace7dd18074439bd7a8ad5122f/image.jpg"
-                          }
-                      ]
-                  },
+                  "payor_status": "",
                   "addresses": [
                     {
-                      "id": 3,
-                      "type": "insurance_address",
-                      "line1": "Orbit Mall",
+                      "id": 8684,
+                      "type": "service_address",
+                      "line1": "80 Palomino Lane",
                       "line2": null,
                       "line3": null,
-                      "zipcode": null,
-                      "city": "Delhi",
-                      "state": null,
-                      "country": null
+                      "zipcode": "03110",
+                      "city": "Bedford",
+                      "state": "NH",
+                      "country": "United States of America",
+                      "is_default": false,
+                      "is_hidden": false
                     },
                     {
-                      "id": 4,
+                      "id": 6934,
                       "type": "service_address",
-                      "line1": "C21 Mall",
+                      "line1": null,
                       "line2": null,
                       "line3": null,
-                      "zipcode": null,
-                      "city": "Delhi",
+                      "zipcode": "03873",
+                      "city": "Sandown",
                       "state": null,
-                      "country": null
+                      "country": null,
+                      "is_default": true,
+                      "is_hidden": false
+                    },
+                    {
+                      "id": 7190,
+                      "type": "insurance_address",
+                      "line1": "95 Eagle Ridge Road",
+                      "line2": null,
+                      "line3": null,
+                      "zipcode": "03873",
+                      "city": "Sandown",
+                      "state": "NH",
+                      "country": "United States of America"
                     }
                   ],
                   "phone_number": {
-                    "id": 3,
-                    "phone_type": "home",
-                    "number": "9988998899"
+                    "id": 1364,
+                    "phone_type": "mobile",
+                    "number": ""
+                  },
+                  "payor": "BCBS MA",
+                  "contact": {
+                    "id": 47,
+                    "first_name": "JTest",
+                    "last_name": "Bteaulieu",
+                    "email": "bteaulieujm@protonmail.com",
+                    "client_id": 1863,
+                    "type": "parent_or_guardian",
+                    "relation": "mother",
+                    "legal_guardian": false,
+                    "guarantor": true,
+                    "parent_portal_access": false,
+                    "resides_with_client": true,
+                    "address": {
+                      "id": 7191,
+                      "line1": "95 Eagle Ridge Road",
+                      "line2": null,
+                      "line3": null,
+                      "zipcode": "03873",
+                      "city": "Sandown",
+                      "state": "NH",
+                      "country": "United States of America"
+                    },
+                    "phone_numbers": [
+                      {
+                        "id": 1365,
+                        "phone_type": "mobile",
+                        "number": "(339) 234-1190"
+                      }
+                    ]
                   }
-                },
-                "errors": []
+                }
               }
   
   /api/clients/{id}:
@@ -2256,75 +2339,107 @@ paths:
         "200":
           description: "Client detail"
           content:
-            application/json:
-              example: {
-                "status": "success",
-                "data": {
-                  "id": 27,
-                  "first_name": "Test",
-                  "last_name": "Client5",
-                  "email": "client5@yopmail.com",
-                  "clinic_id": 1,
-                  "clinic_name": "clinic1",
-                  "bcba_id": 4,
-                  "bcba_name": "The Hon.",
-                  "contact": {
-                    "id": 2,
-                    "first_name": "test",
-                    "last_name": "contact",
-                    "email": "testct4@yopmail.com",
-                    "client_id": 27,
-                    "type": "parent_or_guardian",
-                    "relation": "mother",
-                    "legal_guardian": true,
-                    "guarantor": false,
-                    "parent_portal_access": false,
-                    "resides_with_client": false,
-                    "phone_numbers": [
-                      {
-                        "id": 3,
-                        "phone_type": "work",
-                        "number": "9988771123"
-                      }
-                    ]
+            example: {
+              "status": "success",
+              "data": {
+                "id": 1863,
+                "first_name": "Test",
+                "last_name": "TBeaulieu",
+                "clinic_id": 1,
+                "clinic_name": "Bedford, NH",
+                "email": "",
+                "dob": "2016-01-22",
+                "gender": "male",
+                "status": "active",
+                "primary_bcba_id": 4397,
+                "secondary_bcba_id": null,
+                "primary_rbt_id": null,
+                "secondary_rbt_id": null,
+                "primary_bcba_name": "Cassandra Test",
+                "secondary_bcba_name": " ",
+                "primary_rbt_name": " ",
+                "secondary_rbt_name": " ",
+                "tracking_id": "0065e000009Pyw7AAC",
+                "preferred_language": "english",
+                "disqualified": false,
+                "payor_status": "",
+                "addresses": [
+                  {
+                    "id": 8684,
+                    "type": "service_address",
+                    "line1": "80 Palomino Lane",
+                    "line2": null,
+                    "line3": null,
+                    "zipcode": "03110",
+                    "city": "Bedford",
+                    "state": "NH",
+                    "country": "United States of America",
+                    "is_default": false,
+                    "is_hidden": false
                   },
-                  "email": "testc5@gmail.com",
-                  "dob": "2012-12-12",
-                  "gender": "male",
-                  "status": "active",
-                  "preferred_language": "english",
-                  "disqualified": false,
-                  "addresses": [
-                    {
-                      "id": 14,
-                      "type": "insurance_address",
-                      "line1": "C21 Mall",
-                      "line2": null,
-                      "line3": null,
-                      "zipcode": null,
-                      "city": "Delhi",
-                      "state": null,
-                      "country": null
-                    },
-                    {
-                      "id": 13,
-                      "type": "service_address",
-                      "line1": "Orbit Mall",
-                      "line2": null,
-                      "line3": null,
-                      "zipcode": null,
-                      "city": "Delhi",
-                      "state": null,
-                      "country": null
-                    }
-                  ],
-                  "phone_number": {
-                    "id": 1,
-                    "phone_type": "home",
-                    "number": "9988998888"
+                  {
+                    "id": 6934,
+                    "type": "service_address",
+                    "line1": null,
+                    "line2": null,
+                    "line3": null,
+                    "zipcode": "03873",
+                    "city": "Sandown",
+                    "state": null,
+                    "country": null,
+                    "is_default": true,
+                    "is_hidden": false
+                  },
+                  {
+                    "id": 7190,
+                    "type": "insurance_address",
+                    "line1": "95 Eagle Ridge Road",
+                    "line2": null,
+                    "line3": null,
+                    "zipcode": "03873",
+                    "city": "Sandown",
+                    "state": "NH",
+                    "country": "United States of America"
                   }
+                ],
+                "phone_number": {
+                  "id": 1364,
+                  "phone_type": "mobile",
+                  "number": ""
+                },
+                "payor": "BCBS MA",
+                "contact": {
+                  "id": 47,
+                  "first_name": "Test",
+                  "last_name": "TBeaulieu",
+                  "email": "tbeaulieujm@protonmail.com",
+                  "client_id": 1863,
+                  "type": "parent_or_guardian",
+                  "relation": "mother",
+                  "legal_guardian": false,
+                  "guarantor": true,
+                  "parent_portal_access": false,
+                  "resides_with_client": true,
+                  "address": {
+                    "id": 7191,
+                    "line1": "95 Eagle Ridge Road",
+                    "line2": null,
+                    "line3": null,
+                    "zipcode": "03873",
+                    "city": "Sandown",
+                    "state": "NH",
+                    "country": "United States of America"
+                  },
+                  "phone_numbers": [
+                    {
+                      "id": 1365,
+                      "phone_type": "mobile",
+                      "number": "(339) 234-1190"
+                    }
+                  ]
                 }
               }
+            }
     put:
       summary: Client update by Admin
       parameters:
@@ -2357,56 +2472,103 @@ paths:
               example: {
                 "status": "success",
                 "data": {
-                  "id": 10,
+                  "id": 1863,
                   "first_name": "Test",
-                  "last_name": "Client1",
-                  "bcba_id": 4,
-                  "bcba_name": "The Hon.",
-                  "email": "testc1@gmail.com",
-                  "dob": "2012-12-12",
+                  "last_name": "TBeaulieu",
+                  "clinic_id": 1,
+                  "clinic_name": "Bedford, NH",
+                  "email": "",
+                  "dob": "2016-01-22",
                   "gender": "male",
                   "status": "active",
+                  "primary_bcba_id": 4397,
+                  "secondary_bcba_id": null,
+                  "primary_rbt_id": null,
+                  "secondary_rbt_id": null,
+                  "primary_bcba_name": "Cassandra Test",
+                  "secondary_bcba_name": " ",
+                  "primary_rbt_name": " ",
+                  "secondary_rbt_name": " ",
+                  "tracking_id": "0065e000009Pyw7AAC",
+                  "preferred_language": "english",
                   "disqualified": false,
-                  "note": {
-                    "id": 3,
-                    "note": "some-note",
-                    "attachments": [
-                        {
-                          "url": "http://localhost:3000/rails/active_storage/disk/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdDVG9JYTJWNVNTSWhlV1Z2WlcwM2JqTTVOM1J3YXpZMGFETndORzB6YjNoeGF6SnRlQVk2QmtWVU9oQmthWE53YjNOcGRHbHZia2tpUFdsdWJHbHVaVHNnWm1sc1pXNWhiV1U5SW1sdFlXZGxMbXB3WnlJN0lHWnBiR1Z1WVcxbEtqMVZWRVl0T0NjbmFXMWhaMlV1YW5CbkJqc0dWRG9SWTI5dWRHVnVkRjkwZVhCbElnNXBiV0ZuWlM5bmFXWTZFWE5sY25acFkyVmZibUZ0WlRvS2JHOWpZV3c9IiwiZXhwIjoiMjAyMi0wMi0wOVQxMjo1Mjo0Mi4wMjlaIiwicHVyIjoiYmxvYl9rZXkifX0=--6385c3c5fd07b6ace7dd18074439bd7a8ad5122f/image.jpg"
-                        }
-                    ]
-                  },
+                  "payor_status": "",
                   "addresses": [
                     {
-                      "id": 3,
-                      "type": "insurance_address",
-                      "line1": "Princess Business Skypark",
-                      "line2": "Opp.Orbit Mall",
-                      "line3": null,
-                      "zipcode": null,
-                      "city": "Delhi",
-                      "state": null,
-                      "country": null
-                    },
-                    {
-                      "id": 4,
+                      "id": 8684,
                       "type": "service_address",
-                      "line1": "C21 Mall",
+                      "line1": "80 Palomino Lane",
                       "line2": null,
                       "line3": null,
-                      "zipcode": null,
-                      "city": "Delhi",
+                      "zipcode": "03110",
+                      "city": "Bedford",
+                      "state": "NH",
+                      "country": "United States of America",
+                      "is_default": false,
+                      "is_hidden": false
+                    },
+                    {
+                      "id": 6934,
+                      "type": "service_address",
+                      "line1": null,
+                      "line2": null,
+                      "line3": null,
+                      "zipcode": "03873",
+                      "city": "Sandown",
                       "state": null,
-                      "country": null
+                      "country": null,
+                      "is_default": true,
+                      "is_hidden": false
+                    },
+                    {
+                      "id": 7190,
+                      "type": "insurance_address",
+                      "line1": "95 Eagle Ridge Road",
+                      "line2": null,
+                      "line3": null,
+                      "zipcode": "03873",
+                      "city": "Sandown",
+                      "state": "NH",
+                      "country": "United States of America"
                     }
                   ],
                   "phone_number": {
-                    "id": 3,
-                    "phone_type": "home",
-                    "number": "9988998899"
+                    "id": 1364,
+                    "phone_type": "mobile",
+                    "number": ""
+                  },
+                  "payor": "BCBS MA",
+                  "contact": {
+                    "id": 47,
+                    "first_name": "Test",
+                    "last_name": "Beaulieu",
+                    "email": "bteaulieujm@protonmail.com",
+                    "client_id": 1863,
+                    "type": "parent_or_guardian",
+                    "relation": "mother",
+                    "legal_guardian": false,
+                    "guarantor": true,
+                    "parent_portal_access": false,
+                    "resides_with_client": true,
+                    "address": {
+                      "id": 7191,
+                      "line1": "95 Eagle Ridge Road",
+                      "line2": null,
+                      "line3": null,
+                      "zipcode": "03873",
+                      "city": "Sandown",
+                      "state": "NH",
+                      "country": "United States of America"
+                    },
+                    "phone_numbers": [
+                      {
+                        "id": 1365,
+                        "phone_type": "mobile",
+                        "number": "(339) 234-1190"
+                      }
+                    ]
                   }
-                },
-                "errors": []
+                }
               }
     delete:
       summary: Client delete
@@ -2435,21 +2597,101 @@ paths:
               example: {
                 "status": "success",
                 "data": {
-                  "id": 11,
+                  "id": 1863,
                   "first_name": "Test",
-                  "last_name": "Client1",
-                  "bcba_id": 4,
-                  "bcba_name": "The Hon.",
-                  "email": "testc1@gmail.com",
-                  "dob": "2012-12-12",
+                  "last_name": "TBeaulieu",
+                  "clinic_id": 1,
+                  "clinic_name": "Bedford, NH",
+                  "email": "",
+                  "dob": "2016-01-22",
                   "gender": "male",
                   "status": "active",
+                  "primary_bcba_id": 4397,
+                  "secondary_bcba_id": null,
+                  "primary_rbt_id": null,
+                  "secondary_rbt_id": null,
+                  "primary_bcba_name": "Cassandra Test",
+                  "secondary_bcba_name": " ",
+                  "primary_rbt_name": " ",
+                  "secondary_rbt_name": " ",
+                  "tracking_id": "0065e000009Pyw7AAC",
                   "preferred_language": "english",
                   "disqualified": false,
+                  "payor_status": "",
+                  "addresses": [
+                    {
+                      "id": 8684,
+                      "type": "service_address",
+                      "line1": "80 Palomino Lane",
+                      "line2": null,
+                      "line3": null,
+                      "zipcode": "03110",
+                      "city": "Bedford",
+                      "state": "NH",
+                      "country": "United States of America",
+                      "is_default": false,
+                      "is_hidden": false
+                    },
+                    {
+                      "id": 6934,
+                      "type": "service_address",
+                      "line1": null,
+                      "line2": null,
+                      "line3": null,
+                      "zipcode": "03873",
+                      "city": "Sandown",
+                      "state": null,
+                      "country": null,
+                      "is_default": true,
+                      "is_hidden": false
+                    },
+                    {
+                      "id": 7190,
+                      "type": "insurance_address",
+                      "line1": "95 Eagle Ridge Road",
+                      "line2": null,
+                      "line3": null,
+                      "zipcode": "03873",
+                      "city": "Sandown",
+                      "state": "NH",
+                      "country": "United States of America"
+                    }
+                  ],
                   "phone_number": {
-                    "id": 4,
+                    "id": 1364,
                     "phone_type": "mobile",
-                    "number": "9988998888543"
+                    "number": ""
+                  },
+                  "payor": "BCBS MA",
+                  "contact": {
+                    "id": 47,
+                    "first_name": "TEst",
+                    "last_name": "Bteaulieu",
+                    "email": "tbeaulieujm@protonmail.com",
+                    "client_id": 1863,
+                    "type": "parent_or_guardian",
+                    "relation": "mother",
+                    "legal_guardian": false,
+                    "guarantor": true,
+                    "parent_portal_access": false,
+                    "resides_with_client": true,
+                    "address": {
+                      "id": 7191,
+                      "line1": "95 Eagle Ridge Road",
+                      "line2": null,
+                      "line3": null,
+                      "zipcode": "03873",
+                      "city": "Sandown",
+                      "state": "NH",
+                      "country": "United States of America"
+                    },
+                    "phone_numbers": [
+                      {
+                        "id": 1365,
+                        "phone_type": "mobile",
+                        "number": "(339) 234-1190"
+                      }
+                    ]
                   }
                 }
               }
@@ -8353,7 +8595,13 @@ definitions:
         type: "string"
       dob:
         type: "string"
-      bcba_id:
+      primary_bcba_id:
+        type: "integer"
+      secondary_bcba_id:
+        type: "integer"
+      primary_rbt_id:
+        type: "integer"
+      secondary_rbt_id:
         type: "integer"
       phone_number_attributes:
         type: "object"
