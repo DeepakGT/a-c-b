@@ -134,10 +134,17 @@ RSpec.describe ClientsController, type: :controller do
 
       context "when search_value is present" do
         let!(:staff) { create(:staff, :with_role, role_name: 'bcba', first_name: 'test', last_name: 'staff') }
+<<<<<<< HEAD
         let!(:clients) { create_list(:client, 4, clinic_id: clinic.id, gender: 1, primary_bcba_id: staff.id)}
         let!(:client1) {create(:client, clinic_id: clinic.id, first_name: 'test', gender: 0, payor_status: 'self_pay', primary_bcba_id: nil)}
         let!(:client2) {create(:client, clinic_id: clinic.id, last_name: 'test', gender: 0, payor_status: 'self_pay', primary_bcba_id: nil)}
         let!(:client3) {create(:client, clinic_id: clinic.id, first_name: 'test', last_name: 'client', gender: 0, primary_bcba_id: nil)}
+=======
+        let!(:clients) { create_list(:client, 4, clinic_id: clinic.id, gender: 'female', bcba_id: staff.id)}
+        let!(:client1) {create(:client, clinic_id: clinic.id, first_name: 'test', gender: "male", payor_status: 'self_pay', bcba_id: nil)}
+        let!(:client2) {create(:client, clinic_id: clinic.id, last_name: 'test', gender: "male", payor_status: 'self_pay', bcba_id: nil)}
+        let!(:client3) {create(:client, clinic_id: clinic.id, first_name: 'test', last_name: 'client', gender: 'female', bcba_id: nil)}
+>>>>>>> ca49f892c09b400835e67fb54e0cf7534bd6df89
         let!(:funding_source) {create(:funding_source, clinic_id: clinic.id)}
         let!(:client_enrollment1) {create(:client_enrollment, terminated_on: Time.current.to_date+2, funding_source_id: funding_source.id, is_primary: true, client_id: client1.id)}
         let!(:client_enrollment2) {create(:client_enrollment, funding_source_id: funding_source.id, is_primary: false, client_id: client2.id)}
@@ -414,6 +421,72 @@ RSpec.describe ClientsController, type: :controller do
           response_body = JSON.parse(response.body)
           
           expect(response_body['errors']).to include("record not found")
+        end
+      end
+    end
+  end
+
+  describe "GET #past_appointments" do
+    context "when sign in" do
+      let!(:client) { create(:client, clinic_id: clinic.id)}
+      let!(:service1) { create(:service) }
+      let!(:service2) { create(:service) }
+      let!(:funding_source){ create(:funding_source, clinic_id: clinic.id)}
+      let!(:client_enrollment) { create(:client_enrollment, client_id: client.id, source_of_payment: 'insurance', funding_source_id: funding_source.id) }
+      let!(:client_enrollment_service1) { create(:client_enrollment_service, client_enrollment_id: client_enrollment.id, service_id: service1.id) }
+      let!(:client_enrollment_service2) { create(:client_enrollment_service, client_enrollment_id: client_enrollment.id, service_id: service2.id) }
+      let!(:staff1) { create(:staff, :with_role, role_name: 'administrator', first_name: 'abcd') }
+      let!(:staff2) { create(:staff, :with_role, role_name: 'bcba', first_name: 'def') }
+      let!(:scheduling1){ create(:scheduling, staff_id: staff1.id, client_enrollment_service_id: client_enrollment_service1.id, date: '2022-01-01') }
+      let!(:scheduling2){ create(:scheduling, staff_id: staff2.id, client_enrollment_service_id: client_enrollment_service1.id, date: '2022-01-02') }
+      let!(:scheduling3){ create(:scheduling, staff_id: staff2.id, client_enrollment_service_id: client_enrollment_service2.id, date: '2022-01-02') }
+      let!(:past_schedules){ Scheduling.joins(client_enrollment_service: :client_enrollment).by_client_ids(client&.id).completed_scheduling }
+      it "should show client past appointments successfully" do
+        set_auth_headers(auth_headers)
+
+        get :past_appointments, params: {client_id: client.id}
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data'].count).to eq(past_schedules.count)
+      end
+
+      it "should show client past appointments based on page in request params" do
+        set_auth_headers(auth_headers)
+
+        get :past_appointments, params: {client_id: client.id, page: 1}
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data'].count).to eq(past_schedules.count)
+        expect(response_body['total_records']).to eq(past_schedules.count)
+      end
+
+      context "and staff_ids is present in request params" do
+        it "should filter past appointments of clients by staff successfully" do
+          set_auth_headers(auth_headers)
+
+          get :past_appointments, params: {client_id: client.id, staff_ids: [staff2.id]}
+          response_body = JSON.parse(response.body)
+
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data'].count).to eq(2)
+        end
+      end
+
+      context "and service_ids is present in request params" do
+        it "should filter past appointments of clients by service successfully" do
+          set_auth_headers(auth_headers)
+
+          get :past_appointments, params: {client_id: client.id, service_ids: [service2.id]}
+          response_body = JSON.parse(response.body)
+
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data'].count).to eq(1)
         end
       end
     end

@@ -5,7 +5,7 @@ if ENV['CLOUD_PLATFORM']!='heroku'
     module SetDatabaseAndWarehouseService
       class << self
         def call(username, password)
-          db = set_database_and_warehouse(username, password)
+          set_database_and_warehouse(username, password)
         end
 
         private

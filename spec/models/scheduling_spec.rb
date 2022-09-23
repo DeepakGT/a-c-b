@@ -43,16 +43,6 @@ RSpec.describe Scheduling, type: :model do
     it { should validate_presence_of(:start_time) }
     it { should validate_presence_of(:end_time) }
     it { should validate_presence_of(:status) }
-
-    # context "when both units and minutes are absent" do
-    #   subject { build :scheduling } 
-    #   it { should validate_presence_of(:units).with_message('or minutes, any one must be present.') }
-    # end
-
-    # context "when both units and minutes are present" do
-    #   subject { build :scheduling, units: '6', minutes: '300' }
-    #   it { should validate_absence_of(:units).with_message('or minutes, only one must be present.') }
-    # end
   end
 
   # describe "#validate_time" do
@@ -109,6 +99,17 @@ RSpec.describe Scheduling, type: :model do
         scheduling.user = user
         scheduling.validate
         expect(scheduling.errors[:units]).to include('left for authorization are not enough to create this appointment.')
+      end
+    end
+  end
+
+  describe "#validate_draft_appointments" do
+    context "when logged in user is other than ccc, cd or super_admin" do
+      let(:scheduling) { build :scheduling, staff_id: staff.id, client_enrollment_service_id: client_enrollment_service.id, start_time: '16:00', end_time: '17:00', date: Time.current.to_date+6, units: '8', status: 'draft' }
+      it "should not be allowed to create draft appointments" do
+        scheduling.user = user
+        scheduling.validate
+        expect(scheduling.errors[:draft]).to include('appointments can only be created by client care coordinator or clinical director.')
       end
     end
   end
