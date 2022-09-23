@@ -30,7 +30,21 @@
 # available at https://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "Hello world"
+  activerecord:
+    models:
+    attributes:
+      funding_source:
+        payor_types:
+          commercial: commercial
+          medicaid: medicaid
+          medicare: medicare
+          third_party_contract: third party contract
+      client:
+        gender:
+          male: male
+          female: female
+          no_binary: no binary
+
 
   devise_token_auth:
     sessions:

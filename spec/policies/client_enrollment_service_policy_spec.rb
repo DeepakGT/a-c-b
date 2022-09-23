@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe ClientEnrollmentServicePolicy, type: :policy do
   let!(:role1) { create(:role, name: 'executive_director') }
   let!(:user1) { create(:user, :with_role, role_name: role1.name)}
-  let!(:role2) { create(:role, name: 'administrator', permissions: ['client_authorization_view', 'client_authorization_update', 'client_authorization_delete']) }
+  let!(:role2) { create(:role, name: 'administrator', permissions: ['client_authorization_view', 'client_authorization_update', 'client_authorization_delete', 'early_auth_update']) }
   let!(:user2) { create(:user, :with_role, role_name: role2.name)}
   subject { described_class }
 
@@ -48,6 +48,16 @@ RSpec.describe ClientEnrollmentServicePolicy, type: :policy do
   end
 
   permissions :destroy? do
+    it "denies access if permission is not included" do
+      expect(subject).not_to permit(user1)
+    end
+
+    it "grants access if permission is included" do
+      expect(subject).to permit(user2)
+    end
+  end
+
+  permissions :replace_early_auth? do
     it "denies access if permission is not included" do
       expect(subject).not_to permit(user1)
     end

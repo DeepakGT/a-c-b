@@ -1,9 +1,15 @@
 class AttachmentPolicy < ApplicationPolicy
   def index?
-    show? || update? || destroy?
+    return true if permissions.include?('client_files_view') || update? || destroy?
   end
 
   def show?
+    if record.role_permissions.present? && record.role_permissions.include?(user.role_name)
+      return true if permissions.include?('client_files_view')
+    elsif record.role_permissions.present? && !record.role_permissions.include?(user.role_name)
+      return false
+    end
+
     return true if permissions.include?('client_files_view') || update? || destroy?
 
     false

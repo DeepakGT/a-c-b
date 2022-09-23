@@ -1,7 +1,7 @@
 require 'will_paginate/array'
 class ClientsController < ApplicationController
   before_action :authenticate_user!
-  before_action :authorize_user
+  before_action :authorize_user, except: :past_appointments
   before_action :set_client, only: %i[show update destroy]
   before_action :remove_trailing_space, only: %i[create update]
 
@@ -11,24 +11,33 @@ class ClientsController < ApplicationController
     clients = do_filter(clients) if params[:search_value].present?
     clients = filter_by_location(clients)
     @clients = clients&.uniq&.sort_by(&:first_name)
-    @clients = @clients.paginate(page: params[:page]) if params[:page].present?
+    @clients = @clients&.paginate(page: params[:page]) if params[:page].present?
   end
 
-  def show; end
+  def show
+    @client
+  end
 
   def create
     @client = Client.new(client_params)
-    @client.save_with_exception_handler
-    create_office_address_for_client
+    @client&.save_with_exception_handler
+    create_office_address_for_client if !@client.id.nil?
   end
 
   def update
-    @client.update_with_exception_handler(client_params)
+    @client&.update_with_exception_handler(client_params)
   end
 
   def destroy
-    SoapNote.by_client(@client.id).destroy_all
-    @client.destroy
+    SoapNote.by_client(@client&.id)&.destroy_all
+    @client&.destroy
+  end
+
+  def past_appointments
+    @client = Client.find(params[:client_id]) rescue nil
+    @schedules = Scheduling.joins(client_enrollment_service: :client_enrollment).by_client_ids(@client&.id).completed_scheduling
+    @schedules = filter_schedules(@schedules) if params[:staff_ids].present? || params[:service_ids].present?
+    @schedules = @schedules.paginate(page: params[:page]) if params[:page].present?
   end
 
   private
@@ -41,7 +50,7 @@ class ClientsController < ApplicationController
   end
 
   def set_client
-    @client = Client.find(params[:id])
+    @client = Client.find(params[:id]) rescue nil
   end
 
   def authorize_user
@@ -49,8 +58,8 @@ class ClientsController < ApplicationController
   end
 
   def create_office_address_for_client
-    office_address = @client.addresses.new(address_name: 'Office', address_type: 'service_address', is_default: false, is_hidden: false)
-    if @client.clinic.address.present?
+    office_address = @client&.addresses&.new(address_name: 'Office', address_type: 'service_address', is_default: false, is_hidden: false)
+    if @client&.clinic&.address.present?
       office_address.line1 = @client.clinic.address.line1
       office_address.line2 = @client.clinic.address.line2
       office_address.line3 = @client.clinic.address.line3
@@ -59,7 +68,7 @@ class ClientsController < ApplicationController
       office_address.country = @client.clinic.address.country
       office_address.zipcode = @client.clinic.address.zipcode
     end
-    office_address.save
+    office_address&.save
   end
 
   def filter_by_location(clients)
@@ -97,15 +106,9 @@ class ClientsController < ApplicationController
     if params[:search_by].present?
       case params[:search_by]
       when "name"
-        fname, lname = params[:search_value].split(' ')
-        if fname.present? && lname.blank?
-          clients = clients.by_first_name(fname).or(clients.by_last_name(fname))
-        elsif fname.present? && lname.present?
-          clients = clients.by_first_name(fname)
-          clients = clients.by_last_name(lname)
-        else
-          clients = clients.by_first_name(fname) # if fname.present?
-          clients = clients.by_last_name(lname) # if lname.present?
+        names = params[:search_value].split(' ')
+        names.each do |name|
+          clients = clients.by_first_name(name).or(clients.by_last_name(name))
         end
         return clients
       when "gender"
@@ -114,11 +117,9 @@ class ClientsController < ApplicationController
       when "payor_status"
         clients.by_payor_status(params[:search_value]&.downcase)
       when "bcba"
-        fname, lname = params[:search_value].split
-        if lname.present?
-          clients = clients.by_bcba_full_name(fname, lname)
-        else
-          clients = clients.by_bcba_first_name(fname).or(clients.by_bcba_last_name(fname))
+        names = params[:search_value].split
+        names.each do |name|
+          clients = clients.by_bcba_first_name(name).or(clients.by_bcba_last_name(name))
         end
         return clients
       when "payor"
@@ -133,21 +134,15 @@ class ClientsController < ApplicationController
 
   def search_on_all_fields(query, clients)
     query = query&.downcase
-    fname, lname = query.split
-    if lname.present?
+    names = query.split
+    names.each do |name|
       clients = clients.by_payor(query)
-                       .or(clients.by_first_name(fname).by_last_name(lname))
-                       .or(clients.by_gender(query))
-                       .or(clients.by_payor_status(query))
-                       .or(clients.by_bcba_full_name(fname,lname))
-    else
-      clients = clients.by_payor(query)
-                       .or(clients.by_first_name(fname))
-                       .or(clients.by_last_name(fname))
-                       .or(clients.by_payor_status(query))
-                       .or(clients.by_gender(query))
-                       .or(clients.by_bcba_first_name(fname))
-                       .or(clients.by_bcba_last_name(fname))
+                       .or(clients.by_first_name(name))
+                       .or(clients.by_last_name(name))
+                       .or(clients.by_gender(name))
+                       .or(clients.by_payor_status(name))
+                       .or(clients.by_bcba_first_name(name))
+                       .or(clients.by_bcba_last_name(name))
     end
     clients
   end
@@ -156,6 +151,11 @@ class ClientsController < ApplicationController
     params[:first_name].strip! if params[:first_name].present?
     params[:last_name].strip! if params[:last_name].present?
   end
-  # end of private
 
+  def filter_schedules(schedules)
+    schedules = schedules.by_staff_ids(params[:staff_ids]) if params[:staff_ids].present?
+    schedules = schedules.by_service_ids(params[:service_ids]) if params[:service_ids].present?
+    schedules
+  end
+  # end of private
 end

@@ -5,30 +5,32 @@ class ClientEnrollmentsController < ApplicationController
   before_action :set_client_enrollment, only: %i[show update destroy]
 
   def index
-    @client_enrollments = @client.client_enrollments.order(is_primary: :desc)
-    @client_enrollments = @client_enrollments.paginate(page: params[:page]) if params[:page].present?
+    @client_enrollments = @client&.client_enrollments&.order(is_primary: :desc)
+    @client_enrollments = @client_enrollments&.paginate(page: params[:page]) if params[:page].present?
   end
 
   def create
     ActiveRecord::Base.transaction do
-      @client_enrollment = @client.client_enrollments.new(enrollment_params)
+      @client_enrollment = @client&.client_enrollments&.new(enrollment_params)
       # NOTE : reset_primary must be called after initialize, we are overriding is_primary value.
       reset_primary
-      @client_enrollment.save
+      @client_enrollment&.save
     end
   end
 
-  def show; end
+  def show
+    @client_enrollment
+  end
 
   def update
     ActiveRecord::Base.transaction do
       reset_primary
-      @client_enrollment.update(enrollment_params)
+      @client_enrollment&.update(enrollment_params)
     end
   end
 
   def destroy
-    @client_enrollment.destroy
+    @client_enrollment&.destroy
   end
 
   private
@@ -44,18 +46,18 @@ class ClientEnrollmentsController < ApplicationController
   end
 
   def set_client
-    @client = Client.find(params[:client_id])
+    @client = Client.find(params[:client_id]) rescue nil
   end
 
   def set_client_enrollment
-    @client_enrollment = @client.client_enrollments.find(params[:id])
+    @client_enrollment = @client.client_enrollments.find(params[:id]) rescue nil
   end
 
   def reset_primary
     if is_any_other_primary?
-      other_primary_objects.update_all(is_primary: false) if params[:is_primary].to_bool.true?
+      other_primary_objects&.update_all(is_primary: false) if params[:is_primary].to_bool.true?
     else
-      @client_enrollment.is_primary = true
+      @client_enrollment&.is_primary = true
     end
   end
 
@@ -66,8 +68,7 @@ class ClientEnrollmentsController < ApplicationController
   end
 
   def other_primary_objects
-    @client.client_enrollments.except_ids(@client_enrollment.id).where(is_primary: true)
+    @client&.client_enrollments&.except_ids(@client_enrollment.id).where(is_primary: true)
   end
   # end of private
-  
 end

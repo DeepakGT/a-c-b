@@ -5,7 +5,6 @@ RSpec.describe ClientEnrollmentService, type: :model do
     let!(:service) { create(:service, is_service_provider_required: false) }
     subject { create(:client_enrollment_service, service_id: service.id) }
     it { should belong_to(:client_enrollment) } 
-    # it { should belong_to(:service) } 
     it { ClientEnrollmentService.reflect_on_association(:service).macro.should  eq(:belongs_to) }
 
     it { should have_many(:service_providers).class_name('ClientEnrollmentServiceProvider').dependent(:destroy) } 
@@ -38,7 +37,7 @@ RSpec.describe ClientEnrollmentService, type: :model do
 
   describe "#validate_count_of_units" do 
     let!(:client_enrollment_service) { create(:client_enrollment_service,  units: 7) }
-    let!(:scheduling) { create(:scheduling, status: 'scheduled', units: 2, client_enrollment_service_id: client_enrollment_service.id) }
+    let!(:scheduling) { create(:scheduling, status: 'Scheduled', units: 2, client_enrollment_service_id: client_enrollment_service.id) }
     
     it "validate count of units" do
       client_enrollment_service.units = 1

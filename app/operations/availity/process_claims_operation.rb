@@ -71,23 +71,27 @@ module Availity
         config_value = ApplicationConfig.find_by(config_key: provider_mapping_key).config_value rescue nil
         provider_mapping = JSON.parse(config_value) rescue {}
 
-        # get the list of availity payer ids that currently support 276 claim statuses transaction type (active payers)
-        # example:
-        # {
-        #   "39180" => true,
-        #   "AMTAS00428" => true
-        # }
-        config_value = ApplicationConfig.find_by(config_key: ACTIVE_PAYER_KEY).config_value rescue nil
-        active_payers = JSON.parse(config_value) rescue {}
-
         # create log file
         log_path = Rails.root.join(AVAILITY_LOG_PATH)
         Dir.mkdir(log_path) unless Dir.exist?(log_path)
         log = Logger.new("#{log_path}/availity_#{Time.current.strftime('%m-%d-%Y')}.log")
         log.info("****** START CLAIM STATUS UPDATE PROCESS ******")
 
-        # get access token from Availity
+        # get the list of availity payer ids that currently support 276 claim statuses transaction type (active payers)
+        # example:
+        # {
+        #   "39180" => true,
+        #   "AMTAS00428" => true
+        # }
         access_token = Availity::AvailityApiServices.get_access_token
+        active_payers = Availity::AvailityApiServices.get_active_payers(access_token) rescue {}
+        config_rec = ApplicationConfig.find_by(config_key: ACTIVE_PAYER_KEY)
+        if active_payers.present?
+          config_rec&.update!(config_value: active_payers.to_json)
+        else
+          active_payers = JSON.parse(config_rec&.config_value) rescue {}
+        end
+
         retry_claims = []
 
         rows.each do |claim|
@@ -119,24 +123,19 @@ module Availity
           end
 
           if payer_mapping[cmd_payer].present?
-            # additional fields required by Availity API but not in S3 data file
-            provider_seq = claim[PROVIDER_SEQ]
-            parameters = "#{parameters}&providers.lastName=#{provider_mapping[provider_seq]['provider_last_name']}&submitter.lastName=#{provider_mapping[provider_seq]['submitter_last_name']}&submitter.id=#{provider_mapping[provider_seq]['submitter_id']}"
-
-            # get claim status by required parameters
-            url = "#{Availity::AvailityApiServices::AVAILITY_CLAIM_STATUS_URL}?#{parameters}"
-            get_status(claim, access_token, url, retry_claims)
-          end
-
-          if payer_mapping[cmd_payer].present?
             if active_payers[payer_mapping[cmd_payer]['availity_payer_id']] == true
-              # additional fields required by Availity API but not in S3 data file
               provider_seq = claim[PROVIDER_SEQ]
-              parameters = "#{parameters}&providers.lastName=#{provider_mapping[provider_seq]['provider_last_name']}&submitter.lastName=#{provider_mapping[provider_seq]['submitter_last_name']}&submitter.id=#{provider_mapping[provider_seq]['submitter_id']}"
+              if provider_mapping[provider_seq].present?
+                # additional fields required by Availity API but not in S3 data file
+                parameters = "#{parameters}&providers.lastName=#{provider_mapping[provider_seq]['provider_last_name']}&submitter.lastName=#{provider_mapping[provider_seq]['submitter_last_name']}&submitter.id=#{provider_mapping[provider_seq]['submitter_id']}"
 
-              # get claim status by required parameters
-              url = "#{Availity::AvailityApiServices::AVAILITY_CLAIM_STATUS_URL}?#{parameters}"
-              get_status(claim, access_token, url, retry_claims)
+                # get claim status by required parameters
+                url = "#{Availity::AvailityApiServices::AVAILITY_CLAIM_STATUS_URL}?#{parameters}"
+                get_status(claim, access_token, url, retry_claims)
+              else
+                err = "Not found provider info for CollabMD provider sequence #{provider_seq}"
+                claim[AVAILITY_STATUS] = { "error" => err, "details" => err }
+              end
             else
               err = "Availity Payer #{payer_mapping[cmd_payer]['availity_payer_id']} currently not support claim status"
               claim[AVAILITY_STATUS] = { "error" => err, "details" => err }
