@@ -5,21 +5,23 @@ class StaffQualificationsController < ApplicationController
   before_action :set_staff_qualification, only: %i[show update destroy]
 
   def index
-    @qualifications = @staff.qualifications.order(:created_at)
+    @qualifications = @staff&.staff_qualifications&.order(:created_at)
   end
 
   def create
-    @staff_qualification = @staff.staff_qualifications.create(staff_qualification_params)
+    @staff_qualification = @staff&.staff_qualifications&.create(staff_qualification_params)
   end
 
-  def show; end
+  def show
+    @staff_qualification
+  end
 
   def update
-    @staff_qualification.update(staff_qualification_params)
+    @staff_qualification&.update(staff_qualification_params)
   end
 
   def destroy
-    @staff_qualification.destroy
+    @staff_qualification&.destroy
   end
 
   private
@@ -29,16 +31,15 @@ class StaffQualificationsController < ApplicationController
   end
 
   def set_staff
-    @staff = Staff.find(params[:staff_id])
+    @staff = Staff.find(params[:staff_id]) rescue nil
   end
 
   def set_staff_qualification
-    @staff_qualification = @staff.staff_qualifications.find(params[:id])
+    @staff_qualification = @staff&.staff_qualifications&.find(params[:id]) rescue nil
   end
 
   def authorize_user
     authorize StaffQualification if current_user.role_name!='super_admin'
   end
   # end of private
-
 end

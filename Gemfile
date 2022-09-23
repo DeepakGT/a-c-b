@@ -62,6 +62,9 @@ gem 'sidekiq-failures'
 gem 'wkhtmltopdf-binary'
 gem 'wicked_pdf'
 
+# for tempate mailing
+gem 'bootstrap-email', '~> 1.0'
+
 # Rack::Cors provides support for Cross-Origin Resource Sharing (CORS) 
 # for Rack compatible web applications.
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
@@ -69,6 +72,9 @@ gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 gem 'will_paginate', '~> 3.3'
 # to perform job daily
 gem 'whenever', require: false
+
+#for Loads environment variables
+gem 'dotenv-rails', '~> 2.8', '>= 2.8.1'
 
 group :development, :test do
   gem 'bullet'

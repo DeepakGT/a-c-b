@@ -79,6 +79,12 @@ class User < ActiveRecord::Base
     super and self.active?
   end
 
+  def allow_email_notifications?
+    return true if self.deactivated_at.nil?
+
+    false
+  end
+
   private
 
   def assign_role
@@ -91,9 +97,7 @@ class User < ActiveRecord::Base
   end
 
   def validate_status
-    # errors.add(:status, 'For an active user, terminated date must be blank.') if self.active? && self.terminated_on.present?
     errors.add(:status, 'For an inactive user, terminated date must be present.') if (self.type != 'Client' && self.inactive? && self.terminated_on.blank?)
   end
   # end of private
-  
 end

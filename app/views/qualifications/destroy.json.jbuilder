@@ -1,8 +1,5 @@
-json.status 'success'
+json.status @qualification.errors.any? ? 'failure' : 'success'
 json.data do
-  json.id @qualification.id
-  json.type @qualification.credential_type
-  json.name @qualification.name
-  json.description @qualification.description
-  json.lifetime @qualification.lifetime
+  json.partial! 'qualification_detail', qualification: @qualification
 end
+json.errors @qualification.errors.full_messages

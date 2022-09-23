@@ -5,13 +5,13 @@ if ENV['CLOUD_PLATFORM']!='heroku'
     module GetBcbaClientsDataService
       class << self
         def call(db)
-          appointments = get_bcba_clients_data(db)
+          get_bcba_clients_data(db)
         end
 
         private
 
         def get_bcba_clients_data(db)
-          appointments = db.fetch("SELECT * FROM PUBLIC.BCBA_CLIENTS;").entries
+          db.fetch("SELECT * FROM PUBLIC.BCBA_CLIENTS;").entries
         end
       end
     end
