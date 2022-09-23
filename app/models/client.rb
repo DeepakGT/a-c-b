@@ -67,6 +67,10 @@ class Client < ApplicationRecord
     ClientEnrollmentService.by_client(self.id).joins(:service).excluding_early_codes.excluding_97151_service.joins(:client_enrollment).with_funding_sources
   end
 
+  def authorization_includes_97151
+    ClientEnrollmentService.by_client(self.id).joins(:service).including_97151_service.joins(:client_enrollment).with_funding_sources
+  end
+
   def funding_source_ids
     self.early_authorizations.map{|authorization| authorization.client_enrollment.funding_source_id}.uniq.compact
   end

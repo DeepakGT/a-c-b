@@ -36,6 +36,7 @@ class ClientEnrollmentService < ApplicationRecord
   scope :by_unassigned_appointments_allowed, -> { where('services.is_unassigned_appointment_allowed = ?', true)}
   scope :excluding_early_codes, -> { where.not('services.is_early_code': true)}
   scope :excluding_97151_service, -> { where.not('services.display_code': '97151') }
+  scope :including_97151_service, -> { where('services.display_code': '97151') }
   scope :including_early_codes, -> { where('services.is_early_code': true)}
   scope :with_funding_sources, ->{ where.not('client_enrollments.funding_source_id': nil) }
   scope :not_expired_before_30_days, ->{ where.not('end_date <= ?', (Time.current.to_date-30))}
