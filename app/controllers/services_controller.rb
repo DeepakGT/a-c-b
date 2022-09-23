@@ -44,7 +44,7 @@ class ServicesController < ApplicationController
 
   def flag_early_services
     if params[:is_early_code].to_bool.true? && params[:is_service_provider_required].to_bool.true?
-      @service&.errors&.add(:service, "Both is_early_code and is_service_provider_required cannot be set at the same time")
+      @service&.errors&.add(:service, 'Both is_early_code and is_service_provider_required cannot be set at the same time')
     elsif params[:is_service_provider_required].to_bool.true? && params[:is_early_code].to_bool.false?
       @service.is_early_code = false
       @service.is_service_provider_required = true
