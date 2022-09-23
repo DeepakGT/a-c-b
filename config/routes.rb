@@ -116,6 +116,7 @@ Rails.application.routes.draw do
 
     get '/current_user_detail', to: 'users#current_user_detail'
     put '/update_default_schedule_view', to: 'users#update_default_schedule_view'
+    put '/users/:user_id/email_notifications', to: 'users#email_notifications'
 
     get '/setting', to: 'settings#show'
     put '/setting', to: 'settings#update'

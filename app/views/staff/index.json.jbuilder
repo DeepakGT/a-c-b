@@ -9,7 +9,6 @@ json.data do
       json.clinic_id staff_clinic.clinic_id
       json.clinic_name staff_clinic.clinic&.name
     end
-    json.phone staff.phone_numbers.first&.number
   end
 end
 json.show_inactive params[:show_inactive] if (params[:show_inactive] == 1 || params[:show_inactive] == "1")

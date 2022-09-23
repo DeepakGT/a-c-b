@@ -85,4 +85,20 @@ RSpec.describe User, type: :model do
       expect(Organization.where(admin_id: user.id)).not_to eq(nil)  
     end
   end
+
+  describe "#allow_email_notifications?" do
+    context "when user has allowed email notifications" do
+      let!(:user) { create(:user, :with_role, role_name: 'administrator') } 
+      it "should return true" do
+        expect(user.allow_email_notifications?).to eq(true)
+      end
+    end
+
+    context "when user has disallowed email notifications" do
+      let!(:user) { create(:user, :with_role, role_name: 'administrator', deactivated_at: Time.current) } 
+      it "should return false" do
+        expect(user.allow_email_notifications?).to eq(false)
+      end
+    end
+  end
 end

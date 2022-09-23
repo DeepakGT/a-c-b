@@ -79,6 +79,12 @@ class User < ActiveRecord::Base
     super and self.active?
   end
 
+  def allow_email_notifications?
+    return true if self.deactivated_at.nil?
+
+    false
+  end
+
   private
 
   def assign_role
