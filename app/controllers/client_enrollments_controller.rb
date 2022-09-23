@@ -1,7 +1,7 @@
 class ClientEnrollmentsController < ApplicationController
   before_action :authenticate_user!
-  before_action :authorize_user
-  before_action :set_client
+  before_action :authorize_user, except: :get_source_of_payments
+  before_action :set_client, except: :get_source_of_payments
   before_action :set_client_enrollment, only: %i[show update destroy]
 
   def index
