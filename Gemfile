@@ -58,6 +58,9 @@ gem 'sidekiq'
 gem 'sidekiq-cron'
 gem 'sidekiq-failures'
 
+# gem for pdf generation
+gem 'wkhtmltopdf-binary'
+gem 'wicked_pdf'
 
 # for tempate mailing
 gem 'bootstrap-email', '~> 1.0'
@@ -72,6 +75,7 @@ gem 'whenever', require: false
 
 #for Loads environment variables
 gem 'dotenv-rails', '~> 2.8', '>= 2.8.1'
+gem 'noticed'
 
 group :development, :test do
   gem 'bullet'

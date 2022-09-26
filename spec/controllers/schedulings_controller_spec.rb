@@ -11,8 +11,11 @@ RSpec.describe SchedulingsController, type: :controller do
   end
 
   let!(:role) { create(:role, name: 'executive_director', permissions: ['schedule_view', 'schedule_update', 'schedule_delete', 'schedule_update_for_unassigned_staff', 'schedule_update_for_unassigned_client'])}
+  let!(:role_ccc) { create(:role, name: Constant.roles['ccc'], permissions: ['schedule_view', 'schedule_update', 'schedule_delete'])}
   let!(:user) { create(:user, :with_role, role_name: role.name) }
+  let!(:user_ccc) { create(:user, :with_role, role_name: role_ccc.name) }
   let!(:auth_headers) { user.create_new_auth_token }
+  let!(:auth_headers_ccc) { user_ccc.create_new_auth_token }
   let!(:organization) { create(:organization, name: 'org1', admin_id: user.id) }
   let!(:clinic) { create(:clinic, name: 'clinic1', organization_id: organization.id) }
   let!(:client) { create(:client, clinic_id: clinic.id, first_name: 'test') }
@@ -619,6 +622,36 @@ RSpec.describe SchedulingsController, type: :controller do
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
         expect(response_body['data'].count).to eq(Scheduling.count)
+      end
+    end
+  end
+
+  describe "POST #create" do
+    context "when sign in" do
+      it "expect create draft scheduling successfully" do
+        set_auth_headers(auth_headers_ccc)
+        
+        post :create, params: {
+          client_enrollment_service_id: client_enrollment_service.id,
+          staff_id: staff.id,
+          date: Time.current.to_date,
+          start_time: '16:00',
+          end_time: '17:00',
+          status: 'draft',
+          minutes: '288',
+          creator_id: user.id
+        }
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data']['client_enrollment_service_id']).to eq(client_enrollment_service.id)
+        expect(response_body['data']['staff_id']).to eq(staff.id)
+        expect(response_body['data']['date']).to eq(Time.current.to_date.to_s)
+        expect(response_body['data']['start_time'].split[0]).to eq('04:00')
+        expect(response_body['data']['end_time'].split[0]).to eq('05:00')
+        expect(response_body['data']['status']).to eq('draft')
+        expect(response_body['data']['minutes']).to eq(288.0)
       end
     end
   end

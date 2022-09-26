@@ -7,7 +7,7 @@ class SchedulingChangeRequest < ApplicationRecord
   validate :validate_change_request, on: :create
 
   scope :by_approval_status, ->{ where(approval_status: nil) }
-  scope :by_bcba_ids, ->(bcba_ids){ left_outer_joins(scheduling: {client_enrollment_service: {client_enrollment: :client}}).where('clients.bcba_id': bcba_ids) }
+  scope :by_bcba_ids, ->(bcba_ids){ left_outer_joins(scheduling: {client_enrollment_service: {client_enrollment: :client}}).where('clients.primary_bcba_id': bcba_ids).or(where('clients.secondary_bcba_id': bcba_ids)) }
   scope :by_staff_ids, ->(staff_ids){ where('schedulings.staff_id': staff_ids) }
   scope :by_client_ids, ->(client_ids){ joins(scheduling: {client_enrollment_service: :client_enrollment}).where('client_enrollments.client_id': client_ids) }
 

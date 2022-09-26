@@ -44,4 +44,13 @@ class UsersController < ApplicationController
   def update_params
     params.permit(:email, :first_name, :last_name, :dob, :terminated_on, :gender, :hired_at, :password, :password_confirmation, :status)
   end
+
+  def email_notifications
+    @user = User.find(email_notification_params[:user_id]) rescue nil
+    @user.update(deactivated_at: email_notification_params[:deactivated_at])
+  end
+
+  def email_notification_params
+    params.permit(:user_id, :deactivated_at)
+  end
 end

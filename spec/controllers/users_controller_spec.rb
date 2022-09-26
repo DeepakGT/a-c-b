@@ -43,6 +43,24 @@ RSpec.describe UsersController, type: :controller do
   	end
   end
 
+  describe "PUT #email_notifications" do
+    context "when sign in" do
+      let!(:user1) {create(:user, :with_role, role_name: 'super_admin', deactivated_at: nil)}
+      it "should allow email notifications for user" do
+        set_auth_headers(auth_headers)
+
+        put :email_notifications, params: {user_id: user1.id, deactivated_at: Time.current}
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data']['id']).to eq(user1.id)
+        expect(response_body['data']['deactivated_at']).not_to eq(nil)
+        expect(response_body['data']['is_email_notification_allowed']).to eq(false)
+      end
+    end
+  end
+
   describe "GET #super_admins_list" do
     context "when sign in" do
       let!(:user){create(:user, :with_role, role_name: 'system_administrator')}
@@ -113,6 +131,24 @@ RSpec.describe UsersController, type: :controller do
         expect(response_body['data']['id']).to eq(super_admin.id)
         expect(response_body['data']['first_name']).to eq('abcd')
         expect(response_body['data']['terminated_on']).to eq('2052-12-31')
+      end
+    end
+  end
+
+  describe "PUT #email_notifications" do
+    context "when sign in" do
+      let!(:user1) {create(:user, :with_role, role_name: 'super_admin', deactivated_at: nil)}
+      it "should allow email notifications for user" do
+        set_auth_headers(auth_headers)
+
+        put :email_notifications, params: {user_id: user1.id, deactivated_at: Time.current}
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data']['id']).to eq(user1.id)
+        expect(response_body['data']['deactivated_at']).not_to eq(nil)
+        expect(response_body['data']['is_email_notification_allowed']).to eq(false)
       end
     end
   end

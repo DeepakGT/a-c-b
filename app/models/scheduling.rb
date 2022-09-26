@@ -114,7 +114,7 @@ class Scheduling < ApplicationRecord
 
       recurrences = option[:quantity].to_i
       
-     (Constant.zero..recurrences).each do |index|
+      (Constant.zero..recurrences).each do |index|
         break if index == recurrences
 
         calcule_date = option[:recurrence] == Constant.monthly ? date_initial + index.month : date_initial + index.year
@@ -202,7 +202,25 @@ class Scheduling < ApplicationRecord
     StaffMailer.schedule_update(self).deliver
   end
 
+  def notification_draft_appointment
+    params = {
+      message: I18n.t('.notification.draft_appointment.message'),
+      notification_url: "#{ENV["DOMAIN"]}#{ENV["SCHEDULING_PATH"]}#{self.id}",
+      affected_id: self.id,
+      affected: self.class.name
+    }
+    DraftNotification.with(params).deliver(recipients)
+  end
+
+  def recipients
+    recipients = [staff]
+    recipients << Staff.by_creator(creator_id)
+    recipients << Staff.active.joins(:role, :clinics).where('clinics.id': staff.staff_clinics.home_clinic.first[:clinic_id], 'roles.name': [Constant.roles['ed']]).to_ary
+    recipients.flatten
+  end
+
   private
+
   # def validate_time
   #   possible_schedules = Scheduling.where.not(id: self.id)
   #   same_day_schedules = possible_schedules.where(staff_id: self.staff_id, client_enrollment_service_id: self.client_enrollment_service_id, date: self.date)
@@ -266,9 +284,9 @@ class Scheduling < ApplicationRecord
   end
 
   def validate_draft_appointments
-    return if !self.draft? || self.user.role_name=='super_admin' || self.user.role_name=='client_care_coordinator' || self.user.role_name=='Clinical Director'
+    user = User.by_creator(creator_id)
+    return true if draft? && (user.role_name == Constant.roles['super_admin'] || user.role_name == Constant.roles['ccc'] || user.role_name == Constant.roles['cd'])
 
-    errors.add(:draft, 'appointments can only be created by client care coordinator or clinical director.')
+    errors.add(:draft, I18n.t('.activerecord.models.scheduling.validate_draft'))
   end
-  # end of private
 end

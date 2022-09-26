@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe RegionPolicy, type: :policy do
   let!(:role1) { create(:role, name: 'bcba') }
   let!(:user1) { create(:user, :with_role, role_name: role1.name) }
-  let!(:role2) { create(:role, name: Constant.super_admin, permissions: ['regions_view', 'regions_update', 'regions_delete']) }
+  let!(:role2) { create(:role, name: Constant.role['super_admin'], permissions: ['regions_view', 'regions_update', 'regions_delete']) }
   let!(:user2) { create(:user, :with_role, role_name: role2.name) }
   subject { described_class }
 
