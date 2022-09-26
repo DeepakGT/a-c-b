@@ -21,10 +21,15 @@ namespace :service do
       enrollment_services = service.client_enrollment_services
       enrollment_services.each do |enrollment_service|
         client_enrollment = enrollment_service.client_enrollment
-
+        client = client_enrollment.client
         if client_enrollment&.funding_source&.name != 'ABA Centers of America'
-          client_enrollment = ClientEnrollment.find_or_create_by(client_id: client_enrollment.client_id, funding_source_id: funding_source_id, source_of_payment: 'insurance', terminated_on: client_enrollment.terminated_on)
-          enrollment_service.update(client_enrollment_id: client_enrollment.id)
+          if client.client_enrollments.where(funding_source_id: funding_source_id).present?
+            client_enrollment = client.client_enrollments.where(funding_source_id: funding_source_id)&.order(:created_at)&.last
+            client_enrollment.update(terminated_on: enrollment_service.end_date) if client_enrollment.terminated_on < enrollment_service.end_date
+          else
+            client_enrollment = ClientEnrollment.find_or_create_by(client_id: client_enrollment.client_id, funding_source_id: funding_source_id, source_of_payment: 'insurance', terminated_on: client_enrollment.terminated_on)
+          end
+            enrollment_service.update(client_enrollment_id: client_enrollment.id)
         else
           puts "#{client_enrollment&.funding_source&.name} present client #{client_enrollment&.client&.id}"
           enrollment_service.update(client_enrollment_id: client_enrollment.id)
