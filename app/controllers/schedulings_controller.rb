@@ -352,7 +352,7 @@ class SchedulingsController < ApplicationController
   end
 
   def manual_rendering
-    status, rendered_at = @schedule.set_status_and_rendered_at
+    status, rendered_at = @schedule.set_status_and_rendered_at(@schedule)
     @schedule&.update(status: status,rendered_at: rendered_at,is_manual_render: true, rendered_by_id: current_user.id, user: current_user)
   end
 

@@ -201,8 +201,8 @@ class Scheduling < ApplicationRecord
     StaffMailer.schedule_update(self).deliver
   end
 
-  def set_status_and_rendered_at
-    if @schedule&.client_enrollment_service&.service&.is_early_code? 
+  def set_status_and_rendered_at(schedule)
+    if schedule&.client_enrollment_service&.service&.is_early_code? 
       status = 'auth_pending'
       rendered_at = nil
     else
