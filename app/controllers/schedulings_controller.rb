@@ -352,13 +352,7 @@ class SchedulingsController < ApplicationController
   end
 
   def manual_rendering
-    if @schedule&.client_enrollment_service&.service&.is_early_code? 
-      status = 'auth_pending'
-      rendered_at = nil
-    else
-      status = 'rendered'
-      rendered_at = Time.current
-    end
+    status, rendered_at = @schedule.set_status_and_rendered_at
     @schedule&.update(status: status,rendered_at: rendered_at,is_manual_render: true, rendered_by_id: current_user.id, user: current_user)
   end
 
