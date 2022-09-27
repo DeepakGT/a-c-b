@@ -55,13 +55,31 @@ en:
           medicaid: medicaid
           medicare: medicare
           third_party_contract: third party contract
+      scheduling:
+        validate_draft: 'appointments can only be created by client care coordinator or clinical director.'
+        statuses:
+          scheduled: scheduled,
+          rendered: rendered,
+          auth_pending: auth pending,
+          non_billable: non billable,
+          duplicate: duplicate,
+          error: error,
+          client_cancel_greater_than_24_h: client cancel greater than 24 h,
+          client_cancel_less_than_24_h: client cancel less than 24 h,
+          client_no_show: client no show,
+          staff_cancellation: staff_cancellation,
+          staff_cancellation_due_to_illness: staff cancellation due to illness,
+          cancellation_related_to_covid: cancellation related to covid,
+          unavailable: unavailable,
+          inclement_weather_cancellation: inclement weather cancellation,
+          draft: draft
       client:
         gender:
           male: male
           female: female
           no_binary: no binary
-      scheduling:
-        validate_draft: 'appointments can only be created by client care coordinator or clinical director.'
+
+
     
 
 
