@@ -19,6 +19,7 @@ if service_address.present?
     json.is_default service_address.is_default
     json.service_address_type_id service_address.service_address_type_id if service_address.service_address_type_id.present?
     json.service_address_type_name service_address.service_address_type_name if service_address.service_address_type_id.present?
+    json.full_address service_address.full_address
   end
 end
 
