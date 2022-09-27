@@ -67,8 +67,8 @@ en:
           client_cancel_greater_than_24_h: client cancel greater than 24 h
           client_cancel_less_than_24_h: client cancel less than 24 h
           client_no_show: client no show
-          staff_cancellation: staff_cancellation
-          staff_cancellation_due_to_illness: staff cancellation due to illness
+          staff_cancellation: team cancellation
+          staff_cancellation_due_to_illness: team cancellation due to illness
           cancellation_related_to_covid: cancellation related to covid
           unavailable: unavailable
           inclement_weather_cancellation: inclement weather cancellation
