@@ -1,5 +1,5 @@
 json.id schedule.id
-json.status schedule.status
+json.status I18n.t("activerecord.attributes.scheduling.statuses.#{schedule.status}").capitalize
 json.date schedule.date
 json.start_time schedule.start_time&.in_time_zone&.strftime("%I:%M %p")
 json.end_time schedule.end_time&.in_time_zone&.strftime("%I:%M %p")
