@@ -28,7 +28,7 @@ class Scheduling < ApplicationRecord
                  inclement_weather_cancellation: 'inclement_weather_cancellation', draft: 'draft'}
 
   #TODO: uncoment this line after understand why the update method is called three times from the frontend
-  after_update :mail_change_appoitment   
+  #after_update :mail_change_appoitment   
 
   before_save :set_units_and_minutes
 
