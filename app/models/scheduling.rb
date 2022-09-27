@@ -303,10 +303,9 @@ class Scheduling < ApplicationRecord
 
   def self.transform_statuses(action_type)
     statuses.map do |type, _|
-      next if (type == "draft" && action_type == "edit")
+      next if (type == 'draft' && action_type == 'edit')
 
-      {'value' => type, 'title'=> I18n.t("activerecord.attributes.scheduling.statuses.#{type}").capitalize }
+      { 'value' => type, 'title'=> I18n.t("activerecord.attributes.scheduling.statuses.#{type}").capitalize }
     end.compact
   end
-  # end of private
 end
