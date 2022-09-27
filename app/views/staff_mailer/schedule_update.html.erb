@@ -1,23 +1,68 @@
 <html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  </head>
   <body class="bg-light">
     <div class="container">
       <div class="card my-10">
-        <div class="card-body text-center">
-          <h1 class="h3 mb-2 ">New change in appointments</h1>
-          <h5 class="text-teal-700">
-             There has been a change in the session of the user <%= @schedule.client_enrollment_service.client_enrollment.client.first_name.truncate(6) %>
-          </h5>
-          <hr>
-          <div class="space-y-3">          
-            <p class="text-gray-700">
-              The scheduling of this appointment is scheduled for the day <%= @schedule.date %> 
-              the start time is <%= @schedule.start_time %> 
-              the end time is <%= @schedule.end_time %>
-              also it is in a status of <%= @schedule.status %>
-            </p>            
+        <div class="card-body">
+          <div class="p-3 mb-2 bg-primary text-white">
+            <table style= "border-collapse: separate; border-spacing: 15px 5px;">
+              <tr>
+                <td>
+                  <img src="https://cdn-icons-png.flaticon.com/512/2773/2773319.png" width="60" height="60" />
+                </td>
+                <td>         
+                  <h2 class="h4 mb-4">    
+                    <center>New update in your appointments</center>
+                  </h2>
+                </td>
+              </tr>
+            </table>
           </div>
-          <hr>            
-          <%= link_to "Visit changes","#{ENV["DOMAIN"]}#{ENV["SCHEDULE_PATH"]}#{@schedule.id}", target:"_blank" ,class:"btn btn-primary " %>
+          <div class="space-y-3">
+            <p class="text-gray-700">Hi <%= @schedule.client_enrollment_service.client_enrollment.client.first_name.truncate(6) %>,
+              the following information was updated recently:
+            </p>
+            <center>
+              <table>
+                <tr>
+                  <td><p class="text-gray-700"><strong>Date:</strong><%= @schedule.date %></p></td>
+                </tr>
+                <tr>
+                  <td><p class="text-gray-700"><strong>tart time:</strong><%= @schedule.start_time %></p></td>
+                </tr>
+                <tr>
+                  <td><p class="text-gray-700"><strong>End time:</strong><%= @schedule.end_time %></p></td>
+                </tr>
+                <tr>
+                  <td><p class="text-gray-700"><strong>Status:</strong><%= @schedule.status %></p></td>
+                </tr>
+              </table>
+            </center>
+              <br>
+            <center> 
+              <%= link_to "Go to appointment","#{ENV["DOMAIN"]}#{ENV["SCHEDULE_PATH"]}#{@schedule.id}", target:"_blank" ,class:"btn btn-primary " %>
+            </center>
+          </div>
+          <hr>
+          <p class="text-gray-700">
+            <table>
+              <tr>
+                <td>
+                  <img src="https://scontent.feoh3-1.fna.fbcdn.net/v/t1.6435-9/120421140_108801817654404_6436897451881808967_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=gXk5YIZCAIsAX8a8EhR&_nc_ht=scontent.feoh3-1.fna&oh=00_AT_Z1bhS2YN4Lct2K5acgBx6T7FSoRwOC7NTRJYDIAaTsQ&oe=6357D822" width="70" height="70" />
+                </td>
+                <td>
+                  <p class="text-gray-600">
+                    <font size=1>
+                      © ABA Technology SAS | All rights reserved. Please don’t reply to this email, as we are unable to respond from this email address. 
+            	    	  This was an informative message generated automatically by the system.
+                    </font>
+                  </p>
+                </td>
+              </tr>
+            </table>
+          </p>
         </div>
       </div>
     </div>
