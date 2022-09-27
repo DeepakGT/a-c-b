@@ -3,6 +3,7 @@ DATE_RANGE_QUERY = 'date < ? OR (date = ? AND end_time < ?)'.freeze
 
 class Scheduling < ApplicationRecord
   audited only: %i[start_time end_time units date status], on: :update
+  has_associated_audits
 
   belongs_to :staff, optional: true
   belongs_to :client_enrollment_service, optional: true
@@ -113,7 +114,7 @@ class Scheduling < ApplicationRecord
 
       recurrences = option[:quantity].to_i
       
-     (Constant.zero..recurrences).each do |index|
+      (Constant.zero..recurrences).each do |index|
         break if index == recurrences
 
         calcule_date = option[:recurrence] == Constant.monthly ? date_initial + index.month : date_initial + index.year
@@ -169,11 +170,11 @@ class Scheduling < ApplicationRecord
       schedulings.each do |scheduling|
         client_enrollment_service = ClientEnrollmentService.find_by id: scheduling[:client_enrollment_service_id]
         cont_units += scheduling[:units].to_i if scheduling[:units].present? && scheduling[:units].to_i.positive?
-        error_msgs.push('range of recurrences exceeds one authorization') if scheduling[:date].to_date > client_enrollment_service.end_date.to_date
-        error_msgs.push('Units may not be blank or empty') if scheduling[:units].nil?
-        error_msgs.push('over pass authorization units') if cont_units > client_enrollment_service.units
-        error_msgs.push('an appointment is already scheduled, try again to reschedul  e it') if self.any? && check_date_available(scheduling[:date], scheduling[:start_time], scheduling[:end_time]).any?
-        error_msgs.push('limit reached, try again') if cont_limit > Constant.limit_appointment_recurrence
+        error_msgs.push(I18n.t('.activerecord.models.scheduling.errors.range').capitalize) if scheduling[:date].to_date > client_enrollment_service.end_date.to_date
+        error_msgs.push(I18n.t('.activerecord.models.scheduling.errors.units_blank').capitalize) if scheduling[:units].nil?
+        error_msgs.push(I18n.t('.activerecord.models.scheduling.errors.limit_autorization').capitalize) if cont_units > client_enrollment_service.units
+        error_msgs.push(I18n.t('.activerecord.models.scheduling.errors.any_appointment').capitalize) if self.any? && check_date_available(scheduling[:date], scheduling[:start_time], scheduling[:end_time]).any?
+        error_msgs.push(I18n.t('.activerecord.models.scheduling.errors.limit_recurrence').capitalize) if cont_limit > Constant.limit_appointment_recurrence
         cont_limit += Constant.one
       end
       
@@ -211,8 +212,26 @@ class Scheduling < ApplicationRecord
     end
     [status, rendered_at]
   end
+  
+  def notification_draft_appointment
+    params = {
+      message: I18n.t('.notification.draft_appointment.message'),
+      notification_url: "#{ENV["DOMAIN"]}#{ENV["SCHEDULING_PATH"]}#{self.id}",
+      affected_id: self.id,
+      affected: self.class.name
+    }
+    DraftNotification.with(params).deliver(recipients)
+  end
+
+  def recipients
+    recipients = [staff]
+    recipients << Staff.by_creator(creator_id)
+    recipients << Staff.active.joins(:role, :clinics).where('clinics.id': staff.staff_clinics.home_clinic.first[:clinic_id], 'roles.name': [Constant.roles['ed']]).to_ary
+    recipients.flatten
+  end
 
   private
+
   # def validate_time
   #   possible_schedules = Scheduling.where.not(id: self.id)
   #   same_day_schedules = possible_schedules.where(staff_id: self.staff_id, client_enrollment_service_id: self.client_enrollment_service_id, date: self.date)
@@ -276,9 +295,9 @@ class Scheduling < ApplicationRecord
   end
 
   def validate_draft_appointments
-    return if !self.draft? || self.user.role_name=='super_admin' || self.user.role_name=='client_care_coordinator' || self.user.role_name=='Clinical Director'
+    user = User.by_creator(creator_id)
+    return true if draft? && (user.role_name == Constant.roles['super_admin'] || user.role_name == Constant.roles['ccc'] || user.role_name == Constant.roles['cd'])
 
-    errors.add(:draft, 'appointments can only be created by client care coordinator or clinical director.')
+    errors.add(:draft, I18n.t('.activerecord.models.scheduling.validate_draft'))
   end
-  # end of private
 end

@@ -7,8 +7,8 @@ consumes:
 produces:
 - application/json
 servers:
-- url: https://aba-center-be.herokuapp.com
-- url: http://aba-center-be.herokuapp.com
+- url: https://stage989800.abaconnectemr.com
+- url: https://abaconnectemr.com/
 - url: http://localhost:3000
 
 schemes:
@@ -561,7 +561,8 @@ paths:
                     "clinic_name": "clinic1",
                     "status": "active",
                     "phone": null,
-                    "phone_numbers": []
+                    "phone_numbers": [],
+                    "deactivated_at": null
                   },
                   {
                     "id": 15,
@@ -578,6 +579,7 @@ paths:
                     "supervisor_id": 3,
                     "immediate_supervisor": "Harland O'Connell",
                     "phone": "9876543212",
+                    "deactivated_at": "Fri, 23 Sep 2024 07:23:03 EST -04:00",
                     "phone_numbers": [
                       {
                         "id": 19,
@@ -634,6 +636,7 @@ paths:
                   "gender": "male",
                   "job_type": "full_time",
                   "supervisor_id": 1,
+                  "deactivated_at": "Fri, 23 Sep 2024 07:23:03 EST -04:00",
                   "phone_numbers": [
                     {
                       "id": 13,
@@ -714,6 +717,7 @@ paths:
                   "clinic_name": "clinic1",
                   "supervisor_id": 3,
                   "immediate_supervisor": "Harland O'Connell",
+                  "deactivated_at": "Fri, 23 Sep 2024 07:23:03 EST -04:00",
                   "phone_numbers": [
                     {
                       "id": 7,
@@ -2086,69 +2090,105 @@ paths:
                 "status": "success",
                 "data": [
                   {
-                    "id": 9,
+                    "id": 1863,
                     "first_name": "Test",
-                    "last_name": "Client7",
-                    "email": "client7@yopmail.com",
+                    "last_name": "Bteaulieu",
                     "clinic_id": 1,
-                    "clinic_name": "clinic1",
-                    "bcba_id": 4,
-                    "bcba_name": "The Hon.",
-                    "email": "testc7@gmail.com",
-                    "dob": "2012-12-12",
+                    "clinic_name": "Bedford, NH",
+                    "email": "",
+                    "dob": "2016-01-22",
                     "gender": "male",
                     "status": "active",
-                    "preferred_language": "english",
-                    "disqualified": true,
-                    "disqualified_reason": "lost_contact"
-                  },
-                  {
-                    "id": 10,
-                    "first_name": "Test",
-                    "last_name": "Client1",
-                    "email": "client1@yopmail.com",
-                    "clinic_id": 1,
-                    "clinic_name": "clinic1",
-                    "bcba_id": 4,
-                    "bcba_name": "The Hon.",
-                    "email": "testc1@gmail.com",
-                    "dob": "2012-12-12",
-                    "gender": "male",
-                    "status": "active",
+                    "primary_bcba_id": 4397,
+                    "secondary_bcba_id": null,
+                    "primary_rbt_id": null,
+                    "secondary_rbt_id": null,
+                    "primary_bcba_name": "Cassandra Test",
+                    "secondary_bcba_name": " ",
+                    "primary_rbt_name": " ",
+                    "secondary_rbt_name": " ",
+                    "tracking_id": "0065e000009Pyw7AAC",
                     "preferred_language": "english",
                     "disqualified": false,
+                    "payor_status": "",
                     "addresses": [
                       {
-                        "id": 3,
-                        "type": "insurance_address",
-                        "line1": "Orbit Mall",
+                        "id": 8684,
+                        "type": "service_address",
+                        "line1": "80 Palomino Lane",
                         "line2": null,
                         "line3": null,
-                        "zipcode": null,
-                        "city": "Delhi",
-                        "state": null,
-                        "country": null
+                        "zipcode": "03110",
+                        "city": "Bedford",
+                        "state": "NH",
+                        "country": "United States of America",
+                        "is_default": false,
+                        "is_hidden": false
                       },
                       {
-                        "id": 4,
+                        "id": 6934,
                         "type": "service_address",
-                        "line1": "C21 Mall",
+                        "line1": null,
                         "line2": null,
                         "line3": null,
-                        "zipcode": null,
-                        "city": "Delhi",
+                        "zipcode": "03873",
+                        "city": "Sandown",
                         "state": null,
-                        "country": null
+                        "country": null,
+                        "is_default": true,
+                        "is_hidden": false
+                      },
+                      {
+                        "id": 7190,
+                        "type": "insurance_address",
+                        "line1": "95 Eagle Ridge Road",
+                        "line2": null,
+                        "line3": null,
+                        "zipcode": "03873",
+                        "city": "Sandown",
+                        "state": "NH",
+                        "country": "United States of America"
                       }
                     ],
                     "phone_number": {
-                      "id": 3,
-                      "phone_type": "home",
-                      "number": "9988998899"
+                      "id": 1364,
+                      "phone_type": "mobile",
+                      "number": ""
+                    },
+                    "payor": "BCBS MA",
+                    "contact": {
+                      "id": 47,
+                      "first_name": "Test",
+                      "last_name": "Bteaulieu",
+                      "email": "bteaulieujm@protonmail.com",
+                      "client_id": 1863,
+                      "type": "parent_or_guardian",
+                      "relation": "mother",
+                      "legal_guardian": false,
+                      "guarantor": true,
+                      "parent_portal_access": false,
+                      "resides_with_client": true,
+                      "address": {
+                        "id": 7191,
+                        "line1": "95 Eagle Ridge Road",
+                        "line2": null,
+                        "line3": null,
+                        "zipcode": "03873",
+                        "city": "Sandown",
+                        "state": "NH",
+                        "country": "United States of America"
+                      },
+                      "phone_numbers": [
+                        {
+                          "id": 1365,
+                          "phone_type": "mobile",
+                          "number": "(339) 234-1190"
+                        }
+                      ]
                     }
                   }
                 ],
-                "total_records": 2,
+                "total_records": 1,
                 "limit": 30,
                 "page": 1
               }
@@ -2180,56 +2220,103 @@ paths:
               example: {
                 "status": "success",
                 "data": {
-                  "id": 10,
+                  "id": 1863,
                   "first_name": "Test",
-                  "last_name": "Client1",
-                  "bcba_id": 4,
-                  "bcba_name": "The Hon.",
-                  "email": "testc1@gmail.com",
-                  "dob": "2012-12-12",
+                  "last_name": "Bteaulieu",
+                  "clinic_id": 1,
+                  "clinic_name": "Bedford, NH",
+                  "email": "",
+                  "dob": "2016-01-22",
                   "gender": "male",
                   "status": "active",
+                  "primary_bcba_id": 4397,
+                  "secondary_bcba_id": null,
+                  "primary_rbt_id": null,
+                  "secondary_rbt_id": null,
+                  "primary_bcba_name": "Cassandra Test",
+                  "secondary_bcba_name": " ",
+                  "primary_rbt_name": " ",
+                  "secondary_rbt_name": " ",
+                  "tracking_id": "0065e000009Pyw7AAC",
+                  "preferred_language": "english",
                   "disqualified": false,
-                  "note": {
-                      "id": 3,
-                      "note": "some-note",
-                      "attachments": [
-                          {
-                            "url": "http://localhost:3000/rails/active_storage/disk/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdDVG9JYTJWNVNTSWhlV1Z2WlcwM2JqTTVOM1J3YXpZMGFETndORzB6YjNoeGF6SnRlQVk2QmtWVU9oQmthWE53YjNOcGRHbHZia2tpUFdsdWJHbHVaVHNnWm1sc1pXNWhiV1U5SW1sdFlXZGxMbXB3WnlJN0lHWnBiR1Z1WVcxbEtqMVZWRVl0T0NjbmFXMWhaMlV1YW5CbkJqc0dWRG9SWTI5dWRHVnVkRjkwZVhCbElnNXBiV0ZuWlM5bmFXWTZFWE5sY25acFkyVmZibUZ0WlRvS2JHOWpZV3c9IiwiZXhwIjoiMjAyMi0wMi0wOVQxMjo1Mjo0Mi4wMjlaIiwicHVyIjoiYmxvYl9rZXkifX0=--6385c3c5fd07b6ace7dd18074439bd7a8ad5122f/image.jpg"
-                          }
-                      ]
-                  },
+                  "payor_status": "",
                   "addresses": [
                     {
-                      "id": 3,
-                      "type": "insurance_address",
-                      "line1": "Orbit Mall",
+                      "id": 8684,
+                      "type": "service_address",
+                      "line1": "80 Palomino Lane",
                       "line2": null,
                       "line3": null,
-                      "zipcode": null,
-                      "city": "Delhi",
-                      "state": null,
-                      "country": null
+                      "zipcode": "03110",
+                      "city": "Bedford",
+                      "state": "NH",
+                      "country": "United States of America",
+                      "is_default": false,
+                      "is_hidden": false
                     },
                     {
-                      "id": 4,
+                      "id": 6934,
                       "type": "service_address",
-                      "line1": "C21 Mall",
+                      "line1": null,
                       "line2": null,
                       "line3": null,
-                      "zipcode": null,
-                      "city": "Delhi",
+                      "zipcode": "03873",
+                      "city": "Sandown",
                       "state": null,
-                      "country": null
+                      "country": null,
+                      "is_default": true,
+                      "is_hidden": false
+                    },
+                    {
+                      "id": 7190,
+                      "type": "insurance_address",
+                      "line1": "95 Eagle Ridge Road",
+                      "line2": null,
+                      "line3": null,
+                      "zipcode": "03873",
+                      "city": "Sandown",
+                      "state": "NH",
+                      "country": "United States of America"
                     }
                   ],
                   "phone_number": {
-                    "id": 3,
-                    "phone_type": "home",
-                    "number": "9988998899"
+                    "id": 1364,
+                    "phone_type": "mobile",
+                    "number": ""
+                  },
+                  "payor": "BCBS MA",
+                  "contact": {
+                    "id": 47,
+                    "first_name": "JTest",
+                    "last_name": "Bteaulieu",
+                    "email": "bteaulieujm@protonmail.com",
+                    "client_id": 1863,
+                    "type": "parent_or_guardian",
+                    "relation": "mother",
+                    "legal_guardian": false,
+                    "guarantor": true,
+                    "parent_portal_access": false,
+                    "resides_with_client": true,
+                    "address": {
+                      "id": 7191,
+                      "line1": "95 Eagle Ridge Road",
+                      "line2": null,
+                      "line3": null,
+                      "zipcode": "03873",
+                      "city": "Sandown",
+                      "state": "NH",
+                      "country": "United States of America"
+                    },
+                    "phone_numbers": [
+                      {
+                        "id": 1365,
+                        "phone_type": "mobile",
+                        "number": "(339) 234-1190"
+                      }
+                    ]
                   }
-                },
-                "errors": []
+                }
               }
   
   /api/clients/{id}:
@@ -2256,75 +2343,107 @@ paths:
         "200":
           description: "Client detail"
           content:
-            application/json:
-              example: {
-                "status": "success",
-                "data": {
-                  "id": 27,
-                  "first_name": "Test",
-                  "last_name": "Client5",
-                  "email": "client5@yopmail.com",
-                  "clinic_id": 1,
-                  "clinic_name": "clinic1",
-                  "bcba_id": 4,
-                  "bcba_name": "The Hon.",
-                  "contact": {
-                    "id": 2,
-                    "first_name": "test",
-                    "last_name": "contact",
-                    "email": "testct4@yopmail.com",
-                    "client_id": 27,
-                    "type": "parent_or_guardian",
-                    "relation": "mother",
-                    "legal_guardian": true,
-                    "guarantor": false,
-                    "parent_portal_access": false,
-                    "resides_with_client": false,
-                    "phone_numbers": [
-                      {
-                        "id": 3,
-                        "phone_type": "work",
-                        "number": "9988771123"
-                      }
-                    ]
+            example: {
+              "status": "success",
+              "data": {
+                "id": 1863,
+                "first_name": "Test",
+                "last_name": "TBeaulieu",
+                "clinic_id": 1,
+                "clinic_name": "Bedford, NH",
+                "email": "",
+                "dob": "2016-01-22",
+                "gender": "male",
+                "status": "active",
+                "primary_bcba_id": 4397,
+                "secondary_bcba_id": null,
+                "primary_rbt_id": null,
+                "secondary_rbt_id": null,
+                "primary_bcba_name": "Cassandra Test",
+                "secondary_bcba_name": " ",
+                "primary_rbt_name": " ",
+                "secondary_rbt_name": " ",
+                "tracking_id": "0065e000009Pyw7AAC",
+                "preferred_language": "english",
+                "disqualified": false,
+                "payor_status": "",
+                "addresses": [
+                  {
+                    "id": 8684,
+                    "type": "service_address",
+                    "line1": "80 Palomino Lane",
+                    "line2": null,
+                    "line3": null,
+                    "zipcode": "03110",
+                    "city": "Bedford",
+                    "state": "NH",
+                    "country": "United States of America",
+                    "is_default": false,
+                    "is_hidden": false
                   },
-                  "email": "testc5@gmail.com",
-                  "dob": "2012-12-12",
-                  "gender": "male",
-                  "status": "active",
-                  "preferred_language": "english",
-                  "disqualified": false,
-                  "addresses": [
-                    {
-                      "id": 14,
-                      "type": "insurance_address",
-                      "line1": "C21 Mall",
-                      "line2": null,
-                      "line3": null,
-                      "zipcode": null,
-                      "city": "Delhi",
-                      "state": null,
-                      "country": null
-                    },
-                    {
-                      "id": 13,
-                      "type": "service_address",
-                      "line1": "Orbit Mall",
-                      "line2": null,
-                      "line3": null,
-                      "zipcode": null,
-                      "city": "Delhi",
-                      "state": null,
-                      "country": null
-                    }
-                  ],
-                  "phone_number": {
-                    "id": 1,
-                    "phone_type": "home",
-                    "number": "9988998888"
+                  {
+                    "id": 6934,
+                    "type": "service_address",
+                    "line1": null,
+                    "line2": null,
+                    "line3": null,
+                    "zipcode": "03873",
+                    "city": "Sandown",
+                    "state": null,
+                    "country": null,
+                    "is_default": true,
+                    "is_hidden": false
+                  },
+                  {
+                    "id": 7190,
+                    "type": "insurance_address",
+                    "line1": "95 Eagle Ridge Road",
+                    "line2": null,
+                    "line3": null,
+                    "zipcode": "03873",
+                    "city": "Sandown",
+                    "state": "NH",
+                    "country": "United States of America"
                   }
+                ],
+                "phone_number": {
+                  "id": 1364,
+                  "phone_type": "mobile",
+                  "number": ""
+                },
+                "payor": "BCBS MA",
+                "contact": {
+                  "id": 47,
+                  "first_name": "Test",
+                  "last_name": "TBeaulieu",
+                  "email": "tbeaulieujm@protonmail.com",
+                  "client_id": 1863,
+                  "type": "parent_or_guardian",
+                  "relation": "mother",
+                  "legal_guardian": false,
+                  "guarantor": true,
+                  "parent_portal_access": false,
+                  "resides_with_client": true,
+                  "address": {
+                    "id": 7191,
+                    "line1": "95 Eagle Ridge Road",
+                    "line2": null,
+                    "line3": null,
+                    "zipcode": "03873",
+                    "city": "Sandown",
+                    "state": "NH",
+                    "country": "United States of America"
+                  },
+                  "phone_numbers": [
+                    {
+                      "id": 1365,
+                      "phone_type": "mobile",
+                      "number": "(339) 234-1190"
+                    }
+                  ]
                 }
               }
+            }
     put:
       summary: Client update by Admin
       parameters:
@@ -2357,56 +2476,103 @@ paths:
               example: {
                 "status": "success",
                 "data": {
-                  "id": 10,
+                  "id": 1863,
                   "first_name": "Test",
-                  "last_name": "Client1",
-                  "bcba_id": 4,
-                  "bcba_name": "The Hon.",
-                  "email": "testc1@gmail.com",
-                  "dob": "2012-12-12",
+                  "last_name": "TBeaulieu",
+                  "clinic_id": 1,
+                  "clinic_name": "Bedford, NH",
+                  "email": "",
+                  "dob": "2016-01-22",
                   "gender": "male",
                   "status": "active",
+                  "primary_bcba_id": 4397,
+                  "secondary_bcba_id": null,
+                  "primary_rbt_id": null,
+                  "secondary_rbt_id": null,
+                  "primary_bcba_name": "Cassandra Test",
+                  "secondary_bcba_name": " ",
+                  "primary_rbt_name": " ",
+                  "secondary_rbt_name": " ",
+                  "tracking_id": "0065e000009Pyw7AAC",
+                  "preferred_language": "english",
                   "disqualified": false,
-                  "note": {
-                    "id": 3,
-                    "note": "some-note",
-                    "attachments": [
-                        {
-                          "url": "http://localhost:3000/rails/active_storage/disk/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdDVG9JYTJWNVNTSWhlV1Z2WlcwM2JqTTVOM1J3YXpZMGFETndORzB6YjNoeGF6SnRlQVk2QmtWVU9oQmthWE53YjNOcGRHbHZia2tpUFdsdWJHbHVaVHNnWm1sc1pXNWhiV1U5SW1sdFlXZGxMbXB3WnlJN0lHWnBiR1Z1WVcxbEtqMVZWRVl0T0NjbmFXMWhaMlV1YW5CbkJqc0dWRG9SWTI5dWRHVnVkRjkwZVhCbElnNXBiV0ZuWlM5bmFXWTZFWE5sY25acFkyVmZibUZ0WlRvS2JHOWpZV3c9IiwiZXhwIjoiMjAyMi0wMi0wOVQxMjo1Mjo0Mi4wMjlaIiwicHVyIjoiYmxvYl9rZXkifX0=--6385c3c5fd07b6ace7dd18074439bd7a8ad5122f/image.jpg"
-                        }
-                    ]
-                  },
+                  "payor_status": "",
                   "addresses": [
                     {
-                      "id": 3,
-                      "type": "insurance_address",
-                      "line1": "Princess Business Skypark",
-                      "line2": "Opp.Orbit Mall",
-                      "line3": null,
-                      "zipcode": null,
-                      "city": "Delhi",
-                      "state": null,
-                      "country": null
-                    },
-                    {
-                      "id": 4,
+                      "id": 8684,
                       "type": "service_address",
-                      "line1": "C21 Mall",
+                      "line1": "80 Palomino Lane",
                       "line2": null,
                       "line3": null,
-                      "zipcode": null,
-                      "city": "Delhi",
+                      "zipcode": "03110",
+                      "city": "Bedford",
+                      "state": "NH",
+                      "country": "United States of America",
+                      "is_default": false,
+                      "is_hidden": false
+                    },
+                    {
+                      "id": 6934,
+                      "type": "service_address",
+                      "line1": null,
+                      "line2": null,
+                      "line3": null,
+                      "zipcode": "03873",
+                      "city": "Sandown",
                       "state": null,
-                      "country": null
+                      "country": null,
+                      "is_default": true,
+                      "is_hidden": false
+                    },
+                    {
+                      "id": 7190,
+                      "type": "insurance_address",
+                      "line1": "95 Eagle Ridge Road",
+                      "line2": null,
+                      "line3": null,
+                      "zipcode": "03873",
+                      "city": "Sandown",
+                      "state": "NH",
+                      "country": "United States of America"
                     }
                   ],
                   "phone_number": {
-                    "id": 3,
-                    "phone_type": "home",
-                    "number": "9988998899"
+                    "id": 1364,
+                    "phone_type": "mobile",
+                    "number": ""
+                  },
+                  "payor": "BCBS MA",
+                  "contact": {
+                    "id": 47,
+                    "first_name": "Test",
+                    "last_name": "Beaulieu",
+                    "email": "bteaulieujm@protonmail.com",
+                    "client_id": 1863,
+                    "type": "parent_or_guardian",
+                    "relation": "mother",
+                    "legal_guardian": false,
+                    "guarantor": true,
+                    "parent_portal_access": false,
+                    "resides_with_client": true,
+                    "address": {
+                      "id": 7191,
+                      "line1": "95 Eagle Ridge Road",
+                      "line2": null,
+                      "line3": null,
+                      "zipcode": "03873",
+                      "city": "Sandown",
+                      "state": "NH",
+                      "country": "United States of America"
+                    },
+                    "phone_numbers": [
+                      {
+                        "id": 1365,
+                        "phone_type": "mobile",
+                        "number": "(339) 234-1190"
+                      }
+                    ]
                   }
-                },
-                "errors": []
+                }
               }
     delete:
       summary: Client delete
@@ -2435,21 +2601,101 @@ paths:
               example: {
                 "status": "success",
                 "data": {
-                  "id": 11,
+                  "id": 1863,
                   "first_name": "Test",
-                  "last_name": "Client1",
-                  "bcba_id": 4,
-                  "bcba_name": "The Hon.",
-                  "email": "testc1@gmail.com",
-                  "dob": "2012-12-12",
+                  "last_name": "TBeaulieu",
+                  "clinic_id": 1,
+                  "clinic_name": "Bedford, NH",
+                  "email": "",
+                  "dob": "2016-01-22",
                   "gender": "male",
                   "status": "active",
+                  "primary_bcba_id": 4397,
+                  "secondary_bcba_id": null,
+                  "primary_rbt_id": null,
+                  "secondary_rbt_id": null,
+                  "primary_bcba_name": "Cassandra Test",
+                  "secondary_bcba_name": " ",
+                  "primary_rbt_name": " ",
+                  "secondary_rbt_name": " ",
+                  "tracking_id": "0065e000009Pyw7AAC",
                   "preferred_language": "english",
                   "disqualified": false,
+                  "payor_status": "",
+                  "addresses": [
+                    {
+                      "id": 8684,
+                      "type": "service_address",
+                      "line1": "80 Palomino Lane",
+                      "line2": null,
+                      "line3": null,
+                      "zipcode": "03110",
+                      "city": "Bedford",
+                      "state": "NH",
+                      "country": "United States of America",
+                      "is_default": false,
+                      "is_hidden": false
+                    },
+                    {
+                      "id": 6934,
+                      "type": "service_address",
+                      "line1": null,
+                      "line2": null,
+                      "line3": null,
+                      "zipcode": "03873",
+                      "city": "Sandown",
+                      "state": null,
+                      "country": null,
+                      "is_default": true,
+                      "is_hidden": false
+                    },
+                    {
+                      "id": 7190,
+                      "type": "insurance_address",
+                      "line1": "95 Eagle Ridge Road",
+                      "line2": null,
+                      "line3": null,
+                      "zipcode": "03873",
+                      "city": "Sandown",
+                      "state": "NH",
+                      "country": "United States of America"
+                    }
+                  ],
                   "phone_number": {
-                    "id": 4,
+                    "id": 1364,
                     "phone_type": "mobile",
-                    "number": "9988998888543"
+                    "number": ""
+                  },
+                  "payor": "BCBS MA",
+                  "contact": {
+                    "id": 47,
+                    "first_name": "TEst",
+                    "last_name": "Bteaulieu",
+                    "email": "tbeaulieujm@protonmail.com",
+                    "client_id": 1863,
+                    "type": "parent_or_guardian",
+                    "relation": "mother",
+                    "legal_guardian": false,
+                    "guarantor": true,
+                    "parent_portal_access": false,
+                    "resides_with_client": true,
+                    "address": {
+                      "id": 7191,
+                      "line1": "95 Eagle Ridge Road",
+                      "line2": null,
+                      "line3": null,
+                      "zipcode": "03873",
+                      "city": "Sandown",
+                      "state": "NH",
+                      "country": "United States of America"
+                    },
+                    "phone_numbers": [
+                      {
+                        "id": 1365,
+                        "phone_type": "mobile",
+                        "number": "(339) 234-1190"
+                      }
+                    ]
                   }
                 }
               }
@@ -3136,6 +3382,51 @@ paths:
                 }
               }
 
+  /api/meta_data/select_payor_types:
+    get:
+      summary: Selectable Payors list
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      responses:
+        "200":
+          description: "Selectable Payors list"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "payor_types": [
+                    {
+                      "value": "commercial",
+                      "title": "Commercial"
+                    },
+                    {
+                      "value": "medicaid",
+                      "title": "Medicaid"
+                    },
+                    {
+                      "value": "medicare",
+                      "title":"Medicare"
+                    },
+                    { 
+                      "value": "third_party_contract",
+                      "title": "Third party contract"
+                    }
+                  ]
+                }
+              }
+
   /api/roles_list:
     get:
       summary: List of roles
@@ -3438,6 +3729,7 @@ paths:
                 },
                 "errors": []
               }
+  
   /api/roles/{id}:
     get:
       summary: role detail
@@ -4475,6 +4767,46 @@ paths:
                 }
               }
 
+  /api/clients/{client_id}/funding_sources_list:
+    get:
+      summary: List client active billable funding sources which can provide the service
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "Associated client ID"
+      - in: "query"
+        name: "service_id"
+        schema:
+          type: "integer"
+        description: "service which requires funding sources"
+        required: false
+      responses:
+        "200":
+          description: "List of billable funding soureces"
+          content:
+            application/json:
+              example: {
+                status: "success", 
+                data: [
+                  {
+                    id: 847, 
+                    name: "BCBS MA"
+                  }
+                ]
+              }
+
   /api/clients/{client_id}/soap_notes:
     get:
       summary: List client SOAP notes
@@ -5102,6 +5434,88 @@ paths:
                 }
               }
 
+  /api/schedulings/create_without_client:
+    post:
+      summary: "Create scheduling without client"
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/CreateUpdateWithoutClientParameters"
+      responses:
+        "200":
+          description: "Created scheduling without client"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 227956,
+                  "status": "non_billable",
+                  "date": "2022-08-31",
+                  "start_time": "09:00 AM",
+                  "end_time": "09:30 AM",
+                  "non_billable_reason": "test"
+                },
+                "errors": []
+              }
+
+  /api/schedulings/update_without_client/{id}:
+    put:
+      summary: "Update scheduling without client"
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "Scheduling Id"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/CreateUpdateWithoutClientParameters"
+      responses:
+        "200":
+          description: "Updated scheduling without client"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 227956,
+                  "status": "non_billable",
+                  "date": "2022-08-31",
+                  "start_time": "09:00 AM",
+                  "end_time": "09:30 AM",
+                  "non_billable_reason": "test"
+                },
+                "errors": []
+              }
+
   /api/schedulings/{scheduling_id}/soap_notes:
     get:
       summary: Soap Notes list
@@ -5196,6 +5610,128 @@ paths:
                   "creator_id": 7,
                   "creator": "Odis Murphy"
                 },
+                "errors": []
+              }
+
+  /api/schedulings/create_split_appointment:
+    post:
+      summary: create split appointment
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/CreateSplitAppointmentParameters"
+      responses:
+        "200":
+          description: "Split Appointment Create"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "rendered_message": "Appointments have been created and rendered successfully.",
+                "data": [
+                  {
+                    "id": 227955,
+                    "client_enrollment_service_id": 10721,
+                    "cross_site_allowed": false,
+                    "client_id": 1863,
+                    "client_name": "Aidan Beaulieu",
+                    "service_address_id": null,
+                    "total_units": 32,
+                    "used_units": 0,
+                    "scheduled_units": 8,
+                    "left_units": 24,
+                    "total_minutes": 480,
+                    "used_minutes": 0,
+                    "scheduled_minutes": 120,
+                    "left_minutes": 360,
+                    "staff_id": 4820,
+                    "staff_name": "Alexandria Phoenix",
+                    "staff_role": "rbt",
+                    "staff_email": "aphoenixrbt@abacenters.com",
+                    "staff_legacy_number": null,
+                    "service_id": 2,
+                    "service_name": "Re-Assessment",
+                    "service_display_code": "97151",
+                    "is_early_code": false,
+                    "status": "scheduled",
+                    "date": "2022-08-28",
+                    "start_time": "03:00 PM",
+                    "end_time": "04:00 PM",
+                    "non_billable_reason": null,
+                    "is_rendered": false,
+                    "is_manual_render": false,
+                    "rendered_by": " ",
+                    "unrendered_reasons": [],
+                    "rendered_at": null,
+                    "units": 4,
+                    "minutes": 60,
+                    "created_at": "2022-08-30T05:47:49.838-04:00",
+                    "appointment_office_id": null,
+                    "appointment_office": null,
+                    "creator_id": 1777,
+                    "creator_name": "Ms. Osvaldo",
+                    "updator_id": null,
+                    "updator_name": null
+                  },
+                  {
+                    "id": 227955,
+                    "client_enrollment_service_id": 10721,
+                    "cross_site_allowed": false,
+                    "client_id": 1863,
+                    "client_name": "Aidan Beaulieu",
+                    "service_address_id": null,
+                    "total_units": 32,
+                    "used_units": 0,
+                    "scheduled_units": 8,
+                    "left_units": 24,
+                    "total_minutes": 480,
+                    "used_minutes": 0,
+                    "scheduled_minutes": 120,
+                    "left_minutes": 360,
+                    "staff_id": 4820,
+                    "staff_name": "Alexandria Phoenix",
+                    "staff_role": "rbt",
+                    "staff_email": "aphoenixrbt@abacenters.com",
+                    "staff_legacy_number": null,
+                    "service_id": 2,
+                    "service_name": "Re-Assessment",
+                    "service_display_code": "97151",
+                    "is_early_code": false,
+                    "status": "scheduled",
+                    "date": "2022-08-28",
+                    "start_time": "03:00 PM",
+                    "end_time": "04:00 PM",
+                    "non_billable_reason": null,
+                    "is_rendered": false,
+                    "is_manual_render": false,
+                    "rendered_by": " ",
+                    "unrendered_reasons": [],
+                    "rendered_at": null,
+                    "units": 4,
+                    "minutes": 60,
+                    "created_at": "2022-08-30T05:47:49.838-04:00",
+                    "appointment_office_id": null,
+                    "appointment_office": null,
+                    "creator_id": 1777,
+                    "creator_name": "Ms. Osvaldo",
+                    "updator_id": null,
+                    "updator_name": null
+                  }
+                ],
                 "errors": []
               }
 
@@ -5885,6 +6421,310 @@ paths:
                 }
               }
 
+  /api/clients/{client_id}/create_office_address:
+    post:
+      summary: Client office address create
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "Associated client id"
+        required: true
+      responses:
+        "200":
+          description: "Client Office Address"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 13,
+                  "type": "clinic_address",
+                  "line1": "Princess Business Skypark ",
+                  "line2": "Opp. C21 Mall",
+                  "line3": "AB road",
+                  "zipcode": "450210",
+                  "city": "Indore",
+                  "state": "Madhya Pradesh",
+                  "country": "India",
+                  "is_default": true,
+                  "address_name": "home"
+                },
+                "errors": []
+              }
+
+  /api/clients/{client_id}/create_early_auths:
+    post:
+      summary: Create Early Auth for client
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "Associated client id"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/ClientEarlyAuthParameters"
+      responses:
+        "200":
+          description: "Creates Early Auth For Client"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 14870,
+                  "client_id":  2176,
+                  "source_of_payment":  "insurance",
+                  "funding_source_id":  885,
+                  "funding_source": "TestNonBill",
+                  "terminated_on":  "2022-11-27",
+                  "primary":  false,
+                  "insurance_id": null,
+                  "group": null,
+                  "group_employer": null,
+                  "provider_phone": null,
+                  "relationship": null,
+                  "subscriber_name": null,
+                  "subscriber_phone": null,
+                  "subscriber_dob": null,
+                  "services": [
+                    {
+                      "id": 12124,
+                      "client_enrollment_id": 14870,
+                      "funding_source_id": 885,
+                      "funding_source": "TestNonBill",
+                      "service_id": 28,
+                      "service": "TestEarlyService",
+                      "is_early_code": true,
+                      "service_display_code": "33333",
+                      "is_service_provider_required": null,
+                      "start_date": "2022-08-29",
+                      "end_date": "2022-11-27",
+                      "units": 90.0,
+                      "used_units": 0,
+                      "scheduled_units": 0,
+                      "left_units": 90.0,
+                      "minutes": 1350.0,
+                      "used_minutes": 0,
+                      "scheduled_minutes": 0,
+                      "left_minutes": 1350.0,
+                      "service_number": null,
+                      "about_to_expire": false,
+                      "is_exhausted": false,
+                      "service_providers": {
+                        "ids": [],
+                        "names": [],
+                        "staff_ids": []
+                      }
+                    }
+                  ]
+                },
+                "errors": []
+              }
+
+  /api/clients/{client_id}/replace_early_auth:
+    put:
+      summary: Replace Early Auths for Client
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "Associated Client id"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/ReplaceEarlyAuthParameters"
+      responses:
+        "200":
+          description: "Replaces early auths of client"
+          content:
+            application/json:
+              example: {
+                "status": "success"
+              }
+
+  /api/clients/{client_id}/past_appointments:
+    get:
+      summary: Lists Client Past Appointments
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "Associated client id"
+        required: true
+      - in: "query"
+        name: "default_location_id"
+        schema:
+          type: "integer"
+        description: "Clinic id to filter past appointments"
+        required: true
+      - in: "query"
+        name: "page"
+        schema:
+          type: "integer"
+        description: "Page Number"
+        required: false
+      responses:
+        "200":
+          description: "Past Appointments List"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": [
+                  {
+                    "id": 213335,
+                    "client_enrollment_service_id" :10724,
+                    "cross_site_allowed": null,
+                    "client_id": 1863,
+                    "client_name": "Aidan Beaulieu",
+                    "service_address_id": 6934,
+                    "service_address": {"line1": null,
+                    "line2": null,
+                    "line3": null,
+                    "zipcode": "03873",
+                    "city": "Sandown",
+                    "state": null,
+                    "country": null,
+                    "is_default": true,
+                    "address_name": null},
+                    "total_units": 208.0,
+                    "used_units": 0,
+                    "scheduled_units": 0,
+                    "left_units": 208.0,
+                    "total_minutes": 3120.0,
+                    "used_minutes": 0,
+                    "scheduled_minutes": 0,
+                    "left_minutes": 3120.0,
+                    "staff_id": 4397,
+                    "staff_name": "Cassandra Divone",
+                    "staff_role": "bcba",
+                    "staff_email": "cdivone@abacenters.com",
+                    "service_id": 3,
+                    "service_name": "Caregiver Training",
+                    "service_display_code": "97156",
+                    "status": null,
+                    "date": "2022-06-15",
+                    "start_time": "01: 17 PM",
+                    "end_time": "03: 30 PM",
+                    "non_billable_reason": null,
+                    "is_rendered": false,
+                    "is_manual_render": false,
+                    "rendered_by": " ",
+                    "unrendered_reasons": [],
+                    "rendered_at": "2022-06-16T00: 00: 51.848-04: 00",
+                    "units": 9.0,
+                    "minutes": 133.0,
+                    "created_at": "2022-06-09T14: 50: 49.195-04: 00",
+                    "creator_id": 4397,
+                    "creator_name": "Cassandra Divone",
+                    "updator_id": 4397,
+                    "updator_name": "Cassandra Divone"
+                  },
+                  {
+                    "id": 218795,
+                    "client_enrollment_service_id": 10724,
+                    "cross_site_allowed": null,
+                    "client_id": 1863,
+                    "client_name": "Aidan Beaulieu",
+                    "service_address_id": 6934,
+                    "service_address": {"line1": null,
+                    "line2": null,
+                    "line3": null,
+                    "zipcode": "03873",
+                    "city": "Sandown",
+                    "state": null,
+                    "country": null,
+                    "is_default": true,
+                    "address_name": null},
+                    "total_units": 208.0,
+                    "used_units": 0,
+                    "scheduled_units": 0,
+                    "left_units": 208.0,
+                    "total_minutes": 3120.0,
+                    "used_minutes": 0,
+                    "scheduled_minutes": 0,
+                    "left_minutes": 3120.0,
+                    "staff_id": 4397,
+                    "staff_name": "Cassandra Divone",
+                    "staff_role": "bcba",
+                    "staff_email": "cdivone@abacenters.com",
+                    "service_id": 3,
+                    "service_name": "Caregiver Training",
+                    "service_display_code": "97156",
+                    "status": null,
+                    "date": "2022-07-07",
+                    "start_time": "11: 15 AM",
+                    "end_time": "12: 00 PM",
+                    "non_billable_reason": null,
+                    "is_rendered": false,
+                    "is_manual_render": false,
+                    "rendered_by": " ",
+                    "unrendered_reasons": [],
+                    "rendered_at": "2022-07-08T00: 00: 22.227-04: 00",
+                    "units": 3.0,
+                    "minutes": 45.0,
+                    "created_at": "2022-07-07T12: 46: 14.492-04: 00",
+                    "creator_id": 4397,
+                    "creator_name": "Cassandra Divone",
+                    "updator_id": null,
+                    "updator_name": null
+                  }
+                ],
+                "total_records": 20,
+                "limit": 2,
+                "page": "1"
+              }
+
   /api/bcba_list:
     get:
       summary: bcba list
@@ -5948,6 +6788,120 @@ paths:
                     "phone_numbers": []
                   }
                 ]
+              }
+
+  /api/rbt_list:
+    get:
+      summary: rbt list
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "query"
+        name: "default_location_id"
+        schema:
+          type: "integer"
+        description: "Clinic id to filter rbt"
+        required: false
+      responses:
+        "200":
+          description: "rbt list"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": [
+                  {
+                    "id": 51,
+                    "first_name": "Chesters",
+                    "last_name": "Waelchii",
+                    "email": "rbt_staff2@yopmail.com",
+                    "status": "active",
+                    "hired_at": null,
+                    "terminated_on": "2022-03-08",
+                    "title": "rbt",
+                    "gender": "male",
+                    "organization_id": 1,
+                    "organization_name": "org1",
+                    "clinic_id": 1,
+                    "clinic_name": "clinic1",
+                    "phone_numbers": []
+                  },
+                  {
+                    "id": 15,
+                    "first_name": "Test",
+                    "last_name": "Staff",
+                    "email": "rbt_test3456@yopmail.com",
+                    "status": "active",
+                    "hired_at": "2022-03-01",
+                    "terminated_on": "2055-03-23",
+                    "title": "rbt",
+                    "gender": "male",
+                    "organization_id": 1,
+                    "organization_name": "org1",
+                    "clinic_id": 1,
+                    "clinic_name": "clinic1",
+                    "phone_numbers": []
+                  }
+                ]
+              }
+
+  /api/services_and_funding_sources_list:
+    get:
+      summary: services and funding sources list
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "query"
+        name: "is_early_code"
+        schema:
+          type: "boolean"
+        description: "Is early code flag"
+        required: false
+      responses:
+        "200":
+          description: "services and funding sources list"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "funding_sources": [
+                    {
+                      "id": 885,
+                      "name": "TestNonBill"
+                    }
+                  ],
+                  "non_early_services": [
+                    {
+                      "id": 20,
+                      "name": "Early Caregiver Training"
+                    },
+                    {
+                      "id": 3,
+                      "name": "Caregiver Training"
+                    }
+                  ]
+                }
               }
 
   /api/rbt_appointments:
@@ -6432,6 +7386,250 @@ paths:
                 },
                 "errors": []
               }
+  
+  /api/schedulings/clients_and_staff_list:
+    get:
+      summary: "Return all clients and staff of that clinic"
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "default_location_id"
+        description: "Clinic Id"
+        required: true
+      responses:
+        "200":
+          description: "List of clients and staffs"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "clients": [
+                    {
+                      "id": 1863,
+                      "name": "Aidan Beaulieu"
+                    },
+                    {
+                      "id": 1839,
+                      "name": "Alexia Pimentel"
+                    },
+                    {
+                      "id": 1877,
+                      "name": "Amandaliz De La Rosa"
+                    },
+                    {
+                      "id": 2107,
+                      "name": "Amir Achfike"
+                    }
+                  ],
+                  "staff": [
+                    {
+                      "id": 4390,
+                      "name": "Erika Ardito",
+                      "first_name": "Erika",
+                      "last_name": "Ardito",
+                      "email": "eardito@abacenters.com",
+                      "status": "active",
+                      "hired_at": "2022-03-21",
+                      "terminated_on": null,
+                      "title": "bcba",
+                      "gender": "female",
+                      "legacy_number": null
+                    },
+                    {
+                      "id": 4393,
+                      "name": "Faith Bell",
+                      "first_name": "Faith",
+                      "last_name": "Bell",
+                      "email": "fbell@abacenters.com",
+                      "status": "active",
+                      "hired_at": "2022-03-21",
+                      "terminated_on": null,
+                      "title": "rbt",
+                      "gender": "female",
+                      "legacy_number": null
+                    }
+                  ],
+                  "services": [
+                    {
+                      "id": 16,
+                      "name": "Additional 30 minutes spent performing activities",
+                      "status": "active",
+                      "display_code": "96113",
+                      "is_service_provider_required": false,
+                      "is_unassigned_appointment_allowed": false,
+                      "selected_non_early_service_id": null,
+                      "selected_payors": [],
+                      "is_early_code": false,
+                      "max_units": null
+                    }
+                  ]
+                }
+              }
+      
+  /api/schedulings/render_appointment:
+    put:
+      summary: "Render specific appointment"
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/RenderAppointmentParameters"
+      responses:
+        "200":
+          description: "Render Appointment"
+          content:
+            application/json:
+              example: {
+                "status": "success"
+              }
+  
+  /api/catalyst/update_appointment_units:
+    put:
+      summary: "update appointment units with either catalyst or connect units or update custom units"
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/UpdateAppointmentUnitsParameters"
+      responses:
+        "200":
+          description: "Updated scheduling units"
+          content:
+            application/json:
+              example: {
+                "status": "success"
+              }
+
+  /api/catalyst/delete_catalyst_soap_note:
+    put:
+      summary: "Remove catalyst note with no appointment found from dashboard"
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/DeleteCatalystSoapNoteParameters"
+      responses:
+        "200":
+          description: "Remove catalyst record from dashboard"
+          content:
+            application/json:
+              example: {
+                "status": "success"
+              }
+
+  /api/catalyst/{catalyst_id}/appointments_list:
+    get:
+      summary: "List matching appointments on that day"
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "catalyst_id"
+        schema:
+          type: "integer"
+        description: "Catalyst Data Id to be paired"
+        required: false
+      - in: "query"
+        name: "catalyst_data_id"
+        schema:
+          type: "integer"
+        description: "Catalyst Data Id to be paired"
+        required: false
+      - in: "query"
+        name: "default_location_id"
+        schema:
+          type: "integer"
+        description: "Clinic id which scheduling belongs to"
+        required: false
+      responses:
+        "200":
+          description: "Lists all matching appointmens"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 54355,
+                  "client_name": "Cfirst1830 Clast1830",
+                  "client_id": 1830,
+                  "staff_name": "Sfirst4411 Slast4411",
+                  "staff_id": 4411,
+                  "date": "2022-06-04",
+                  "start_time": "14:00",
+                  "end_time": "14:30",
+                  "units": "2.0",
+                  "minutes": "30.0",
+                  "note": "BCBA reviewed discharge paperwork with caregivers. BCBA observed caregivers providing dense verbal praise throughout the session. BCBA reviewed additional resources as listed in the discharge paperwork for caregivers to help with continued support for client. ",
+                  "catalyst_soap_note_id": "f2dcbe67-ca8a-4d41-aa94-20c72c2aac52",
+                  "location": "Community",
+                  "cordinates": "",
+                  "is_deleted_from_connect": false,
+                  "date_revision_made": "2022-06-05T22:09:08.616-04:00",
+                  "creator": "Sfirst4411 Slast4411",
+                  "appointments": []
+                }
+              }
 
   /api/current_user_detail:
     get:
@@ -6693,7 +7891,6 @@ paths:
                   "welcome_note": "Welcome!"
                 }
               }
-
     put:
       summary: welcome note update
       parameters:
@@ -6726,6 +7923,369 @@ paths:
                   "welcome_note": "Welcome!"
                 },
                 "errors": []
+              }
+
+  /api/catalyst/{catalyst_id}/matching_appointments_list:
+    get:
+      summary: Get all matching appointments for the catalyst data 
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "catalyst_id"
+        description: "catalyst id"
+        required: true
+      responses:
+        "200":
+          description: "Get matching appointments list"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 65503,
+                  "client_name": "Nathan May",
+                  "client_id": 1867,
+                  "staff_name": "Wintana Mesfin",
+                  "staff_id": 4647,
+                  "date": "2022-08-10",
+                  "start_time": "16:30",
+                  "end_time": "19:30",
+                  "units": "12.0",
+                  "minutes": "180.0",
+                  "note": "Client appeared calm and transition from walk in the community to home appropriately. Clinician probed lesson for levels of friendships which client did not probe out of and took baseline data. Clinician modeled lesson for shoe tying, initiating conversation using a textual prompt and went over reinforcement procedure, error correction and prompting hierarchy. Clinician also probed targets for buttoning and unbuttoning clothing item while client is wearing clothing item for shorts which client probed out of. Client was motivated to earn watching TV during his breaks and did great with following instructions to engage in coping strategies, gaining attention of others independently and manding for one more minute when his break is over. Clinician also probed new target for recalling information which client did not probe out of. ",
+                  "catalyst_soap_note_id": "64221c65-3bc5-48de-9d2e-634760ebb006",
+                  "location": "Home",
+                  "cordinates": "",
+                  "is_deleted_from_connect": false,
+                  "date_revision_made": "2022-08-11T00:04:22.790-04:00",
+                  "creator": "Wintana Mesfin",
+                  "appointments": []
+                },
+                "matching_appointments_found": false
+              }
+
+  /api/update_default_schedule_view:
+    put:
+      summary: update schedule default view
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/ScheduleViewParameters"
+      responses:
+        "200":
+          description: "update welcome note"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id": 1777,
+                  "first_name": "Ms.",
+                  "last_name": "Osvaldo",
+                  "email": "super_admin_user@yopmail.com",
+                  "status": "active",
+                  "title": "super_admin",
+                  "gender": "male",
+                  "default_schedule_view": "calendar",
+                  "phone_numbers": []
+                },
+                "errors": []
+              }
+
+  /api/super_admins_list:
+    get: 
+      summary: Get all super admins list 
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "query"
+        name: "page"
+        schema:
+          type: "integer"
+        description: "Page number to display"
+        required: false
+      responses:
+        "200":
+          description: "get all super admins"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": [
+                  { 
+                    "id": 1777,
+                    "first_name": "Ms.",
+                    "last_name": "Osvaldo",
+                    "email": "super_admin_user@yopmail.com",
+                    "dob": null,
+                    "status": "active",
+                    "hired_at": null,
+                    "terminated_on": null,
+                    "title": "super_admin",
+                    "gender": "male"
+                  },
+                  {
+                    "id": 4864,
+                    "first_name": "New ",
+                    "last_name": "SuperAdmin",
+                    "email": "nsu@mailinator.com",
+                    "dob": "2022-08-01",
+                    "status": "active",
+                    "hired_at": "2022-08-01",
+                    "terminated_on": null,
+                    "title": "super_admin",
+                    "gender": "male"
+                  }
+                ],
+                "total_records": 4,
+                "limit": 30,
+                "page": "1"
+              }
+
+  /api/create_super_admin:
+    post:
+      summary: create super admin 
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/CreateUpdateSuperAdminParameters"
+      responses:
+        "200":
+          description: "create super admin"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id":1777,
+                  "first_name":"Ms.",
+                  "last_name":"Osvaldo",
+                  "email":"super_admin_user@yopmail.com",
+                  "dob":null,
+                  "status":"active",
+                  "hired_at":null,
+                  "terminated_on":null,
+                  "title":"super_admin",
+                  "gender":"male"
+                }
+              }
+
+  /api/update_super_admin/{id}:
+    put:
+      summary: update super admin 
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "Super Admin Id"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/CreateUpdateSuperAdminParameters"
+      responses:
+        "200":
+          description: "update super admin"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id":1777,
+                  "first_name":"Ms.",
+                  "last_name":"Osvaldo",
+                  "email":"super_admin_user@yopmail.com",
+                  "dob":null,
+                  "status":"active",
+                  "hired_at":null,
+                  "terminated_on":null,
+                  "title":"super_admin",
+                  "gender":"male"
+                }
+              }
+
+  /api/super_admin_detail/{id}:
+    get:
+      summary: Get super admin detail 
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "Super Admin Id"
+        required: true
+      responses:
+        "200":
+          description: "get super admin detail"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id":1777,
+                  "first_name":"Ms.",
+                  "last_name":"Osvaldo",
+                  "email":"super_admin_user@yopmail.com",
+                  "dob":null,
+                  "status":"active",
+                  "hired_at":null,
+                  "terminated_on":null,
+                  "title":"super_admin",
+                  "gender":"male"
+                }
+              }
+
+  /api/users/{user_id}/email_notifications:
+    put:
+      summary: enable/disable email notifications for user 
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "user_id"
+        description: "User Id"
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/UpdateUserEmailNotificationsParameters"
+      responses:
+        "200":
+          description: "enable/disable email notifications for user"
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "data": {
+                  "id":1777,
+                  "first_name":"Ms.",
+                  "last_name":"Osvaldo",
+                  "email":"super_admin_user@yopmail.com",
+                  "status":"active",
+                  "title": "rbt",
+                  "gender": "male",
+                  "deactivated_at": null,
+                  "is_email_notification_allowed": true,
+                  "default_schedule_view": "list"
+                }
+              }
+
+  /api/clients/{client_id}/soap_notes_pdf:
+    get:
+      summary: get pdf for soap notes for specific client 
+      parameters:
+      - in: "header"
+        name: "access-token"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "client"
+        description: "Request headers"
+        required: true
+      - in: "header"
+        name: "uid"
+        description: "Request headers"
+        required: true
+      - in: "path"
+        name: "client_id"
+        description: "Client Id"
+        required: true
+      - in: "query"
+        name: "soap_notes_ids"
+        schema:
+          type: "string"
+        description: "Soap notes ids array to include in pdf & empty array if all soap notes must be present"
+        required: true
+      responses:
+        "200":
+          description: "get pdf for soap notes for specific client "
+          content:
+            application/json:
+              example: {
+                "status": "success",
+                "message": "Pdf generation is in progress. Please check your email after sometime."
               }
 
 definitions:
@@ -6987,6 +8547,8 @@ definitions:
       job_type:
         type: "string" 
         enum: ["full_time", "part_time"]
+      deactivated_at:
+        type: "string"
       phone_numbers_attributes:
         type: "object"
         properties:
@@ -7050,6 +8612,8 @@ definitions:
       job_type:
         type: "string" 
         enum: ["full_time", "part_time"]
+      deactivated_at:
+        type: "string"
       phone_numbers_attributes:
         type: "object"
         properties:
@@ -7120,7 +8684,13 @@ definitions:
         type: "string"
       dob:
         type: "string"
-      bcba_id:
+      primary_bcba_id:
+        type: "integer"
+      secondary_bcba_id:
+        type: "integer"
+      primary_rbt_id:
+        type: "integer"
+      secondary_rbt_id:
         type: "integer"
       phone_number_attributes:
         type: "object"
@@ -7189,6 +8759,12 @@ definitions:
         type: "integer"
       is_service_provider_required:
         type: "boolean"
+      is_early_code: 
+        type: "boolean"
+      max_units:
+        type: "string"
+      selected_non_early_service_id:
+        type: "integer"
       service_qualifications_attributes:
         type: "object"
         properties:
@@ -7197,6 +8773,15 @@ definitions:
             properties:
               qualification_id:
                 type: "integer"
+      selected_payors:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            payor_id:
+              type: "integer"
+            is_legacy_required:
+              type: "boolean"
 
   FundingSourceCreateUpdateParameters:
     type: "object"
@@ -7385,6 +8970,16 @@ definitions:
             type: "string"
           country:
             type: "string"
+
+  UpdateAppointmentUnitsParameters:
+    type: "object"
+    properties:
+      catalyst_data_id:
+        type: "integer"
+      scheduling_id:
+        type: "integer"
+      use_abac_units:
+        type: "boolean"
 
   ClientContactUpdateParameters:
     type: "object"
@@ -7590,6 +9185,18 @@ definitions:
       address_name:
         type: "string"
 
+  ClientEarlyAuthParameters:
+    type: "object"
+    properties:
+      funding_source_id:
+        type: "integer"
+
+  ReplaceEarlyAuthParameters:
+    type: "object"
+    properties: 
+      early_authorization_id: 
+        type: "integer"
+  
   SchedulingChangerequestCreateParameters:
     type: "object"
     properties:
@@ -7612,4 +9219,95 @@ definitions:
     type: "object"
     properties:
       welcome_note:
+        type: "string"
+
+  DeleteCatalystSoapNoteParameters:
+    type: "object"
+    properties:
+      catalyst_data_id:
+        type: integer
+  
+  RenderAppointmentParameters:
+    type: "object"
+    properties:
+      scheduling_id:
+        type: "integer"
+
+  CreateSplitAppointmentParameters:
+    type: "object"
+    properties:
+      schedule_id: 
+        type: "integer"
+      staff_id: 
+        type: "integer"
+      client_enrollment_service_id:
+        type: "integer"
+      date: 
+        type: "string"
+      split_schedules: 
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            start_time:
+              type: "string"
+            end_time:
+              type: "string"
+            service_address_id:
+              type: "integer"
+            units:
+              type: "integer"
+            catalyst_data_id:
+              type: "integer"
+            status:
+              type: "string"
+
+  CreateUpdateWithoutClientParameters:
+    type: "object"
+    properties:
+      staff_id:
+        type: "integer"
+      appointment_office_id:
+        type: "integer"
+      date: 
+        type: "string"
+      end_time:
+        type: "string"
+      non_billable_reason:
+        type: "string"
+      start_time:
+        type: "string"
+      status:
+        type: "string"
+
+  ScheduleViewParameters:
+    type: "object"
+    properties:
+      default_schedule_view:
+        type: "string"
+
+  CreateUpdateSuperAdminParameters:
+    type: "object"
+    properties:
+      dob: 
+        type: "string"
+      email: 
+        type: "string"
+      first_name: 
+        type: "string"
+      gender:
+        type: "string"
+      hired_at: 
+        type: "string"
+      last_name: 
+        type: "string"
+      status: 
+        type: "string"
+      terminated_on: 
+        type: "string"
+
+  UpdateUserEmailNotificationsParameters:
+    type: "object"
+    properties:
+      deactivated_at:
         type: "string"

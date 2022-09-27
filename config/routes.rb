@@ -25,7 +25,7 @@ Rails.application.routes.draw do
       registrations: 'overrides/registrations'
     }
 
-    resources :regions, only: [:index ]
+    resources :regions, except: %i[show destroy]
     resources :organizations
     resources :attachment_categories
 
@@ -53,6 +53,7 @@ Rails.application.routes.draw do
       get '/soap_notes/:id', to: 'client_meta_data#soap_note_detail'
       resources :service_addresses, controller: 'client_service_addresses'
       post '/create_office_address', to: 'client_service_addresses#create_office_address'
+      get '/soap_notes_pdf', to: 'clients#soap_notes_pdf'
       post '/create_early_auths', to: 'client_enrollment_services#create_early_auths'
       put '/replace_early_auth', to: 'client_enrollment_services#replace_early_auth'
       get '/past_appointments', to: 'clients#past_appointments'
@@ -116,6 +117,7 @@ Rails.application.routes.draw do
 
     get '/current_user_detail', to: 'users#current_user_detail'
     put '/update_default_schedule_view', to: 'users#update_default_schedule_view'
+    put '/users/:user_id/email_notifications', to: 'users#email_notifications'
 
     get '/setting', to: 'settings#show'
     put '/setting', to: 'settings#update'
@@ -124,5 +126,12 @@ Rails.application.routes.draw do
     post '/create_super_admin', to: 'users#create_super_admin'
     get '/super_admin_detail/:id', to: 'users#super_admin_detail'
     put '/update_super_admin/:id', to: 'users#update_super_admin'
+
+    resources :users do
+      collection do
+        put 'set_notifications_read', to: 'notifications#set_notifications_read'
+        get 'notifications', to: 'notifications#index'
+      end
+    end
   end
 end

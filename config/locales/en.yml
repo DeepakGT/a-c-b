@@ -30,8 +30,24 @@
 # available at https://guides.rubyonrails.org/i18n.html.
 
 en:
+  application_controller:
+    controllers:
+      notification:
+        messages:
+          error: 'the :ids parameter must have at minimum a valid numeric value'
+  notification:
+    draft_appointment: 
+      message: "Approval of the day and client appointment project is approaching."
+      subject: You must approve the draft appointment
   activerecord:
     models:
+      scheduling:
+        errors:
+          range: 'total of unit count exceed the amount of authorized units.'
+          units_blank: 'units field may not be blank or empty'
+          limit_autorization: 'exceeds authorization units'
+          any_appointment: 'appointment scheduled, try another date.'
+          limit_recurrence: 'limit of appointments reached'
     attributes:
       funding_source:
         payor_types:
@@ -44,6 +60,9 @@ en:
           male: male
           female: female
           no_binary: no binary
+      scheduling:
+        validate_draft: 'appointments can only be created by client care coordinator or clinical director.'
+    
 
 
   devise_token_auth:

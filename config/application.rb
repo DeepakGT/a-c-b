@@ -45,5 +45,7 @@ module AbaCentreBe
     config.time_zone = 'Eastern Time (US & Canada)'
     
     config.hosts << ENV['DOMAIN']
+    
+    config.active_record.use_yaml_unsafe_load = true
   end
 end

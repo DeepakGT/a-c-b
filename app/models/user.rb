@@ -18,6 +18,7 @@ class User < ActiveRecord::Base
   has_one :user_role, dependent: :destroy
   has_one :address, as: :addressable, dependent: :destroy, inverse_of: :addressable
   has_many :phone_numbers, as: :phoneable, dependent: :destroy, inverse_of: :phoneable
+  has_many :notifications, as: :recipient, dependent: :destroy
   has_one :rbt_supervision, dependent: :destroy
   
   has_one :role, through: :user_role
@@ -49,6 +50,7 @@ class User < ActiveRecord::Base
   scope :by_last_name, ->(lname){ where("last_name ILIKE '%#{lname}%'") }
   scope :by_role, ->(title){ where("roles.name ILIKE '%#{title}%'")}
   scope :by_roles, ->(role_names){ joins(:role).where('role.name': role_names) }
+  scope :by_creator, ->(creator){ find_by(id: creator) }
 
   # delegates
   delegate :name, to: :role, prefix: true, allow_nil: true
@@ -77,6 +79,16 @@ class User < ActiveRecord::Base
 
   def active_for_authentication?
     super and self.active?
+  end
+
+  def mark_notifications_as_read(ids)
+    notifications.by_ids(ids).mark_as_read!
+  end
+
+  def allow_email_notifications?
+    return true if self.deactivated_at.nil?
+
+    false
   end
 
   private
