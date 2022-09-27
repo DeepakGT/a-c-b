@@ -6,25 +6,27 @@
     <div class="container">
       <div class="card my-10">
         <div class="card-body">
-          <div class="p-3 mb-2 bg-primary text-white">
-            <table style= "border-collapse: separate; border-spacing: 15px 5px;">
-              <tr>
-                <td>
-                  <img src="https://cdn-icons-png.flaticon.com/512/2773/2773319.png" width="60" height="60" />
-                </td>
-                <td>         
-                  <h2 class="h4 mb-4">    
-                    <center>New update in your appointments</center>
-                  </h2>
-                </td>
-              </tr>
-            </table>
+          <div class="w3-container w3-green" style=" background-color: #553c9a!important;">
+            <center>
+              <table style= "border-collapse: separate; border-spacing: 15px 5px;">
+                <tr>
+                  <td>
+                    <img src="https://cdn-icons-png.flaticon.com/512/2773/2773319.png" width="60" height="60" />
+                  </td>
+                  <td>
+                    <h2 class="text-gray-700" style= "color:#FFFFFF">
+                   	 <center>New update in your appointments</center>
+                    </h2>
+                  </td>
+                </tr>
+              </table>
+            </center>
           </div>
           <div class="space-y-3">
             <p class="text-gray-700">Hi <%= @schedule.client_enrollment_service.client_enrollment.client.first_name.truncate(6) %>,
               the following information was updated recently:
             </p>
-            <center>
+            <center> 
               <table>
                 <tr>
                   <td><p class="text-gray-700"><strong>Date:</strong><%= @schedule.date %></p></td>
@@ -39,25 +41,27 @@
                   <td><p class="text-gray-700"><strong>Status:</strong><%= @schedule.status %></p></td>
                 </tr>
               </table>
-            </center>
               <br>
-            <center> 
+            </center>
+            <center>
               <%= link_to "Go to appointment","#{ENV["DOMAIN"]}#{ENV["SCHEDULE_PATH"]}#{@schedule.id}", target:"_blank" ,class:"btn btn-primary " %>
             </center>
           </div>
           <hr>
           <p class="text-gray-700">
-            <table>
+              <table>
               <tr>
                 <td>
-                  <img src="https://scontent.feoh3-1.fna.fbcdn.net/v/t1.6435-9/120421140_108801817654404_6436897451881808967_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=gXk5YIZCAIsAX8a8EhR&_nc_ht=scontent.feoh3-1.fna&oh=00_AT_Z1bhS2YN4Lct2K5acgBx6T7FSoRwOC7NTRJYDIAaTsQ&oe=6357D822" width="70" height="70" />
+                  <img src="https://i.im.ge/2022/09/28/1AIKAr.ABAConnectVertical-LowRes-CMYK.png" 
+                      alt="ABAConnectVertical_LowRes _CMYK" 
+                      border="0", width="110" height="80" />
                 </td>
                 <td>
                   <p class="text-gray-600">
-                    <font size=1>
-                      © ABA Technology SAS | All rights reserved. Please don’t reply to this email, as we are unable to respond from this email address. 
-            	    	  This was an informative message generated automatically by the system.
-                    </font>
+                  <font size=1>
+                    © ABA Technology SAS | All rights reserved. Please don’t reply to this email, as we are unable to respond from this email address. 
+            	      This was an informative message generated automatically by the system.
+                  </font>
                   </p>
                 </td>
               </tr>
