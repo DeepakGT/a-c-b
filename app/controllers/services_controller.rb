@@ -10,8 +10,9 @@ class ServicesController < ApplicationController
 
   def create
     @service = Service.new(service_params)
+    flag_early_services
     @service&.id = Service.ids.max+1
-    @service&.save
+    @service&.save unless @service.errors.present?
   end
 
   def show
@@ -39,6 +40,18 @@ class ServicesController < ApplicationController
 
   def set_service
     @service = Service.find(params[:id]) rescue nil
+  end
+
+  def flag_early_services
+    if params[:is_early_code].to_bool.true? && params[:is_service_provider_required].to_bool.true?
+      @service&.errors&.add(:service, 'Both is_early_code and is_service_provider_required cannot be set at the same time')
+    elsif params[:is_service_provider_required].to_bool.true? && params[:is_early_code].to_bool.false?
+      @service.is_early_code = false
+      @service.is_service_provider_required = true
+    elsif params[:is_early_code].to_bool.true? && params[:is_service_provider_required].to_bool.false?
+      @service.is_early_code = true
+      @service.is_service_provider_required = false
+    end
   end
 
   def authorize_user
