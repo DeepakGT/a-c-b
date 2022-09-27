@@ -202,6 +202,17 @@ class Scheduling < ApplicationRecord
     StaffMailer.schedule_update(self).deliver
   end
 
+  def set_status_and_rendered_at(schedule)
+    if schedule&.client_enrollment_service&.service&.is_early_code? 
+      status = 'auth_pending'
+      rendered_at = nil
+    else
+      status = 'rendered'
+      rendered_at = Time.current
+    end
+    [status, rendered_at]
+  end
+  
   def notification_draft_appointment
     params = {
       message: I18n.t('.notification.draft_appointment.message'),
