@@ -296,7 +296,7 @@ class Scheduling < ApplicationRecord
 
   def validate_draft_appointments
     user = User.by_creator(creator_id)
-    return true if draft? && (user.role_name == Constant.roles['super_admin'] || user.role_name == Constant.roles['ccc'] || user.role_name == Constant.roles['cd'])
+    return true if draft? && (user.role_name == Constant.roles['ccc'] || user.role_name == Constant.roles['cd'])
 
     errors.add(:draft, I18n.t('.activerecord.models.scheduling.validate_draft'))
   end
