@@ -25,6 +25,8 @@ class Client < ApplicationRecord
   validates :dq_reason, presence: true, if: ->{ self.disqualified? }
   validates :dq_reason, absence: true, if: ->{ !self.disqualified? }
 
+  validates_uniqueness_of :first_name, scope: %i[last_name dob]
+
   scope :by_clinic, ->(clinic_id){ where(clinic_id: clinic_id) }
   scope :by_bcbas, ->(bcba_ids) { where(bcba_id: bcba_ids) }
   scope :by_staff_id_in_scheduling, ->(staff_id){ joins(client_enrollments: {client_enrollment_services: :schedulings}).where('schedulings.staff_id = ?', staff_id) }
