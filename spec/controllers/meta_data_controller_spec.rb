@@ -191,11 +191,11 @@ RSpec.describe MetaDataController, type: :controller do
 
   describe 'GET #select_scheduling_status' do
     context 'when the response is successful' do
-      let!(:scheduling_statuses){ Scheduling.transform_statuses }
+      let!(:scheduling_statuses){ Scheduling.transform_statuses('') }
 
       it 'return the selectable options from the scheduling status successfully' do
 
-        get :select_scheduling_status
+        get :select_scheduling_status, params: {action_type: ''}
         response_body = JSON.parse(response.body)
 
         expect(response.status).to eq(200)

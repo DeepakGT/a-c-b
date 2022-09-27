@@ -301,10 +301,12 @@ class Scheduling < ApplicationRecord
     errors.add(:draft, I18n.t('.activerecord.models.scheduling.validate_draft'))
   end
 
-  def self.transform_statuses
+  def self.transform_statuses(action_type)
     statuses.map do |type, _|
+      next if (type == "draft" && action_type == "edit")
+
       {'value' => type, 'title'=> I18n.t("activerecord.attributes.scheduling.statuses.#{type}").capitalize }
-    end
+    end.compact
   end
   # end of private
 end

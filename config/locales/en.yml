@@ -56,6 +56,7 @@ en:
           medicare: medicare
           third_party_contract: third party contract
       scheduling:
+        validate_draft: 'appointments can only be created by client care coordinator or clinical director.'
         statuses:
           scheduled: scheduled,
           rendered: rendered,
@@ -77,8 +78,8 @@ en:
           male: male
           female: female
           no_binary: no binary
-      scheduling:
-        validate_draft: 'appointments can only be created by client care coordinator or clinical director.'
+
+
     
 
 
