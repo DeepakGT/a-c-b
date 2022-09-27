@@ -10,11 +10,13 @@ json.job_type staff&.job_type
 json.gender staff&.gender
 json.npi staff.npi
 
-json.organization_id staff.staff_clinics.home_clinic.first.clinic&.organization_id
-json.organization_name staff.staff_clinics.home_clinic.first.clinic&.organization_name
-json.clinic_id staff.staff_clinics.home_clinic.first.clinic_id
-json.clinic_name staff.staff_clinics.home_clinic.first.clinic&.name
-json.deactivated_at staff&.deactivated_at
+if !staff.staff_clinics&.home_clinic&.first&.clinic.nil?
+  json.organization_id staff.staff_clinics.home_clinic.first.clinic&.organization_id
+  json.organization_name staff.staff_clinics.home_clinic.first.clinic&.organization_name
+  json.clinic_id staff.staff_clinics.home_clinic.first.clinic_id
+  json.clinic_name staff.staff_clinics.home_clinic.first.clinic&.name
+  json.deactivated_at staff&.deactivated_at
+end
 
 if staff&.supervisor.present?
   json.supervisor_id staff.supervisor_id
