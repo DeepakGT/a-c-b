@@ -201,7 +201,28 @@ class Scheduling < ApplicationRecord
     StaffMailer.schedule_update(self).deliver
   end
 
+  def service_address
+    return nil unless service_address_id.present?
+
+    address = Address.find_by(id: service_address_id)
+    service_address_type = address.service_address_type_id.present? ? address.service_address_type_name : nil
+    {
+      line1: address.line1,
+      line2: address.line2,
+      line3: address.line3,
+      zipcode: address.zipcode,
+      city: address.city,
+      state: address.state,
+      country: address.country,
+      is_default: address.is_default,
+      service_address_type_id: address.service_address_type_id.present? ? address.service_address_type_id : nil,
+      service_address_type_name: service_address_type,
+      full_address: scheduled? || draft? ? address.full_address : service_address_type
+    } 
+  end
+  
   private
+
   # def validate_time
   #   possible_schedules = Scheduling.where.not(id: self.id)
   #   same_day_schedules = possible_schedules.where(staff_id: self.staff_id, client_enrollment_service_id: self.client_enrollment_service_id, date: self.date)

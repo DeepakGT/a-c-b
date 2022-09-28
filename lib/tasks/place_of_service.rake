@@ -1,7 +1,10 @@
 namespace :place_of_service do
   desc 'create insert old address_name -> aka'
   task fill: :environment do
-    [{tag_num: 3, name: 'School'}, {tag_num: 11, name:'Office'}, {tag_num: 12, name:'Home'}, {tag_num: 99, name:'Community'}, {tag_num: 10, name:'Telehealth Provided in Patient’s Home'}, {tag_num: 2, name: 'Telehealth Provided Other than in Patient’s Home'}].each { |aka| service_address_type = ServiceAddressType.create(tag_num: aka[:tag_num], name: aka[:name]) }
+    [{tag_num: 3, name: 'School'}, {tag_num: 11, name:'Office'}, {tag_num: 12, name:'Home'},
+     {tag_num: 99, name:'Community'}, {tag_num: 10, name:'Telehealth Provided in Patient’s Home'},
+     {tag_num: 2, name: 'Telehealth Provided Other than in Patient’s Home'},
+     {tag_num: 0, name: 'N/A'}].each { |aka| service_address_type = ServiceAddressType.create(tag_num: aka[:tag_num], name: aka[:name]) }
   end
 
   task change_service_address: :environment do
@@ -37,7 +40,7 @@ namespace :place_of_service do
         elsif is_telehealht.include?(place_of_service.address_name.to_s.upcase)
           service_address = service_address_types.select {|service_address_type| service_address_type[:tag_num].to_i == 10 }
         else
-          service_address = service_address_types.select {|service_address_type| service_address_type[:tag_num].to_i == 12 }
+          service_address = service_address_types.select {|service_address_type| service_address_type[:tag_num].to_i == 0 }
         end
         puts "service_address #{service_address.inspect}" if service_address.present?
         address.update_attribute :service_address_type_id, service_address[0][:id]
