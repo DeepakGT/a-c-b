@@ -301,9 +301,10 @@ class Scheduling < ApplicationRecord
     errors.add(:draft, I18n.t('activerecord.models.scheduling.validate_draft'))
   end
 
-  def self.transform_statuses(action_type)
+  def self.transform_statuses(action_type, role)
     statuses.map do |type, _|
-      next if (type == 'draft' && action_type == 'edit')
+      next if (type == 'draft') && (action_type == 'edit' || ![Constant.roles['ccc'],Constant.roles['cd']].include?(role))
+
 
       { 'value' => type, 'title'=> I18n.t("activerecord.attributes.scheduling.statuses.#{type}").capitalize }
     end.compact

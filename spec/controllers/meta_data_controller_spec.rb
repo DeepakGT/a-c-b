@@ -191,9 +191,12 @@ RSpec.describe MetaDataController, type: :controller do
 
   describe 'GET #select_scheduling_status' do
     context 'when the response is successfully' do
-      let!(:scheduling_statuses){ Scheduling.transform_statuses('') }
+      let!(:user) { create(:user, :with_role, role_name: 'Clinical Director') }
+      let!(:auth_headers) { user.create_new_auth_token }
+      let!(:scheduling_statuses){ Scheduling.transform_statuses('', 'Clinical Director') }
 
       it 'returns the selectable options from the scheduling status successfully' do
+        set_auth_headers(auth_headers)
 
         get :select_scheduling_status, params: { action_type: '' }
         response_body = JSON.parse(response.body)
