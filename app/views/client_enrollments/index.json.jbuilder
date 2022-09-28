@@ -20,6 +20,7 @@ if non_billable_funding_sources.present?
 else
   json.nonBillabelPayorExists false
 end
+json.non_billable_funding_sources_id non_billable_funding_sources.count == 1 ? non_billable_funding_sources&.last&.id : ""
 if ((@client&.non_early_authorizations_except_97151&.present? || !@client&.authorization_includes_97151&.present? ) || (@client&.early_authorizations&.present? && @client&.funding_source_ids&.count==FundingSource.non_billable_funding_sources.count)) || @client&.days_since_creation>180
   json.hideEarlyAuthButton true
 else

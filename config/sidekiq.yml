@@ -6,5 +6,6 @@
   - SyncWithCatalystTwoMonths
   - UpdateUserStatus
   - DestroyUnassignedAppointments
+  - DestroyUnusedExpiredEarlyAuthorizations
   - AvailityProcessClaims
   - GeneratePdf

@@ -9,6 +9,7 @@ class ClientEnrollmentServicesController < ApplicationController
     set_client_enrollment
     @enrollment_service = @client_enrollment&.client_enrollment_services&.create(enrollment_service_params)
     update_staff_legacy_numbers
+    replace_early_auth if params[:early_authorization_id].present? && !@enrollment_service&.id.nil?
   end
 
   def show
@@ -52,21 +53,6 @@ class ClientEnrollmentServicesController < ApplicationController
     end
   end
 
-  def replace_early_auth
-    @early_authorization = ClientEnrollmentService.find(params[:early_authorization_id]) rescue nil
-    @final_authorization = assign_replaceable_authorization
-    if @final_authorization.present?
-      schedules = @early_authorization&.schedulings&.within_dates(@final_authorization&.start_date, @final_authorization&.end_date)
-      schedules&.each do |schedule|
-        schedule&.update(client_enrollment_service_id: @final_authorization&.id) if (check_rendering_provider_condition(schedule) && @final_authorization&.left_units>=schedule&.units)
-      end
-      delete_early_authorization if @early_authorization&.schedulings&.blank?
-      RenderAppointments::RenderPartiallyRenderedSchedulesOperation.call(@final_authorization&.id)
-    else
-      @early_authorization&.errors&.add(:final_authorization, 'does not exist for selected early authorization.')
-    end
-  end
-
   private
 
   def authorize_user
@@ -93,7 +79,7 @@ class ClientEnrollmentServicesController < ApplicationController
   end
 
   def enrollment_service_params
-    params.permit(:service_id, :start_date, :end_date, :units, :minutes, :service_number,
+    params.permit(:service_id, :start_date, :end_date, :units, :minutes, :service_number, 
                   service_providers_attributes: %i[id staff_id])
   end
 
@@ -110,14 +96,8 @@ class ClientEnrollmentServicesController < ApplicationController
     false
   end
 
-  def assign_replaceable_authorization
-    replaceable_service_ids = @early_authorization&.service&.selected_non_early_service_id
-    authorizations = ClientEnrollmentService.by_client(@early_authorization&.client_enrollment&.client_id).by_service(replaceable_service_ids).with_funding_source&.order(:created_at)
-    authorizations&.last
-  end
-
   def update_staff_legacy_numbers
-    return if params[:legacy_numbers].blank?
+    return if params[:legacy_numbers].blank? || @enrollment_service&.id.nil?
   
     params[:legacy_numbers].each do |item|
       Staff.find_by(id: item[:staff_id])&.update(legacy_number: item[:legacy_number])
@@ -136,6 +116,22 @@ class ClientEnrollmentServicesController < ApplicationController
   def delete_early_authorization
     @early_authorization&.destroy
     @early_authorization = nil
+  end
+
+  def replace_early_auth
+    authorize :client_enrollment_service, :replace_early_auth? if current_user.role_name!='super_admin'
+    
+    @early_authorization = ClientEnrollmentService.find(params[:early_authorization_id]) rescue nil
+    if !@enrollment_service.id.nil? && @early_authorization.present?
+      schedules = @early_authorization&.schedulings&.within_dates(@enrollment_service&.start_date, @enrollment_service&.end_date)
+      schedules&.each do |schedule|
+        schedule&.update(client_enrollment_service_id: @enrollment_service&.id) if (check_rendering_provider_condition(schedule) && @enrollment_service&.left_units>=schedule&.units)
+      end
+      delete_early_authorization if @early_authorization&.schedulings&.blank?
+      RenderAppointments::RenderPartiallyRenderedSchedulesOperation.call(@enrollment_service&.id)
+    else
+      @early_authorization&.errors&.add(:final_authorization, 'does not exist for selected early authorization.')
+    end
   end
   # end of private
 end
