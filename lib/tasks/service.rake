@@ -37,7 +37,7 @@ namespace :service do
           # enrollment_service.update(client_enrollment_id: client_enrollment.id)
         # end
       end
-      service.update(is_early_code: true, selected_payors: [{payor_id: funding_source_id, is_legacy_required:false}]&.to_json, max_units: 100, selected_non_early_service_id: service_id_to_replace)
+      service.update(is_early_code: true, is_service_provider_required: false, selected_payors: [{payor_id: funding_source_id, is_legacy_required:false}]&.to_json, max_units: 100, selected_non_early_service_id: service_id_to_replace)
     end
   end
 end
