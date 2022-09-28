@@ -17,7 +17,7 @@ class Scheduling < ApplicationRecord
   # validate :validate_time
   validate :validate_past_appointments, on: :create
   validate :validate_units, on: :create
-  validate :validate_draft_appointments, on: :create
+  # validate :validate_draft_appointments, on: :create
   # validate :validate_staff, on: :create
   
   enum status: { scheduled: 'scheduled', rendered: 'rendered', auth_pending: 'auth_pending', non_billable: 'non_billable', 
@@ -247,12 +247,12 @@ class Scheduling < ApplicationRecord
   # end
 
   def validate_past_appointments
-    user = User.find_by(id: creator_id)
-    return if user.role_name=='super_admin' || date.blank?
+    user = User.find_by(id: self.creator_id)
+    return if user&.role_name=='super_admin' || date.blank?
 
-    if user.role_name == 'executive_director' || user.role_name == 'Clinical Director' || user.role_name == 'client_care_coordinator'
+    if user&.role_name == 'executive_director' || user&.role_name == 'Clinical Director' || user&.role_name == 'client_care_coordinator'
       errors.add(:scheduling, 'You are not authorized to create appointments for 3 days ago.') if date < Date.today - Constant.third.days
-    elsif user.role_name == 'bcba'
+    elsif user&.role_name == 'bcba'
       errors.add(:scheduling, 'You are not authorized to create appointment past 24 hrs.') if date < Date.today - Constant.one.day || (date == Date.today - Constant.one.day && start_time < Time.current.strftime('%H:%M'))
     elsif (date < Date.today || (date == Date.today && start_time <= Time.current.strftime('%H:%M')))
       errors.add(:scheduling, 'You are not authorized to create appointment in past.')
