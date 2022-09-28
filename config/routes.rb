@@ -66,7 +66,7 @@ Rails.application.routes.draw do
 
     resources :roles
 
-    resources :meta_data, expept: :show do
+    resources :meta_data, except: :show do
       collection do
         get '/selectable_options', to: 'meta_data#selectable_options'
         get '/select_payor_types', to: 'meta_data#select_payor_types'
