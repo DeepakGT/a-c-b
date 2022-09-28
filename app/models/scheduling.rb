@@ -298,7 +298,7 @@ class Scheduling < ApplicationRecord
     user = User.by_creator(creator_id)
     return true if draft? && (user.role_name == Constant.roles['ccc'] || user.role_name == Constant.roles['cd'])
 
-    errors.add(:draft, I18n.t('.activerecord.models.scheduling.validate_draft'))
+    errors.add(:draft, I18n.t('activerecord.models.scheduling.validate_draft'))
   end
 
   def self.transform_statuses(action_type)
