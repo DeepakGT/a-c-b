@@ -7,22 +7,7 @@ json.client_id client&.id
 json.client_name "#{client.first_name} #{client.last_name}" if client.present?
 json.service_address_id schedule.service_address_id
 json.allow_soap_notes_from_connect schedule&.client_enrollment_service&.service&.allow_soap_notes_from_connect
-service_address = Address.find_by(id: schedule.service_address_id)
-if service_address.present?
-  json.service_address do
-    json.line1 service_address.line1
-    json.line2 service_address.line2
-    json.line3 service_address.line3
-    json.zipcode service_address.zipcode
-    json.city service_address.city
-    json.state service_address.state
-    json.country service_address.country
-    json.is_default service_address.is_default
-    json.service_address_type_id service_address.service_address_type_id if service_address.service_address_type_id.present?
-    json.service_address_type_name service_address.service_address_type_name if service_address.service_address_type_id.present?
-    json.full_address service_address.full_address
-  end
-end
+json.service_address schedule.service_address
 
 if schedule.client_enrollment_service_id.present?
   json.total_units schedule.client_enrollment_service.units
