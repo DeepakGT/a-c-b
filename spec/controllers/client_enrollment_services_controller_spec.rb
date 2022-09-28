@@ -9,7 +9,7 @@ RSpec.describe ClientEnrollmentServicesController, type: :controller do
     @request.env["devise.mapping"] = Devise.mappings[:user]
   end
   
-  let!(:role) { create(:role, name: 'executive_director', permissions: ['client_authorization_view', 'client_authorization_update', 'client_authorization_delete'])}
+  let!(:role) { create(:role, name: 'executive_director', permissions: ['client_authorization_view', 'client_authorization_update', 'client_authorization_delete', 'early_auth_update'])}
   let!(:user) { create(:user, :with_role, role_name: role.name) }
   let!(:auth_headers) { user.create_new_auth_token }
   let!(:organization) {create(:organization, name: 'test-organization', admin_id: user.id)}
@@ -41,6 +41,41 @@ RSpec.describe ClientEnrollmentServicesController, type: :controller do
         expect(response_body['data']['service_id']).to eq(service.id)
         expect(response_body['data']['start_date']).to eq(Date.today.to_s)
         expect(response_body['data']['end_date']).to eq(Date.tomorrow.to_s)
+      end
+
+      context "when early_authorization id is present" do
+        let!(:early_service) { create(:service, is_early_code: true, selected_non_early_service_id: service.id) }
+        let!(:non_billable_funding_source) { create(:funding_source, clinic_id: clinic.id, network_status: 'non_billable') }
+        let!(:client_enrollment1){ create(:client_enrollment, client_id: client.id, funding_source_id: non_billable_funding_source.id) }
+        let!(:client_enrollment_service1){ create(:client_enrollment_service, client_enrollment_id: client_enrollment1.id, service_id: early_service.id, start_date: (Time.current - 5.days).to_date, end_date: (Time.current + 5.days).to_date, units: 50) }
+        let!(:scheduling1){ create(:scheduling, client_enrollment_service_id: client_enrollment_service1.id, date: (Time.current - 2.days).to_date, status: 'auth_pending', start_time: '10:00', end_time: '11:00', units: 4, staff_id: staff.id, creator_id: user.id) }
+        let!(:staff1){ create(:staff, :with_role, role_name: 'rbt') }
+        let!(:scheduling2){ create(:scheduling, client_enrollment_service_id: client_enrollment_service1.id, date: (Time.current + 2.days).to_date, status: 'scheduled', start_time: '10:00', end_time: '11:00', units: 4, staff_id: staff1.id, creator_id: user.id) }
+        let!(:staff2){ create(:staff, :with_role, role_name: 'bcba') }
+        let!(:scheduling3){ create(:scheduling, client_enrollment_service_id: client_enrollment_service1.id, date: (Time.current + 2.days).to_date, status: 'scheduled', start_time: '10:00', end_time: '11:00', units: 4, staff_id: staff2.id, creator_id: user.id) }
+        it "should create authorization and replace early authorization successfully" do
+          set_auth_headers(auth_headers)
+        
+          post :create, params: {
+            client_id: client.id,
+            funding_source_id: funding_source.id, 
+            service_id: service.id,
+            start_date: Date.today - 3.days,
+            end_date: Date.tomorrow,
+            staff_id: staff.id,
+            units: 60,
+            early_authorization_id: client_enrollment_service1.id
+          }
+          response_body = JSON.parse(response.body)
+
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data']['final_authorization']['client_enrollment_id']).to eq(client_enrollment.id) 
+          expect(response_body['data']['final_authorization']['service_id']).to eq(service.id)
+          expect(response_body['data']['final_authorization']['start_date']).to eq((Date.today - 3.days).to_s)
+          expect(response_body['data']['final_authorization']['end_date']).to eq(Date.tomorrow.to_s)
+          expect(response_body['data']['early_authorization']['id']).to eq(client_enrollment_service1.id)
+        end
       end
 
       context "when client_id is not present" do
