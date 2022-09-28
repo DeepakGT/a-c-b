@@ -6,6 +6,7 @@ json.email clinic.email
 json.status clinic.status
 json.organization_id clinic.organization_id
 json.organization_name clinic.organization_name
+json.region_id clinic.region_id
 if clinic.phone_number.present?
   json.phone_number do
     json.id clinic.phone_number.id
