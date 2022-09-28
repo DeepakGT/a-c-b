@@ -48,6 +48,9 @@ en:
           limit_autorization: 'exceeds authorization units'
           any_appointment: 'appointment scheduled, try another date.'
           limit_recurrence: 'limit of appointments reached'
+      region:
+        errors: 
+          unique_name: has already been taken
     attributes:
       funding_source:
         payor_types:
