@@ -39,7 +39,7 @@ class ClientEnrollmentServicesController < ApplicationController
       end_date = (Time.current+90.days).strftime(FORMAT_DATE)
       @client_enrollment = @client&.client_enrollments&.create(funding_source_id: early_auth_params[:funding_source_id], enrollment_date: Time.current.strftime(FORMAT_DATE), terminated_on: end_date, source_of_payment: 'insurance')
       services = Service.all.select{|service| service if !service.selected_payors.nil? }
-      services = services.map{|service| service if JSON.parse(service&.selected_payors)&.pluck('payor_id').map(&:to_i)&.include?(early_auth_params[:funding_source_id]&.to_i)}.compact
+      services = services.map{|service| service if service&.is_early_code.true? && JSON.parse(service&.selected_payors)&.pluck('payor_id').map(&:to_i)&.include?(early_auth_params[:funding_source_id]&.to_i)}.compact
 
       if services.present?
         services.each do |service|
