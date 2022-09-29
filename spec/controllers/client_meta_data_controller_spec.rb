@@ -27,6 +27,25 @@ RSpec.describe ClientMetaDataController, type: :controller do
         expect(response_body['status']).to eq('success')
         expect(response_body['data']['services'].count).to eq(Service.all.count)
       end
+
+      context "when early_authorization_id is present in params" do
+        let!(:service){ create(:service) }
+        let!(:early_service){ create(:service, is_early_code: true, selected_non_early_service_id: service.id) }
+        let!(:funding_source){ create(:funding_source, clinic_id: clinic.id, network_status: 'non_billable')}
+        let!(:client_enrollment){ create(:client_enrollment, client_id: client.id, funding_source_id: funding_source.id) }
+        let!(:early_authorization){ create(:client_enrollment_service, client_enrollment_id: client_enrollment.id, service_id: early_service.id) }
+        it "should fetch non_early service for early service in early authorization successfully" do
+          set_auth_headers(auth_headers)
+        
+          get :selectable_options, params: {client_id: client.id, early_authorization_id: early_authorization.id}
+          response_body = JSON.parse(response.body)
+
+          expect(response.status).to eq(200)
+          expect(response_body['status']).to eq('success')
+          expect(response_body['data']['services'].count).to eq(1)
+          expect(response_body['data']['services'].first['id']).to eq(service.id)
+        end
+      end
     end
   end
 

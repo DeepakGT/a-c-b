@@ -26,7 +26,18 @@ RSpec.describe Service, type: :model do
     let!(:staff) { create(:staff, :with_role, role_name: 'administrator', first_name: 'abcd') }
     it "should validate early code column" do
       service.update(is_early_code: true)
-      expect(service.errors[:service]).to include('cannot be updated to early code as it is connected to billable payors.')
+      expect(service.errors[:service]).to include(I18n.t('activerecord.attributes.service.validate_is_early_code'))
+    end
+  end
+
+  context "#validate_selected_payors" do
+    let!(:organization) { create(:organization, name: 'org1') }
+    let!(:clinic) { create(:clinic, name: 'clinic1', organization_id: organization.id) }
+    let!(:client) { create(:client, clinic_id: clinic.id, first_name: 'test') }
+    let!(:service) { build :service, is_early_code: true, selected_payors: "[]" }
+    it "should validate selected payors" do
+      service.validate
+      expect(service.errors[:early_service]).to include(I18n.t('activerecord.attributes.service.validate_selected_payors'))
     end
   end
 end
