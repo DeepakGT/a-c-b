@@ -43,7 +43,9 @@ class ClientEnrollmentServicesController < ApplicationController
 
       if services.present?
         services.each do |service|
-          @client_enrollment.client_enrollment_services.create(service_id: service.id, start_date: Time.current.strftime(FORMAT_DATE), end_date: end_date, units: service.max_units, minutes: (service.max_units)*15)
+          client_enrollment_service = @client_enrollment.client_enrollment_services.new(service_id: service.id, start_date: Time.current.strftime(FORMAT_DATE), end_date: end_date, units: service.max_units, minutes: (service.max_units)*15)
+          client_enrollment_service.minutes = (service.max_units)*15 if service&.max_units.present?
+          client_enrollment_service.save
         end
         delete_client_enrollment if @client_enrollment&.client_enrollment_services.blank?
       else 

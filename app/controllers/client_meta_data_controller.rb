@@ -53,6 +53,10 @@ class ClientMetaDataController < ApplicationController
   end
 
   def selectable_options_data
+    if params[:early_authorization_id].present?
+      early_authorization = ClientEnrollmentService.find(params[:early_authorization_id]) rescue nil
+      return {services: Service.where(id: early_authorization&.service&.selected_non_early_service_id)}
+    end
     { services: Service.order(:name) }
   end
 
