@@ -100,7 +100,7 @@ class Scheduling < ApplicationRecord
     end
 
     def fill_recurrences(option, schedule, current_user)
-      calcule_dates = fetch_date(option, option[:recurrence] == Constant.monthly || option[:recurrence] == Constant.yearly ? month_year_recurrences(option) : nil) 
+      calcule_dates = fetch_date(schedule, option, option[:recurrence] == Constant.monthly || option[:recurrence] == Constant.yearly ? month_year_recurrences(schedule, option) : nil) 
       (Constant.zero..(calcule_dates.present? ? calcule_dates&.count : recurrences)).each_with_object([]) do |index, array|
         break array if index == (calcule_dates.present? ? calcule_dates&.count : recurrences)
 
@@ -108,9 +108,9 @@ class Scheduling < ApplicationRecord
       end
     end
 
-    def month_year_recurrences(option)
+    def month_year_recurrences(schedule, option)
       cont_recurrences = Constant.zero
-      date_initial = Date.today
+      date_initial = schedule[:date].to_date
 
       recurrences = option[:quantity].to_i
       
@@ -132,13 +132,13 @@ class Scheduling < ApplicationRecord
       cont_recurrences
     end
 
-    def fetch_date(option, month_yearly = nil)
+    def fetch_date(schedule, option, month_yearly = nil)
       dates = []
       recurrences = month_yearly.present? ? month_yearly : option[:quantity].to_i
       (Constant.zero..recurrences).each do |index|
         break if index == recurrences
 
-        date_initial = Date.today.beginning_of_week + index.week
+        date_initial = schedule[:date].to_date.beginning_of_week + index.week
         option[:days] = Constant.all_days if option[:days].empty?
         option[:days].each do |number_day|
           dates.push(calcule_day(date_initial, recurrences, Constant.days_name[number_day.to_i]))
