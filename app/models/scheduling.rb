@@ -100,7 +100,7 @@ class Scheduling < ApplicationRecord
     end
 
     def fill_recurrences(option, schedule, current_user)
-      calcule_dates = fetch_date(option, option[:recurrence] == Constant.monthly || option[:recurrence] == Constant.yearly ? month_year_recurrences(option) : nil) 
+      calcule_dates = fetch_date(schedule, option, option[:recurrence] == Constant.monthly || option[:recurrence] == Constant.yearly ? month_year_recurrences(schedule, option) : nil) 
       (Constant.zero..(calcule_dates.present? ? calcule_dates&.count : recurrences)).each_with_object([]) do |index, array|
         break array if index == (calcule_dates.present? ? calcule_dates&.count : recurrences)
 
@@ -108,9 +108,9 @@ class Scheduling < ApplicationRecord
       end
     end
 
-    def month_year_recurrences(option)
+    def month_year_recurrences(schedule, option)
       cont_recurrences = Constant.zero
-      date_initial = Date.today
+      date_initial = schedule[:date].to_date
 
       recurrences = option[:quantity].to_i
       
@@ -132,13 +132,13 @@ class Scheduling < ApplicationRecord
       cont_recurrences
     end
 
-    def fetch_date(option, month_yearly = nil)
+    def fetch_date(schedule, option, month_yearly = nil)
       dates = []
       recurrences = month_yearly.present? ? month_yearly : option[:quantity].to_i
       (Constant.zero..recurrences).each do |index|
         break if index == recurrences
 
-        date_initial = Date.today.beginning_of_week + index.week
+        date_initial = schedule[:date].to_date.beginning_of_week + index.week
         option[:days] = Constant.all_days if option[:days].empty?
         option[:days].each do |number_day|
           dates.push(calcule_day(date_initial, recurrences, Constant.days_name[number_day.to_i]))
@@ -173,7 +173,7 @@ class Scheduling < ApplicationRecord
         error_msgs.push(I18n.t('.activerecord.models.scheduling.errors.range').capitalize) if scheduling[:date].to_date > client_enrollment_service.end_date.to_date
         error_msgs.push(I18n.t('.activerecord.models.scheduling.errors.units_blank').capitalize) if scheduling[:units].nil?
         error_msgs.push(I18n.t('.activerecord.models.scheduling.errors.limit_autorization').capitalize) if cont_units > client_enrollment_service.units
-        error_msgs.push(I18n.t('.activerecord.models.scheduling.errors.any_appointment').capitalize) if self.any? && check_date_available(scheduling[:date], scheduling[:start_time], scheduling[:end_time]).any?
+        error_msgs.push(I18n.t('.activerecord.models.scheduling.errors.any_appointment').capitalize) if self.any? && check_date_available(scheduling[:date], scheduling[:start_time].delete!('^0-9:'), scheduling[:end_time].delete!('^0-9:')).any?
         error_msgs.push(I18n.t('.activerecord.models.scheduling.errors.limit_recurrence').capitalize) if cont_limit > Constant.limit_appointment_recurrence
         cont_limit += Constant.one
       end
@@ -298,12 +298,13 @@ class Scheduling < ApplicationRecord
     user = User.by_creator(creator_id)
     return true if draft? && (user.role_name == Constant.roles['ccc'] || user.role_name == Constant.roles['cd'])
 
-    errors.add(:draft, I18n.t('activerecord.models.scheduling.validate_draft'))
+    errors.add(:draft, I18n.t('activerecord.attributes.scheduling.validate_draft'))
   end
 
-  def self.transform_statuses(action_type)
+  def self.transform_statuses(action_type, role)
     statuses.map do |type, _|
-      next if (type == 'draft' && action_type == 'edit')
+      next if (type == 'draft') && (action_type == 'edit' || ![Constant.roles['ccc'],Constant.roles['cd']].include?(role))
+
 
       { 'value' => type, 'title'=> I18n.t("activerecord.attributes.scheduling.statuses.#{type}").capitalize }
     end.compact

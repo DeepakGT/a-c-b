@@ -1,5 +1,5 @@
 class MetaDataController < ApplicationController
-  before_action :authenticate_user!, except: %i[select_payor_types gender_list select_scheduling_status]
+  before_action :authenticate_user!, except: %i[select_payor_types gender_list]
 
   def selectable_options
     @selectable_options = selectable_options_data
@@ -44,7 +44,8 @@ class MetaDataController < ApplicationController
   end
 
   def select_scheduling_status
-    render json: { status: :success, scheduling_statuses: Scheduling.transform_statuses(params[:action_type]) }, status: 200
+    scheduling_statuses = Scheduling.transform_statuses(params[:action_type], current_user.role_name)
+    render json: { status: :success, scheduling_statuses: scheduling_statuses }, status: 200
   end
 
   def gender_list
