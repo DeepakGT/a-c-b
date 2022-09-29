@@ -57,6 +57,7 @@ second_notification_draft_appointment_worker:
   cron: '00 08* * *'
   class: SecondNotificationDraftAppointmentWorker
   queue: default
+  
 process_claim_statuses_every_wed_9am_utc:
   cron: '0 5 * * 3'
   class: "AvailityProcessClaimsWorker"
