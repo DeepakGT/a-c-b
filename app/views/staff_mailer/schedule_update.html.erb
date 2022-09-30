@@ -6,27 +6,30 @@
     <div class="container">
       <div class="card my-10">
         <div class="card-body">
-          <div class="w3-container w3-green" style=" background-color: #553c9a !important;">
+          <div class="w3-container w3-green">
             <center>
-              <table style= "border-collapse: separate; border-spacing: 15px 5px;">
+              <table >
                 <tr>
-                  <td>
+                  <td colspan="2">
                     <img src="https://cdn-icons-png.flaticon.com/512/2773/2773319.png" width="60" height="60" />
                   </td>
-                  <td>
-                    <h3 class="text-gray-700" style= "color:#FFFFFF">
-                   	 <center>New update in your appointments</center>
+                  <td colspan="2">
+                    <h3>
+                   	 <center>&nbsp;New update in your appointments</center>
                     </h3>
                   </td>
                 </tr>
               </table>
             </center>
           </div>
-          <div class="space-y-3">  
-            <p class="text-gray-700">
-              Hi <%= @schedule.client_enrollment_service.client_enrollment.client.first_name %>, the following information was updated recently: 
-            </p>
-            <center> 
+          <div class="space-y-3">
+              <p class="text-gray-700">
+              <br>
+              <center>
+                Hi <%= @schedule.client_enrollment_service.client_enrollment.client.first_name %>, the following information was updated recently: 
+              </center>
+              </p>
+            <center>
               <table>
                 <tr>
                   <td><p class="text-gray-700"><strong>Date:</strong><%= @schedule&.date %></p></td>
@@ -38,13 +41,13 @@
                   <td><p class="text-gray-700"><strong>End time:</strong><%= @schedule&.end_time %></p></td>
                 </tr>
                 <tr>
-                  <td><p class="text-gray-700"><strong>Status:</strong><%= @schedule&.status %></p></td>
+                  <td><p class="text-gray-700"><strong>Status:</strong><%= I18n.t(".activerecord.attributes.scheduling.statuses.#{@schedule&.status}")%></p></td>
                 </tr>
               </table>
               <br>
             </center>
             <center>
-              <%= link_to "Go to appointment", "#{ENV["DOMAIN"]}#{ENV["SCHEDULE_PATH"]}#{@schedule&.id}", target:"_blank", class:"btn btn-primary", style: "background-color: #553c9a !important;" %>
+              <%= link_to "Go to appointment", "#{ENV["DOMAIN"]}#{ENV["SCHEDULE_PATH"]}#{@schedule&.id}", target:"_blank", class:"btn btn-primary" %>
             </center>
           </div>
           <hr>
@@ -71,4 +74,3 @@
     </div>
   </body>
 </html>
-
