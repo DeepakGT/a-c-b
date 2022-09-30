@@ -23,7 +23,7 @@ json.data do
           json.service_address_country service_address.country
           json.service_address_is_default service_address.is_default
           json.service_address_type_id service_address.service_address_type_id if service_address.service_address_type_id.present?
-          json.service_address_type_name service_address.service_address_type_name if service_address.service_address_type_id.present?
+          json.service_address_type_name service_address.service_address_type.name if service_address.service_address_type_id.present?
         end
       end
     end

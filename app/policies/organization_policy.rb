@@ -16,6 +16,10 @@ class OrganizationPolicy < ApplicationPolicy
   def regions_organizations?
     show?
   end
+  
+  def remove_region?
+    show?
+  end
 
   def update?
     return true if permissions.include?('organization_update') || user.role_name=='executive_director'

@@ -32,6 +32,9 @@
 en:
   application_controller:
     controllers:
+      clinics:
+        success_massive: massive successfully
+        errors_massive: we have an error, something is wrong
       address:
         error_type: you can't select, try another Service address type
       notification:

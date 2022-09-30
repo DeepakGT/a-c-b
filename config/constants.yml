@@ -13,6 +13,7 @@ weekly: 'weekly'
 monthly: 'monthly'
 yearly: 'yearly'
 n_a: 'N/A'
+void_a: []
 days:
   sunday: 6
   monday: 0

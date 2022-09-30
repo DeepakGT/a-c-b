@@ -1,7 +1,7 @@
 class OrganizationsController < ApplicationController
   before_action :authenticate_user!
   before_action :authorize_user
-  before_action :set_organization, only: %i[update show destroy]
+  before_action :set_organization, only: %i[update show destroy remove_region]
 
   def index
     @organizations = Organization.order(:name)
@@ -29,6 +29,10 @@ class OrganizationsController < ApplicationController
   def regions_organizations
     @organization = Organization.find_by(id: params[:id]) 
     @regions = @organization.regions if @organization.present?
+  end
+
+  def remove_region
+    @remove_regions = @organization.delete_region(params[:region].to_i)
   end
 
   private
