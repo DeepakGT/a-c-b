@@ -53,7 +53,7 @@ class MetaDataController < ApplicationController
   end
 
   def select_service_address_types
-    render json: { status: 'success', data: ServiceAddressType.all.map { |service_address_type| { id: service_address_type.id, name: service_address_type.name } } }
+    render json: { status: 'success', data: ServiceAddressType.order(:name).map { |service_address_type| { id: service_address_type.id, name: service_address_type.name } } }
   end
 
   private

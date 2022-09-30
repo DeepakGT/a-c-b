@@ -12,6 +12,7 @@ daily: 'daily'
 weekly: 'weekly'
 monthly: 'monthly'
 yearly: 'yearly'
+n_a: 'N/A'
 days:
   sunday: 6
   monday: 0

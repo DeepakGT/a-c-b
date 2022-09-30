@@ -7,6 +7,7 @@ class Address < ApplicationRecord
   validates :zipcode, length: { is: 5, wrong_length: "must be exact 5 characters long." }, if: :is_country_usa?
   validate :validate_is_hidden_for_default_service_address
   validates :service_address_type_id, presence: true, if: proc { |a| a.address_type == 'service_address' }
+  validate :select_service_address_type
 
   scope :by_service_address, ->{ where(address_type: 'service_address') }
 
@@ -17,6 +18,12 @@ class Address < ApplicationRecord
   end
 
   private
+
+  def select_service_address_type
+    return true if service_address_type_name != Constant.n_a
+
+    errors.add(:service_address_type_id, I18n.t('.application_controller.controllers.address.error_type'))
+  end
 
   def is_country_usa?
     country == 'United States of America'
