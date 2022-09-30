@@ -43,7 +43,6 @@ process_claim_statuses_every_monday_9am_utc:
   class: "AvailityProcessClaimsWorker"
   queue: AvailityProcessClaims
 
-<<<<<<< HEAD
 remove_draft_appointments_worker:
   cron: '00 00 * * *'
   class: RemoveDraftAppointmentsWorker
@@ -59,8 +58,6 @@ second_notification_draft_appointment_worker:
   class: SecondNotificationDraftAppointmentWorker
   queue: default
   
-=======
->>>>>>> master
 process_claim_statuses_every_wed_9am_utc:
   cron: '0 5 * * 3'
   class: "AvailityProcessClaimsWorker"
