@@ -26,12 +26,19 @@ Rails.application.routes.draw do
     }
 
     resources :regions, except: %i[show destroy]
-    resources :organizations
+    resources :organizations do
+      member do
+        get '/remove_regions/:region', to: 'organizations#remove_region'
+      end
+    end
     resources :attachment_categories
 
     get '/regions_organizations/:id', to: 'organizations#regions_organizations'
     
     resources :clinics do
+      collection do
+        post '/massive_region', to: 'clinics#massive_region'
+      end
       resources :funding_sources
     end
     resources :staff do

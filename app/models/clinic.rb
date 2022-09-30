@@ -19,4 +19,12 @@ class Clinic < ApplicationRecord
   delegate :name, to: :region, prefix: true
 
   scope :by_org_id, ->(org_id){ where('organization_id': org_id) }
+
+  def self.change_region(region, location_ids)
+    location_ids.each do |location_id|
+      clinic = Clinic.find_by(id: location_id)
+      clinic.update(region_id: region)
+    end
+  end
+  
 end

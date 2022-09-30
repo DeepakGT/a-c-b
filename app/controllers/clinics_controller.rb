@@ -11,18 +11,14 @@ class ClinicsController < ApplicationController
   end
 
   def create
-    # TODO: change to id autoincrement in database
     @clinic = Clinic.new(clinic_params)
-    @clinic&.id = Clinic.ids.max+1 if Clinic.ids.present?
-    @clinic&.save
+    @clinic.save ? @clinic : unprosessable_entity_response(@clinic)
   end
 
-  def show
-    @clinic
-  end
+  def show; end
 
   def update
-    @clinic&.update(clinic_params)
+    unprosessable_entity_response(@clinic) unless @clinic.update(clinic_params)
   end
 
   def destroy
@@ -33,6 +29,13 @@ class ClinicsController < ApplicationController
     end
   end
 
+  def massive_region
+    clinic = Clinic.change_region(params[:region], params[:locations])
+    return unprosessable_entity_response(clinic) unless clinic
+    
+    render json: { status: 'success', messages: I18n.t('.controllers.clinics.success_massive').capitalize }, status: :ok
+  end
+
   private
 
   def set_clinic
@@ -40,7 +43,6 @@ class ClinicsController < ApplicationController
   end
 
   def clinic_params
-    # TODO: change to strong params
     params.permit(:name, :organization_id, :aka, :web, :email, :status, :region_id, address_attributes: 
     %i[line1 line2 line3 zipcode city state country addressable_type addressable_id],
     phone_number_attributes: %i[phone_type number])

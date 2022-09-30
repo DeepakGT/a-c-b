@@ -238,7 +238,7 @@ class Scheduling < ApplicationRecord
     return nil unless service_address_id.present?
 
     address = Address.find_by(id: service_address_id)
-    service_address_type = address.service_address_type_id.present? ? address.service_address_type_name : nil
+    service_address_type = address.service_address_type_id.present? ? address.service_address_type.name : nil
     {
       line1: address.line1,
       line2: address.line2,

@@ -19,6 +19,10 @@ class ClinicPolicy < ApplicationPolicy
     false
   end
 
+  def massive_region?
+    update?
+  end
+
   def destroy?
     return true if permissions.include?('location_delete')
 

@@ -10,19 +10,23 @@ RSpec.describe OrganizationsController, type: :controller do
   end
 
   let!(:role) { create(:role, name: 'executive_director', permissions: ['organization_view', 'organization_update'])}
+  let!(:role_admin) { create(:role, name: 'super_admin', permissions: ['organization_view', 'organization_update', 'organization_delete'])}
   let!(:user) { create(:user, :with_role, role_name: role.name) }
   let!(:auth_headers) { user.create_new_auth_token }
-  let!(:regions_organizations) {create_list(:region, 4)}
+  let!(:regions_organizations) {create_list(:region, 5)}
+  let!(:region) {create(:region)}
+  let!(:organization_with_region) { create(:organization, name: 'test-organization', admin_id: user.id, id_regions: regions_organizations.map { |regions_organization| regions_organization.id})}
 
-  describe "GET #index" do 
-    context "when sign in" do
+  describe 'GET #index' do 
+    context 'when sign in' do
       let!(:organizations) do
         build_list(:organization, 5) do |organization, i|
           organization.name = "testorg#{i}"
           organization.save!
         end
       end
-      it "should list all organizations" do
+
+      it 'should list all organizations' do
         set_auth_headers(auth_headers)
         
         get :index
@@ -30,10 +34,10 @@ RSpec.describe OrganizationsController, type: :controller do
         
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
-        expect(response_body['data'].count).to eq(organizations.count)
+        expect(response_body['data'].count).to eq(organizations.count + Constant.one)
       end
 
-      it "should fetch the given page record" do
+      it 'should fetch the given page record' do
         set_auth_headers(auth_headers)
         
         get :index, params: { page: 2}
@@ -46,13 +50,13 @@ RSpec.describe OrganizationsController, type: :controller do
     end
   end
 
-  describe "GET #regions_organizations" do
-    context "when sign in" do
-      let!(:organization) { create(:organization, name: 'test-organization', admin_id: user.id, id_regions: regions_organizations.map { |region| region.id})}
-      it "should list all regions to organizations" do
+  describe 'GET #regions_organizations' do
+    context 'when sign in' do
+
+      it 'expect list all regions to organizations' do
         set_auth_headers(auth_headers)
         
-        get :regions_organizations, params: { id: organization.id }
+        get :regions_organizations, params: { id: organization_with_region.id }
         response_body = JSON.parse(response.body)
 
         expect(response.status).to eq(200)
@@ -62,32 +66,30 @@ RSpec.describe OrganizationsController, type: :controller do
     end
   end
 
-  describe "GET #show" do 
-    context "when sign in" do
-      let(:organization) { create(:organization, name: 'test-organization', admin_id: user.id)}
-      it "should show organization" do
+  describe 'GET #show' do 
+    context 'when sign in' do
+      it 'expect show organization' do
         set_auth_headers(auth_headers)
 
-        get :show, params: {id: organization.id}
+        get :show, params: {id: organization_with_region.id}
         response_body = JSON.parse(response.body)
 
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
-        expect(response_body['data']['id']).to eq(organization.id)
+        expect(response_body['data']['id']).to eq(organization_with_region.id)
       end
     end
   end
   
-  describe "POST #create" do 
-    context "when sign in" do
-      let!(:organization) { create(:organization, name: 'test-organization', admin_id: user.id)}
+  describe 'POST #create' do 
+    context 'when sign in' do
       let!(:organization_name){'test-organization-1'}
       let(:address_city) {'Indore'}
       let(:phone_number_type) {'mobile'}
       let(:phone_number) {'8787878787'}
       let!(:id_regions) { regions_organizations.map { |region| region.id } }
 
-      it "should create an organization successfully" do
+      it 'expect create an organization successfully' do
         set_auth_headers(auth_headers)
         
         post :create, params: {
@@ -110,14 +112,14 @@ RSpec.describe OrganizationsController, type: :controller do
     end
   end
 
-  describe "PUT #update" do
+  describe 'PUT #update' do
     let!(:organization) {create(:organization, name: 'organization1', admin_id: user.id, id_regions: regions_organizations.map { |region| region.id })}
 
-    context "when sign in" do
+    context 'when sign in' do
       let!(:updated_organization_name) {'organization-1-updated'}
       let!(:updated_organization_id_regions) {regions_organizations.map { |region| region.id } }
 
-      it "should update organization successfully" do
+      it 'should update organization successfully' do
         set_auth_headers(auth_headers)
         
         put :update, params: {id: organization.id, name: updated_organization_name, id_regions: updated_organization_id_regions}
@@ -131,8 +133,8 @@ RSpec.describe OrganizationsController, type: :controller do
 
       let!(:organization) {create(:organization, name: 'organization1', address_attributes: {city: 'Bombay'})}
       let!(:updated_address_city) {'Indore'}
-      context "and update associated data" do
-        it "should update address successfully" do
+      context 'and update associated data' do
+        it 'should update address successfully' do
           set_auth_headers(auth_headers)
           put :update, params: {id: organization.id, address_attributes: {city: updated_address_city} }
           response_body = JSON.parse(response.body)
@@ -143,7 +145,7 @@ RSpec.describe OrganizationsController, type: :controller do
         end
 
         let!(:updated_phone_number) {'8989898989'}
-        it "should update phone number successfully" do
+        it 'should update phone number successfully' do
           set_auth_headers(auth_headers)
           put :update, params: {id: organization.id, phone_number_attributes: {number: updated_phone_number} }
           response_body = JSON.parse(response.body)
@@ -156,21 +158,36 @@ RSpec.describe OrganizationsController, type: :controller do
     end
   end
 
-  describe "DELETE #destroy" do
-    context "when sign in" do
-      let(:user) { create(:user, :with_role, role_name: 'super_admin') }
+  describe 'DELETE #destroy' do
+    context 'when sign in' do
+      let(:user) { create(:user, :with_role, role_name: role_admin.name) }
       let(:auth_headers) { user.create_new_auth_token }
-      let(:organization) {create(:organization, name: 'organization1', admin_id: user.id)}
-      it "should delete organization successfully" do
+      
+      it 'should delete organization successfully' do
         set_auth_headers(auth_headers)
 
-        delete :destroy, params: { id: organization.id }
+        delete :destroy, params: { id: organization_with_region.id }
         response_body = JSON.parse(response.body)
 
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
-        expect(response_body['data']['id']).to eq(organization.id)
-        expect(Organization.find_by_id(organization.id)).to eq(nil)
+        expect(response_body['data']['id']).to eq(organization_with_region.id)
+        expect(Organization.find_by_id(organization_with_region.id)).to eq(nil)
+      end
+    end
+  end
+
+  describe 'GET #remove_region' do
+    context 'when sign in' do
+      it 'expect remove region to organization' do
+        set_auth_headers(auth_headers)
+        
+        get :remove_region, params: { id: organization_with_region.id, region: regions_organizations[rand(Constant.five)].id}
+        response_body = JSON.parse(response.body)
+        
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data']['organization']['id_regions'].count).to eq(regions_organizations.drop(1).count)
       end
     end
   end
