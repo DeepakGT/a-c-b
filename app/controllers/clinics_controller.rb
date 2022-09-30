@@ -30,11 +30,10 @@ class ClinicsController < ApplicationController
   end
 
   def massive_region
-    if Clinic.change_region(params[:region], params[:locations])
-      render json: { status: 'success', messages: I18n.t('.controllers.clinics.success_massive').capitalize }, status: :ok
-    else
-      render json: { status: 'error', messages: I18n.t('.controllers.clinics.errors_massive').capitalize }, status: :bad_request
-    end
+    clinic = Clinic.change_region(params[:region], params[:locations])
+    return unprosessable_entity_response(clinic) unless clinic
+    
+    render json: { status: 'success', messages: I18n.t('.controllers.clinics.success_massive').capitalize }, status: :ok
   end
 
   private
