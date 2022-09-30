@@ -8,6 +8,6 @@ Rswag::Ui.configure do |c|
   c.swagger_endpoint '/api-docs/swagger.yaml', 'API Docs'
 
   # Add Basic Auth in case your API is private
-  # c.basic_auth_enabled = true
-  # c.basic_auth_credentials 'username', 'password'
+  c.basic_auth_enabled = true
+  c.basic_auth_credentials "#{Rails.application.credentials.dig(:swagger, :username)}", "#{Rails.application.credentials.dig(:swagger, :password)}"
 end
