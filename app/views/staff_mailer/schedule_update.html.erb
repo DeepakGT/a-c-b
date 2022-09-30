@@ -8,10 +8,10 @@
         <div class="card-body">
           <div class="w3-container w3-green">
             <center>
-              <table >
+              <table>
                 <tr>
                   <td colspan="2">
-                    <img src="https://cdn-icons-png.flaticon.com/512/2773/2773319.png" width="60" height="60" />
+                    <%= image_tag("#{ENV["IMG_SCHEDULE"]}", width: "60", height: "60" ) %>
                   </td>
                   <td colspan="2">
                     <h3>
@@ -55,8 +55,7 @@
               <table>
               <tr>
                 <td>
-                  <img src="https://i.im.ge/2022/09/28/1AIKAr.ABAConnectVertical-LowRes-CMYK.png" 
-                      border="0", width="110", height="80" />
+                <%= image_tag("#{ENV["IMG_LOGO_ABA"]}", width: "110", height: "80" ) %>
                 </td>
                 <td>
                   <p class="text-gray-600">
