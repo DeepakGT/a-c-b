@@ -85,8 +85,8 @@ class Client < ApplicationRecord
       line1: clinic.address.line1, line2: clinic.address.line2, line3: clinic.address.line3, city: clinic.address.city, state: clinic.address.state, country: clinic.address.country,
       zipcode: clinic.address.zipcode, address_type: Constant.service_address, is_default: false, is_hidden: false, service_address_type_id: Constant.office
     )
-    office_address.save
-    office_address
+    
+    office_address.save ? office_address : office_address.errors.full_messages
   end
 
   private

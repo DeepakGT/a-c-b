@@ -12,7 +12,7 @@ class ClientServiceAddressesController < ApplicationController
     @service_address = @client.addresses.build(service_address_params)
     @service_address.address_type = 'service_address'
     set_default if @service_address.is_default.present?
-    @service_address.save
+    unprosessable_entity_response(@service_address) unless @service_address.save
   end
 
   def show; end
@@ -20,15 +20,11 @@ class ClientServiceAddressesController < ApplicationController
   def update
     @service_address.assign_attributes(service_address_params)
     set_default if @service_address.is_default_changed? && !@service_address.is_default.nil?
-    if @service_address.save
-      @service_address
-    else
-      unprosessable_entity_response(@service_address)
-    end
+    unprosessable_entity_response(@service_address) unless @service_address.save
   end
 
   def destroy
-    @service_address.destroy
+    unprosessable_entity_response(@service_address) unless @service_address.destroy
   end
 
   def create_office_address
