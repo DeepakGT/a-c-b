@@ -254,6 +254,13 @@ class Scheduling < ApplicationRecord
     } 
   end
   
+  def transform_audited_changes(audited_changes)
+    audited_changes.each do |key, value|
+      audited_changes[key] = value.map { |val| I18n.t("activerecord.attributes.scheduling.statuses.#{val}").capitalize } if key == ('status')
+      next
+    end
+  end
+
   private
 
   # def validate_time

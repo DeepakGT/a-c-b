@@ -13,13 +13,13 @@ json.data do
   end
   json.audits do
     json.array! @schedule.audits.sort_by(&:created_at).reverse do |audit|
-      if audit.user_type=='User'
+      if audit.user_type.present? && audit.user_type == 'User'
         auditor = User.find_by(id: audit.user_id) 
         json.auditor_name "#{auditor&.first_name} #{auditor&.last_name}"
       else
-        json.auditor_name "#{audit.user_type}"
+        json.auditor_name "#{audit.user_type || 'System'}"
       end
-      json.audited_changes audit.audited_changes
+      json.audited_changes @schedule.transform_audited_changes(audit.audited_changes)
       json.audited_at audit.created_at
       json.action audit.action
     end
