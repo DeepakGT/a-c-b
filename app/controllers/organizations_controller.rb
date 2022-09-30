@@ -32,7 +32,7 @@ class OrganizationsController < ApplicationController
   end
 
   def remove_region
-    @remove_regions = @organization.delete_region(params[:region].to_i)
+    @remove_region = @organization.delete_region(params[:region].to_i)
   end
 
   private

@@ -1,2 +1,2 @@
 json.status 'success'
-json.data @remove_regions
+json.data @remove_region
