@@ -52,7 +52,7 @@ RSpec.describe OrganizationsController, type: :controller do
 
   describe 'GET #regions_organizations' do
     context 'when sign in' do
-      let!(:organization) { create(:organization, name: 'test-organization', admin_id: user.id, id_regions: regions_organizations.map { |region| region.id})}
+
       it 'expect list all regions to organizations' do
         set_auth_headers(auth_headers)
         
