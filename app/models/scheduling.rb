@@ -156,11 +156,15 @@ class Scheduling < ApplicationRecord
     def fill_schedules(schedule, date, uid)
       {
         status: schedule[:status], date: date,
-        start_time: schedule[:start_time], end_time: schedule[:end_time], units: schedule[:units],
+        start_time: format_time(schedule[:start_time]), end_time: format_time(schedule[:end_time]), units: schedule[:units],
         minutes: schedule[:minutes], client_enrollment_service_id: schedule[:client_enrollment_service_id],
         cross_site_allowed: schedule[:cross_site_allowed], service_address_id: schedule[:service_address_id],
         creator_id: uid, staff_id: schedule[:staff_id]
       }
+    end
+
+    def format_time(time)
+      time.in_time_zone&.strftime("%H:%M")
     end
 
     def check_recurrence(schedulings)
@@ -173,7 +177,7 @@ class Scheduling < ApplicationRecord
         error_msgs.push(I18n.t('.activerecord.models.scheduling.errors.range').capitalize) if scheduling[:date].to_date > client_enrollment_service.end_date.to_date
         error_msgs.push(I18n.t('.activerecord.models.scheduling.errors.units_blank').capitalize) if scheduling[:units].nil?
         error_msgs.push(I18n.t('.activerecord.models.scheduling.errors.limit_autorization').capitalize) if cont_units > client_enrollment_service.units
-        error_msgs.push(I18n.t('.activerecord.models.scheduling.errors.any_appointment').capitalize) if self.any? && check_date_available(scheduling[:date], scheduling[:start_time].delete!('^0-9:'), scheduling[:end_time].delete!('^0-9:')).any?
+        error_msgs.push(I18n.t('.activerecord.models.scheduling.errors.any_appointment').capitalize) if check_date_available(scheduling[:date], scheduling[:start_time], scheduling[:end_time]).any?
         error_msgs.push(I18n.t('.activerecord.models.scheduling.errors.limit_recurrence').capitalize) if cont_limit > Constant.limit_appointment_recurrence
         cont_limit += Constant.one
       end
@@ -182,7 +186,7 @@ class Scheduling < ApplicationRecord
     end
 
     def check_date_available(date, start_time, end_time)
-      where(date: date, start_time: start_time.., end_time: ..end_time)
+      Scheduling.where(date: date, start_time: start_time.., end_time: ..end_time)
     end
 
     def create_recur(schedulings)
