@@ -156,11 +156,15 @@ class Scheduling < ApplicationRecord
     def fill_schedules(schedule, date, uid)
       {
         status: schedule[:status], date: date,
-        start_time: schedule[:start_time], end_time: schedule[:end_time], units: schedule[:units],
+        start_time: format_time(schedule[:start_time]), end_time: format_time(schedule[:end_time]), units: schedule[:units],
         minutes: schedule[:minutes], client_enrollment_service_id: schedule[:client_enrollment_service_id],
         cross_site_allowed: schedule[:cross_site_allowed], service_address_id: schedule[:service_address_id],
         creator_id: uid, staff_id: schedule[:staff_id]
       }
+    end
+
+    def format_time(time)
+      time.in_time_zone&.strftime("%H:%M")
     end
 
     def check_recurrence(schedulings)
@@ -173,7 +177,7 @@ class Scheduling < ApplicationRecord
         error_msgs.push(I18n.t('.activerecord.models.scheduling.errors.range').capitalize) if scheduling[:date].to_date > client_enrollment_service.end_date.to_date
         error_msgs.push(I18n.t('.activerecord.models.scheduling.errors.units_blank').capitalize) if scheduling[:units].nil?
         error_msgs.push(I18n.t('.activerecord.models.scheduling.errors.limit_autorization').capitalize) if cont_units > client_enrollment_service.units
-        error_msgs.push(I18n.t('.activerecord.models.scheduling.errors.any_appointment').capitalize) if self.any? && check_date_available(scheduling[:date], scheduling[:start_time].delete!('^0-9:'), scheduling[:end_time].delete!('^0-9:')).any?
+        error_msgs.push(I18n.t('.activerecord.models.scheduling.errors.any_appointment').capitalize) if check_date_available(scheduling[:date], scheduling[:start_time], scheduling[:end_time]).any?
         error_msgs.push(I18n.t('.activerecord.models.scheduling.errors.limit_recurrence').capitalize) if cont_limit > Constant.limit_appointment_recurrence
         cont_limit += Constant.one
       end
@@ -182,7 +186,7 @@ class Scheduling < ApplicationRecord
     end
 
     def check_date_available(date, start_time, end_time)
-      where(date: date, start_time: start_time.., end_time: ..end_time)
+      Scheduling.where(date: date, start_time: start_time.., end_time: ..end_time)
     end
 
     def create_recur(schedulings)
@@ -228,6 +232,33 @@ class Scheduling < ApplicationRecord
     recipients << Staff.by_creator(creator_id)
     recipients << Staff.active.joins(:role, :clinics).where('clinics.id': staff.staff_clinics.home_clinic.first[:clinic_id], 'roles.name': [Constant.roles['ed']]).to_ary
     recipients.flatten
+  end
+
+  def service_address
+    return nil unless service_address_id.present?
+
+    address = Address.find_by(id: service_address_id)
+    service_address_type = address.service_address_type_id.present? ? address.service_address_type_name : nil
+    {
+      line1: address.line1,
+      line2: address.line2,
+      line3: address.line3,
+      zipcode: address.zipcode,
+      city: address.city,
+      state: address.state,
+      country: address.country,
+      is_default: address.is_default,
+      service_address_type_id: address.service_address_type_id.present? ? address.service_address_type_id : nil,
+      service_address_type_name: service_address_type,
+      full_address: scheduled? || draft? ? address.full_address : service_address_type
+    } 
+  end
+  
+  def transform_audited_changes(audited_changes)
+    audited_changes.each do |key, value|
+      audited_changes[key] = value.map { |val| I18n.t("activerecord.attributes.scheduling.statuses.#{val}").capitalize } if key == ('status')
+      next
+    end
   end
 
   private

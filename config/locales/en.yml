@@ -32,6 +32,8 @@
 en:
   application_controller:
     controllers:
+      address:
+        error_type: you can't select, try another Service address type
       notification:
         messages:
           error: 'the :ids parameter must have at minimum a valid numeric value'
