@@ -83,9 +83,9 @@ en:
           draft: draft
       client:
         gender:
-          male: male
-          female: female
-          no_binary: no binary
+          male: Male
+          female: Female
+          non_binary: Non binary
       service:
         validate_selected_payors: 'must have atleast one non-billable payor linked to it.'
         validate_is_early_code: 'cannot be updated to early code as it is connected to billable payors.'
