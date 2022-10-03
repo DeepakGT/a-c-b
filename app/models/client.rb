@@ -21,7 +21,7 @@ class Client < ApplicationRecord
   attr_accessor :errors
 
   enum status: {active: 0, inactive: 1}
-  enum gender: {male: 'male', female: 'female', no_binary: 'no_binary'}
+  enum gender: {male: 'male', female: 'female', non_binary: 'non_binary'}
   enum preferred_language: {english: 0, spanish: 1}
   enum dq_reason: { lost_contact: 0, not_clinically_appropriate: 1, insurance_denial: 2, no_longer_interested: 3, 
                     competitor: 4, not_ready_to_move_forward: 5, other: 6}
