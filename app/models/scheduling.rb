@@ -178,7 +178,7 @@ class Scheduling < ApplicationRecord
         cont_units += scheduling[:units].to_i if scheduling[:units].present? && scheduling[:units].to_i.positive?
         error_msgs.push(I18n.t('.activerecord.models.scheduling.errors.range').capitalize) if scheduling[:date].to_date > client_enrollment_service.end_date.to_date
         error_msgs.push(I18n.t('.activerecord.models.scheduling.errors.units_blank').capitalize) if scheduling[:units].nil?
-        error_msgs.push(I18n.t('.activerecord.models.scheduling.errors.limit_autorization').capitalize) if cont_units > client_enrollment_service.units
+        error_msgs.push(I18n.t('.activerecord.models.scheduling.errors.limit_autorization').capitalize) if cont_units >= client_enrollment_service.units
         error_msgs.push(I18n.t('.activerecord.models.scheduling.errors.any_appointment').capitalize) if check_date_available(scheduling[:date], scheduling[:start_time], scheduling[:end_time]).any?
         error_msgs.push(I18n.t('.activerecord.models.scheduling.errors.limit_recurrence').capitalize) if cont_limit > Constant.limit_appointment_recurrence
         cont_limit += Constant.one
