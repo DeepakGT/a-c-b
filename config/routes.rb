@@ -80,6 +80,7 @@ Rails.application.routes.draw do
         get '/select_scheduling_status', to: 'meta_data#select_scheduling_status'
         get '/select_service_address_types', to: 'meta_data#select_service_address_types'
         get '/gender_list', to: 'meta_data#gender_list'
+        get '/select_pattern_recurrences', to: 'meta_data#select_pattern_recurrences'
       end
     end
 

@@ -1,5 +1,5 @@
 class MetaDataController < ApplicationController
-  before_action :authenticate_user!, except: %i[select_payor_types gender_list select_service_address_types]
+  before_action :authenticate_user!, except: %i[select_payor_types gender_list select_scheduling_status select_pattern_recurrences]
 
   def selectable_options
     @selectable_options = selectable_options_data
@@ -54,6 +54,10 @@ class MetaDataController < ApplicationController
 
   def select_service_address_types
     render json: { status: 'success', data: ServiceAddressType.order(:name).map { |service_address_type| { id: service_address_type.id, name: service_address_type.name } } }
+  end
+  
+  def select_pattern_recurrences
+    render json: { status: :success, data: Scheduling.select_pattern_recurrences }, status: :ok
   end
 
   private

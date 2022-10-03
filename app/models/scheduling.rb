@@ -27,6 +27,8 @@ class Scheduling < ApplicationRecord
                  cancellation_related_to_covid: 'cancellation_related_to_covid', unavailable: 'unavailable', 
                  inclement_weather_cancellation: 'inclement_weather_cancellation', draft: 'draft' }
 
+  enum select_pattern_recurrences: { daily: 'daily', weekly: 'weekly', monthly: 'monthly' }
+
   #TODO: uncoment this line after understand why the update method is called three times from the frontend
   #after_update :mail_change_appoitment   
 
