@@ -1,5 +1,5 @@
 class MetaDataController < ApplicationController
-  before_action :authenticate_user!, except: %i[select_payor_types gender_list select_scheduling_status]
+  before_action :authenticate_user!, except: %i[select_payor_types gender_list select_scheduling_status select_pattern_recurrences]
 
   def selectable_options
     @selectable_options = selectable_options_data
@@ -49,6 +49,10 @@ class MetaDataController < ApplicationController
 
   def gender_list
     @gender_list = Client.transform_gender
+  end
+
+  def select_pattern_recurrences
+    render json: { status: :success, data: Scheduling.select_pattern_recurrences }, status: :ok
   end
 
   private

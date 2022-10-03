@@ -72,6 +72,7 @@ Rails.application.routes.draw do
         get '/select_payor_types', to: 'meta_data#select_payor_types'
         get '/select_scheduling_status', to: 'meta_data#select_scheduling_status'
         get '/gender_list', to: 'meta_data#gender_list'
+        get '/select_pattern_recurrences', to: 'meta_data#select_pattern_recurrences'
       end
     end
 

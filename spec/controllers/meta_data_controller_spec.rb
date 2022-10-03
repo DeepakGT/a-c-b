@@ -204,4 +204,20 @@ RSpec.describe MetaDataController, type: :controller do
       end
     end
   end
+
+  describe 'GET #select_pattern_recurrences' do
+    context 'when the response is successfully' do
+      let!(:scheduling_pattern_recurrences){ Scheduling.select_pattern_recurrences }
+
+      it 'returns the selectable options from the scheduling pattern recurrences successfully' do
+
+        get :select_pattern_recurrences
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data']).to eq(scheduling_pattern_recurrences)
+      end
+    end
+  end
 end
