@@ -1,5 +1,5 @@
 class MetaDataController < ApplicationController
-  before_action :authenticate_user!, except: %i[select_payor_types gender_list select_scheduling_status select_pattern_recurrences]
+  before_action :authenticate_user!, except: %i[select_payor_types gender_list select_scheduling_status select_service_address_types select_pattern_recurrences]
 
   def selectable_options
     @selectable_options = selectable_options_data
@@ -57,7 +57,7 @@ class MetaDataController < ApplicationController
   end
   
   def select_pattern_recurrences
-    render json: { status: :success, data: Scheduling.select_pattern_recurrences }, status: :ok
+    render json: { status: :success, data: Scheduling.select_pattern_recurrences.map {|pattern_recurrence| { value: pattern_recurrence[Constant.zero], title: pattern_recurrence[Constant.zero].capitalize } } }, status: :ok
   end
 
   private
