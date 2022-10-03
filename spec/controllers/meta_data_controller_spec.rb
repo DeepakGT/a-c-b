@@ -229,6 +229,7 @@ RSpec.describe MetaDataController, type: :controller do
       let!(:scheduling_pattern_recurrences){ Scheduling.select_pattern_recurrences }
 
       it 'returns the selectable options from the scheduling pattern recurrences successfully' do
+
         get :select_pattern_recurrences
         response_body = JSON.parse(response.body)
 
