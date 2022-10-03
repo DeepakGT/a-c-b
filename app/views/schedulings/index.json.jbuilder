@@ -32,6 +32,7 @@ json.data do
     json.service_display_code service&.display_code 
     json.is_early_code service&.is_early_code
     json.status I18n.t("activerecord.attributes.scheduling.statuses.#{schedule.status}").capitalize if schedule.status.present?
+    json.status_value schedule.status
     json.date schedule.date
     json.start_time schedule.start_time&.in_time_zone&.strftime("%I:%M %p")
     json.end_time schedule.end_time&.in_time_zone&.strftime("%I:%M %p")
