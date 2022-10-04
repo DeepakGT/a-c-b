@@ -19,8 +19,6 @@ class Client < ApplicationRecord
   accepts_nested_attributes_for :addresses, update_only: true
   accepts_nested_attributes_for :phone_number, update_only: true
 
-  attr_accessor :errors_msg
-
   enum status: {active: 0, inactive: 1}
   enum gender: {male: 'male', female: 'female', non_binary: 'non_binary'}
   enum preferred_language: {english: 0, spanish: 1}
