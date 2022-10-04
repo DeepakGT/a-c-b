@@ -15,4 +15,9 @@ json.data do
       json.partial! 'list_detail_with_name', list: @non_early_services
     end
   end
+  if @all_funding_sources.present?
+    json.all_founding_sources do
+      json.partial! 'list_detail_with_name', list: @all_funding_sources
+    end
+  end
 end

@@ -34,6 +34,8 @@ class MetaDataController < ApplicationController
         @non_billable_funding_sources = FundingSource.non_billable_funding_sources
       end
       @non_early_services = Service.non_early_services
+    elsif params[:all_sources].to_bool.true?
+      @all_funding_sources = FundingSource.active.order(id: :desc)
     else
       @billable_funding_sources = FundingSource.billable_funding_sources
     end
