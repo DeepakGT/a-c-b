@@ -20,8 +20,7 @@ class ClientsController < ApplicationController
 
   def create
     @client = Client.new(client_params)
-    @client&.save_with_exception_handler
-    @client.create_office_address_for_client if @client.present?
+    unprosessable_entity_response(@client) unless @client.save
   end
 
   def update
