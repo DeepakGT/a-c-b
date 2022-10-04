@@ -16,13 +16,10 @@ class SchedulingsController < ApplicationController
   end
 
   def create
-    @schedule = @client_enrollment_service&.schedulings&.new(scheduling_params)
-    @schedule&.creator_id = current_user.id
-    if is_create_request_via_catalyst_data
-      update_data 
-    else
-      @schedule&.save
-    end
+    @schedule = Scheduling.new(scheduling_params)
+    @schedule.creator_id = current_user.id
+    update_data if is_create_request_via_catalyst_data
+    unprosessable_entity_response(@schedule) unless @schedule.save
     update_staff_legacy_number
   end
 
@@ -304,7 +301,7 @@ class SchedulingsController < ApplicationController
       @schedule&.errors&.add(:units, "left in authorization are not enough to update #{@schedule&.status} appointment to scheduled.")
       return false
     elsif params[:units].present? && params[:units].to_f>@schedule&.units && @schedule&.client_enrollment_service&.left_units<(params[:units].to_f-@schedule&.units)
-      @schedule&.errors&.add(:units, 'left in authorization are not enough to update the units of appointment.')
+      @schedule&.errors&.add(:units, I18n.t('.activerecord.models.scheduling.errors.authorization'))
       return false
     end
     true
