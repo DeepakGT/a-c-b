@@ -34,6 +34,16 @@ destroy_unassigned_past_appointments:
   queue: DestroyUnassignedAppointments
 
 process_claim_statuses_every_monday_9am_utc:
-  cron: '0 9 * * 1'
+  cron: '0 5 * * 1'
+  class: "AvailityProcessClaimsWorker"
+  queue: AvailityProcessClaims
+
+process_claim_statuses_every_wed_9am_utc:
+  cron: '0 5 * * 3'
+  class: "AvailityProcessClaimsWorker"
+  queue: AvailityProcessClaims
+
+process_claim_statuses_every_fri_9am_utc:
+  cron: '0 5 * * 5'
   class: "AvailityProcessClaimsWorker"
   queue: AvailityProcessClaims
