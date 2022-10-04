@@ -176,15 +176,17 @@ class Scheduling < ApplicationRecord
       schedulings.each do |scheduling|
         client_enrollment_service = ClientEnrollmentService.find_by id: scheduling[:client_enrollment_service_id]
         cont_units += scheduling[:units].to_i if scheduling[:units].present? && scheduling[:units].to_i.positive?
+        error_msgs.push(I18n.t('.activerecord.models.scheduling.errors.client_enrollment_service').capitalize) if client_enrollment_service.blank?
+        error_msgs.push(I18n.t('.activerecord.models.scheduling.errors.status').capitalize) unless scheduling[:status] == 'scheduled' || scheduling[:status] == 'rendered' || scheduling[:status] == 'auth_pending'
         error_msgs.push(I18n.t('.activerecord.models.scheduling.errors.range').capitalize) if scheduling[:date].to_date > client_enrollment_service.end_date.to_date
         error_msgs.push(I18n.t('.activerecord.models.scheduling.errors.units_blank').capitalize) if scheduling[:units].nil?
-        error_msgs.push(I18n.t('.activerecord.models.scheduling.errors.limit_autorization').capitalize) if cont_units >= client_enrollment_service.units
+        error_msgs.push(I18n.t('.activerecord.models.scheduling.errors.limit_autorization').capitalize) if cont_units > (client_enrollment_service.units - client_enrollment_service.scheduled_units - client_enrollment_service.used_units)
         error_msgs.push(I18n.t('.activerecord.models.scheduling.errors.any_appointment').capitalize) if check_date_available(scheduling[:date], scheduling[:start_time], scheduling[:end_time]).any?
         error_msgs.push(I18n.t('.activerecord.models.scheduling.errors.limit_recurrence').capitalize) if cont_limit > Constant.limit_appointment_recurrence
         cont_limit += Constant.one
       end
       
-      reponse_recurrence(error_msgs.uniq, error_msgs.any? ? Constant.empty : create_recur(schedulings))
+      reponse_recurrence(error_msgs.uniq, error_msgs.any? ? [] : create_recur(schedulings))
     end
 
     def check_date_available(date, start_time, end_time)
@@ -293,15 +295,10 @@ class Scheduling < ApplicationRecord
   end
 
   def validate_units
-    return if (self.client_enrollment_service.blank? || (!self.scheduled? && !self.rendered? && !self.auth_pending?))
+    return errors.add(:base, I18n.t('.activerecord.models.scheduling.errors.client_enrollment_service')) if client_enrollment_service.blank?
+    return errors.add(:base, I18n.t('.activerecord.models.scheduling.errors.status')) unless scheduled? || rendered? || auth_pending?
 
-    schedules = Scheduling.where.not(id: self.id).where(client_enrollment_service_id: self.client_enrollment_service.id).with_rendered_or_scheduled_as_status
-    completed_schedules = schedules.completed_scheduling
-    scheduled_schedules = schedules.scheduled_scheduling
-    used_units = completed_schedules.with_units.pluck(:units).sum
-    scheduled_units = scheduled_schedules.with_units.pluck(:units).sum
-    
-    errors.add(:units, "left for authorization are not enough to create this appointment.") if self.units.present? && self.client_enrollment_service.units.present? && (self.units>(self.client_enrollment_service.units-(used_units+scheduled_units)))
+    errors.add(:units, I18n.t('.activerecord.models.scheduling.errors.authorization')) if units.present? && client_enrollment_service.units.present? && (units > (client_enrollment_service.units - (client_enrollment_service.used_units + client_enrollment_service.scheduled_units)))
   end
 
   # def validate_staff

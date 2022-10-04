@@ -48,11 +48,14 @@ en:
     models:
       scheduling:
         errors:
+          status: the status can only be scheduled or rendered or an authorization pending
           range: 'total of unit count exceed the amount of authorized units.'
           units_blank: 'units field may not be blank or empty'
           limit_autorization: 'exceeds authorization units'
           any_appointment: 'appointment scheduled, try another date.'
           limit_recurrence: 'limit of appointments reached'
+          authorization: 'left for authorization are not enough to create this appointment.'
+          client_enrollment_service: 'service field may not be blank or empty'
       region:
         errors: 
           unique_name: has already been taken
