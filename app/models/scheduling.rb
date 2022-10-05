@@ -14,11 +14,8 @@ class Scheduling < ApplicationRecord
 
   validates_presence_of :date, :start_time, :end_time, :status
 
-  # validate :validate_time
   validate :validate_past_appointments, on: :create
   validate :validate_units, on: :create
-  # validate :validate_draft_appointments, on: :create
-  # validate :validate_staff, on: :create
   
   enum status: { scheduled: 'scheduled', rendered: 'rendered', auth_pending: 'auth_pending', non_billable: 'non_billable', 
                  duplicate: 'duplicate', error: 'error', client_cancel_greater_than_24_h: 'client_cancel_greater_than_24_h', 
@@ -265,6 +262,14 @@ class Scheduling < ApplicationRecord
     end
   end
 
+  def self.transform_statuses(draft)
+    statuses.map do |type, _|
+      next if type == 'draft' && draft == false
+
+      { 'value' => type, 'title'=> I18n.t("activerecord.attributes.scheduling.statuses.#{type}").capitalize }
+    end.compact
+  end
+
   private
 
   # def validate_time
@@ -296,7 +301,7 @@ class Scheduling < ApplicationRecord
 
   def validate_units
     return errors.add(:base, I18n.t('.activerecord.models.scheduling.errors.client_enrollment_service')) if client_enrollment_service.blank?
-    return errors.add(:base, I18n.t('.activerecord.models.scheduling.errors.status')) unless scheduled? || rendered? || auth_pending?
+    return errors.add(:base, I18n.t('.activerecord.models.scheduling.errors.status')) unless scheduled? || rendered? || auth_pending? || draft?
 
     errors.add(:units, I18n.t('.activerecord.models.scheduling.errors.authorization')) if units.present? && client_enrollment_service.units.present? && (units > (client_enrollment_service.units - (client_enrollment_service.used_units + client_enrollment_service.scheduled_units)))
   end
@@ -322,21 +327,5 @@ class Scheduling < ApplicationRecord
         self.minutes ||= 0
       end
     end 
-  end
-
-  def validate_draft_appointments
-    user = User.by_creator(creator_id)
-    return true if draft? && (user.role_name == Constant.roles['ccc'] || user.role_name == Constant.roles['cd'])
-
-    errors.add(:draft, I18n.t('activerecord.attributes.scheduling.validate_draft'))
-  end
-
-  def self.transform_statuses(action_type, role)
-    statuses.map do |type, _|
-      next if (type == 'draft') && (action_type == 'edit' || ![Constant.roles['ccc'],Constant.roles['cd']].include?(role))
-
-
-      { 'value' => type, 'title'=> I18n.t("activerecord.attributes.scheduling.statuses.#{type}").capitalize }
-    end.compact
   end
 end
