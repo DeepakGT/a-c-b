@@ -52,4 +52,15 @@ RSpec.describe Client, type: :model do
       end
     end
   end
+
+  describe 'validate' do
+    let(:client) { create(:client, first_name: 'client', last_name: 'example', dob: '1990-01-01-')}
+    it 'should validate unique of first_name, last_name and date of birth' do
+      dup_client = client.dup
+      expect(dup_client.save).to eq false
+
+      dup_client.dob = '1990-02-02'
+      expect(dup_client.save).to eq true
+    end
+  end
 end
