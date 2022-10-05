@@ -1,5 +1,6 @@
 json.id service.id
 json.name service.name
+json.full_name "#{service&.name} (#{service&.display_code})"
 json.status service.status
 json.display_code service.display_code
 json.is_service_provider_required service.is_service_provider_required
