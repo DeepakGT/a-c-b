@@ -309,8 +309,9 @@ class SchedulingsController < ApplicationController
 
   def update_status
     if params[:status]=='rendered'
-      if current_user.role_name=='super_admin'
-        update_scheduling 
+      if current_user.role_name == 'super_admin'
+        params[:status] = 'auth_pending' if @schedule.client_enrollment_service.service.is_early_code
+        update_scheduling
         update_render_service
       else
         @schedule&.errors&.add(:schedule, 'You are not authorized to render appointment manually.')
