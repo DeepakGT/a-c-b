@@ -30,6 +30,7 @@ class Scheduling < ApplicationRecord
   #after_update :mail_change_appoitment   
 
   before_save :set_units_and_minutes
+  before_save :check_date_available
 
   serialize :unrendered_reason, Array
 
@@ -178,16 +179,12 @@ class Scheduling < ApplicationRecord
         error_msgs.push(I18n.t('.activerecord.models.scheduling.errors.range').capitalize) if scheduling[:date].to_date > client_enrollment_service.end_date.to_date
         error_msgs.push(I18n.t('.activerecord.models.scheduling.errors.units_blank').capitalize) if scheduling[:units].nil?
         error_msgs.push(I18n.t('.activerecord.models.scheduling.errors.limit_autorization').capitalize) if cont_units > (client_enrollment_service.units - client_enrollment_service.scheduled_units - client_enrollment_service.used_units)
-        error_msgs.push(I18n.t('.activerecord.models.scheduling.errors.any_appointment').capitalize) if check_date_available(scheduling[:date], scheduling[:start_time], scheduling[:end_time]).any?
+        error_msgs.push(I18n.t('.activerecord.models.scheduling.errors.any_appointment').capitalize) if check_date_available.any? #TODO: verify this method before FIX:324 is released.
         error_msgs.push(I18n.t('.activerecord.models.scheduling.errors.limit_recurrence').capitalize) if cont_limit > Constant.limit_appointment_recurrence
         cont_limit += Constant.one
       end
       
       reponse_recurrence(error_msgs.uniq, error_msgs.any? ? [] : create_recur(schedulings))
-    end
-
-    def check_date_available(date, start_time, end_time)
-      Scheduling.where(date: date, start_time: start_time.., end_time: ..end_time)
     end
 
     def create_recur(schedulings)
@@ -202,7 +199,12 @@ class Scheduling < ApplicationRecord
       end
     end
   end
-  
+
+  def check_date_available
+    schedule = Scheduling.where(date: date, start_time: start_time.., end_time: ..end_time)
+    errors.add(:scheduling, 'you have the same appointment for that time.') if schedule.present?
+  end
+
   def mail_change_appoitment
     StaffMailer.schedule_update(self).deliver
   end
