@@ -1,5 +1,6 @@
 class SoapNote < ApplicationRecord
   attr_accessor :caregiver_sign, :user
+  audited associated_with: :scheduling
 
   belongs_to :scheduling, optional: true
   has_one_attached :signature_file
@@ -10,6 +11,7 @@ class SoapNote < ApplicationRecord
   validate :validate_signatures
 
   scope :by_client, ->(client_id){ where(client_id: client_id) }
+  scope :by_ids, ->(ids){ where(id: ids) }
 
   private
 
@@ -38,25 +40,7 @@ class SoapNote < ApplicationRecord
   end
 
   def validate_signatures
-    if self.scheduling.present?
-      case scheduling.staff.role_name
-      when 'bcba'
-        if user.role_name=='rbt' && self.rbt_signature==true && self.rbt_signature_author_name=="#{user.first_name} #{user.last_name}"
-          errors.add(:rbt_signature, 'must not be present for appointment created for bcba.')
-        end
-        if user.role_name=='bcba' && self.bcba_signature==true && self.bcba_signature_author_name=="#{user.first_name} #{user.last_name}"
-          if !(self.scheduling.client_enrollment_service.staff.include?(user)) && scheduling.staff_id!=user.id && scheduling.client_enrollment_service.client_enrollment.client.bcba_id!=user.id
-            errors.add(:bcba_signature, 'cannot be done by bcba that is not in authorization.')
-          end
-        end
-      when 'rbt'
-        if user.role_name=='rbt' && self.rbt_signature==true && self.rbt_signature_author_name=="#{user.first_name} #{user.last_name}"
-          errors.add(:rbt_signature, 'cannot be done by rbt that is not in appointment. Please update appointment to let another rbt sign.') if self.scheduling.staff!=user
-        elsif user.role_name=='bcba' && self.rbt_signature==true && self.rbt_signature_author_name=="#{user.first_name} #{user.last_name}"
-          errors.add(:rbt_signature, 'cannot be done by bcba.')
-        end
-      end
-    end
+    validate_signatures_by_role if self.scheduling.present?
     if self.bcba_signature==true && self.bcba_signature_author_name=="#{user.first_name} #{user.last_name}" && !(user.role.permissions.include?('bcba_signature')) && user.role_name!='bcba'
       errors.add(:bcba_signature, 'You are not authorized to sign as a bcba.')
     end
@@ -65,6 +49,28 @@ class SoapNote < ApplicationRecord
     end
     if self.clinical_director_signature==true && self.clinical_director_signature_author_name=="#{user.first_name} #{user.last_name}" && !(user.role.permissions.include?('clinical_director_signature')) && user.role_name!='clinical_director'
       errors.add(:clinical_director_signature, 'You are not authorized to sign as a clinical director.')
+    end
+  end
+
+  def validate_signatures_by_role
+    case scheduling.staff.role_name
+    when 'bcba'
+      if user.role_name=='rbt' && self.rbt_signature==true && self.rbt_signature_author_name=="#{user.first_name} #{user.last_name}"
+        errors.add(:rbt_signature, 'must not be present for appointment created for bcba.')
+      end
+      if user.role_name=='bcba' && self.bcba_signature==true && self.bcba_signature_author_name=="#{user.first_name} #{user.last_name}"
+        if !(self.scheduling.client_enrollment_service.staff.include?(user)) && scheduling.staff_id!=user.id && scheduling.client_enrollment_service.client_enrollment.client.bcba_id!=user.id
+          errors.add(:bcba_signature, 'cannot be done by bcba that is not in authorization.')
+        end
+      end
+    when 'rbt'
+      if user.role_name=='rbt' && self.rbt_signature==true && self.rbt_signature_author_name=="#{user.first_name} #{user.last_name}"
+        errors.add(:rbt_signature, 'cannot be done by rbt that is not in appointment. Please update appointment to let another rbt sign.') if self.scheduling.staff!=user
+      elsif user.role_name=='bcba' && self.rbt_signature==true && self.rbt_signature_author_name=="#{user.first_name} #{user.last_name}"
+        errors.add(:rbt_signature, 'cannot be done by bcba.')
+      end
+    else
+      puts "#{scheduling.staff.role_name}"
     end
   end
   # end of private

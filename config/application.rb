@@ -19,6 +19,9 @@ require "rails/test_unit/railtie"
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
+# Load dotenv 
+Dotenv::Railtie.load
+
 module AbaCentreBe
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
@@ -41,6 +44,8 @@ module AbaCentreBe
 
     config.time_zone = 'Eastern Time (US & Canada)'
     
-    config.hosts << "abaconnectemr.com"
+    config.hosts << ENV['DOMAIN']
+    
+    config.active_record.use_yaml_unsafe_load = true
   end
 end

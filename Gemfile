@@ -58,6 +58,13 @@ gem 'sidekiq'
 gem 'sidekiq-cron'
 gem 'sidekiq-failures'
 
+# gem for pdf generation
+gem 'wkhtmltopdf-binary'
+gem 'wicked_pdf'
+
+# for tempate mailing
+gem 'bootstrap-email', '~> 1.0'
+
 # Rack::Cors provides support for Cross-Origin Resource Sharing (CORS) 
 # for Rack compatible web applications.
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
@@ -65,6 +72,10 @@ gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 gem 'will_paginate', '~> 3.3'
 # to perform job daily
 gem 'whenever', require: false
+
+#for Loads environment variables
+gem 'dotenv-rails', '~> 2.8', '>= 2.8.1'
+gem 'noticed'
 
 group :development, :test do
   gem 'bullet'
@@ -89,4 +100,5 @@ group :development do
   gem 'listen', '~> 3.3'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
+  gem 'active_record_query_trace'
 end

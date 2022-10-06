@@ -1,0 +1,75 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html, charset=utf-8" />
+  </head>
+  <body class="bg-light">
+    <div class="container">
+      <div class="card my-10">
+        <div class="card-body">
+          <div class="w3-container w3-green">
+            <center>
+              <table>
+                <tr>
+                  <td colspan="2">
+                    <%= image_tag("#{ENV["IMG_SCHEDULE"]}", width: "60", height: "60" ) %>
+                  </td>
+                  <td colspan="2">
+                    <h3>
+                   	 <center>&nbsp;New update in your appointments</center>
+                    </h3>
+                  </td>
+                </tr>
+              </table>
+            </center>
+          </div>
+          <div class="space-y-3">
+              <p class="text-gray-700">
+              <br>
+              <center>
+                Hi <%= @schedule.client_enrollment_service.client_enrollment.client.first_name %>, the following information was updated recently: 
+              </center>
+              </p>
+            <center>
+              <table>
+                <tr>
+                  <td><p class="text-gray-700"><strong>Date:</strong><%= @schedule&.date %></p></td>
+                </tr>
+                <tr>
+                  <td><p class="text-gray-700"><strong>Start time:</strong><%= @schedule&.start_time %></p></td>
+                </tr>
+                <tr>
+                  <td><p class="text-gray-700"><strong>End time:</strong><%= @schedule&.end_time %></p></td>
+                </tr>
+                <tr>
+                  <td><p class="text-gray-700"><strong>Status:</strong><%= I18n.t(".activerecord.attributes.scheduling.statuses.#{@schedule&.status}")%></p></td>
+                </tr>
+              </table>
+              <br>
+            </center>
+            <center>
+              <%= link_to "Go to appointment", "#{ENV["DOMAIN"]}#{ENV["SCHEDULE_PATH"]}#{@schedule&.id}", target:"_blank", class:"btn btn-primary" %>
+            </center>
+          </div>
+          <hr>
+          <p class="text-gray-700">
+              <table>
+              <tr>
+                <td>
+                <%= image_tag("#{ENV["IMG_LOGO_ABA"]}", width: "110", height: "80" ) %>
+                </td>
+                <td>
+                  <p class="text-gray-600">
+                  <font size=1>
+                    © ABA Technology SAS | All rights reserved. Please don’t reply to this email, as we are unable to respond from this email address. 
+            	      This was an informative message generated automatically by the system.
+                  </font>
+                  </p>
+                </td>
+              </tr>
+            </table>
+          </p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

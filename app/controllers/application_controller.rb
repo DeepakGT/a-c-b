@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::API
   include DeviseTokenAuth::Concerns::SetUserByToken
-  include Pundit
+  include Pundit::Authorization
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :set_active_storage_host
   rescue_from ActiveRecord::RecordNotFound, with: :send_record_not_found_response
@@ -13,23 +13,9 @@ class ApplicationController < ActionController::API
                                'terminated_on', {phone_numbers_attributes: %i[id phone_type number], address_attributes: 
                                 %i[line1 line2 line3 zipcode city state country], rbt_supervision_attributes: 
                                 %i[status start_date end_date]}]
-    # if self.service_provider?
-    #   whitelisted_user_params << {rbt_supervisions: %i[status start_date end_date]}
-    # end
     devise_parameter_sanitizer.permit(:sign_up, keys: whitelisted_user_params)
     devise_parameter_sanitizer.permit(:account_update, keys: whitelisted_user_params)
   end
-
-  # def check_permissions
-  #   permission_value = "#{params[:controller]}_#{params[:action]}" 
-  #   not_authorized if current_user.role.permissions.blank? || !current_user.role.permissions.include?(permission_value)
-  # end
-
-  # def check_permissions
-  #   permission_value = "#{params[:controller]}_#{params[:action]}" 
-  #   return true if current_user.role.permissions.include?(permission_value)
-  #   not_authorized #if current_user.role.permissions.blank? || !current_user.role.permissions.include?(permission_value)
-  # end
 
   private
 
@@ -38,13 +24,17 @@ class ApplicationController < ActionController::API
   end
 
   def send_record_not_found_response
-    render json: {status: :failure, errors: ['record not found']}, status: 404
+    render json: {status: :failure, errors: ['record not found']}, status: :bad_request
   end
 
   def not_authorized
-    render json: {status: :failure, errors: ['you are not authorized to perform this action.']}, status: 401
+    render json: {status: :failure, errors: ['you are not authorized to perform this action.']}, status: :unauthorized
   end
 
+  def unprosessable_entity_response(model)
+    render json: { status: :failed, error: model.errors.full_messages }, status: :unprocessable_entity
+  end
+  
   def string_to_array(value)
     value = value.gsub(/\[|\]/, '').split(',')
   end
