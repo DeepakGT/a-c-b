@@ -33,7 +33,8 @@ class Scheduling < ApplicationRecord
   #after_update :mail_change_appoitment   
 
   before_save :set_units_and_minutes
-  before_save :check_date_available
+
+  validate :check_date_available
 
   serialize :unrendered_reason, Array
 
@@ -204,8 +205,12 @@ class Scheduling < ApplicationRecord
   end
 
   def check_date_available
-    schedule = Scheduling.where(date: date, start_time: start_time.., end_time: ..end_time)
+    schedule = Scheduling.where(date: date, start_time: start_time.., end_time: ..end_time) if verify_change_time
     errors.add(:scheduling, 'you have the same appointment for that time.') if schedule.present?
+  end
+
+  def verify_change_time
+    date_changed? || start_time_changed? || end_time_changed?
   end
 
   def mail_change_appoitment
