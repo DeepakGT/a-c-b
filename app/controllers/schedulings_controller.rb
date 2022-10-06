@@ -65,9 +65,11 @@ class SchedulingsController < ApplicationController
   def update
     @schedule&.user = current_user
     return if !check_units
-    
-    update_status if params[:status].present?
-    update_staff_legacy_number
+
+    if @schedule.valid?
+      update_status
+      update_staff_legacy_number
+    end
   end
 
   def destroy
@@ -308,6 +310,9 @@ class SchedulingsController < ApplicationController
   end
 
   def update_status
+    #TODO: we need refactor this code and frontend update too. 
+    update_scheduling if @schedule&.status.eql? params[:status]
+    return if @schedule&.status.eql? params[:status]
     if params[:status]=='rendered'
       if current_user.role_name == 'super_admin'
         params[:status] = 'auth_pending' if @schedule.client_enrollment_service.service.is_early_code
