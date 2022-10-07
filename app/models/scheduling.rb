@@ -10,7 +10,7 @@ class Scheduling < ApplicationRecord
   has_many :soap_notes, dependent: :destroy
   has_many :scheduling_change_requests, dependent: :destroy
 
-  attr_accessor :user, :error_msgs
+  attr_accessor :user, :error_msgs, :client_id, :service_id
 
   validates_presence_of :date, :start_time, :end_time, :status
 
@@ -202,8 +202,9 @@ class Scheduling < ApplicationRecord
   end
 
   def check_date_available
-    schedule = Scheduling.where(date: date, start_time: start_time.., end_time: ..end_time) if verify_change_time
-    errors.add(:scheduling, 'you have the same appointment for that time.') if schedule.present?
+    staff_schedules = Scheduling.where(date: date, start_time: start_time.., end_time: ..end_time, staff_id: staff_id) if verify_change_time
+    client_schedules = Scheduling.by_client_and_service(client_id, service_id).where(date: date, start_time: start_time.., end_time: ..end_time) if verify_change_time
+    errors.add(:scheduling, 'you have the same appointment for that time.') if staff_schedules.present? || client_schedules.present?
   end
 
   def verify_change_time
