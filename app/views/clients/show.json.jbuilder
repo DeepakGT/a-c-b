@@ -1,21 +1,7 @@
 primary_client_enrollment = @client.client_enrollments.active.order(is_primary: :desc).first
 json.status 'success'
 json.data do
-  json.id @client.id
-  json.first_name @client.first_name
-  json.last_name @client.last_name
-  json.email @client.email
-  json.clinic_id @client.clinic_id
-  json.clinic_name @client.clinic.name
-  json.bcba_id @client.bcba_id
-  json.bcba_name "#{@client.bcba&.first_name} #{@client.bcba&.last_name}"
-  json.dob @client.dob
-  json.gender @client.gender
-  json.status @client.status
-  json.tracking_id @client.tracking_id
-  json.preferred_language @client.preferred_language
-  json.disqualified @client.disqualified
-  json.disqualified_reason @client.dq_reason if @client.disqualified?
+  json.partial! 'client_detail', client: @client
   if primary_client_enrollment.present?
     if primary_client_enrollment.source_of_payment=='self_pay' || primary_client_enrollment.funding_source.blank?
       json.payor nil
@@ -25,52 +11,7 @@ json.data do
   end
   if @client.contacts.present?
     json.contact do
-      json.id @client.contacts.first.id
-      json.first_name @client.contacts.first.first_name
-      json.last_name @client.contacts.first.last_name
-      json.email @client.contacts.first.email
-      json.client_id @client.contacts.first.client_id
-      json.type @client.contacts.first.relation_type
-      json.relation @client.contacts.first.relation
-      json.legal_guardian @client.contacts.first.legal_guardian
-      json.guarantor @client.contacts.first.guarantor
-      json.parent_portal_access @client.contacts.first.parent_portal_access
-      json.resides_with_client @client.contacts.first.resides_with_client
-      if @client.contacts.first.phone_numbers.present?
-        json.phone_numbers do
-          json.array! @client.contacts.first.phone_numbers do |phone_number|
-            json.id phone_number.id
-            json.phone_type phone_number.phone_type
-            json.number phone_number.number
-          end
-        end
-      end
-    end
-  end
-  if @client.addresses.present?
-    json.addresses do
-      json.array! @client.addresses do |address|
-        json.id address.id
-        json.type address.address_type
-        json.line1 address.line1
-        json.line2 address.line2
-        json.line3 address.line3
-        json.zipcode address.zipcode
-        json.city address.city
-        json.state address.state
-        json.country address.country
-        if address.address_type=='service_address'
-          json.is_default address.is_default 
-          json.is_hidden address.is_hidden
-        end
-      end
-    end
-  end
-  if @client.phone_number.present?
-    json.phone_number do
-      json.id @client.phone_number.id
-      json.phone_type @client.phone_number.phone_type
-      json.number @client.phone_number.number
+      json.partial! 'contacts/contact_detail', contact: @client&.contacts&.first
     end
   end
 end

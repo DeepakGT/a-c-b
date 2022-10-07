@@ -1,0 +1,15 @@
+json.id service_address.id
+json.client_id service_address.addressable_id
+json.type service_address.address_type
+json.line1 service_address.line1
+json.line2 service_address.line2
+json.line3 service_address.line3
+json.zipcode service_address.zipcode
+json.city service_address.city
+json.state service_address.state
+json.country service_address.country
+json.is_default service_address.is_default
+json.is_hidden service_address.is_hidden
+json.service_address_type_id service_address.service_address_type_id if service_address.service_address_type_id.present?
+json.service_address_type_name service_address.service_address_type.name if service_address.service_address_type_id.present?
+json.full_address service_address.full_address

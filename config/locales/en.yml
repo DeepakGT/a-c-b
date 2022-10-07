@@ -30,16 +30,72 @@
 # available at https://guides.rubyonrails.org/i18n.html.
 
 en:
+  application_controller:
+    controllers:
+      clinics:
+        success_massive: massive successfully
+        errors_massive: we have an error, something is wrong
+      address:
+        error_type: you can't select, try another Service address type
+      notification:
+        messages:
+          error: 'the :ids parameter must have at minimum a valid numeric value'
+  notification:
+    draft_appointment:
+      message: "Approval of the day and client appointment project is approaching."
+      subject: You must approve the draft appointment
   activerecord:
+    models:
+      scheduling:
+        errors:
+          status: the status can only be scheduled or rendered or an authorization pending
+          range: 'total of unit count exceed the amount of authorized units.'
+          units_blank: 'units field may not be blank or empty'
+          limit_autorization: 'exceeds authorization units'
+          any_appointment: 'appointment scheduled, try another date.'
+          limit_recurrence: 'limit of appointments reached'
+          authorization: 'left for authorization are not enough to create this appointment.'
+          client_enrollment_service: 'service field may not be blank or empty'
+      region:
+        errors:
+          unique_name: has already been taken
     attributes:
-      client_enrollment:
-        source_of_payments:
-          self_pay: Self Pay
-          insurance: Insurance
-          sca: Single Case Agreement
-          oon: Out of Network
-          iin: In Network
-          p2p: Peer to Peer
+      funding_source:
+        payor_types:
+          commercial: commercial
+          medicaid: medicaid
+          medicare: medicare
+          third_party_contract: third party contract
+      scheduling:
+        validate_draft: 'appointments can only be created by client care coordinator or clinical director.'
+        statuses:
+          scheduled: scheduled
+          rendered: rendered
+          auth_pending: auth pending
+          non_billable: non billable
+          duplicate: duplicate
+          error: error
+          client_cancel_greater_than_24_h: client cancel greater than 24 h
+          client_cancel_less_than_24_h: client cancel less than 24 h
+          client_no_show: client no show
+          staff_cancellation: team cancellation
+          staff_cancellation_due_to_illness: team cancellation due to illness
+          cancellation_related_to_covid: cancellation related to covid
+          unavailable: unavailable
+          inclement_weather_cancellation: inclement weather cancellation
+          draft: draft
+      client:
+        gender:
+          male: Male
+          female: Female
+          non_binary: Non binary
+      service:
+        validate_selected_payors: 'must have atleast one non-billable payor linked to it.'
+        validate_is_early_code: 'cannot be updated to early code as it is connected to billable payors.'
+
+
+
+
 
   devise_token_auth:
     sessions:

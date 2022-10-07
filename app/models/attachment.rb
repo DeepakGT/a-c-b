@@ -2,6 +2,7 @@ class Attachment < ApplicationRecord
   attr_accessor :base64
   
   belongs_to :attachable, polymorphic: true
+  belongs_to :attachment_category, optional: true
 
   has_one_attached :file
 
@@ -12,6 +13,12 @@ class Attachment < ApplicationRecord
 
   scope :by_client_id, ->(client_id){ where(attachable_type: 'Client', attachable_id: client_id) }
 
+  def can_be_displayed?(role)
+    return false if self.role_permissions.present? && !self.role_permissions.include?(role) && role != 'super_admin' && role != 'administrator'
+
+    true
+  end
+
   private
 
   def set_file
@@ -20,7 +27,7 @@ class Attachment < ApplicationRecord
     decoded_data = Base64.decode64(self.base64.split(',')[1])
     self.file = {
       io: StringIO.new(decoded_data),
-      filename: 'attachment'
+      filename: file_name
     }
   end
 
@@ -35,7 +42,5 @@ class Attachment < ApplicationRecord
       Rails.application.config.active_storage.service = :local
     end
   end
-
   # end of private
-
 end

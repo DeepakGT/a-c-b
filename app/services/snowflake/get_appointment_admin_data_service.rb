@@ -5,13 +5,13 @@ if ENV['CLOUD_PLATFORM']!='heroku'
     module GetAppointmentAdminDataService
       class << self
         def call(db)
-          appointments = get_appointment_admin_data(db)
+          get_appointment_admin_data(db)
         end
 
         private
 
         def get_appointment_admin_data(db)
-          appointments = db.fetch("SELECT * FROM NPAW.PUBLIC.APPOINTMENTADMIN WHERE servicename IS NOT NULL and staffname IS NOT NULL;").entries
+          db.fetch("SELECT * FROM NPAW.PUBLIC.APPOINTMENTADMIN WHERE servicename IS NOT NULL and staffname IS NOT NULL;").entries
         end
       end
     end

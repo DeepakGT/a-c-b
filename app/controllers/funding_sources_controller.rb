@@ -5,24 +5,26 @@ class FundingSourcesController < ApplicationController
   before_action :set_funding_source, only: %i[show update destroy]
 
   def index
-    @funding_sources = @clinic.funding_sources.order(:name)
-    @funding_sources = @funding_sources.paginate(page: params[:page]) if params[:page].present?
+    @funding_sources = @clinic&.funding_sources&.order(:name)
+    @funding_sources = @funding_sources&.paginate(page: params[:page]) if params[:page].present?
   end
 
-  def show; end
+  def show
+    @funding_source
+  end
 
   def create
-    @funding_source = @clinic.funding_sources.new(funding_source_params)
-    @funding_source.id = FundingSource.ids.max+1 if FundingSource.ids.present?
-    @funding_source.save
+    @funding_source = @clinic&.funding_sources&.new(funding_source_params)
+    @funding_source&.id = FundingSource.ids.max+1 if FundingSource.ids.present?
+    @funding_source&.save
   end
 
   def update
-    @funding_source.update(funding_source_params)
+    @funding_source&.update(funding_source_params)
   end
 
   def destroy
-    @funding_source.destroy
+    @funding_source&.destroy
   end
 
   private
@@ -34,16 +36,15 @@ class FundingSourcesController < ApplicationController
   end
 
   def set_clinic
-    @clinic = Clinic.find(params[:clinic_id])
+    @clinic = Clinic.find(params[:clinic_id]) rescue nil
   end
 
   def set_funding_source
-    @funding_source = @clinic.funding_sources.find(params[:id])
+    @funding_source = @clinic.funding_sources.find(params[:id]) rescue nil
   end
 
   def authorize_user
     authorize FundingSource if current_user.role_name!='super_admin'
   end
   # end of private
-  
 end

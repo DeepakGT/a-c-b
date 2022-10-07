@@ -13,4 +13,20 @@ class Organization < ApplicationRecord
 
   validates :name, presence: true
   validates_uniqueness_of :name
+
+  def regions
+    id_regions.map {|id_region| Region.find_by(id: id_region) }
+  end
+
+  def region_locations(region_id, organization_id)
+    Clinic.where(region_id: region_id, organization_id: organization_id).map { |location| {id: location.id, name: location.name} }
+  end
+
+  def delete_region(region_id)
+    locations = region_locations(region_id, id)
+    return { organization: self, locations: locations } if locations.present?
+
+    update(id_regions: id_regions.delete_if { |id_region| id_region == region_id})
+    { organization: self, locations: Constant.void_a }
+  end
 end

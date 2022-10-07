@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+  <body>
+    <h3> Client Details - </h3>
+    <% client = Client.find_by(id: client_id) %>
+    <% bcba = Staff.find_by(id: client&.bcba_id) %>
+    <div><b> Name </b>- <%= "#{client.first_name} #{client.last_name}" %></div>
+    <div><b> Date of birth </b>- <%= client.dob %></div>
+    <div><b> Gender </b>- <%= client.gender %></div>
+    <div><b> Payor Status </b>- <%= client.payor_status %></div>
+    <div><b> Status </b>- <%= client.status %></div>
+    <div><b> Clinic </b>- <%= client&.clinic&.name %></div>
+    <div><b> Bcba </b>- <%= "#{bcba&.first_name} #{bcba&.last_name}" %></div>
+    <div><b> Tracking id </b>- <%= client&.tracking_id %></div>
+
+    <h3>Soap Notes Details - </h3>
+    <% soap_notes = SoapNote.by_ids(soap_notes_ids) %>
+    <ol>
+    <% soap_notes.each do |soap_note| %>
+    <li>
+    <% creator = Staff.find_by(id: soap_note.creator_id) %>
+    <p>
+    <div><b> Id </b>- <%= soap_note.id %></div>
+    <div><b> Add Date </b>- <%= soap_note.add_date %></div>
+    <div><b> Add Time </b>- <%= soap_note.add_time %></div>
+    <div><b> Note </b>- <%= soap_note.note %></div>
+    <div><b> Appointment Id </b>- <%= soap_note.scheduling_id %></div>
+    <div><b> Created by </b>- <%=  "#{creator&.first_name} #{creator&.last_name}" %></div>
+    <div><b> RBT Signature present </b>- <%= soap_note.rbt_signature %></div>
+    <% if soap_note.rbt_signature %>
+    <div><b> RBT Signature Author Name </b>- <%= soap_note.rbt_signature_author_name %></div>
+    <div><b> RBT Signature Date </b>- <%= soap_note.rbt_signature_date %></div>
+    <% end %>
+    <div><b> BCBA Signature present </b>- <%= soap_note.bcba_signature %></div>
+    <% if soap_note.bcba_signature %>
+    <div><b> BCBA Signature Author Name </b>- <%= soap_note.bcba_signature_author_name %></div>
+    <div><b> BCBA Signature Date </b>- <%= soap_note.bcba_signature_date %></div>
+    <% end %>
+    <div><b> Clinical Director Signature present </b>- <%= soap_note.clinical_director_signature %></div>
+    <% if soap_note.clinical_director_signature %>
+    <div><b> Clinical Director Signature Author Name </b>- <%= soap_note.clinical_director_signature_author_name %></div>
+    <div><b> Clinical Director Signature Date </b>- <%= soap_note.clinical_director_signature_date %></div>
+    <% end %>
+    <% if soap_note.caregiver_signature || soap_note.caregiver_sign.present? %>
+    <div><b> Caregiver Signature Present </b>- true</div>
+    <div><b> Caregiver Signature Date </b>- <%= soap_note.caregiver_signature_datetime %></div>
+    <% end %>
+    <div><b> Synced from catalyst </b>- <%= soap_note.synced_with_catalyst %></div>
+    <% if soap_note.synced_with_catalyst %>
+    <% catalyst_data = CatalystData.find_by(id: soap_note.catalyst_data_id) %>
+    <div><b> Location </b>- <%= catalyst_data&.session_location %></div>
+    <div><b> Coordinates </b>- <%= catalyst_data&.location %></div>
+    <% end %>
+    </p>
+    </li>
+    <% end %>
+    </ol>
+  </body>
+</html>
