@@ -28,11 +28,11 @@ module Catalyst
               catalyst_data.end_time = data['endTime'].to_time.strftime('%H:%M')
               catalyst_data.date_revision_made = data['dateRevisionMade']
               data['responses'].each do |response|
-                update_signature_and_location(response)
+                update_signature_and_location(response, catalyst_data)
               end
               catalyst_data.minutes = (catalyst_data.end_time.to_time - catalyst_data.start_time.to_time)/60
               rem = catalyst_data.minutes%15
-              update_units(rem)
+              update_units(rem, catalyst_data)
               catalyst_data.save(validate: false)
               log_info(catalyst_data)
 
@@ -62,7 +62,7 @@ module Catalyst
         response_data_array
       end
 
-      def update_signature_and_location(response)
+      def update_signature_and_location(response, catalyst_data)
         case response['questionText']
         when 'BCBA Signature'
           catalyst_data.bcba_signature = response['answer']
@@ -83,7 +83,7 @@ module Catalyst
         end
       end
 
-      def update_units(rem)
+      def update_units(rem, catalyst_data)
         if rem == 0
           catalyst_data.units = catalyst_data.minutes/15
         elsif rem < 8
