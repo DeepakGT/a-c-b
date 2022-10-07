@@ -34,7 +34,7 @@ module Catalyst
               rem = catalyst_data.minutes%15
               update_units(rem, catalyst_data)
               catalyst_data.save(validate: false)
-              log_info(catalyst_data)
+              log_info(catalyst_data, data)
 
               staff = staff_details(catalyst_data)
               soap_note = SoapNote.find_or_initialize_by(catalyst_data_id: catalyst_data.id)
@@ -93,7 +93,7 @@ module Catalyst
         end 
       end
 
-      def log_info(catalyst_data)
+      def log_info(catalyst_data, data)
         if catalyst_data.id.nil?
           Loggers::Catalyst::SyncSoapNotesLoggerService.call(catalyst_data.id, "Catalyst soap note with id #{data['soapNoteId']} cannot be saved.")
         else
