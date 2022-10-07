@@ -19,7 +19,7 @@ json.data do
       else
         json.auditor_name "#{audit.user_type || 'System'}"
       end
-      json.audited_changes @schedule.transform_audited_changes(audit.audited_changes)
+      json.audited_changes audit.audited_changes
       json.audited_at audit.created_at
       json.action audit.action
     end
