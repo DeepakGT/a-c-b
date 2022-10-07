@@ -236,16 +236,16 @@ RSpec.describe ClientEnrollmentsController, type: :controller do
     end
   end
 
-  describe "GET #get_source_of_payments" do
-    context "when getting source of payment list" do
-      let!(:source_of_payments){ ClientEnrollment.translate_source_of_payments }
+  describe "GET #payor_statuses" do
+    context "when getting payor statuses" do
+      let!(:payor_statuses){ ClientEnrollment.translate_payor_statuses }
       it "should get the selectable options successfully" do
-        get :get_source_of_payments
+        get :payor_statuses
         response_body = JSON.parse(response.body)
 
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
-        expect(response_body['data']['source_of_payments']).to eq(source_of_payments)
+        expect(response_body['data']['payor_statuses']).to eq(payor_statuses)
       end
     end
   end

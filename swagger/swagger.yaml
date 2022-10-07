@@ -2110,7 +2110,6 @@ paths:
                     "tracking_id": "0065e000009Pyw7AAC",
                     "preferred_language": "english",
                     "disqualified": false,
-                    "payor_status": "",
                     "addresses": [
                       {
                         "id": 8684,
@@ -2240,7 +2239,6 @@ paths:
                   "tracking_id": "0065e000009Pyw7AAC",
                   "preferred_language": "english",
                   "disqualified": false,
-                  "payor_status": "",
                   "addresses": [
                     {
                       "id": 8684,
@@ -2366,7 +2364,6 @@ paths:
                 "tracking_id": "0065e000009Pyw7AAC",
                 "preferred_language": "english",
                 "disqualified": false,
-                "payor_status": "",
                 "addresses": [
                   {
                     "id": 8684,
@@ -2496,7 +2493,6 @@ paths:
                   "tracking_id": "0065e000009Pyw7AAC",
                   "preferred_language": "english",
                   "disqualified": false,
-                  "payor_status": "",
                   "addresses": [
                     {
                       "id": 8684,
@@ -2621,7 +2617,6 @@ paths:
                   "tracking_id": "0065e000009Pyw7AAC",
                   "preferred_language": "english",
                   "disqualified": false,
-                  "payor_status": "",
                   "addresses": [
                     {
                       "id": 8684,
@@ -6077,7 +6072,6 @@ paths:
                   "status": "active",
                   "preferred_language": "english",
                   "disqualified": false,
-                  "payor_status": null,
                   "schedules": [
                     {
                       "id": 9,
@@ -7809,7 +7803,6 @@ paths:
                       "tracking_id": null,
                       "preferred_language": "english",
                       "disqualified": false,
-                      "payor_status": null,
                       "payor": null,
                       "addresses": [
                         {
@@ -7843,7 +7836,6 @@ paths:
                       "tracking_id": null,
                       "preferred_language": "english",
                       "disqualified": false,
-                      "payor_status": null,
                       "addresses": [
                         {
                           "id": 1584,
@@ -8676,8 +8668,6 @@ definitions:
       gender:
         type: "string"
         enum: [male, female]
-      payor_status:
-        type: "string"
       clinic_id:
         type: "integer"
       email:
