@@ -310,7 +310,8 @@ class Scheduling < ApplicationRecord
 
   def validate_units
     return errors.add(:base, I18n.t('.activerecord.models.scheduling.errors.client_enrollment_service')) if client_enrollment_service.blank?
-    return errors.add(:base, I18n.t('.activerecord.models.scheduling.errors.status')) unless scheduled? || rendered? || auth_pending? || draft?
+    #TODO: Carlos -> validate create appointments
+    #return errors.add(:base, I18n.t('.activerecord.models.scheduling.errors.status')) unless scheduled? || rendered? || auth_pending? || draft?
 
     errors.add(:units, I18n.t('.activerecord.models.scheduling.errors.authorization')) if units.present? && client_enrollment_service.units.present? && (units > (client_enrollment_service.units - (client_enrollment_service.used_units + client_enrollment_service.scheduled_units)))
   end
