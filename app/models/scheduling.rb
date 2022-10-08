@@ -31,7 +31,8 @@ class Scheduling < ApplicationRecord
 
   before_save :set_units_and_minutes
 
-  validate :check_date_available
+  #TODO: this method is discussed from the validate to clarify business logic
+  #validate :check_date_available
 
   serialize :unrendered_reason, Array
 
