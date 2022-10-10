@@ -9,6 +9,7 @@ json.title staff&.role_name
 json.job_type staff&.job_type
 json.gender staff&.gender
 json.npi staff.npi
+json.legacy_number staff&.legacy_number
 
 if !staff.staff_clinics&.home_clinic&.first&.clinic.nil?
   json.organization_id staff.staff_clinics.home_clinic.first.clinic&.organization_id
