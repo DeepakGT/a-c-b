@@ -29,7 +29,7 @@ class User < ActiveRecord::Base
 
   # Enums
   enum status: {active: 0, inactive: 1}
-  enum gender: {male: 0, female: 1}
+  enum gender: { male: 'male', female: 'female', non_binary: 'non_binary' }
   enum job_type: {full_time: 'full_time', part_time: 'part_time'}
   enum default_schedule_view: {calendar: 'calendar', list: 'list'}
 

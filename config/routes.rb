@@ -41,7 +41,12 @@ Rails.application.routes.draw do
       end
       resources :funding_sources
     end
+
     resources :staff do
+      collection do
+        get 'genders', to: 'staff#gender_list'
+      end
+
       resources :staff_credentials, controller: 'staff_qualifications'
       resources :staff_clinics
     end

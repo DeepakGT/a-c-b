@@ -43,10 +43,14 @@ class StaffController < ApplicationController
     @supervisors = Staff.order(:first_name)
   end
 
+  def gender_list
+    success_response(Staff.transform_genders)
+  end
+
   private
 
   def staff_params
-    arr = %i[first_name last_name hired_at terminated_on email supervisor_id job_type legacy_number npi deactivated_at]
+    arr = %i[first_name last_name gender hired_at terminated_on email supervisor_id job_type legacy_number npi deactivated_at]
     
     arr.concat(%i[password password_confirmation]) if params[:action] == 'create'
     

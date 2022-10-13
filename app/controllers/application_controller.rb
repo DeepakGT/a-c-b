@@ -23,6 +23,10 @@ class ApplicationController < ActionController::API
     ActiveStorage::Current.host = request.base_url
   end
 
+  def success_response(data)
+    render json: {status: :success, data: data}, status: :ok
+  end
+
   def send_record_not_found_response
     render json: {status: :failure, errors: ['record not found']}, status: :bad_request
   end

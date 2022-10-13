@@ -25,18 +25,24 @@ class Staff < User
   scope :active, ->{ where(status: 'active') }
   scope :inactive, ->{ where(status: 'inactive') }
 
-  def self.by_location(query) 
-    staff = self
-    query.split.each do |q|
-      staff = staff.where('lower(addresses.line1) LIKE :loc OR
-        lower(addresses.line2) LIKE :loc OR
-        lower(addresses.line3) LIKE :loc OR
-        lower(addresses.zipcode) LIKE :loc OR
-        lower(addresses.city) LIKE :loc OR
-        lower(addresses.state) LIKE :loc OR
-        lower(addresses.country) LIKE :loc', loc: "%#{q&.downcase}%")
+  class << self
+    def by_location(query) 
+      staff = self
+      query.split.each do |q|
+        staff = staff.where('lower(addresses.line1) LIKE :loc OR
+          lower(addresses.line2) LIKE :loc OR
+          lower(addresses.line3) LIKE :loc OR
+          lower(addresses.zipcode) LIKE :loc OR
+          lower(addresses.city) LIKE :loc OR
+          lower(addresses.state) LIKE :loc OR
+          lower(addresses.country) LIKE :loc', loc: "%#{q&.downcase}%")
+      end
+      staff
     end
-    staff
+
+    def transform_genders
+      genders.map { |gender, _| {'value': gender, 'title': I18n.t(".activerecord.models.staff.genders.#{gender}").capitalize } }
+    end
   end
 
   def billable_hours_for_current_week
