@@ -1,7 +1,7 @@
 require 'will_paginate/array'
 class StaffController < ApplicationController
   before_action :authenticate_user!
-  before_action :authorize_user, except: %i[phone_types supervisor_list]
+  before_action :authorize_user, except: %i[phone_types supervisor_list gender_list]
   before_action :set_staff, only: %i[show update destroy]
   before_action :remove_trailing_space, only: %i[create update]
 

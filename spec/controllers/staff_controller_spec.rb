@@ -414,4 +414,20 @@ RSpec.describe StaffController, type: :controller do
       end
     end
   end
+
+  describe 'GET #gender_list' do
+
+    context 'when sign in' do
+      it "expect list genders successfuly" do
+        set_auth_headers(auth_headers)
+
+        get :gender_list
+        response_body = JSON.parse(response.body)
+        
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data'].count).to eq(Staff.genders.count)
+      end
+    end
+  end
 end
