@@ -23,9 +23,7 @@ class User < ActiveRecord::Base
   
   has_one :role, through: :user_role
 
-  accepts_nested_attributes_for :rbt_supervision, allow_destroy: true
-  accepts_nested_attributes_for :address, allow_destroy: true
-  accepts_nested_attributes_for :phone_numbers, allow_destroy: true
+  accepts_nested_attributes_for :rbt_supervision, :address, :phone_numbers, allow_destroy: true
 
   # Enums
   enum status: {active: 0, inactive: 1}
