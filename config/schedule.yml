@@ -38,8 +38,8 @@ destroy_unused_expired_early_authorizations:
   class: "DestroyUnusedExpiredEarlyAuthorizationsWorker"
   queue: DestroyUnusedExpiredEarlyAuthorizations
 
-process_claim_statuses_every_monday_9am_utc:
-  cron: '0 5 * * 1'
+process_claim_statuses_every_mon:
+  cron: '15 2 * * 1'
   class: "AvailityProcessClaimsWorker"
   queue: AvailityProcessClaims
 
@@ -58,12 +58,12 @@ second_notification_draft_appointment_worker:
   class: SecondNotificationDraftAppointmentWorker
   queue: default
   
-process_claim_statuses_every_wed_9am_utc:
-  cron: '0 5 * * 3'
+process_claim_statuses_every_wed:
+  cron: '15 2 * * 3'
   class: "AvailityProcessClaimsWorker"
   queue: AvailityProcessClaims
 
-process_claim_statuses_every_fri_9am_utc:
-  cron: '0 5 * * 5'
+process_claim_statuses_every_fri:
+  cron: '15 2 * * 5'
   class: "AvailityProcessClaimsWorker"
   queue: AvailityProcessClaims
