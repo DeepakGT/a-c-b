@@ -1,5 +1,5 @@
 json.id staff_qualification.id
-json.name staff_qualification.qualification.name
+json.name staff_qualification.qualification&.name
 json.credential_id staff_qualification.credential_id
 json.issued_at staff_qualification.issued_at
 json.expires_at staff_qualification.expires_at
