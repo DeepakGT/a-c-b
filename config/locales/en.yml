@@ -56,6 +56,8 @@ en:
           limit_recurrence: 'limit of appointments reached'
           authorization: 'left for authorization are not enough to create this appointment.'
           client_enrollment_service: 'service field may not be blank or empty'
+      staff_qualification:
+        validate_expires_at: 'must be blank for lifetime qualification.'
       region:
         errors: 
           unique_name: has already been taken
