@@ -84,6 +84,7 @@ en:
           unavailable: unavailable
           inclement_weather_cancellation: inclement weather cancellation
           draft: draft
+          empty: status doesn't exist
       client:
         gender:
           male: Male
