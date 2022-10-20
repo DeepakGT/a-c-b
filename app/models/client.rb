@@ -17,7 +17,7 @@ class Client < ApplicationRecord
   after_create :create_office_address_for_client
 
   accepts_nested_attributes_for :addresses, update_only: true
-  accepts_nested_attributes_for :phone_number, update_only: true
+  accepts_nested_attributes_for :phone_number, allow_destroy: true
 
   enum status: {active: 0, inactive: 1}
   enum gender: {male: 'male', female: 'female', non_binary: 'non_binary'}

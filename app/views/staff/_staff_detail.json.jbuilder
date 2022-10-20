@@ -25,7 +25,7 @@ if staff&.supervisor.present?
 end
 json.phone staff&.phone_numbers&.first&.number
 json.phone_numbers do
-  json.array! staff&.phone_numbers do |phone|
+  json.array! staff&.phone_numbers.order('id ASC') do |phone|
     json.id phone.id
     json.phone_type phone.phone_type
     json.number phone.number
