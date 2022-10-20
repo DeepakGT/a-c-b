@@ -97,7 +97,7 @@ en:
           sca: Single Case Agreement
           oon: Out of Network
           iin: In Network
-          p2p: Paid to Patients
+          p2p: Paid to Patient
           self_pay: Self Pay
 
   devise_token_auth:
