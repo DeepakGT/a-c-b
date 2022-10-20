@@ -8,6 +8,9 @@ class SettingsController < ApplicationController
   end
 
   def update 
+    #TODO: A quick fix for this problem is made, the whole role system will have to be refactored.
+    super_admin_role_id = Role.find_by(name: 'super_admin').id
+    params[:roles_ids] << super_admin_role_id if super_admin_role_id
     @setting.update(update_params)
   end
 
