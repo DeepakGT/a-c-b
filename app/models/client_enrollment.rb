@@ -10,9 +10,9 @@ class ClientEnrollment < ApplicationRecord
                        external_contact: 4, internal_contact: 5 }, _prefix: true
   enum source_of_payment: { self_pay: 0, insurance: 1, single_case_agreement: 2 }
 
-  validates_presence_of :terminated_on
   validate :validate_source_of_payment
   validate :validate_funding_source
+  validates_presence_of :subscriber_dob
 
   scope :active, ->{ where('terminated_on >= ?',Time.current.to_date).or(where('terminated_on IS NULL')) }
   scope :except_ids, ->(ids) { where.not(id: ids) }

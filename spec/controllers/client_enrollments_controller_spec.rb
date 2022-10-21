@@ -77,10 +77,13 @@ RSpec.describe ClientEnrollmentsController, type: :controller do
         post :create, params: {
           client_id: client.id, 
           funding_source_id: funding_source.id,
+          group: 'testgroup',
+          group_employer: '123456',
           insurance_id: 'xd64758',
           source_of_payment: 'insurance',
-          terminated_on: '2033-04-30'
+          subscriber_dob: '2022-01-01'
         }
+
         response_body = JSON.parse(response.body)
 
         expect(response.status).to eq(200)
@@ -89,16 +92,26 @@ RSpec.describe ClientEnrollmentsController, type: :controller do
         expect(response_body['data']['funding_source_id']).to eq(funding_source.id)
         expect(response_body['data']['insurance_id']).to eq('xd64758')
         expect(response_body['data']['source_of_payment']).to eq('insurance')
+        expect(response_body['data']['group']).to eq('testgroup')
+        expect(response_body['data']['group_employer']).to eq('123456')
+        expect(response_body['data']['subscriber_dob']).to eq('2022-01-01')
       end
 
-      context "when client_id is not present" do
+      context "when subscriber dob is not present" do
         it "should raise error" do
           set_auth_headers(auth_headers)
 
-          post :create, params: { client_id: 0}
+          post :create, params: {
+            client_id: client.id, 
+            funding_source_id: funding_source.id,
+            group: 'testgroup',
+            group_employer: '123456',
+            insurance_id: 'xd64758',
+            source_of_payment: 'insurance'
+          }
           response_body = JSON.parse(response.body)
-          
-          expect(response_body['errors']).to include("record not found")
+
+          expect(response_body['errors']).to include("Subscriber dob can't be blank")
         end
       end
     end

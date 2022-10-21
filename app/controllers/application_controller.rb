@@ -24,11 +24,11 @@ class ApplicationController < ActionController::API
   end
 
   def send_record_not_found_response
-    render json: {status: :failure, errors: ['record not found']}, status: :bad_request
+    render json: {status: :failure, errors: [I18n.t('.controllers.generics.missing_record').capitalize]}, status: :bad_request
   end
 
   def not_authorized
-    render json: {status: :failure, errors: ['you are not authorized to perform this action.']}, status: :unauthorized
+    render json: {status: :failure, errors: [I18n.t('.controllers.generics.unauthorized').capitalize]}, status: :unauthorized
   end
 
   def unprosessable_entity_response(model)
@@ -38,5 +38,13 @@ class ApplicationController < ActionController::API
   def string_to_array(value)
     value = value.gsub(/\[|\]/, '').split(',')
   end
-  # end of private
+
+  def set_time_zone
+    Time.zone = Rails.cache.read(current_user.id) if current_user
+  end
+
+  def incomplete_params
+    render json: {status: :failure, errors: [I18n.t('.controllers.generics.incomplete_data').capitalize]}, status: :bad_request
+  end
+  # end of private  
 end

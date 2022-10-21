@@ -32,6 +32,10 @@
 en:
   application_controller:
     controllers:
+      generics:
+        incomplete_data: there is incomplete data in the request
+        unauthorized: you are not authorized to perform this action.
+        missing_record: record not found.
       clinics:
         success_massive: massive successfully
         errors_massive: we have an error, something is wrong
