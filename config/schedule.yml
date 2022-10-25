@@ -39,7 +39,7 @@ destroy_unused_expired_early_authorizations:
   queue: DestroyUnusedExpiredEarlyAuthorizations
 
 process_claim_statuses_every_mon:
-  cron: '15 2 * * 1'
+  cron: '30 1 * * 1'
   class: "AvailityProcessClaimsWorker"
   queue: AvailityProcessClaims
 
@@ -59,11 +59,11 @@ second_notification_draft_appointment_worker:
   queue: default
   
 process_claim_statuses_every_wed:
-  cron: '15 2 * * 3'
+  cron: '30 1 * * 3'
   class: "AvailityProcessClaimsWorker"
   queue: AvailityProcessClaims
 
 process_claim_statuses_every_fri:
-  cron: '15 2 * * 5'
+  cron: '30 1 * * 5'
   class: "AvailityProcessClaimsWorker"
   queue: AvailityProcessClaims
