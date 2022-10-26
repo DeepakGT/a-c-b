@@ -46,7 +46,8 @@ class MetaDataController < ApplicationController
   end
 
   def select_scheduling_status
-    render json: { status: :success, scheduling_statuses: Scheduling.transform_statuses(params[:is_draft].present?) }, status: 200
+    statuses = Scheduling.transform_statuses(params[:is_draft].present?, current_user.role_name)
+    render json: { status: :success, scheduling_statuses: statuses}, status: 200
   end
 
   def gender_list

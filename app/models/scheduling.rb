@@ -272,9 +272,9 @@ class Scheduling < ApplicationRecord
     end
   end
 
-  def self.transform_statuses(draft)
+  def self.transform_statuses(draft, role_name)
     statuses.map do |type, _|
-      next if type == 'draft' && draft == false
+      next if type == 'draft' && draft == false || type == 'auth_pending' && role_name != 'super_admin'
 
       { 'value' => type, 'title'=> I18n.t("activerecord.attributes.scheduling.statuses.#{type}").capitalize }
     end.compact
