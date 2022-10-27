@@ -10,7 +10,7 @@ class StaffQualification < ApplicationRecord
   private
 
   def validate_expires_at
-    errors.add(:expires_at, 'must be blank for lifetime qualification.') if self.qualification.lifetime? && self.expires_at.present?
+    errors.add(:expires_at, I18n.t('activerecord.models.staff_qualification.validate_expires_at')) if self.qualification&.lifetime? && self.expires_at.present?
   end
 
   # end of private
