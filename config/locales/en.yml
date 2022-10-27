@@ -59,6 +59,11 @@ en:
       region:
         errors: 
           unique_name: has already been taken
+      staff:
+        genders:
+          male: male
+          female: female
+          non_binary: non binary
     attributes:
       funding_source:
         payor_types:
