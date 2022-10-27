@@ -10,10 +10,13 @@ class ClientEnrollmentsController < ApplicationController
   end
 
   def create
+    return incomplete_params unless validate_input_field_insurance
+
     ActiveRecord::Base.transaction do
       @client_enrollment = @client&.client_enrollments&.new(enrollment_params)
       # NOTE : reset_primary must be called after initialize, we are overriding is_primary value.
       reset_primary
+
       @client_enrollment&.save
     end
   end
@@ -69,6 +72,17 @@ class ClientEnrollmentsController < ApplicationController
 
   def other_primary_objects
     @client&.client_enrollments&.except_ids(@client_enrollment.id).where(is_primary: true)
+  end
+
+  def validate_input_field_insurance
+    validation_targets = [enrollment_params[:funding_source_id], enrollment_params[:group],
+                          enrollment_params[:group_employer], enrollment_params[:insurance_id]]
+
+    if enrollment_params[:source_of_payment].eql?('insurance')
+      return false if validation_targets.any?{ |element| element.nil? || element.to_s.empty? || element.to_s.eql?('NaN')}
+    end
+
+    true
   end
   # end of private
 end
