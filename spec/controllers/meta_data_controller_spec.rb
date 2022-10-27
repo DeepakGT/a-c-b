@@ -207,20 +207,39 @@ RSpec.describe MetaDataController, type: :controller do
   end
 
   describe 'GET #select_scheduling_status' do
-    context 'when the response is successfully' do
+    context 'when the user role is different to super_admin' do
       let!(:user) { create(:user, :with_role, role_name: 'Clinical Director') }
       let!(:auth_headers) { user.create_new_auth_token }
-      let!(:scheduling_statuses){ Scheduling.transform_statuses('', 'Clinical Director') }
+      let!(:scheduling_statuses){ Scheduling.transform_statuses(true, 'Clinical Director') }
 
-      it 'returns the selectable options from the scheduling status successfully' do
+      it 'returns a hash array without the auth_pending value' do
         set_auth_headers(auth_headers)
 
-        get :select_scheduling_status, params: { action_type: '' }
+        get :select_scheduling_status, params: { is_draft: true }
         response_body = JSON.parse(response.body)
 
         expect(response.status).to eq(200)
         expect(response_body['status']).to eq('success')
         expect(response_body['scheduling_statuses']).to eq(scheduling_statuses)
+        expect(response_body['scheduling_statuses']).to_not include({"title"=>"Auth pending", "value"=>"auth_pending"})
+      end
+    end
+
+    context 'when the user role is super_admin' do
+      let!(:user) { create(:user, :with_role, role_name: 'super_admin') }
+      let!(:auth_headers) { user.create_new_auth_token }
+      let!(:scheduling_statuses){ Scheduling.transform_statuses(true, 'super_admin') }
+
+      it 'returns a hash array with the value auth_pending' do
+        set_auth_headers(auth_headers)
+
+        get :select_scheduling_status, params: { is_draft: true }
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['scheduling_statuses']).to eq(scheduling_statuses)
+        expect(response_body['scheduling_statuses']).to include({"title"=>"Auth pending", "value"=>"auth_pending"})
       end
     end
   end
