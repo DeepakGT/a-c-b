@@ -1,7 +1,7 @@
 class ClientEnrollmentsController < ApplicationController
   before_action :authenticate_user!
-  before_action :authorize_user
-  before_action :set_client
+  before_action :authorize_user, except: :payor_statuses
+  before_action :set_client, except: :payor_statuses
   before_action :set_client_enrollment, only: %i[show update destroy]
 
   def index
@@ -36,6 +36,10 @@ class ClientEnrollmentsController < ApplicationController
     @client_enrollment&.destroy
   end
 
+  def payor_statuses
+    @payor_statuses = ClientEnrollment.translate_payor_statuses
+  end
+
   private
 
   def authorize_user
@@ -45,7 +49,7 @@ class ClientEnrollmentsController < ApplicationController
   def enrollment_params
     params.permit(:client_id, :funding_source_id, :is_primary, :insurance_id, :group, :group_employer, 
                   :subscriber_name, :subscriber_phone, :subscriber_dob, :provider_phone, 
-                  :relationship, :source_of_payment, :enrollment_date, :terminated_on, :notes)
+                  :relationship, :source_of_payment, :payor_status, :enrollment_date, :terminated_on, :notes)
   end
 
   def set_client

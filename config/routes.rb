@@ -90,6 +90,7 @@ Rails.application.routes.draw do
     end
 
     put '/availity/update_claim_statuses', to: 'availity#update_claim_statuses'
+    get '/client_enrollments/payor_statuses', to: 'client_enrollments#payor_statuses'
     get '/supervisor_list', to: 'staff#supervisor_list'
     get '/addresses/country_list', to: 'addresses#country_list'
     get '/roles_list', to: 'roles#roles_list'

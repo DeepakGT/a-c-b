@@ -142,8 +142,8 @@ RSpec.describe ClientsController, type: :controller do
       context "when search_value is present" do
         let!(:staff) { create(:staff, :with_role, role_name: 'bcba', first_name: 'test', last_name: 'staff') }
         let!(:clients) { create_list(:client, 4, clinic_id: clinic.id, gender: 1, primary_bcba_id: staff.id)}
-        let!(:client1) {create(:client, clinic_id: clinic.id, first_name: 'test', gender: 0, payor_status: 'self_pay', primary_bcba_id: nil)}
-        let!(:client2) {create(:client, clinic_id: clinic.id, last_name: 'test', gender: 0, payor_status: 'self_pay', primary_bcba_id: nil)}
+        let!(:client1) {create(:client, clinic_id: clinic.id, first_name: 'test', gender: 0, primary_bcba_id: nil)}
+        let!(:client2) {create(:client, clinic_id: clinic.id, last_name: 'test', gender: 0, primary_bcba_id: nil)}
         let!(:client3) {create(:client, clinic_id: clinic.id, first_name: 'test', last_name: 'client', gender: 0, primary_bcba_id: nil)}
         let!(:funding_source) {create(:funding_source, clinic_id: clinic.id)}
         let!(:client_enrollment1) {create(:client_enrollment, terminated_on: Time.current.to_date+2, funding_source_id: funding_source.id, is_primary: true, client_id: client1.id)}
@@ -187,19 +187,6 @@ RSpec.describe ClientsController, type: :controller do
               expect(response.status).to eq(200)
               expect(response_body['status']).to eq('success')
               expect(response_body['data'].count).to eq(Client.by_gender('male').count)
-            end
-          end
-
-          context "when search_by is payor status" do
-            it "should list clients filtered by payor status successfully" do
-              set_auth_headers(auth_headers)
-
-              get :index, params: { search_by:"payor_status", search_value: 'insurance'}
-              response_body = JSON.parse(response.body)
-
-              expect(response.status).to eq(200)
-              expect(response_body['status']).to eq('success')
-              expect(response_body['data'].count).to eq(Client.by_payor_status('insurance').count)
             end
           end
 
@@ -255,7 +242,7 @@ RSpec.describe ClientsController, type: :controller do
         end
 
         context "when search_by is absent but search_value is present" do
-          it "should list staff filtered by name, gender, payor_status, bcba, payor successfully" do
+          it "should list staff filtered by name, gender, bcba, payor successfully" do
             set_auth_headers(auth_headers)
             
             get :index, params: { search_value: funding_source.name}
@@ -307,7 +294,6 @@ RSpec.describe ClientsController, type: :controller do
           first_name: 'test',
           last_name: 'client',
           email: 'testcontact@gamil.com',
-          payor_status: 'insurance',
           addresses_attributes: [{address_type: 'insurance_address', city: 'Indore'}, 
                                  {address_type: 'service_address', city: 'Delhi'}],
           phone_number_attributes: {phone_type: 'home', number: '99999 99999'}

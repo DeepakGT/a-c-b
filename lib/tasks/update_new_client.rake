@@ -4,7 +4,7 @@ namespace :update_new_client do
     Client.all.each do |client|
       new_client = NewClient.create(id: client.id, first_name: client.first_name, last_name: client.last_name, email: client.email, gender: client.gender, 
                                     disqualified: client.disqualified, dq_reason: client.dq_reason, preferred_language: client.preferred_language, 
-                                    dob: client.dob, status: client.status, payor_status: client.payor_status, clinic_id: client.clinic_id, 
+                                    dob: client.dob, status: client.status, clinic_id: client.clinic_id,
                                     bcba_id: client.bcba_id)
       Address.where(addressable_type: 'User', addressable_id: client.id)&.update_all(addressable_type: 'NewClient', addressable_id: new_client.id)
       PhoneNumber.where(phoneable_type: 'User', phoneable_id: client.id)&.update_all(phoneable_type: 'NewClient', phoneable_id: new_client.id)

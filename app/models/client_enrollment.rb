@@ -9,6 +9,7 @@ class ClientEnrollment < ApplicationRecord
   enum relationship: { self: 0, parent_or_guardian: 1, spouse_or_partner: 2, lci_or_foster_home: 3, 
                        external_contact: 4, internal_contact: 5 }, _prefix: true
   enum source_of_payment: { self_pay: 0, insurance: 1, single_case_agreement: 2 }
+  enum payor_status: { sca: 'sca', oon: 'oon', iin: 'iin', p2p: 'p2p', self_pay: 'self_pay' }, _prefix: true
 
   validate :validate_source_of_payment
   validate :validate_funding_source
@@ -19,6 +20,12 @@ class ClientEnrollment < ApplicationRecord
   scope :by_source_of_payment, ->(sources){ where(source_of_payment: sources)}
   scope :billable_funding_sources, ->{where.not('funding_sources.network_status': 'non_billable')}
   scope :non_billable_funding_sources, ->{where('funding_sources.network_status': 'non_billable')}
+
+  def self.translate_payor_statuses
+    payor_statuses.map do |k, v|
+      { 'value' => k, 'title' => I18n.t("activerecord.attributes.client_enrollment.payor_statuses.#{k}") }
+    end
+  end
 
   private
 
@@ -45,5 +52,5 @@ class ClientEnrollment < ApplicationRecord
     self.funding_source_id = nil if self.source_of_payment=='self_pay'
   end
   # end of private
-  
+
 end

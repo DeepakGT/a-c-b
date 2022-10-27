@@ -50,8 +50,8 @@ class ClientsController < ApplicationController
   private
 
   def client_params
-    params.permit(:first_name, :last_name, :status, :gender, :email, :dob, :clinic_id, :payor_status, :preferred_language, 
-                  :disqualified, :dq_reason, :primary_bcba_id, :secondary_bcba_id, :primary_rbt_id, :secondary_rbt_id, :tracking_id, addresses_attributes: 
+    params.permit(:first_name, :last_name, :status, :gender, :email, :dob, :clinic_id, :preferred_language,
+                  :disqualified, :dq_reason, :primary_bcba_id, :secondary_bcba_id, :primary_rbt_id, :secondary_rbt_id, :tracking_id, addresses_attributes:
                   %i[id line1 line2 line3 zipcode city state country address_type addressable_type addressable_id],
                   phone_number_attributes: %i[phone_type number])
   end
@@ -112,8 +112,6 @@ class ClientsController < ApplicationController
       when "gender"
         gender_value = params[:search_value]&.downcase
         clients.by_gender(gender_value)
-      when "payor_status"
-        clients.by_payor_status(params[:search_value]&.downcase)
       when "bcba"
         names = params[:search_value].split
         names.each do |name|
@@ -138,7 +136,6 @@ class ClientsController < ApplicationController
                        .or(clients.by_first_name(name))
                        .or(clients.by_last_name(name))
                        .or(clients.by_gender(name))
-                       .or(clients.by_payor_status(name))
                        .or(clients.by_bcba_first_name(name))
                        .or(clients.by_bcba_last_name(name))
     end

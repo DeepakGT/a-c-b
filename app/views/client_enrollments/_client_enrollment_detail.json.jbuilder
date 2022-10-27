@@ -1,6 +1,7 @@
 json.id client_enrollment.id
 json.client_id client_enrollment.client_id
 json.source_of_payment client_enrollment.source_of_payment
+json.payor_status client_enrollment.payor_status
 json.funding_source_id client_enrollment.funding_source_id
 json.funding_source client_enrollment.funding_source.name if client_enrollment.funding_source.present?
 json.terminated_on client_enrollment.terminated_on

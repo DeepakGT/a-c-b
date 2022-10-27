@@ -45,7 +45,7 @@ en:
         messages:
           error: 'the :ids parameter must have at minimum a valid numeric value'
   notification:
-    draft_appointment: 
+    draft_appointment:
       message: "Approval of the day and client appointment project is approaching."
       subject: You must approve the draft appointment
   activerecord:
@@ -63,7 +63,7 @@ en:
       staff_qualification:
         validate_expires_at: 'must be blank for lifetime qualification.'
       region:
-        errors: 
+        errors:
           unique_name: has already been taken
       staff:
         genders:
@@ -104,10 +104,13 @@ en:
       service:
         validate_selected_payors: 'must have atleast one non-billable payor linked to it.'
         validate_is_early_code: 'cannot be updated to early code as it is connected to billable payors.'
-
-
-    
-
+      client_enrollment:
+        payor_statuses:
+          sca: Single Case Agreement
+          oon: Out of Network
+          iin: In Network
+          p2p: Pay to Patient
+          self_pay: Self Pay
 
   devise_token_auth:
     sessions:

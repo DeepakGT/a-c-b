@@ -248,4 +248,18 @@ RSpec.describe ClientEnrollmentsController, type: :controller do
       end
     end
   end
+
+  describe "GET #payor_statuses" do
+    context "when getting payor statuses" do
+      let!(:payor_statuses){ ClientEnrollment.translate_payor_statuses }
+      it "should get the selectable options successfully" do
+        get :payor_statuses
+        response_body = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(response_body['status']).to eq('success')
+        expect(response_body['data']['payor_statuses']).to eq(payor_statuses)
+      end
+    end
+  end
 end

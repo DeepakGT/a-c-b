@@ -23,7 +23,6 @@ json.tracking_id client.tracking_id
 json.preferred_language client.preferred_language
 json.disqualified client.disqualified
 json.disqualified_reason client.dq_reason if client.disqualified?
-json.payor_status client.payor_status
 if client.addresses.present?
   json.addresses do
     json.array! client.addresses do |address|
