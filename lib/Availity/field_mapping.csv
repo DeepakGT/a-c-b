@@ -12,5 +12,3 @@ patient.accountNumber,ACCOUNTNUMBER
 subscriber.memberId,MEMBERID
 subscriber.lastName,SUBSCLAST
 subscriber.firstName,SUBSCFIRST
-claimNumber,CLAIMNUMBER
-claimAmount,CLAIMAMOUNT
